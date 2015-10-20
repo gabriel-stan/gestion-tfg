@@ -1,146 +1,96 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
 
-<head>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <title>GESTFG by gabriel-stan</title>
+  </head>
 
-    <title>GESTFG</title>
+  <body>
 
-    <!-- Bootstrap Core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <header>
+      <div class="container">
+        <h1>GESTFG</h1>
+        <h2> Plataforma de Gestión y Evaluación de Trabajos de Fin de Grado y Master</h2>
 
-    <!-- Custom CSS -->
-    <link href="css/clean-blog.min.css" rel="stylesheet">
+        <section id="downloads">
+          <a href="https://github.com/gabriel-stan/gestion-tfg/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/gabriel-stan/gestion-tfg/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/gabriel-stan/gestion-tfg" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
 
-    <!-- Custom Fonts -->
-    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"
-          type="text/css">
-    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet'
-          type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
-          rel='stylesheet' type='text/css'>
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-</head>
-
-<body>
-
-<!-- Page Header -->
-<!-- Set your background image for this header on the line below. -->
-<header class="intro-header" style="background-image: url('img/home-bg.jpg')">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <div class="site-heading">
-                    <h1>GESTFG</h1>
-                    <hr class="small">
-                    <span class="subheading">Plataforma de Gestion y Evauacion de TFGs</span>
-                </div>
-            </div>
-        </div>
+      <section id="main_content">
+        <h1>
+<a id="gestfg---plataforma-de-gestión-y-evaluación-de-trabajos-de-fin-de-grado-y-master" class="anchor" href="#gestfg---plataforma-de-gesti%C3%B3n-y-evaluaci%C3%B3n-de-trabajos-de-fin-de-grado-y-master" aria-hidden="true"><span class="octicon octicon-link"></span></a>GESTFG - Plataforma de Gestión y Evaluación de Trabajos de Fin de Grado y Master</h1>
+
+<p>Antonio Manuel Rodriguez Castro<br>
+Gabriel Stan</p>
+
+<h3>
+<a id="introducción" class="anchor" href="#introducci%C3%B3n" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introducción</h3>
+
+<p>GESTFG es un sistema de gestión de los Trabajos de Fin de Grado y Master, que se va a usar inicialmente 
+en la Escuela Técnica Superior de Ingenierías Informática y Telecomunicaciones de Granada, y
+posteriormente se podrá integrar en el resto de las Facultades de la Universidad de Granada o
+cualquier otra universidad. El proyecto en sí es el Trabajo de fin de Grado de los dos alumnos mencionados.</p>
+
+<h3>
+<a id="herramientas-de-desarrollo" class="anchor" href="#herramientas-de-desarrollo" aria-hidden="true"><span class="octicon octicon-link"></span></a>Herramientas de desarrollo</h3>
+
+<p>Para el desarrollo de la plataforma se usará el framework Django. La plataforma será capaz de gestionar toda la información relacionada con los TFGs, gestión de usuarios, gestión de las diferentes fases (asignación, evaluación), interacción entre los miembros asignados a un TFG (alumnos, tutores y tribunal), notificaciones vía correo electrónico, evaluación de los TFG etc.</p>
+
+<h3>
+<a id="infraestructura-virtual" class="anchor" href="#infraestructura-virtual" aria-hidden="true"><span class="octicon octicon-link"></span></a>Infraestructura Virtual</h3>
+
+<p>La plataforma tendrá un despliegue en <strong>Microsoft Azure</strong>, tal y como se detalla a continuación. Posteriormente se podrá configurar para un despliegue automatizado en cualquier infraestructura virtual.</p>
+
+<p><strong>Frontend:</strong> Una interfaz web en la que se reflejará toda la información relacionada con los TFG.  Se usará un servidor web en Microsoft Azure para procesar las peticiones de los usuarios a la interfaz web. </p>
+
+<p><strong>Backend:</strong> Los servicios de la plataforma serán gestionados por el framework Django, y se repartirán (posiblemente) entre los frameworks Django y Tornado, para una mejor modularización y reparto de las funcionalidades de la plataforma.</p>
+
+<p><strong>Gestión de bases de datos:</strong> Se usará una base de datos SQL en Azure para guardar la información relacionada con los proyectos y posiblemente otra base de datos para guardar los datos más sensibles (relacionados con la evaluación etc), además se usará un sistema de backup de las BD posiblemente en otro proveedor cloud (BlueMix de IBM).</p>
+
+<p><strong>Gestión de almacenamiento:</strong> Se usará un servidor ftp en Azure Cloud Storage para guardar los archivos relacionados con los TFGs.</p>
+
+<p><strong>Servidor de correo:</strong> Se usará un servidor de correo para las notificaciones de eventos a los usuarios de la plataforma.</p>
+
+<p><strong>Integración continua:</strong> El proyecto se desarrollará dentro del concepto de DevOps, usando los servicios que ofrece Travis CI para una integración continua y un desarrollo basado en pruebas, asegurando la completa funcionalidad de la plataforma y un fácil mantenimiento.</p>
+
+<p><strong>Backup:</strong> Se realizará un servicio de replicación de la BD de forma automática configurando un servidor esclavo que será un espejo del servidor maestro utilizando postgreSQL (posiblemente).</p>
+
+<p><strong>Balanceador de carga:</strong> Para el balanceo de carga, se utilizará Nginx, se utilizará también para la carga de ficheros estáticos, cuyo tamaño puede ralentizar el sitio web.</p>
+
+<p><strong>Seguridad:</strong> </p>
+
+<ul>
+<li>El objetivo será ofrecer las funcionalidades del sistema según el nivel de privilegios que tengan los diferentes usuarios, no pudiendo acceder a información si no tiene los permisos necesarios, asegurando la integridad y privacidad de los datos.<br>
+</li>
+<li>Los accesos de los usuarios serán ofrecidos por el departamento encargado de la gestión de la base de datos de usuarios de la universidad, por lo tanto nuestro sistema tratara con la información suministrada por ellos, no se manejan contraseñas.</li>
+<li>Los datos de la evaluación de los proyectos (en caso de ser almacenados) serán guardados junto con la información más confidencial del sistema (cuentas y posibles datos de los usuarios).</li>
+</ul>
+
+<p>El  proyecto se ha presentado al certamen de proyectos de la <a href="http://osl.ugr.es/">Oficina de Software Libre</a>.</p>
+
+<h3>
+<a id="asignación-de-tareas" class="anchor" href="#asignaci%C3%B3n-de-tareas" aria-hidden="true"><span class="octicon octicon-link"></span></a>Asignación de tareas</h3>
+
+<ul>
+<li>Desarrollo: <a href="https://github.com/tonimademo" class="user-mention">@tonimademo</a> y <a href="https://github.com/gabriel-stan" class="user-mention">@gabriel-stan</a>
+</li>
+<li>Infraestructura Virtual: <a href="https://github.com/gabriel-stan" class="user-mention">@gabriel-stan</a>
+</li>
+</ul>
+      </section>
     </div>
-</header>
 
-<!-- Main Content -->
-<div class="container">
-    <div class="row">
-        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-            <div class="post-preview">
-                <h2 class="post-title">
-                    Introducción
-                </h2>
-                
-                GESTFG es un sistema de gestión de los Trabajos de Fin de Grado y Master, que se va a usar
-                inicialmente en la Escuela Técnica Superior de Ingenierías Informática y Telecomunicaciones de
-                Granada, y posteriormente se podrá integrar en el resto de las Facultades de la Universidad de
-                Granada o cualquier otra universidad. El proyecto en sí es el Trabajo de fin de Grado de los dos
-                alumnos mencionados.
-
-            </div>
-            <hr>
-            <div class="post-preview">
-                <h2 class="post-title">
-                    Funcionalidades
-                </h2>
-
-                El sistema dará soporte tanto al personal docente de la Universidad como a los propios alumnos
-                para consultar, asignar y crear TFGs para asi poder facilitar el acceso tanto a alumnos como a
-                profesores a la gestion de los mismos(segun su perfil), tambien dara soporte para la asignación
-                de los comites que realizaran la correccion de los mismos, centralizando de esta manera todo el
-                proceso desde la creacion hasta el cierre de un TFG.
-
-            </div>
-            <hr>
-            <div class="post-preview">
-                <h2 class="post-title">
-                    Herramientas de desarrollo e Infraestructura Virtual
-                </h2>
-
-                El proyecto se va a desarrollar usando Django y tendrá un despliegue en Microsoft Azure durante
-                el periodo de desarrollo. Posteriormente se podrá configurar para un despliegue automatizado en
-                cualquier infraestructura virtual.
-            </div>
-            <div class="post-preview">
-                <h2 class="post-title">
-                    Asignación de tareas
-                </h2>
-                Desarrollo: @tonimademo y @gabriel-stan<br>
-                Infraestructura Virtual: @gabriel-stan
-            </div>
-
-            <!-- Pager -->
-            <ul class="pager">
-                <li class="next">
-                    <a href="#">Older Posts &rarr;</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
-
-<hr>
-
-<!-- Footer -->
-<footer>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <ul class="list-inline text-center">
-                    <li>
-                        <a href="https://github.com/gabriel-stan/gestion-tfg">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fa fa-circle fa-stack-2x"></i>
-                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                                </span>
-                        </a>
-                    </li>
-                </ul>
-                <p class="copyright text-muted">Copyright &copy; Your Website 2014</p>
-            </div>
-        </div>
-    </div>
-</footer>
-
-<!-- jQuery -->
-<script src="js/jquery.js"></script>
-
-<!-- Bootstrap Core JavaScript -->
-<script src="js/bootstrap.min.js"></script>
-
-<!-- Custom Theme JavaScript -->
-<script src="js/clean-blog.min.js"></script>
-
-</body>
-
+    
+  </body>
 </html>
