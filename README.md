@@ -3,6 +3,8 @@
 Antonio Manuel Rodriguez Castro  
 Gabriel Stan
 
+[![Build Status](https://travis-ci.org/gabriel-stan/gestion-tfg.svg?branch=master)](https://travis-ci.org/gabriel-stan/gestion-tfg)
+
 ### Introducción
 
 GESTFG es un sistema de gestión de los Trabajos de Fin de Grado y Master, que se va a usar inicialmente 
