@@ -1,7 +1,8 @@
-
 from django.test import TestCase
 
+
 class QuestionMethodTests(TestCase):
-	def dummy_test(self):
-		this_is_true = True
-		self.assertEqual(this_is_true, True)
+    def test_dummy_test(self):
+        this_is_true = True
+        self.assertEqual(this_is_true, True)
+        print "Test de prueba ok"
