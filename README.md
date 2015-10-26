@@ -1,16 +1,14 @@
 #GESTFG - Plataforma de Gestión y Evaluación de Trabajos de Fin de Grado y Master
 
+[![Build Status](https://travis-ci.org/gabriel-stan/gestion-tfg.svg?branch=master)](https://travis-ci.org/gabriel-stan/gestion-tfg) [![Build Status](https://img.shields.io/shippable/562e58f31895ca44742123f9.svg)](https://app.shippable.com/projects/562e58f31895ca44742123f9)
+
+
 Antonio Manuel Rodriguez Castro  
 Gabriel Stan
 
-[![Build Status](https://travis-ci.org/gabriel-stan/gestion-tfg.svg?branch=master)](https://travis-ci.org/gabriel-stan/gestion-tfg) ![Build Status](https://img.shields.io/shippable/562e58f31895ca44742123f9.svg)
-
 ### Introducción
 
-GESTFG es un sistema de gestión de los Trabajos de Fin de Grado y Master, que se va a usar inicialmente 
-en la Escuela Técnica Superior de Ingenierías Informática y Telecomunicaciones de Granada, y
-posteriormente se podrá integrar en el resto de las Facultades de la Universidad de Granada o
-cualquier otra universidad. El proyecto en sí es el Trabajo de fin de Grado de los dos alumnos mencionados.
+GESTFG es un sistema de gestión de los Trabajos de Fin de Grado y Master, que se va a usar inicialmente en la Escuela Técnica Superior de Ingenierías Informática y Telecomunicaciones de Granada, y posteriormente se podrá integrar en el resto de las Facultades de la Universidad de Granada o cualquier otra universidad. El proyecto en sí es el Trabajo de fin de Grado de los dos alumnos mencionados.
 
 ### Herramientas de desarrollo
 
@@ -48,3 +46,9 @@ El  proyecto se ha presentado al certamen de proyectos de la [Oficina de Softwar
 
 - Desarrollo: @tonimademo y @gabriel-stan
 - Infraestructura Virtual: @gabriel-stan
+
+### Sistema de Pruebas e Integración Continua
+
+El proyecto está basado en Django, por lo tanto hace uso del sistema de prueba de código que ofrece el framework Django. Para más información, ver [Django tests](https://docs.djangoproject.com/en/1.8/topics/testing/).
+
+Para poder automatizar el proceso de pruebas y desarrollar el proyecto bajo el concepto de Desarrollo Basado en Pruebas e Integración Continua, el proyecto está integrado con  las plataformas [Travis-CI](https://travis-ci.org/) y [Shippable](https://app.shippable.com/), ya que ofrecen posibilidades de despliegue automatizado en plataformas como [Docker](https://www.docker.com/) o [Heroku](https://www.heroku.com/).
