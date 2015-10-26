@@ -6,5 +6,4 @@ python:
 install: "pip install -r requirements.txt"
 
 # command to run tests
-cd gestion_tfg/
-script: python manage.py test
+script: cd gestion_tfg && python manage.py test
