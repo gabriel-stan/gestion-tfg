@@ -3,7 +3,7 @@
 Antonio Manuel Rodriguez Castro  
 Gabriel Stan
 
-[![Build Status](https://travis-ci.org/gabriel-stan/gestion-tfg.svg?branch=master)](https://travis-ci.org/gabriel-stan/gestion-tfg)
+[![Build Status](https://travis-ci.org/gabriel-stan/gestion-tfg.svg?branch=master)](https://travis-ci.org/gabriel-stan/gestion-tfg) ![Build Status](https://img.shields.io/shippable/562e58f31895ca44742123f9.svg)
 
 ### Introducción
 
