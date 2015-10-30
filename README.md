@@ -49,7 +49,7 @@ El proyecto está basado en Django, por lo tanto hace uso del sistema de prueba 
 
 ![make test](https://www.dropbox.com/s/0521o5vf5ijip08/maketest.png?dl=1)
 
-Para poder automatizar el proceso de pruebas y desarrollar el proyecto bajo el concepto de Desarrollo Basado en Pruebas e Integración Continua, el proyecto está integrado con  las plataformas [Travis-CI](https://travis-ci.org/) y [Shippable](https://app.shippable.com/), ya que ofrecen posibilidades de despliegue automatizado en plataformas como [Docker](https://www.docker.com/) o [Heroku](https://www.heroku.com/).
+Para poder automatizar el proceso de pruebas y desarrollar el proyecto bajo el concepto de Desarrollo Basado en Pruebas e Integración Continua, el proyecto está integrado con  las plataformas [Travis-CI](https://travis-ci.org/) y [Shippable](https://app.shippable.com/), ya que ofrecen posibilidades de despliegue automatizado en plataformas como [Docker](https://www.docker.com/) o [Heroku](https://www.heroku.com/). La configuración se indica en un fichero [**".yml"**](https://github.com/gabriel-stan/gestion-tfg/blob/master/.travis.yml).
 
 Pasando pruebas en Travis:
 
