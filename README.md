@@ -42,6 +42,7 @@ La plataforma tendrá un despliegue en **Microsoft Azure**, tal y como se detall
 
 El  proyecto se ha presentado al certamen de proyectos de la [Oficina de Software Libre](http://osl.ugr.es/).
 
+
 ### Sistema de Pruebas e Integración Continua
 
 El proyecto está basado en Django, por lo tanto hace uso del sistema de prueba de código que ofrece el framework Django. Para más información, ver [Django tests](https://docs.djangoproject.com/en/1.8/topics/testing/). Para pasar las pruebas en local, he creado un fichero [**Makefile**](https://github.com/gabriel-stan/gestion-tfg/blob/master/Makefile). Basta con ejecutar la orden **make test** para pasar las pruebas.
@@ -59,7 +60,6 @@ Pasando pruebas en Shippable:
 ![shippable](https://www.dropbox.com/s/mioc1q32qxi9jlt/shippable.png?dl=1)
 
 Tanto Travis como Shippable funcionan con el mismo fichero .yml, por tanto no es necesario crear varios ficheros de confi	guración para el testeo de la aplicacion. No obstante, si se requieren diferentes configuraciones, se tiene que añadir un fichero "shippable.yml" con la nueva configuración requerida. 
-
 
 
 ### Asignación de tareas
