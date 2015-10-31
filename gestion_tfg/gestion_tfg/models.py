@@ -1,12 +1,13 @@
 from django.db import models
+from django.contrib.auth.models import Group, User
 
 
-class tfg(models.Model):
+class Tfg(models.Model):
     tipo = models.CharField(max_length=100)
     titulo = models.CharField(max_length=100)
-    n_ala = models.IntegerField()
+    n_alumnos = models.IntegerField()
     descripcion = models.TextField()
     conocimientos_previos = models.CharField(max_length=100)
     hard_soft = models.CharField(max_length=100)
-    # tutor = models.ForeignKey('usuario', related_name='tutor')
-    # cotutor = models.ForeignKey('usuario', related_name='cotutor')
+    tutor = models.ForeignKey(User, related_name='tutor',default='')
+    cotutor = models.ForeignKey(User, related_name='cotutor', default=None)
