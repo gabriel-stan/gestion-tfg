@@ -1,3 +1,10 @@
+#Database
+*sqlite3
+db.sqlite3
+
+#Pycharm workspace
+.idea/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
