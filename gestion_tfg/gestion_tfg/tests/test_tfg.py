@@ -2,7 +2,6 @@ from django.test import TestCase
 from gestion_tfg.models import Tfg
 from django.contrib.auth.models import User
 
-
 class TfgTests(TestCase):
 
     def setUp(self):

@@ -9,5 +9,5 @@ class Tfg(models.Model):
     descripcion = models.TextField()
     conocimientos_previos = models.CharField(max_length=100)
     hard_soft = models.CharField(max_length=100)
-    tutor = models.ForeignKey(User, related_name='tutor',default='')
+    tutor = models.ForeignKey(User, related_name='tutor',default=None)
     cotutor = models.ForeignKey(User, related_name='cotutor', default=None)
