@@ -1,3 +1,13 @@
+#Database
+*sqlite3
+db.sqlite3
+
+#Pycharm workspace
+.idea/
+
+#Django migrations
+gestion_tfg/gestion_tfg/migrations/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
