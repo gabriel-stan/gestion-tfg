@@ -61,6 +61,8 @@ Pasando pruebas en Shippable:
 
 Tanto Travis como Shippable funcionan con el mismo fichero .yml, por tanto no es necesario crear varios ficheros de confi	guración para el testeo de la aplicacion. No obstante, si se requieren diferentes configuraciones, se tiene que añadir un fichero "shippable.yml" con la nueva configuración requerida. 
 
+Para ver el avance del proyecto, revisar la rama BACKEND-1.
+
 
 ### Asignación de tareas
 
