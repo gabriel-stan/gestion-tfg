@@ -54,30 +54,34 @@ class TfgTests(TestCase):
     def test_update_tfg(self):
 
         tfg = Tfg.objects.get(titulo=self.titulo_tfg)
-        tfg.tipo_tfg = nuevo_tfg['tipo_tfg']
-        tfg.titulo_tfg = nuevo_tfg['titulo_tfg']
-        tfg.n_alumnos_tfg = nuevo_tfg['n_alumnos_tfg']
-        tfg.descripcion_tfg = nuevo_tfg['descripcion_tfg']
-        tfg.conocimientos_previos_tfg = nuevo_tfg['conocimientos_previos_tfg']
-        tfg.hard_soft_tfg = nuevo_tfg['hard_soft_tfg']
+        tfg.tipo = nuevo_tfg['tipo_tfg']
+        tfg.titulo = nuevo_tfg['titulo_tfg']
+        tfg.n_alumnos = nuevo_tfg['n_alumnos_tfg']
+        tfg.descripcion = nuevo_tfg['descripcion_tfg']
+        tfg.conocimientos_previos = nuevo_tfg['conocimientos_previos_tfg']
+        tfg.hard_soft = nuevo_tfg['hard_soft_tfg']
 
         tfg.save()
 
-        tfg = Tfg.objects.get(titulo=tfg.titulo_tfg)
+        new_tfg = Tfg.objects.get(titulo=tfg.titulo)
 
-        self.assertEqual(tfg.tipo, tfg.tipo_tfg)
-        self.assertEqual(tfg.titulo, tfg.titulo_tfg)
-        self.assertEqual(tfg.n_alumnos, tfg.n_alumnos_tfg)
-        self.assertEqual(tfg.descripcion, tfg.descripcion_tfg)
-        self.assertEqual(tfg.conocimientos_previos, tfg.conocimientos_previos_tfg)
-        self.assertEqual(tfg.hard_soft, tfg.hard_soft_tfg)
+        self.assertEqual(tfg.tipo, new_tfg.tipo)
+        self.assertEqual(tfg.titulo, new_tfg.titulo)
+        self.assertEqual(tfg.n_alumnos, new_tfg.n_alumnos)
+        self.assertEqual(tfg.descripcion, new_tfg.descripcion)
+        self.assertEqual(tfg.conocimientos_previos, new_tfg.conocimientos_previos)
+        self.assertEqual(tfg.hard_soft, new_tfg.hard_soft)
+
 
     def test_delete_tfg(self):
 
         tfg = Tfg.objects.get(titulo=self.titulo_tfg)
         tfg.delete()
 
-        tfg = Tfg.objects.get(titulo=self.titulo_tfg)
+        try:
+            tfg = Tfg.objects.get(titulo=self.titulo_tfg)
+        except Tfg.DoesNotExist:
+            tfg = None
 
         self.assertEqual(tfg, None)
 

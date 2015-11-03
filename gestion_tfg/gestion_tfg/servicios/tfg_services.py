@@ -41,3 +41,25 @@ def insert_tfg(tfg):
 
     tfg.save()
     return True
+
+def update_tfg(tfg, campos):
+
+    if 'titulo' in campos.keys():
+        if campos['titulo'] == '' or not isinstance(campos['titulo'], str):
+            return False
+        else:
+            tfg.titulo = campos['titulo']
+
+    tfg.save()
+
+    return True
+
+def delete_tfg(tfg):
+
+    tfg.delete()
+
+    try:
+        tfg = Tfg.objects.get(titulo=tfg)
+        return True
+    except Tfg.DoesNotExist:
+        return False
