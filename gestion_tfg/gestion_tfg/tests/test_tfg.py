@@ -2,6 +2,15 @@ from django.test import TestCase
 from gestion_tfg.models import Tfg
 from django.contrib.auth.models import User
 
+nuevo_tfg = {}
+nuevo_tfg['tipo_tfg'] = 'tipo2'
+nuevo_tfg['titulo_tfg'] = 'titulo2'
+nuevo_tfg['n_alumnos_tfg'] = 3
+nuevo_tfg['descripcion_tfg'] = 'descripcion2'
+nuevo_tfg['conocimientos_previos_tfg'] = 'conocimientos muy previos'
+nuevo_tfg['hard_soft_tfg'] = 'hardware software nuevo'
+
+
 class TfgTests(TestCase):
 
     def setUp(self):
@@ -41,3 +50,36 @@ class TfgTests(TestCase):
         self.assertEqual(tfg.hard_soft, self.hard_soft_tfg)
         self.assertEqual(tfg.tutor, self.user_tutor_tfg)
         self.assertEqual(tfg.cotutor, self.user_cotutor_tfg)
+
+    def test_update_tfg(self):
+
+        tfg = Tfg.objects.get(titulo=self.titulo_tfg)
+        tfg.tipo_tfg = nuevo_tfg['tipo_tfg']
+        tfg.titulo_tfg = nuevo_tfg['titulo_tfg']
+        tfg.n_alumnos_tfg = nuevo_tfg['n_alumnos_tfg']
+        tfg.descripcion_tfg = nuevo_tfg['descripcion_tfg']
+        tfg.conocimientos_previos_tfg = nuevo_tfg['conocimientos_previos_tfg']
+        tfg.hard_soft_tfg = nuevo_tfg['hard_soft_tfg']
+
+        tfg.save()
+
+        tfg = Tfg.objects.get(titulo=tfg.titulo_tfg)
+
+        self.assertEqual(tfg.tipo, tfg.tipo_tfg)
+        self.assertEqual(tfg.titulo, tfg.titulo_tfg)
+        self.assertEqual(tfg.n_alumnos, tfg.n_alumnos_tfg)
+        self.assertEqual(tfg.descripcion, tfg.descripcion_tfg)
+        self.assertEqual(tfg.conocimientos_previos, tfg.conocimientos_previos_tfg)
+        self.assertEqual(tfg.hard_soft, tfg.hard_soft_tfg)
+
+    def test_delete_tfg(self):
+
+        tfg = Tfg.objects.get(titulo=self.titulo_tfg)
+        tfg.delete()
+
+        tfg = Tfg.objects.get(titulo=self.titulo_tfg)
+
+        self.assertEqual(tfg, None)
+
+
+
