@@ -1,6 +1,6 @@
 from django.test import TestCase
 from gestion_tfg.models import Tfg
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 
 from gestion_tfg.servicios import tfg_services
 
@@ -31,6 +31,9 @@ class TfgServicesTests(TestCase):
             username='manuel', email='manuel@ugr.es', password='top_secret')
         self.otro_user_cotutor_tfg = User.objects.create_user(
             username='manolo', email='manolo@ugr.es', password='top_secret')
+
+        self.grupo_profesores = Group.objects.get_or_create(name='Profesores')
+        self.grupo_alumnos = Group.objects.get_or_create(name='Alumnos')
 
         self.tfg1 = Tfg(tipo=self.tipo_tfg, titulo=self.titulo_tfg,
                    n_alumnos=self.n_alumnos_tfg, descripcion=self.descripcion_tfg,
@@ -101,7 +104,7 @@ class TfgServicesTests(TestCase):
 
     def test_update_tfg_n_alumnos(self):
 
-        #titulo erroneo
+        #n_alumnos erroneo
         campos = {}
         campos['n_alumnos'] = 0
 
@@ -110,7 +113,7 @@ class TfgServicesTests(TestCase):
         result = tfg_services.update_tfg(tfg, campos)
         self.assertEqual(result, False)
 
-        #titulo formato erroneo
+        #n_alumnos formato erroneo
         campos = {}
         campos['n_alumnos'] = 'error'
 
@@ -119,7 +122,7 @@ class TfgServicesTests(TestCase):
         result = tfg_services.update_tfg(tfg, campos)
         self.assertEqual(result, False)
 
-        #titulo correcto
+        #n_alumnos correcto
         campos = {}
         campos['n_alumnos'] = self.otro_n_alumnos_tfg
 
@@ -130,7 +133,7 @@ class TfgServicesTests(TestCase):
 
     def test_update_tfg_descripcion(self):
 
-        #tipo erroneo
+        #descripcion erroneo
         campos = {}
         campos['descripcion'] = ''
 
@@ -139,7 +142,7 @@ class TfgServicesTests(TestCase):
         result = tfg_services.update_tfg(tfg, campos)
         self.assertEqual(result, False)
 
-        #tipo formato erroneo
+        #descripcion formato erroneo
         campos = {}
         campos['descripcion'] = 3
 
@@ -148,7 +151,7 @@ class TfgServicesTests(TestCase):
         result = tfg_services.update_tfg(tfg, campos)
         self.assertEqual(result, False)
 
-        #tipo correcto
+        #descripcion correcto
         campos = {}
         campos['descripcion'] = self.otro_descripcion_tfg
 
@@ -159,7 +162,7 @@ class TfgServicesTests(TestCase):
 
     def test_update_tfg_conocimientos_previos(self):
 
-        #tipo erroneo
+        #conocimientos_previos erroneo
         campos = {}
         campos['conocimientos_previos'] = ''
 
@@ -168,7 +171,7 @@ class TfgServicesTests(TestCase):
         result = tfg_services.update_tfg(tfg, campos)
         self.assertEqual(result, False)
 
-        #tipo formato erroneo
+        #conocimientos_previos formato erroneo
         campos = {}
         campos['conocimientos_previos'] = 3
 
@@ -177,7 +180,7 @@ class TfgServicesTests(TestCase):
         result = tfg_services.update_tfg(tfg, campos)
         self.assertEqual(result, False)
 
-        #tipo correcto
+        #conocimientos_previos correcto
         campos = {}
         campos['conocimientos_previos'] = self.otro_conocimientos_previos_tfg
 
@@ -188,7 +191,7 @@ class TfgServicesTests(TestCase):
 
     def test_update_tfg_hard_soft(self):
 
-        #tipo erroneo
+        #hard_soft erroneo
         campos = {}
         campos['hard_soft'] = ''
 
@@ -197,7 +200,7 @@ class TfgServicesTests(TestCase):
         result = tfg_services.update_tfg(tfg, campos)
         self.assertEqual(result, False)
 
-        #tipo formato erroneo
+        #hard_soft formato erroneo
         campos = {}
         campos['hard_soft'] = 3
 
@@ -206,7 +209,7 @@ class TfgServicesTests(TestCase):
         result = tfg_services.update_tfg(tfg, campos)
         self.assertEqual(result, False)
 
-        #tipo correcto
+        #hard_soft correcto
         campos = {}
         campos['hard_soft'] = self.otro_hard_soft_tfg
 
@@ -217,7 +220,7 @@ class TfgServicesTests(TestCase):
 
     def test_update_tfg_tutor(self):
 
-        #tipo erroneo
+        #tutor erroneo
         campos = {}
         campos['tutor'] = ''
 
@@ -226,7 +229,7 @@ class TfgServicesTests(TestCase):
         result = tfg_services.update_tfg(tfg, campos)
         self.assertEqual(result, False)
 
-        #tipo formato erroneo
+        #tutor formato erroneo
         campos = {}
         campos['tutor'] = 3
 
@@ -235,8 +238,28 @@ class TfgServicesTests(TestCase):
         result = tfg_services.update_tfg(tfg, campos)
         self.assertEqual(result, False)
 
-        #tipo correcto
+        #tutor no profesor
         campos = {}
+        campos['tutor'] = self.otro_user_tutor_tfg
+
+        tfg = Tfg.objects.get(tutor=self.user_tutor_tfg)
+
+        result = tfg_services.update_tfg(tfg, campos)
+        self.assertEqual(result, False)
+
+        #tutor incorrecto
+        campos = {}
+        self.otro_user_tutor_tfg.groups.add(self.grupo_alumnos[0])
+        campos['tutor'] = self.otro_user_tutor_tfg
+
+        tfg = Tfg.objects.get(tutor=self.user_tutor_tfg)
+
+        result = tfg_services.update_tfg(tfg, campos)
+        self.assertEqual(result, False)
+
+        #tutor correcto
+        campos = {}
+        self.otro_user_tutor_tfg.groups.add(self.grupo_profesores[0])
         campos['tutor'] = self.otro_user_tutor_tfg
 
         tfg = Tfg.objects.get(tutor=self.user_tutor_tfg)
@@ -246,7 +269,7 @@ class TfgServicesTests(TestCase):
 
     def test_update_tfg_cotutor(self):
 
-        #tipo erroneo
+        #cotutor erroneo
         campos = {}
         campos['cotutor'] = ''
 
@@ -255,7 +278,7 @@ class TfgServicesTests(TestCase):
         result = tfg_services.update_tfg(tfg, campos)
         self.assertEqual(result, False)
 
-        #tipo formato erroneo
+        #cotutor formato erroneo
         campos = {}
         campos['cotutor'] = 3
 
@@ -264,8 +287,19 @@ class TfgServicesTests(TestCase):
         result = tfg_services.update_tfg(tfg, campos)
         self.assertEqual(result, False)
 
-        #tipo correcto
+        #cotutor incorrecto
         campos = {}
+        self.otro_user_cotutor_tfg.groups.add(self.grupo_alumnos[0])
+        campos['cotutor'] = self.otro_user_cotutor_tfg
+
+        tfg = Tfg.objects.get(cotutor=self.user_cotutor_tfg)
+
+        result = tfg_services.update_tfg(tfg, campos)
+        self.assertEqual(result, False)
+
+        #cotutor correcto
+        campos = {}
+        self.otro_user_cotutor_tfg.groups.add(self.grupo_profesores[0])
         campos['cotutor'] = self.otro_user_cotutor_tfg
 
         tfg = Tfg.objects.get(cotutor=self.user_cotutor_tfg)
