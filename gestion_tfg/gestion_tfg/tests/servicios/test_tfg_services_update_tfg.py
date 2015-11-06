@@ -221,7 +221,7 @@ class TfgServicesTests(TestCase):
         campos = {}
         campos['tutor'] = ''
 
-        tfg = Tfg.objects.get(user_tutor=self.user_tutor_tfg)
+        tfg = Tfg.objects.get(tutor=self.user_tutor_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
         self.assertEqual(result, False)
@@ -230,7 +230,7 @@ class TfgServicesTests(TestCase):
         campos = {}
         campos['tutor'] = 3
 
-        tfg = Tfg.objects.get(user_tutor=self.user_tutor_tfg)
+        tfg = Tfg.objects.get(tutor=self.user_tutor_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
         self.assertEqual(result, False)
@@ -239,7 +239,7 @@ class TfgServicesTests(TestCase):
         campos = {}
         campos['tutor'] = self.otro_user_tutor_tfg
 
-        tfg = Tfg.objects.get(user_tutor=self.user_tutor_tfg)
+        tfg = Tfg.objects.get(tutor=self.user_tutor_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
         self.assertEqual(result, True)
@@ -250,7 +250,7 @@ class TfgServicesTests(TestCase):
         campos = {}
         campos['cotutor'] = ''
 
-        tfg = Tfg.objects.get(user_cotutor=self.user_cotutor_tfg)
+        tfg = Tfg.objects.get(cotutor=self.user_cotutor_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
         self.assertEqual(result, False)
@@ -259,7 +259,7 @@ class TfgServicesTests(TestCase):
         campos = {}
         campos['cotutor'] = 3
 
-        tfg = Tfg.objects.get(user_cotutor=self.user_cotutor_tfg)
+        tfg = Tfg.objects.get(cotutor=self.user_cotutor_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
         self.assertEqual(result, False)
@@ -268,7 +268,7 @@ class TfgServicesTests(TestCase):
         campos = {}
         campos['cotutor'] = self.otro_user_cotutor_tfg
 
-        tfg = Tfg.objects.get(user_cotutor=self.user_cotutor_tfg)
+        tfg = Tfg.objects.get(cotutor=self.user_cotutor_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
         self.assertEqual(result, True)

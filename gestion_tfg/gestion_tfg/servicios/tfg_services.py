@@ -89,7 +89,7 @@ def update_tfg(tfg, campos):
     #comprobando tutor
     if 'tutor' in campos.keys():
         #NOTA: Cuando este el modelo de profesores, hay que ver que el tutor sea un profesor
-        if isinstance(campos['tutor'], User):
+        if not isinstance(campos['tutor'], User):
             return False
         else:
             tfg.tutor = campos['tutor']
@@ -97,7 +97,7 @@ def update_tfg(tfg, campos):
     #comprobando cotutor
     if 'cotutor' in campos.keys():
         #NOTA: Cuando este el modelo de profesores, hay que ver que el tutor sea un profesor
-        if isinstance(campos['cotutor'], User):
+        if not isinstance(campos['cotutor'], User):
             return False
         else:
             tfg.tutor = campos['cotutor']
