@@ -1,5 +1,6 @@
-from gestion_tfg.models import Tfg
+from gestion_tfg.models import Tfg, Tfg_Asig
 from django.contrib.auth.models import User
+from gestion_tfg.servicios.utils import *
 
 def insert_tfg(tfg):
 
@@ -115,3 +116,44 @@ def delete_tfg(tfg):
         return True
     except Tfg.DoesNotExist:
         return False
+
+def asignar_tfg(tfg, alumno1, alumno2=None, alumno3=None):
+
+    alumno2_ok = False
+    alumno3_ok = False
+
+    #Compruebo lo minimo para asignar el tfg
+    if not isinstance(tfg, Tfg) or not isinstance(alumno1, User) or existe_tfg_asig(alumno1):
+        return False
+
+    #Compruebo que no este ya asignado
+    try:
+        Tfg_Asig.objects.get(tfg=tfg)
+        return False
+    except Tfg_Asig.DoesNotExist:
+        if isinstance(alumno2, User) and not existe_tfg_asig(alumno2):
+            alumno2_ok = True
+        if isinstance(alumno3, User) and not existe_tfg_asig(alumno3):
+            alumno3_ok = True
+
+        #Si tiene 2 alumnos
+        if alumno2 != None and alumno3 == None:
+            if not alumno2_ok:
+                return False
+            else:
+                tfg_asig = Tfg_Asig.objects.create(tfg=tfg, alumno_1=alumno1, alumno_2=alumno2)
+                tfg_asig.save()
+                return True
+        #Si tiene 3 alumnos
+        elif alumno2 != None and alumno3 != None:
+            if not alumno2_ok or not alumno3_ok:
+                return False
+            else:
+                tfg_asig = Tfg_Asig.objects.create(tfg=tfg, alumno_1=alumno1, alumno_2=alumno2, alumno_3=alumno3)
+                tfg_asig.save()
+                return True
+        #Si tiene 1 alumno
+        else:
+            tfg_asig = Tfg_Asig.objects.create(tfg=tfg, alumno_1=alumno1)
+            tfg_asig.save()
+            return True
