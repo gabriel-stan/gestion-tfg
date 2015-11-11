@@ -11,10 +11,10 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-#import for Heroku deployment
-from whitenoise.django import DjangoWhiteNoise
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gestion_tfg.settings")
+
+#import for Heroku deployment !!!! after setting DJANGO_SETTINGS_MODULE variable!!!
+from whitenoise.django import DjangoWhiteNoise
 
 application = get_wsgi_application()
 
