@@ -1,1 +1,1 @@
-web: cd gestion-tfg && gunicorn gestion_tfg.wsgi --log-file -
+web: cd gestion_tfg && gunicorn gestion_tfg.wsgi --log-file -
