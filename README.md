@@ -63,6 +63,9 @@ Tanto Travis como Shippable funcionan con el mismo fichero .yml, por tanto no es
 
 Para ver el avance del proyecto, revisar la rama BACKEND-1.
 
+### Despliegue Continuo en un PaaS
+
+Para un despliegue continuo se va a usar Heroku. Para mas información sobre el funcionamiento, ver rama [deployment](https://github.com/gabriel-stan/gestion-tfg/tree/deployment).
 
 ### Asignación de tareas
 
