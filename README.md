@@ -75,7 +75,7 @@ Se pasa a configurar la app de Heroku, para enlazarla con el repositorio de GitH
 
 ![despliegue](https://www.dropbox.com/s/zgym6e943gm680g/herokugestfg.png?dl=1)
 
-Para ver el avance del proyecto, revisar las ramas **BACKEND***, **FRONTEND*** y **dev**.
+Para ver el avance del proyecto, revisar las ramas **BACKEND* **, **FRONTEND* ** y **dev**.
 
 ### Asignación de tareas
 
