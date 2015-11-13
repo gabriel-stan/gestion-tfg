@@ -67,7 +67,7 @@ Para ver el avance del proyecto, revisar las ramas **BACKEND***, **FRONTEND*** y
 
 Para facilitar el despliegue del proyecto, se va a usar [**Heroku**](https://www.heroku.com) como PaaS, un potente plataforma de despliegue continuo.
 
-Ya que hacen falta ligeras modificaciones del proyecto y sus dependencias para poder desplegarlo en Heroku, he creado una nueva rama de despliegue, [dev](https://github.com/gabriel-stan/gestion-tfg/tree/deployment), que va a contener la configuración de despliegue.
+Ya que hacen falta ligeras modificaciones del proyecto y sus dependencias para poder desplegarlo en Heroku, he creado una nueva rama de despliegue, [deployment](https://github.com/gabriel-stan/gestion-tfg/tree/deployment), que va a contener la configuración de despliegue.
 
 Para configurar Heroku, es necesario un fichero [Procfile](https://github.com/gabriel-stan/gestion-tfg/blob/deployment/Procfile) que contiene los comandos a ejecutar para poner en marcha el proyecto, una vez desplegado en Heroku.
 
