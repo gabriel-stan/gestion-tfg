@@ -61,7 +61,7 @@ Pasando pruebas en Shippable:
 
 Tanto Travis como Shippable funcionan con el mismo fichero .yml, por tanto no es necesario crear varios ficheros de confi	guración para el testeo de la aplicacion. No obstante, si se requieren diferentes configuraciones, se tiene que añadir un fichero "shippable.yml" con la nueva configuración requerida. 
 
-Para ver el avance del proyecto, revisar las ramas **BACKEND***, **FRONTEND*** y **dev**.
+Para ver el avance del proyecto, revisar las ramas BACKEND*, FRONTEND* y dev.
 
 ### Despliegue Continuo en un PaaS
 
@@ -75,7 +75,7 @@ Se pasa a configurar la app de Heroku, para enlazarla con el repositorio de GitH
 
 ![despliegue](https://www.dropbox.com/s/zgym6e943gm680g/herokugestfg.png?dl=1)
 
-Para ver el avance del proyecto, revisar las ramas **BACKEND* **, **FRONTEND* ** y **dev**.
+Para ver el avance del proyecto, revisar las ramas BACKEND*, FRONTEND* y dev.
 
 ### Asignación de tareas
 
