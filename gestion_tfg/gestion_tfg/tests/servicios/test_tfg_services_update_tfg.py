@@ -35,6 +35,9 @@ class TfgServicesTests(TestCase):
         self.grupo_profesores = Group.objects.get_or_create(name='Profesores')
         self.grupo_alumnos = Group.objects.get_or_create(name='Alumnos')
 
+        self.user_tutor_tfg.groups.add(self.grupo_profesores[0])
+        self.user_cotutor_tfg.groups.add(self.grupo_profesores[0])
+
         self.tfg1 = Tfg(tipo=self.tipo_tfg, titulo=self.titulo_tfg,
                    n_alumnos=self.n_alumnos_tfg, descripcion=self.descripcion_tfg,
                    conocimientos_previos=self.conocimientos_previos_tfg,

@@ -33,11 +33,15 @@ def insert_tfg(tfg):
         return False
 
     #comprobando tutor
-    if (not hasattr(tfg,'tutor')):
+    if not hasattr(tfg,'tutor'):
+        return False
+    elif not tfg.tutor.groups.filter(name='Profesores').exists():
         return False
 
     #comprobando cotutor
     if (not hasattr(tfg,'cotutor')):
+        return False
+    elif not tfg.cotutor.groups.filter(name='Profesores').exists():
         return False
 
     tfg.save()
@@ -123,7 +127,7 @@ def asignar_tfg(tfg, alumno1, alumno2=None, alumno3=None):
     alumno3_ok = False
 
     #Compruebo lo minimo para asignar el tfg
-    if not isinstance(tfg, Tfg) or not isinstance(alumno1, User) or existe_tfg_asig(alumno1):
+    if not isinstance(tfg, Tfg) or not isinstance(alumno1, User) or not alumno1.groups.filter(name='Alumnos').exists() or existe_tfg_asig(alumno1):
         return False
 
     #Compruebo que no este ya asignado
@@ -131,9 +135,9 @@ def asignar_tfg(tfg, alumno1, alumno2=None, alumno3=None):
         Tfg_Asig.objects.get(tfg=tfg)
         return False
     except Tfg_Asig.DoesNotExist:
-        if isinstance(alumno2, User) and not existe_tfg_asig(alumno2):
+        if isinstance(alumno2, User) and alumno2.groups.filter(name='Alumnos').exists() and not existe_tfg_asig(alumno2):
             alumno2_ok = True
-        if isinstance(alumno3, User) and not existe_tfg_asig(alumno3):
+        if isinstance(alumno3, User) and alumno3.groups.filter(name='Alumnos').exists() and not existe_tfg_asig(alumno3):
             alumno3_ok = True
 
         #Si tiene 2 alumnos

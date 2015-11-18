@@ -1,6 +1,6 @@
 from django.test import TestCase
 from gestion_tfg.models import Tfg, Tfg_Asig
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 
 from gestion_tfg.servicios import tfg_services
 
@@ -58,6 +58,9 @@ class TfgServicesTests(TestCase):
                    hard_soft=self.otro_hard_soft_tfg, tutor=self.otro_user_tutor_tfg,
                    cotutor=self.otro_user_cotutor_tfg)
 
+        self.grupo_profesores = Group.objects.get_or_create(name='Profesores')
+        self.grupo_alumnos = Group.objects.get_or_create(name='Alumnos')
+
     def test_asig_tfg_tfg_error(self):
 
         tfg = "tfg"
@@ -71,6 +74,22 @@ class TfgServicesTests(TestCase):
         result = tfg_services.asignar_tfg(tfg, alumno1, self.user_alumn2_tfg, self.user_alumn3_tfg)
         self.assertEqual(result, False)
 
+        #Alumno 2 y 3 no pertenecen al grupo de alumnos
+        self.user_alumn1_tfg.groups.add(self.grupo_alumnos[0])
+        result = tfg_services.asignar_tfg(tfg, self.user_alumn1_tfg, self.user_alumn2_tfg, self.user_alumn3_tfg)
+        self.assertEqual(result, False)
+
+        #Alumno 1 y 3 no pertenecen al grupo de alumnos
+        self.user_alumn2_tfg.groups.add(self.grupo_alumnos[0])
+        result = tfg_services.asignar_tfg(tfg, self.user_alumn1_tfg, self.user_alumn2_tfg, self.user_alumn3_tfg)
+        self.assertEqual(result, False)
+
+        #Alumno 1 y 3 no pertenecen al grupo de alumnos
+        self.user_alumn2_tfg.groups.remove(self.grupo_alumnos[0])
+        self.user_alumn3_tfg.groups.add(self.grupo_alumnos[0])
+        result = tfg_services.asignar_tfg(tfg, self.user_alumn1_tfg, self.user_alumn2_tfg, self.user_alumn3_tfg)
+        self.assertEqual(result, False)
+
     def test_asig_tfg_ya_asig(self):
 
         tfg = Tfg.objects.get(titulo=self.titulo_tfg)
@@ -80,19 +99,30 @@ class TfgServicesTests(TestCase):
 
     def test_asig_tfg_alumnos(self):
 
+        self.user_alumn1_tfg.groups.add(self.grupo_alumnos[0])
+        self.user_alumn2_tfg.groups.add(self.grupo_alumnos[0])
+        self.user_alumn3_tfg.groups.add(self.grupo_alumnos[0])
+        self.otro_user_alumn1_tfg.groups.add(self.grupo_alumnos[0])
+        self.otro_user_alumn2_tfg.groups.add(self.grupo_alumnos[0])
+        self.otro_user_alumn3_tfg.groups.add(self.grupo_alumnos[0])
+
         tfg = Tfg.objects.get(titulo=self.titulo_tfg)
         result = tfg_services.asignar_tfg(tfg, self.user_alumn1_tfg, self.user_alumn2_tfg, self.user_alumn3_tfg)
         self.assertEqual(result, True)
+
         #Alumno1 ya tiene tfg
         otro_tfg = Tfg.objects.get(titulo=self.otro_titulo_tfg)
         result = tfg_services.asignar_tfg(otro_tfg, self.user_alumn1_tfg)
         self.assertEqual(result, False)
+
         #Alumno2 ya tiene tfg
         result = tfg_services.asignar_tfg(otro_tfg, self.otro_user_alumn1_tfg, self.user_alumn2_tfg)
         self.assertEqual(result, False)
+
         #Alumno3 ya tiene tfg
         result = tfg_services.asignar_tfg(otro_tfg, self.otro_user_alumn1_tfg, self.otro_user_alumn2_tfg, self.user_alumn3_tfg)
         self.assertEqual(result, False)
+
         #Nuevo Tfg y nuevos alumnos
         result = tfg_services.asignar_tfg(otro_tfg, self.otro_user_alumn1_tfg, self.otro_user_alumn2_tfg, self.otro_user_alumn3_tfg)
         self.assertEqual(result, True)
