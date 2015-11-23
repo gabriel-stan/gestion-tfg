@@ -3,7 +3,10 @@
 db.sqlite3
 
 #Pycharm workspace
-.idea/
+*.idea*
+
+#Temp files
+*~
 
 #Django migrations
 gestion_tfg/gestion_tfg/migrations/
