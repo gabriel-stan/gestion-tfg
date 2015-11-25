@@ -115,7 +115,10 @@ STATICFILES_DIRS = (
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 
-# Heroku postgresql 
+# Heroku postgresql
 
 import dj_database_url
-DATABASES['default'] =  dj_database_url.config()
+import sys
+
+if not('test' in sys.argv):
+    DATABASES['default'] =  dj_database_url.config()
