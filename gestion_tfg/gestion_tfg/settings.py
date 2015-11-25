@@ -97,15 +97,19 @@ USE_TZ = True
 
 
 
-# Static config for deployment to Heroku
-
-STATIC_ROOT = 'staticfiles'
-#STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# Static config for deployment to Heroku
+
+MY_DIR = os.path.dirname(os.path.abspath(__file__))
+
+#STATIC_ROOT = 'staticfiles'
+STATIC_ROOT = os.path.join(MY_DIR, 'staticfiles')
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
