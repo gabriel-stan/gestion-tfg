@@ -1,6 +1,9 @@
 #Virtual env
 venv
 
+#static files
+staticfiles
+
 #Database
 *sqlite3
 db.sqlite3
