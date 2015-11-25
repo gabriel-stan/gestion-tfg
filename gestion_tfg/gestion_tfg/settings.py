@@ -106,10 +106,7 @@ STATIC_URL = '/static/'
 
 # Static config for deployment to Heroku
 
-MY_DIR = os.path.dirname(os.path.abspath(__file__))
-
-#STATIC_ROOT = 'staticfiles'
-STATIC_ROOT = os.path.join(MY_DIR, 'staticfiles')
+STATIC_ROOT = 'staticfiles'
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
