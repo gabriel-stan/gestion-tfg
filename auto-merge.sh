@@ -22,4 +22,5 @@ elif [[ $TRAVIS_BRANCH =~ ^dev ]]; then
 	./travis-auto-merge.sh
 fi
 
+
 #BRANCHES_TO_MERGE_REGEX='^f/' BRANCH_TO_MERGE_INTO=develop GITHUB_REPO=cdown/srt /tmp/travis-automerge
