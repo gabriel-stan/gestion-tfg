@@ -11,3 +11,9 @@ class Tfg(models.Model):
     hard_soft = models.CharField(max_length=100)
     tutor = models.ForeignKey(User, related_name='tutor',default=None)
     cotutor = models.ForeignKey(User, related_name='cotutor', default=None)
+
+class Tfg_Asig(models.Model):
+    tfg = models.ForeignKey(Tfg, default=None)
+    alumno_1 = models.ForeignKey(User, related_name='alumno_1',default=None)
+    alumno_2 = models.ForeignKey(User, related_name='alumno_2', default=None, null=True)
+    alumno_3 = models.ForeignKey(User, related_name='alumno_3', default=None, null=True)
