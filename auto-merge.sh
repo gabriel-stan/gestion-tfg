@@ -6,18 +6,13 @@
 
 echo $TRAVIS_BRANCH
 
-echo $MIVAR
-
-./prueba.sh
-
 if [[ $TRAVIS_BRANCH =~ ^B ]]; then
 
-	#export BRANCHES_TO_MERGE_REGEX="$TRAVIS_BRANCH"
-	#export BRANCH_TO_MERGE_INTO=dev
-	#export GITHUB_REPO=gabriel-stan/gestion-tfg
+	export BRANCHES_TO_MERGE_REGEX="$TRAVIS_BRANCH"
+	export BRANCH_TO_MERGE_INTO=dev
+	export GITHUB_REPO=gabriel-stan/gestion-tfg
 
-	#./travis-auto-merge.sh
-	echo "nada"
+	./travis-auto-merge.sh
 else
 	echo "no no"
 fi
