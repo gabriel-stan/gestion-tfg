@@ -8,4 +8,4 @@ install: "pip install -r requirements.txt"
 # command to run tests
 script: cd gestion_tfg && python manage.py test
 
-after_success: ./auto-merge.sh
+after_success: pwd
