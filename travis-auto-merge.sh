@@ -3,6 +3,9 @@
 export GIT_COMMITTER_EMAIL='travis@travis'
 export GIT_COMMITTER_NAME='Travis CI'
 
+git config --global user.name "$GIT_COMMITTER_NAME"
+git config --global user.email "$GIT_COMMITTER_EMAIL"
+
 if ! grep -q "$BRANCHES_TO_MERGE_REGEX" <<< "$TRAVIS_BRANCH"; then
     printf "Current branch %s doesn't match regex %s, exiting\\n" \
         "$TRAVIS_BRANCH" "$BRANCHES_TO_MERGE_REGEX" >&2
@@ -20,7 +23,8 @@ printf 'Checking out %s\n' "$BRANCH_TO_MERGE_INTO" >&2
 git checkout "$BRANCH_TO_MERGE_INTO"
 
 printf 'Merging %s\n' "$TRAVIS_COMMIT" >&2
-git merge --ff-only "$TRAVIS_COMMIT"
+#git merge --ff-only "$TRAVIS_COMMIT"
+git merge -m "automerge message" "$TRAVIS_COMMIT"
 
 printf 'Pushing to %s\n' "$GITHUB_REPO" >&2
 
