@@ -2,6 +2,11 @@ language: python
 python:
   - "2.7"
 
+# encrypted token for travis automerge
+env:
+ - MIVAR="hola"
+ - secure: "kXAUlynt3Pl8EOJpO/3gQLwjBVZR5MOfl6smdtE6NjjkG/TGSNTeFg2gw36WXawGLy2+Bna7cAI4Zif/3752cdKPm9dTi9OKvDZZM49e+70/pc38dSG6zDwRxXCXKV3QK9tppwEKiwT6okgU6xjcxDJdJsCFRGbz/1v5IGkibVsZ3C3WtIDhYy81tioPcmcUYpBmbiSHn7TkZZUvCG78JqXPVKaYG6X6SgHDfCaFKNq38cMGBUkIPt50M92p2nxBn5OO5YI30XWnhZSHQOsqGYf5NGT1HHh9ZjlPe6M9S1WkEB7iOgymzHHvf8iKTuqJHkcFzmteqMcMKOdlnZOfjh7VlBi3SxFCAsS6Lh6H8Fmq0VCay3M723zjQVhmGBCgsmjcKovDpmgLEH7VuNCDCVtSAG45CcfklBHdlNxqMiFD1JVntSRqTERisd7eDKdS0HiH7G8Aqgr/bMYkQYpMYFnYM9dSZRs8LsNkHo4CHCmbb/2ORKmwegxwiAz83mc9hbSIA3FHm+iZAakO/panyhtH1FQOQkbrwkObVS+Yy99bngcITuxLhZd5a96WvuWlTO+3N87q1P2nIDPnpocmhDP0hKYDOlVA8KRjDJXWbw2GR+cN3e7iILfbtATPYekgJLSVcr6eZKerdB7pIYCJBLlbo7nl50LVOINDbZKAink="
+
 # command to install dependencies
 install: "pip install -r requirements.txt"
 
