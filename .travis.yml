@@ -2,8 +2,17 @@ language: python
 python:
   - "2.7"
 
+# encrypted token for travis automerge
+env:
+ global:
+  - MIVAR="hola" 
+ matrix:
+  - secure: "Yc7e+ltqYzsIOyCbU2sFPvNybNRQ1ilsyyARuLPlB/89W9uR1XbO3Ps7KblEiHZRkQtG+/jv26gTJpKns3xq6cnDtmvQmek8IuwWJZJSlzfXTEW8rPl+VDQ9F8lRyQgd+BXDx7qn3o0CBADVWGJu+743HQbceogeh1zJVK3FhInrg5LuUguTcwM2/AWeurN8kmRcXkEeD2BJEDgYDGbAx+CzixChDhHUYGFsZNeTxQryIXd1RtA5XXREphpsJrz45N9lXp2NUdii5dnP0Oq5yTiWRapPJn/TmJMsGAVauhL8Rg0dbVTDfHw+6D9wPtKZqxGkuXcPQY5DmY694IePWKW870sUZ9kH9U8EqQ2pV0eIGtnEJE51X+xuxEydEYgwlraNEyfrNa8z67UCNe/LYCc0eSvUAD/YH8NEBghaSV38IygVB7GvsIltAimahXcIoFBkcam/6AKqp3/Vz2zcGIkSi1ztbRnKv/x2a3XcJoho1hSZlAqY9AGdR3HjIWY5lyD6lelGC+bD932lq/Eutt+x0bq2vcscCRocYUi9bdn9rCEyNZCWmOBUeQbwZRncT+usJLfmxKdcTOe4+Xmtqg53RXHYqhiU4MRbyB/h5yrHiEWKUaMHQtUWMPxSkqUDC/BIA6i0Rq/iZcRaLzAN55a6yMVFjs3xcyPWfA9PNV0="
+
 # command to install dependencies
 install: "pip install -r requirements.txt"
 
 # command to run tests
 script: cd gestion_tfg && python manage.py test
+
+after_success: cd .. && make auto-merge
