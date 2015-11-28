@@ -4,8 +4,10 @@
 #chmod a+x /tmp/travis-automerge
 
 COMMIT_MESSAGE="$(git log -1 --pretty=%B)"
+
 SYNC_DEV="*SYNC_DEV*"
 SYNC_MASTER="*SYNC_MASTER*"
+
 AUTO_MERGE="AUTO MERGE:"
 AUTO_MERGE_REGEX="*$AUTO_MERGE*"
 
@@ -17,7 +19,7 @@ export AUTO_MERGE
 
 if [[ $TRAVIS_BRANCH =~ ^B ]]; then
 
-	if [[ $COMMIT_MESSAGE == $SYNC_DEV ]] || [[ $COMMIT_MESSAGE == $SYNC_MASTER ]]; then
+	if ( [[ $COMMIT_MESSAGE == $SYNC_DEV ]] || [[ $COMMIT_MESSAGE == $SYNC_MASTER ]] ) && [[ $COMMIT_MESSAGE != $AUTO_MERGE_REGEX ]]; then
 
 		echo "Sincronizando con DEV..."
 
