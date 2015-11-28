@@ -61,11 +61,21 @@ Pasando pruebas en Shippable:
 
 Tanto Travis como Shippable funcionan con el mismo fichero .yml, por tanto no es necesario crear varios ficheros de confi	guración para el testeo de la aplicacion. No obstante, si se requieren diferentes configuraciones, se tiene que añadir un fichero "shippable.yml" con la nueva configuración requerida. 
 
-Para ver el avance del proyecto, revisar la rama BACKEND-1.
+Para ver el avance del proyecto, revisar las ramas BACKEND*, FRONTEND* y dev.
 
 ### Despliegue Continuo en un PaaS
 
-Para un despliegue continuo se va a usar Heroku. Para mas información sobre el funcionamiento, ver rama [deployment](https://github.com/gabriel-stan/gestion-tfg/tree/deployment).
+Para facilitar el despliegue del proyecto, se va a usar [**Heroku**](https://www.heroku.com) como PaaS, un potente plataforma de despliegue continuo.
+
+Ya que hacen falta ligeras modificaciones del proyecto y sus dependencias para poder desplegarlo en Heroku, he creado una nueva rama de despliegue, [deployment](https://github.com/gabriel-stan/gestion-tfg/tree/deployment), que va a contener la configuración de despliegue.
+
+Para configurar Heroku, es necesario un fichero [Procfile](https://github.com/gabriel-stan/gestion-tfg/blob/deployment/Procfile) que contiene los comandos a ejecutar para poner en marcha el proyecto, una vez desplegado en Heroku.
+
+Se pasa a configurar la app de Heroku, para enlazarla con el repositorio de GitHub. Cada vez que se detectan cambios en el repositorio y las pruebas de Integracion Continua pasan correctamente, Heroku procede a actualizar la aplicación ya deplegada.
+
+![despliegue](https://www.dropbox.com/s/zgym6e943gm680g/herokugestfg.png?dl=1)
+
+Para ver el avance del proyecto, revisar las ramas BACKEND*, FRONTEND* y dev.
 
 ### Asignación de tareas
 
