@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 export GIT_COMMITTER_EMAIL='travis@travis'
-export GIT_COMMITTER_NAME='Travis CI'
+export GIT_COMMITTER_NAME='Travis CI automerge'
 
 git config --global user.name "$GIT_COMMITTER_NAME"
 git config --global user.email "$GIT_COMMITTER_EMAIL"
@@ -15,8 +15,6 @@ fi
 # Since Travis does a partial checkout, we need to get the whole thing
 repo_temp=$(mktemp -d)
 git clone "https://github.com/$GITHUB_REPO" "$repo_temp"
-
-git fetch
 
 # shellcheck disable=SC2164
 cd "$repo_temp"
