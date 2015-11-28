@@ -19,6 +19,8 @@ export AUTO_MERGE
 
 if [[ $TRAVIS_BRANCH =~ ^B ]]; then
 
+	COMMIT_MESSAGE="$COMMIT_MESSAGE from $TRAVIS_BRANCH"
+
 	if ( [[ $COMMIT_MESSAGE == $SYNC_DEV ]] || [[ $COMMIT_MESSAGE == $SYNC_MASTER ]] ) && [[ $COMMIT_MESSAGE != $AUTO_MERGE_REGEX ]]; then
 
 		echo "Sincronizando con DEV..."
@@ -49,11 +51,11 @@ elif [[ $TRAVIS_BRANCH =~ ^dev ]]; then
 		echo "No se sincroniza con MASTER"
 	fi
 
-	#if [[ $COMMIT_MESSAGE == $AUTO_MERGE_REGEX ]]; then
+	if [[ $COMMIT_MESSAGE == "*$BACKEND-1*" ]]; then
 
-		#echo "No se sincroniza, viene de auto-merge"
+		echo "No se sincroniza, viene de auto-merge de la misma rama"
 
-	#else
+	else
 
 		echo "Sincronizando con BACKEND-1..."
 
@@ -63,6 +65,14 @@ elif [[ $TRAVIS_BRANCH =~ ^dev ]]; then
 
 		./travis-auto-merge.sh
 
+	fi
+
+	if [[ $COMMIT_MESSAGE == "*$BACKEND-2*" ]]; then
+
+		echo "No se sincroniza, viene de auto-merge de la misma rama"
+
+	else
+
 		echo "Sincronizando con BACKEND-2..."
 
 		export BRANCHES_TO_MERGE_REGEX=dev
@@ -71,7 +81,7 @@ elif [[ $TRAVIS_BRANCH =~ ^dev ]]; then
 
 		./travis-auto-merge.sh
 
-	#fi
+	fi
 	
 fi
 
