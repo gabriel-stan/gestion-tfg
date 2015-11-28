@@ -12,7 +12,7 @@ echo $COMMIT_MESSAGE
 
 if [[ $TRAVIS_BRANCH =~ ^B ]]; then
 
-	if [[ $COMMIT_MESSAGE == $SYNC_DEV ]]; then
+	if [[ $COMMIT_MESSAGE == $SYNC_DEV ]] || [[ $COMMIT_MESSAGE == $SYNC_MASTER ]]; then
 
 		echo "Sincronizando con DEV..."
 
