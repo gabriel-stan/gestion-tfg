@@ -4,7 +4,7 @@
 #chmod a+x /tmp/travis-automerge
 
 COMMIT_MESSAGE="$(git log -1 --pretty=%B)"
-SYNC_DEV="*(SYNC_DEV|SYNC_MASTER)*"
+SYNC_DEV="*SYNC_DEV*"
 SYNC_MASTER="*SYNC_MASTER*"
 
 echo $TRAVIS_BRANCH
