@@ -53,6 +53,7 @@ elif [[ $TRAVIS_BRANCH =~ ^dev ]]; then
 
 
 	B1_REGEX="*$BACKEND-1*"
+
 	if [[ $COMMIT_MESSAGE == $B1_REGEX ]]; then
 
 		echo "No se sincroniza, viene de auto-merge de la misma rama"
@@ -70,6 +71,7 @@ elif [[ $TRAVIS_BRANCH =~ ^dev ]]; then
 	fi
 
 	B2_REGEX="*$BACKEND-2*"
+	
 	if [[ $COMMIT_MESSAGE == $B2_REGEX ]]; then
 
 		echo "No se sincroniza, viene de auto-merge de la misma rama"
