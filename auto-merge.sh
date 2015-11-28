@@ -3,7 +3,7 @@
 #curl -o /tmp/travis-automerge https://raw.githubusercontent.com/cdown/travis-automerge/master/travis-automerge
 #chmod a+x /tmp/travis-automerge
 
-print "Travis commit message:"
+printf "Travis commit message:"
 
 echo $TRAVIS_COMMIT_MESSAGE
 
