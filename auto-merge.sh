@@ -17,7 +17,7 @@ export AUTO_MERGE
 
 if [[ $TRAVIS_BRANCH =~ ^B ]]; then
 
-	if [[ $COMMIT_MESSAGE == $SYNC_DEV ]] || [[ $COMMIT_MESSAGE == $SYNC_MASTER ]]; then
+	if ( [[ $COMMIT_MESSAGE == $SYNC_DEV ]] || [[ $COMMIT_MESSAGE == $SYNC_MASTER ]] ) && [[ $COMMIT_MESSAGE != $AUTO_MERGE_REGEX ]]; then
 
 		echo "Sincronizando con DEV..."
 
