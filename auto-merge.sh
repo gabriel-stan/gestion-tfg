@@ -13,7 +13,7 @@ if [[ $TRAVIS_BRANCH =~ ^B ]]; then
 
 	if [[ $COMMIT_MESSAGE =~ *SYNC_DEV* ]]; then
 
-		printf "Sincronizando con dev..."
+		echo "Sincronizando con dev..."
 
 		export BRANCHES_TO_MERGE_REGEX="$TRAVIS_BRANCH"
 		export BRANCH_TO_MERGE_INTO=dev
@@ -21,7 +21,7 @@ if [[ $TRAVIS_BRANCH =~ ^B ]]; then
 
 		./travis-auto-merge.sh
 	else
-		printf "No se sincroniza con dev"
+		echo "No se sincroniza con dev"
 	fi
 
 elif [[ $TRAVIS_BRANCH =~ ^dev ]]; then
