@@ -7,7 +7,10 @@ printf "Travis commit message:"
 
 echo $TRAVIS_COMMIT
 
-git log -1
+OUTPUT="$(git log -1 --pretty=%B)"
+echo "${OUTPUT}"
+
+
 
 echo $TRAVIS_BRANCH
 
