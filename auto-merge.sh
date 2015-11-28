@@ -9,7 +9,7 @@ echo $TRAVIS_BRANCH
 
 if [[ $TRAVIS_BRANCH =~ ^B ]]; then
 
-	if [[ COMMIT_MESSAGE =~ *SYNC_DEV* ]]; then
+	if [[ $COMMIT_MESSAGE =~ *SYNC_DEV* ]]; then
 
 		printf "Sincronizando con dev..."
 
