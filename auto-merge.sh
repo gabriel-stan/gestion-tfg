@@ -47,11 +47,11 @@ elif [[ $TRAVIS_BRANCH =~ ^dev ]]; then
 		echo "No se sincroniza con MASTER"
 	fi
 
-	if [[ $COMMIT_MESSAGE == $AUTO_MERGE_REGEX ]]; then
+	#if [[ $COMMIT_MESSAGE == $AUTO_MERGE_REGEX ]]; then
 
-		echo "No se sincroniza, viene de auto-merge"
+		#echo "No se sincroniza, viene de auto-merge"
 
-	else
+	#else
 
 		echo "Sincronizando con BACKEND-1..."
 
@@ -69,7 +69,7 @@ elif [[ $TRAVIS_BRANCH =~ ^dev ]]; then
 
 		./travis-auto-merge.sh
 
-	fi
+	#fi
 	
 fi
 
