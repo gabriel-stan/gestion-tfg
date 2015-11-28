@@ -51,7 +51,7 @@ elif [[ $TRAVIS_BRANCH =~ ^dev ]]; then
 		echo "No se sincroniza, viene de auto-merge"
 
 	else
-		
+
 		echo "Sincronizando con BACKEND-1..."
 
 		export BRANCHES_TO_MERGE_REGEX=dev
@@ -69,7 +69,6 @@ elif [[ $TRAVIS_BRANCH =~ ^dev ]]; then
 		./travis-auto-merge.sh
 
 	fi
-
 	
 fi
 
