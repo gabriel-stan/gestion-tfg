@@ -16,6 +16,8 @@ fi
 repo_temp=$(mktemp -d)
 git clone "https://github.com/$GITHUB_REPO" "$repo_temp"
 
+git fetch
+
 # shellcheck disable=SC2164
 cd "$repo_temp"
 
