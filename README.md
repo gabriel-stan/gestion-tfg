@@ -1,6 +1,6 @@
 #GESTFG - Plataforma de Gestión y Evaluación de Trabajos de Fin de Grado y Master
 
-[![Build Status](https://travis-ci.org/gabriel-stan/gestion-tfg.svg?branch=master)](https://travis-ci.org/gabriel-stan/gestion-tfg) [![Build Status](https://img.shields.io/shippable/562e58f31895ca44742123f9.svg)](https://app.shippable.com/projects/562e58f31895ca44742123f9)
+[![Build Status](https://travis-ci.org/gabriel-stan/gestion-tfg.svg?branch=master)](https://travis-ci.org/gabriel-stan/gestion-tfg)
 
 
 Antonio Manuel Rodriguez Castro  
