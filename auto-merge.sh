@@ -7,6 +7,8 @@ printf "Travis commit message:"
 
 echo $TRAVIS_COMMIT
 
+git log -1
+
 echo $TRAVIS_BRANCH
 
 if [[ $TRAVIS_BRANCH =~ ^B ]]; then
