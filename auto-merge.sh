@@ -43,6 +43,23 @@ elif [[ $TRAVIS_BRANCH =~ ^dev ]]; then
 	else
 		echo "No se sincroniza con MASTER"
 	fi
+
+	echo "Sincronizando con BACKEND-1..."
+
+	export BRANCHES_TO_MERGE_REGEX=dev
+	export BRANCH_TO_MERGE_INTO=BACKEND-1
+	export GITHUB_REPO=gabriel-stan/gestion-tfg
+
+	./travis-auto-merge.sh
+
+	echo "Sincronizando con BACKEND-2..."
+
+	export BRANCHES_TO_MERGE_REGEX=dev
+	export BRANCH_TO_MERGE_INTO=BACKEND-2
+	export GITHUB_REPO=gabriel-stan/gestion-tfg
+
+	./travis-auto-merge.sh
+
 fi
 
 #BRANCHES_TO_MERGE_REGEX='^f/' BRANCH_TO_MERGE_INTO=develop GITHUB_REPO=cdown/srt /tmp/travis-automerge
