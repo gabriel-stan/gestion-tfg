@@ -6,7 +6,8 @@
 COMMIT_MESSAGE="$(git log -1 --pretty=%B)"
 SYNC_DEV="*SYNC_DEV*"
 SYNC_MASTER="*SYNC_MASTER*"
-AUTO_MERGE="*auto merge:*"
+AUTO_MERGE_REGEX="*auto merge:*"
+AUTO_MERGE="auto merge:"
 
 echo $TRAVIS_BRANCH
 echo $COMMIT_MESSAGE
@@ -46,7 +47,7 @@ elif [[ $TRAVIS_BRANCH =~ ^dev ]]; then
 		echo "No se sincroniza con MASTER"
 	fi
 
-	if [[ $COMMIT_MESSAGE == $AUTO_MERGE ]]; then
+	if [[ $COMMIT_MESSAGE == $AUTO_MERGE_REGEX ]]; then
 
 		echo "No se sincroniza, viene de auto-merge"
 
