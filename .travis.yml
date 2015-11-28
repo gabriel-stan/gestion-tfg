@@ -9,6 +9,4 @@ install: make install-requirements
 # command to run tests
 script: make test
 
-script: cd gestion_tfg && python manage.py test
-
-after_success: cd .. && make auto-merge
+after_success: make auto-merge
