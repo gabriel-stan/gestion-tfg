@@ -6,11 +6,13 @@
 COMMIT_MESSAGE="$(git log -1 --pretty=%B)"
 SYNC_DEV="*SYNC_DEV*"
 SYNC_MASTER="*SYNC_MASTER*"
+AUTO_MERGE="*auto merge:*"
 
 echo $TRAVIS_BRANCH
 echo $COMMIT_MESSAGE
 
 export COMMIT_MESSAGE
+export AUTO_MERGE
 
 if [[ $TRAVIS_BRANCH =~ ^B ]]; then
 
@@ -44,22 +46,30 @@ elif [[ $TRAVIS_BRANCH =~ ^dev ]]; then
 		echo "No se sincroniza con MASTER"
 	fi
 
-	echo "Sincronizando con BACKEND-1..."
+	if [[ $COMMIT_MESSAGE == $AUTO_MERGE ]]; then
 
-	export BRANCHES_TO_MERGE_REGEX=dev
-	export BRANCH_TO_MERGE_INTO=BACKEND-1
-	export GITHUB_REPO=gabriel-stan/gestion-tfg
+		echo "No se sincroniza, viene de auto-merge"
 
-	./travis-auto-merge.sh
+	else
 
-	echo "Sincronizando con BACKEND-2..."
+		echo "Sincronizando con BACKEND-1..."
 
-	export BRANCHES_TO_MERGE_REGEX=dev
-	export BRANCH_TO_MERGE_INTO=BACKEND-2
-	export GITHUB_REPO=gabriel-stan/gestion-tfg
+		export BRANCHES_TO_MERGE_REGEX=dev
+		export BRANCH_TO_MERGE_INTO=BACKEND-1
+		export GITHUB_REPO=gabriel-stan/gestion-tfg
 
-	./travis-auto-merge.sh
+		./travis-auto-merge.sh
 
+		echo "Sincronizando con BACKEND-2..."
+
+		export BRANCHES_TO_MERGE_REGEX=dev
+		export BRANCH_TO_MERGE_INTO=BACKEND-2
+		export GITHUB_REPO=gabriel-stan/gestion-tfg
+
+		./travis-auto-merge.sh
+
+	fi
+	
 fi
 
 #BRANCHES_TO_MERGE_REGEX='^f/' BRANCH_TO_MERGE_INTO=develop GITHUB_REPO=cdown/srt /tmp/travis-automerge

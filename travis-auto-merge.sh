@@ -24,7 +24,7 @@ git checkout "$BRANCH_TO_MERGE_INTO"
 
 printf 'Merging %s\n' "$TRAVIS_COMMIT" >&2
 #git merge --ff-only "$TRAVIS_COMMIT"
-git merge -m "auto merge: $COMMIT_MESSAGE" "$TRAVIS_COMMIT"
+git merge -m "$AUTO_MERGE $COMMIT_MESSAGE" "$TRAVIS_COMMIT"
 
 printf 'Pushing to %s\n' "$GITHUB_REPO" >&2
 
