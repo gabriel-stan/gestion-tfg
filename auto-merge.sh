@@ -8,11 +8,11 @@ SYNC_DEV='*SYNC_DEV*'
 
 echo $TRAVIS_BRANCH
 
-if [[ $TRAVIS_BRANCH =~ ^B ]] then
+if [[ $TRAVIS_BRANCH =~ ^B ]]; then
 
 	echo $COMMIT_MESSAGE
 
-	if [[ $COMMIT_MESSAGE =~ $SYNC_DEV ]] then
+	if [[ $COMMIT_MESSAGE =~ $SYNC_DEV ]]; then
 
 		echo "Sincronizando con dev..."
 
@@ -25,7 +25,7 @@ if [[ $TRAVIS_BRANCH =~ ^B ]] then
 		echo "No se sincroniza con dev"
 	fi
 
-elif [[ $TRAVIS_BRANCH =~ ^dev ]] then
+elif [[ $TRAVIS_BRANCH =~ ^dev ]]; then
 
 	export BRANCHES_TO_MERGE_REGEX="$TRAVIS_BRANCH"
 	export BRANCH_TO_MERGE_INTO=master
