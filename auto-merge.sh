@@ -4,8 +4,10 @@
 #chmod a+x /tmp/travis-automerge
 
 COMMIT_MESSAGE="$(git log -1 --pretty=%B)"
+
 SYNC_DEV="*SYNC_DEV*"
 SYNC_MASTER="*SYNC_MASTER*"
+
 AUTO_MERGE="AUTO MERGE:"
 AUTO_MERGE_REGEX="*$AUTO_MERGE*"
 
