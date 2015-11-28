@@ -5,7 +5,7 @@
 
 printf "Travis commit message:"
 
-echo $TRAVIS_COMMIT_MESSAGE
+echo $TRAVIS_COMMIT
 
 echo $TRAVIS_BRANCH
 
