@@ -2,8 +2,6 @@ language: python
 python:
   - "2.7"
 
-env: TRAVIS_COMMIT_MESSAGEE="%{commit_message}"
-
 # command to install dependencies
 install: make install-requirements
 
