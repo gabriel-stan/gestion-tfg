@@ -18,6 +18,7 @@ Para el desarrollo de la plataforma se usará el framework Django. La plataforma
 
 La plataforma tendrá un despliegue en **Microsoft Azure**, tal y como se detalla a continuación. Posteriormente se podrá configurar para un despliegue automatizado en cualquier infraestructura virtual.
 
+
 **Frontend:** Una interfaz web en la que se reflejará toda la información relacionada con los TFG.  Se usará un servidor web en Microsoft Azure para procesar las peticiones de los usuarios a la interfaz web. 
 
 **Backend:** Los servicios de la plataforma serán gestionados por el framework Django, y se repartirán (posiblemente) entre los frameworks Django y Tornado, para una mejor modularización y reparto de las funcionalidades de la plataforma.
