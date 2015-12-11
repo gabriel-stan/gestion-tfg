@@ -1,6 +1,6 @@
 #GESTFG - Plataforma de Gestión y Evaluación de Trabajos de Fin de Grado y Master
 
-[![Build Status](https://travis-ci.org/gabriel-stan/gestion-tfg.svg?branch=master)](https://travis-ci.org/gabriel-stan/gestion-tfg) [![Build Status](https://img.shields.io/shippable/562e58f31895ca44742123f9.svg)](https://app.shippable.com/projects/562e58f31895ca44742123f9) [![Heroku](https://heroku-badge.herokuapp.com/?app=gestfg&style=flat)](http://gestfg.herokuapp.com/)
+[![Build Status](https://travis-ci.org/gabriel-stan/gestion-tfg.svg?branch=master)](https://travis-ci.org/gabriel-stan/gestion-tfg) [![Heroku](https://heroku-badge.herokuapp.com/?app=gestfg&style=flat)](http://gestfg.herokuapp.com/)
 
 
 Antonio Manuel Rodriguez Castro  
@@ -17,6 +17,7 @@ Para el desarrollo de la plataforma se usará el framework Django. La plataforma
 ### Infraestructura Virtual
 
 La plataforma tendrá un despliegue en **Microsoft Azure**, tal y como se detalla a continuación. Posteriormente se podrá configurar para un despliegue automatizado en cualquier infraestructura virtual.
+
 
 **Frontend:** Una interfaz web en la que se reflejará toda la información relacionada con los TFG.  Se usará un servidor web en Microsoft Azure para procesar las peticiones de los usuarios a la interfaz web. 
 
@@ -61,11 +62,41 @@ Pasando pruebas en Shippable:
 
 Tanto Travis como Shippable funcionan con el mismo fichero .yml, por tanto no es necesario crear varios ficheros de confi	guración para el testeo de la aplicacion. No obstante, si se requieren diferentes configuraciones, se tiene que añadir un fichero "shippable.yml" con la nueva configuración requerida. 
 
-Para ver el avance del proyecto, revisar la rama BACKEND-1.
-
 ### Despliegue Continuo en un PaaS
 
-Para un despliegue continuo se va a usar Heroku. Para mas información sobre el funcionamiento, ver rama [deployment](https://github.com/gabriel-stan/gestion-tfg/tree/deployment).
+Para facilitar el despliegue del proyecto, se va a usar [**Heroku**](https://www.heroku.com) como PaaS, una potente plataforma de despliegue continuo.
+
+Para configurar Heroku, es necesario un fichero [Procfile](https://github.com/gabriel-stan/gestion-tfg/blob/master/Procfile) que contiene los comandos a ejecutar para poner en marcha el proyecto, una vez desplegado en Heroku. Ademas, tambien se tiene que incluir un fichero [requirements.txt](https://github.com/gabriel-stan/gestion-tfg/blob/master/requirements.txt), para que se instalen las dependencias en el PaaS.
+
+En Heroku se puede definir el despliegue automático desde GitHub, tal y como se muestra a continuacion. Cada vez que se detectan cambios en el repositorio y las pruebas de Integracion Continua pasan correctamente, Heroku procede a actualizar la aplicación ya desplegada.
+
+![despliegue](https://www.dropbox.com/s/4pu112260c59i6l/deployfrommaster.png?dl=1)
+
+Para la base de datos, Heroku ofrece un add-on **Heroku Postgres**, que es relativamente facil de configurar. 
+
+![Postgres Heroku](https://www.dropbox.com/s/puhg1ddtpgus7wf/postgresheroku.png?dl=1)
+
+Para ello, es necesario el paquete `dj-database-url`, incluido en el paquete `django-toolbelt`  que se puede instalar con el comando `pip install django-toolbelt`. En el entorno de despliegue, Heroku proporciona una variable `DATABASE_URL` que contiene los datos de conexion a la base de datos PostgreSQL. Para que Django pueda parsear la variable, simplemente se tiene que anadir en el fichero de configuracion de Django las siguientes lineas, tal y como se puede ver en el fichero [settings.py](https://github.com/gabriel-stan/gestion-tfg/blob/master/gestion_tfg/gestion_tfg/settings.py):
+
+```python
+import dj_database_url
+DATABASES['default'] =  dj_database_url.config()
+```
+
+Todo el proceso de configuracion y el despliegue a Heroku se puede hacer automaticamente ejecutando el script [deploy_to_heroku.sh](https://github.com/gabriel-stan/gestion-tfg/blob/master/deploy_to_heroku.sh), el cual contiene, entre otras cosas, lo siguente:
+
+```bash
+...
+heroku create
+heroku addons:create heroku-postgresql:hobby-dev
+heroku pg:wait
+git add .
+git push heroku master
+heroku ps:scale web=1
+```
+El script va a crear un contenedor en Heroku, va a configurar la base de datos Postgres, va a desplegar la aplicacion y por ultimo va a ejecutar la aplicacion segun la configuracion del fichero [Procfile](https://github.com/gabriel-stan/gestion-tfg/blob/master/Procfile). Para ejecutar el script es necesario tener instalado [heroku toolbelt](https://toolbelt.heroku.com/).
+
+Y por ultimo, la aplicacion de este repositorio se puede ver desplegada [**aqui**](http://gestfg.herokuapp.com/).
 
 ### Asignación de tareas
 
