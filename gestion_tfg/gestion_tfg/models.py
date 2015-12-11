@@ -20,18 +20,18 @@ class Tfg_Asig(models.Model):
 
 class Evaluacion_Tfg_Tutor(models.Model):
     tfg = models.ForeignKey(Tfg_Asig, default=None)
-    tutor = models.ForeignKey(User, related_name='tutor',default=None)
+    tutor = models.ForeignKey(User, related_name='tutor_tfg',default=None)
     departamento = models.CharField(max_length=100)
     fecha = models.DateField()
-    calificacion = models.DecimalField()
-    sub_cal_1 = models.DecimalField()
-    sub_cal_2 = models.DecimalField()
-    sub_cal_3 = models.DecimalField()
-    sub_cal_4 = models.DecimalField()
-    sub_cal_5 = models.DecimalField()
-    sub_cal_6 = models.DecimalField()
-    sub_cal_7 = models.DecimalField()
-    sub_cal_8 = models.DecimalField()
+    calificacion = models.FloatField()
+    sub_cal_1 = models.FloatField()
+    sub_cal_2 = models.FloatField()
+    sub_cal_3 = models.FloatField()
+    sub_cal_4 = models.FloatField()
+    sub_cal_5 = models.FloatField()
+    sub_cal_6 = models.FloatField()
+    sub_cal_7 = models.FloatField()
+    sub_cal_8 = models.FloatField()
     observaciones = models.CharField(max_length=500, null=True)
 
 class Comision_Evaluacion(models.Model):
