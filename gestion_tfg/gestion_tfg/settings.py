@@ -126,3 +126,4 @@ import sys
 
 if (os.environ.get('HEROKU')):
     DATABASES['default'] =  dj_database_url.config()
+
