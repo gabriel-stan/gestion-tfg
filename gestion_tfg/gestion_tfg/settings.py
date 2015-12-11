@@ -124,5 +124,6 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 import dj_database_url
 import sys
 
-if not('test' in sys.argv):
+if (os.environ.get('HEROKU')):
     DATABASES['default'] =  dj_database_url.config()
+
