@@ -15,3 +15,17 @@ def existe_tfg_asig(alumno):
             return True
         else:
             return False
+
+def comprueba_profesor(usuario):
+
+    if isinstance(usuario, User) and usuario.groups.filter(name='Profesores').exists():
+        return True
+    else:
+        return False
+
+def comprueba_alumno(usuario):
+
+    if isinstance(usuario, User) and usuario.groups.filter(name='Alumnos').exists():
+        return True
+    else:
+        return False

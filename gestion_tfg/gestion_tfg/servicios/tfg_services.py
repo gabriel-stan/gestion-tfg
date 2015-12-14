@@ -1,9 +1,8 @@
-from gestion_tfg.models import Tfg, Tfg_Asig
-from django.contrib.auth.models import User
+from gestion_tfg.models import Comision_Evaluacion
 from gestion_tfg.servicios.utils import *
 
-def insert_tfg(tfg):
 
+def insert_tfg(tfg):
     # comprobando titulo vacio o Tfg con el mismo titulo
     if not tfg.titulo:
         return False
@@ -20,26 +19,26 @@ def insert_tfg(tfg):
     if (tfg.n_alumnos is None) or (tfg.n_alumnos <= 0) or (tfg.n_alumnos > 3):
         return False
 
-    #comprobando descripcion
+    # comprobando descripcion
     if not tfg.descripcion:
         return False
 
-    #comprobando conocimientos previos
+    # comprobando conocimientos previos
     if not tfg.conocimientos_previos:
         return False
 
-    #comprobando requisitos HW SW
+    # comprobando requisitos HW SW
     if not tfg.hard_soft:
         return False
 
-    #comprobando tutor
-    if not hasattr(tfg,'tutor'):
+    # comprobando tutor
+    if not hasattr(tfg, 'tutor'):
         return False
     elif not tfg.tutor.groups.filter(name='Profesores').exists():
         return False
 
-    #comprobando cotutor
-    if (not hasattr(tfg,'cotutor')):
+    # comprobando cotutor
+    if (not hasattr(tfg, 'cotutor')):
         return False
     elif not tfg.cotutor.groups.filter(name='Profesores').exists():
         return False
@@ -47,61 +46,61 @@ def insert_tfg(tfg):
     tfg.save()
     return True
 
-def update_tfg(tfg, campos):
 
-    #comprobando titulo
+def update_tfg(tfg, campos):
+    # comprobando titulo
     if 'titulo' in campos.keys():
         if campos['titulo'] == '' or not isinstance(campos['titulo'], str):
             return False
         else:
             tfg.titulo = campos['titulo']
 
-    #comprobando tipo
+    # comprobando tipo
     if 'tipo' in campos.keys():
         if campos['tipo'] == '' or not isinstance(campos['tipo'], str):
             return False
         else:
             tfg.tipo = campos['tipo']
 
-    #comprobando n_alumnos
+    # comprobando n_alumnos
     if 'n_alumnos' in campos.keys():
-        if (campos['n_alumnos'] <= 0) or (campos['n_alumnos'] > 3) or not(isinstance(campos['n_alumnos'], int)):
+        if (campos['n_alumnos'] <= 0) or (campos['n_alumnos'] > 3) or not (isinstance(campos['n_alumnos'], int)):
             return False
         else:
             tfg.n_alumnos = campos['n_alumnos']
 
-    #comprobando descripcion
+    # comprobando descripcion
     if 'descripcion' in campos.keys():
         if campos['descripcion'] == '' or not isinstance(campos['descripcion'], str):
             return False
         else:
             tfg.descripcion = campos['descripcion']
 
-    #comprobando conocimientos_previos
+    # comprobando conocimientos_previos
     if 'conocimientos_previos' in campos.keys():
         if campos['conocimientos_previos'] == '' or not isinstance(campos['conocimientos_previos'], str):
             return False
         else:
             tfg.conocimientos_previos = campos['conocimientos_previos']
 
-    #comprobando hard_soft
+    # comprobando hard_soft
     if 'hard_soft' in campos.keys():
         if campos['hard_soft'] == '' or not isinstance(campos['hard_soft'], str):
             return False
         else:
             tfg.hard_soft = campos['hard_soft']
 
-    #comprobando tutor
+    # comprobando tutor
     if 'tutor' in campos.keys():
-        #NOTA: Cuando este el modelo de profesores, hay que ver que el tutor sea un profesor
+        # NOTA: Cuando este el modelo de profesores, hay que ver que el tutor sea un profesor
         if not isinstance(campos['tutor'], User) or not campos['tutor'].groups.filter(name='Profesores').exists():
             return False
         else:
             tfg.tutor = campos['tutor']
 
-    #comprobando cotutor
+    # comprobando cotutor
     if 'cotutor' in campos.keys():
-        #NOTA: Cuando este el modelo de profesores, hay que ver que el tutor sea un profesor
+        # NOTA: Cuando este el modelo de profesores, hay que ver que el tutor sea un profesor
         if not isinstance(campos['cotutor'], User) or not campos['cotutor'].groups.filter(name='Profesores').exists():
             return False
         else:
@@ -111,8 +110,8 @@ def update_tfg(tfg, campos):
 
     return True
 
-def delete_tfg(tfg):
 
+def delete_tfg(tfg):
     tfg.delete()
 
     try:
@@ -121,26 +120,27 @@ def delete_tfg(tfg):
     except Tfg.DoesNotExist:
         return False
 
-def asignar_tfg(tfg, alumno1, alumno2=None, alumno3=None):
 
+def asignar_tfg(tfg, alumno1, alumno2=None, alumno3=None):
     alumno2_ok = False
     alumno3_ok = False
 
-    #Compruebo lo minimo para asignar el tfg
-    if not isinstance(tfg, Tfg) or not isinstance(alumno1, User) or not alumno1.groups.filter(name='Alumnos').exists() or existe_tfg_asig(alumno1):
+    # Compruebo lo minimo para asignar el tfg
+    if not isinstance(tfg, Tfg) or not isinstance(alumno1, User) or not alumno1.groups.filter(
+            name='Alumnos').exists() or existe_tfg_asig(alumno1):
         return False
 
-    #Compruebo que no este ya asignado
+    # Compruebo que no este ya asignado
     try:
         Tfg_Asig.objects.get(tfg=tfg)
         return False
     except Tfg_Asig.DoesNotExist:
-        if isinstance(alumno2, User) and alumno2.groups.filter(name='Alumnos').exists() and not existe_tfg_asig(alumno2):
+        if comprueba_alumno(alumno2) and not existe_tfg_asig(alumno2):
             alumno2_ok = True
-        if isinstance(alumno3, User) and alumno3.groups.filter(name='Alumnos').exists() and not existe_tfg_asig(alumno3):
+        if comprueba_alumno(alumno3) and not existe_tfg_asig(alumno3):
             alumno3_ok = True
 
-        #Si tiene 2 alumnos
+        # Si tiene 2 alumnos
         if alumno2 != None and alumno3 == None:
             if not alumno2_ok:
                 return False
@@ -148,7 +148,7 @@ def asignar_tfg(tfg, alumno1, alumno2=None, alumno3=None):
                 tfg_asig = Tfg_Asig.objects.create(tfg=tfg, alumno_1=alumno1, alumno_2=alumno2)
                 tfg_asig.save()
                 return True
-        #Si tiene 3 alumnos
+        # Si tiene 3 alumnos
         elif alumno2 != None and alumno3 != None:
             if not alumno2_ok or not alumno3_ok:
                 return False
@@ -156,8 +156,24 @@ def asignar_tfg(tfg, alumno1, alumno2=None, alumno3=None):
                 tfg_asig = Tfg_Asig.objects.create(tfg=tfg, alumno_1=alumno1, alumno_2=alumno2, alumno_3=alumno3)
                 tfg_asig.save()
                 return True
-        #Si tiene 1 alumno
+        # Si tiene 1 alumno
         else:
             tfg_asig = Tfg_Asig.objects.create(tfg=tfg, alumno_1=alumno1)
             tfg_asig.save()
             return True
+
+
+def formar_comision(presidente, sup_presidente, titular_1, sup_titular_1, titular_2=None, sup_titular_2=None):
+
+    if not (comprueba_profesor(presidente) and comprueba_profesor(sup_presidente)) or \
+            not (comprueba_profesor(titular_1) and comprueba_profesor(sup_titular_1)):
+
+        return False
+    elif titular_2 and not (comprueba_profesor(titular_2) and comprueba_profesor(sup_titular_2)):
+        return False
+    else:
+        comision = Comision_Evaluacion.objects.create(presidente=presidente, titular_1=titular_1,
+                           titular_2=titular_2, sup_presidente=sup_presidente,
+                           sup_titular_1=sup_titular_1, sup_titular_2=sup_titular_2)
+        comision.save()
+        return True
