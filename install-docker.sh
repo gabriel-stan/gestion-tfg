@@ -2,7 +2,7 @@
 
 sudo apt-get install -y python python-dev python-distribute python-pip
 sudo apt-get install -y postgresql postgresql-contrib libpq-dev
-sudo apt-get install -y python-dev libffi-dev libssl-dev curl
+sudo apt-get install -y python-dev libffi-dev libssl-dev
 
 pip install virtualenv
 
@@ -11,5 +11,8 @@ source venv/bin/activate
 
 pip install -r requirements.txt
 
-deactivate
+cd gestion_tfg
 
+python manage.py migrate
+
+deactivate
