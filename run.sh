@@ -6,4 +6,7 @@ cd gestion_tfg
 
 python manage.py migrate
 
-python manage.py runserver
+ifconfig eth0 | grep inet
+
+python manage.py runserver 0.0.0.0:8000
+
