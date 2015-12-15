@@ -93,7 +93,7 @@ def update_tfg(tfg, campos):
     # comprobando tutor
     if 'tutor' in campos.keys():
         # NOTA: Cuando este el modelo de profesores, hay que ver que el tutor sea un profesor
-        if not isinstance(campos['tutor'], User) or not campos['tutor'].groups.filter(name='Profesores').exists():
+        if not isinstance(campos['tutor'], Profesor) or not campos['tutor'].groups.filter(name='Profesores').exists():
             return False
         else:
             tfg.tutor = campos['tutor']
@@ -101,7 +101,7 @@ def update_tfg(tfg, campos):
     # comprobando cotutor
     if 'cotutor' in campos.keys():
         # NOTA: Cuando este el modelo de profesores, hay que ver que el tutor sea un profesor
-        if not isinstance(campos['cotutor'], User) or not campos['cotutor'].groups.filter(name='Profesores').exists():
+        if not isinstance(campos['cotutor'], Profesor) or not campos['cotutor'].groups.filter(name='Profesores').exists():
             return False
         else:
             tfg.tutor = campos['cotutor']
@@ -126,7 +126,7 @@ def asignar_tfg(tfg, alumno1, alumno2=None, alumno3=None):
     alumno3_ok = False
 
     # Compruebo lo minimo para asignar el tfg
-    if not isinstance(tfg, Tfg) or not isinstance(alumno1, User) or not alumno1.groups.filter(
+    if not isinstance(tfg, Tfg) or not isinstance(alumno1, Alumno) or not alumno1.groups.filter(
             name='Alumnos').exists() or existe_tfg_asig(alumno1):
         return False
 

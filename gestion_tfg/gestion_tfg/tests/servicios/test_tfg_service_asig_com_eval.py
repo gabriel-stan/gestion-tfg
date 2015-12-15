@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth.models import User, Group
+from gestion_tfg.models import Alumno, Profesor
 from gestion_tfg.servicios import tfg_services
 
 
@@ -7,17 +8,17 @@ class TfgServicesTests(TestCase):
 
     def setUp(self):
 
-        self.presidente = User.objects.create_user(
+        self.presidente = Profesor.objects.create_user(
             username='presidente', email='pepe@ugr.es', password='top_secret')
-        self.titular_1 = User.objects.create_user(
+        self.titular_1 = Profesor.objects.create_user(
             username='titular_1', email='paco@ugr.es', password='top_secret')
-        self.titular_2 = User.objects.create_user(
+        self.titular_2 = Profesor.objects.create_user(
             username='titular_2', email='paco@ugr.es', password='top_secret')
-        self.sup_presidente = User.objects.create_user(
+        self.sup_presidente = Profesor.objects.create_user(
             username='sup_presidente', email='paco@ugr.es', password='top_secret')
-        self.sup_titular_1 = User.objects.create_user(
+        self.sup_titular_1 = Profesor.objects.create_user(
             username='sup_titular_1', email='paco@ugr.es', password='top_secret')
-        self.sup_titular_2 = User.objects.create_user(
+        self.sup_titular_2 = Profesor.objects.create_user(
             username='sup_titular_2', email='paco@ugr.es', password='top_secret')
 
         self.grupo_profesores = Group.objects.get_or_create(name='Profesores')
