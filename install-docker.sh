@@ -9,7 +9,7 @@ pip install virtualenv
 virtualenv venv
 source venv/bin/activate
 
-pip install pyopenssl ndg-httpsclient pyasn1
+pip install pyopenssl urllib3 urllib3[secure]
 
 pip install -r requirements.txt
 
