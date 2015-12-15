@@ -7,6 +7,9 @@ test:
 auto-merge:
 	./auto-merge.sh
 
+install-docker:
+	./install-docker.sh
+
 install:
 	./install.sh
 
