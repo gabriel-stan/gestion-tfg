@@ -9,7 +9,12 @@ pip install virtualenv
 virtualenv venv
 source venv/bin/activate
 
+pip install pyopenssl ndg-httpsclient pyasn1
+
 pip install -r requirements.txt
 
-deactivate
+cd gestion_tfg
 
+python manage.py migrate
+
+deactivate
