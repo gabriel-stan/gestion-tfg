@@ -6,3 +6,9 @@ test:
 
 auto-merge:
 	./auto-merge.sh
+
+install:
+	./install.sh
+
+run:
+	./run.sh
