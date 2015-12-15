@@ -1,6 +1,9 @@
 #!/bin/bash
 
-echo "instalando virtualenv..."
+sudo apt-get install -y python python-dev python-distribute python-pip
+sudo apt-get install -y postgresql postgresql-contrib libpq-dev
+sudo apt-get install -y python-dev libffi-dev libssl-dev
+
 pip install virtualenv
 
 virtualenv venv
