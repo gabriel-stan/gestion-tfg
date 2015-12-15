@@ -7,6 +7,6 @@ RUN sudo apt-get install -y build-essential
 
 RUN git clone https://github.com/gabriel-stan/gestion-tfg.git
 
-RUN cd gestion-tfg && make install-docker
+RUN cd gestion-tfg && make run-docker
 
 CMD cd gestion-tfg && make run
