@@ -19,14 +19,14 @@ Para el desarrollo de la plataforma se usará el framework Django. La plataforma
 
 ### Infraestructura Virtual
 
-La plataforma tendrá un despliegue en **Microsoft Azure**, tal y como se detalla a continuación. Posteriormente se podrá configurar para un despliegue automatizado en cualquier infraestructura virtual.
+La plataforma tendrá un despliegue en [**Microsoft Azure**](https://azure.microsoft.com/es-es/) y/o [**Bluemix**](https://www.ibm.com/cloud-computing/bluemix/), tal y como se detalla a continuación. Posteriormente se podrá configurar para un despliegue automatizado en cualquier infraestructura virtual.
 
 Más información [aquí](docs/README-infraestructura.md).
 
 
 ### Sistema de Pruebas e Integración Continua
 
-El proyecto está basado en Django, por lo tanto hace uso del sistema de prueba de código que ofrece el framework Django. Para aprovechar al máximo un sistema de pruebas automatizado, el repositorio está enlazado con Travis CI.
+El proyecto está basado en [**Django**](https://www.djangoproject.com/), por lo tanto hace uso del sistema de prueba de código que ofrece el framework Django. Para aprovechar al máximo un sistema de pruebas automatizado, el repositorio está enlazado con [**Travis CI**](https://travis-ci.org/).
 
 Más información [aquí](docs/README-integracion-continua.md).
 
@@ -36,9 +36,9 @@ Para facilitar el despliegue del proyecto, se va a usar [**Heroku**](https://www
 
 Más información [aquí](docs/README-despliegue-PaaS.md).
 
-### Contenerización
+### Entorno de Pruebas
 
-Para poder realizar pruebas facilmente en un entorno totalmente aislado, se puede hacer uso de Docker.
+Para poder realizar pruebas fácilmente en un entorno totalmente aislado, se puede hacer uso de [**Docker**](https://www.docker.com/).
 
 Más información [aquí](docs/README-contenerizacion.md).
 
