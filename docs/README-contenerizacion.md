@@ -26,12 +26,10 @@ CMD cd gestion-tfg && make run
 
 Ver el fichero Dockerfile [aquí](../Dockerfile).
 
-La imagen se puede encontrar en [Docker Hub](https://hub.docker.com/r/gabrielstan/gestfg/) y se puede descargar con el comando `sudo docker pull gabrielstan/gestfg`. La imagen contiene todo lo necesario para ejecutar la aplicación.
-
-Una vez ejecutada, la aplicación se puede acceder a través del enlace `<ip-contenedor>:8000`.
-
-También está disponible una imagen actualizada constantemente desde el repositorio de Github a través de un `automated build`. La imagen está disponible [aquí](https://hub.docker.com/r/gabrielstan/gestion-tfg/).
+La imagen contiene todo lo necesario para ejecutar la aplicación. Hay disponible una imagen actualizada constantemente desde el repositorio de Github a través de un `automated build`. La imagen está disponible [aquí](https://hub.docker.com/r/gabrielstan/gestion-tfg/) y se puede descargar mediante la orden `sudo docker pull gabrielstan/gestion-tfg:latest`. En el repositorio también hay disponible una versión de la imagen según el estado de desarrollo del proyecto (development).
 
 Para probar la aplicación en un entorno local basta con ejecutar el comando `make install-docker`, el cual se asegurará de tener instalado Docker en el sistema, descargará la imagen de DockerHub y ejecutará la aplicación en un contenedor.
+
+Una vez ejecutada, la aplicación se puede acceder a través del enlace `<ip-contenedor>:8000`.
 
 
