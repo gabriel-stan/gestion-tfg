@@ -2,14 +2,12 @@ from django.db import models
 from django.contrib.auth.models import Group, User, AbstractUser
 
 
-class CustomUser(AbstractUser):
+class Alumno(AbstractUser):
     pass
 
-class Profesor(CustomUser):
+class Profesor(Alumno):
     departamento = models.CharField(max_length=100)
 
-class Alumno(CustomUser):
-    dni = models.CharField(max_length=9)
 
 class Tfg(models.Model):
     tipo = models.CharField(max_length=100)

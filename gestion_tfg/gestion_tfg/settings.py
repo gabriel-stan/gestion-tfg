@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-AUTH_USER_MODEL = 'gestion_tfg.CustomUser'
+AUTH_USER_MODEL = 'gestion_tfg.Alumno'
 # Application definition
 
 INSTALLED_APPS = (

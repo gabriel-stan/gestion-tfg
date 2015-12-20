@@ -22,6 +22,38 @@ def insert_alumno(alumno):
 
     return Alumno.objects.create_user(username=alumno.username, first_name= alumno.first_name,last_name= alumno.last_name)
 
+def insert_profesor(profesor):
+
+    try:
+
+        if not profesor.username:
+            raise
+        else:
+            res = Profesor.objects.filter(username=profesor.username)
+            if res.count() != 0:
+                raise
+
+        if not profesor.first_name or not isinstance(profesor.first_name, str):
+            raise
+
+        if not profesor.last_name or not isinstance(profesor.last_name, str):
+            raise
+
+        if not profesor.departamento or not isinstance(profesor.departamento, str):
+            raise
+
+        #exp reg para saber si el nick corresponde al correo de la ugr (@correo.ugr.es)
+        if (re.match((r'^[a-z][a-z0-9]+(@ugr\.es)$'), profesor.username)) == None:
+            raise
+
+        return Profesor.objects.create_user(username=profesor.username, first_name= profesor.first_name,
+                                        last_name= profesor.last_name, departamento=profesor.departamento)
+
+    except NameError:
+        print 'error de valor'
+        return False
+    except:
+        return False
 
 def insert_tfg(tfg):
     # comprobando titulo vacio o Tfg con el mismo titulo
