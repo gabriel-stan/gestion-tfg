@@ -17,7 +17,7 @@ def insert_alumno(alumno):
         return False
 
     #exp reg para saber si el nick corresponde al correo de la ugr (@correo.ugr.es)
-    if (re.match((r'^[a-z][a-z0-9]+(@correo\.ugr\.es)$'), alumno.username)) == None:
+    if (re.match((r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$'), alumno.username)) == None:
         return False
 
     return Alumno.objects.create_user(username=alumno.username, first_name= alumno.first_name,last_name= alumno.last_name)
@@ -43,7 +43,7 @@ def insert_profesor(profesor):
             raise
 
         #exp reg para saber si el nick corresponde al correo de la ugr (@correo.ugr.es)
-        if (re.match((r'^[a-z][a-z0-9]+(@ugr\.es)$'), profesor.username)) == None:
+        if (re.match((r'^[a-z][_a-z0-9]+(@ugr\.es)$'), profesor.username)) == None:
             raise
 
         return Profesor.objects.create_user(username=profesor.username, first_name= profesor.first_name,

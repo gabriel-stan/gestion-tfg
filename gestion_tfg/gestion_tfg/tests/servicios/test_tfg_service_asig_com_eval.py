@@ -8,18 +8,18 @@ class TfgServicesTests(TestCase):
 
     def setUp(self):
 
-        self.presidente = Profesor.objects.create_user(
-            username='presidente', email='pepe@ugr.es', password='top_secret', departamento='black mesa')
-        self.titular_1 = Profesor.objects.create_user(
-            username='titular_1', email='paco@ugr.es', password='top_secret', departamento='black mesa')
-        self.titular_2 = Profesor.objects.create_user(
-            username='titular_2', email='paco@ugr.es', password='top_secret', departamento='black mesa')
-        self.sup_presidente = Profesor.objects.create_user(
-            username='sup_presidente', email='paco@ugr.es', password='top_secret', departamento='black mesa')
-        self.sup_titular_1 = Profesor.objects.create_user(
-            username='sup_titular_1', email='paco@ugr.es', password='top_secret', departamento='black mesa')
-        self.sup_titular_2 = Profesor.objects.create_user(
-            username='sup_titular_2', email='paco@ugr.es', password='top_secret', departamento='black mesa')
+        self.presidente = tfg_services.insert_profesor(Profesor(username='pepe@ugr.es',
+                first_name='presidente', last_name='pepe', departamento='black mesa4'))
+        self.titular_1 = tfg_services.insert_profesor(Profesor(username='titular_1@ugr.es',
+                first_name='titular_1', last_name='paco', departamento='black mesa3'))
+        self.titular_2 = tfg_services.insert_profesor(Profesor(username='paco@ugr.es',
+                first_name='titular_2', last_name='pepe', departamento='black mesa1'))
+        self.sup_presidente = tfg_services.insert_profesor(Profesor(username='sup_presidente@ugr.es',
+                first_name='sup_presidente', last_name='pepe', departamento='black mesa3'))
+        self.sup_titular_1 = tfg_services.insert_profesor(Profesor(username='manuel3@ugr.es',
+                first_name='sup_titular_1', last_name='manuel', departamento='black mesa2'))
+        self.sup_titular_2 = tfg_services.insert_profesor(Profesor(username='manolo@ugr.es',
+                first_name='sup_titular_2', last_name='pepe', departamento='black mesa2'))
 
         self.grupo_profesores = Group.objects.get_or_create(name='Profesores')
         self.grupo_alumnos = Group.objects.get_or_create(name='Alumnos')
