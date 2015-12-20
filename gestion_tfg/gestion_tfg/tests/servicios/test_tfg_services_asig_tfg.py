@@ -26,12 +26,12 @@ class TfgServicesTests(TestCase):
                            hard_soft=self.hard_soft_tfg, tutor=self.user_tutor_tfg,
                            cotutor=self.user_cotutor_tfg)
 
-        self.user_alumn1_tfg = Alumno.objects.create_user(
-            username='alumn1', email='alumn1@ugr.es', password='top_secretalumn1')
-        self.user_alumn2_tfg = Alumno.objects.create_user(
-            username='alumn2', email='alumn2@ugr.es', password='top_secretalumn2')
-        self.user_alumn3_tfg = Alumno.objects.create_user(
-            username='alumn3', email='alumn3@ugr.es', password='top_secretalumn3')
+        self.user_alumn1_tfg = tfg_services.insert_alumno(Alumno(username='alumn1@correo.ugr.es', first_name='alumn1',
+                                                                 last_name='apellidos 1'))
+        self.user_alumn2_tfg = tfg_services.insert_alumno(Alumno(username='alumn2@correo.ugr.es', first_name='alumn2',
+                                                                 last_name='apellidos 2'))
+        self.user_alumn3_tfg = tfg_services.insert_alumno(Alumno(username='alumn3@correo.ugr.es', first_name='alumn3',
+                                                                 last_name='apellidos 3'))
 
         self.otro_tipo_tfg = 'otro tipo'
         self.otro_titulo_tfg = 'otro titulo'
