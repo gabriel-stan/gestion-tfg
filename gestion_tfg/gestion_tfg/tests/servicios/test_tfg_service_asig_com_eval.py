@@ -49,7 +49,6 @@ class TfgServicesTests(TestCase):
         self.assertEqual(result, True)
 
 
-
     def test_formar_comision_error_param(self):
 
         self.presidente.groups.add(self.grupo_profesores[0])
