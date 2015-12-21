@@ -1,5 +1,5 @@
 from django.test import TestCase
-from gestion_tfg.models import Tfg, Tfg_Asig
+from gestion_tfg.models import Tfg, Tfg_Asig, Profesor, Alumno
 from django.contrib.auth.models import User, Group
 
 from gestion_tfg.servicios import tfg_services
@@ -15,9 +15,9 @@ class TfgServicesTests(TestCase):
         self.conocimientos_previos_tfg = 'conocimientos previos'
         self.hard_soft_tfg = 'hardware software'
 
-        self.user_tutor_tfg = User.objects.create_user(
+        self.user_tutor_tfg = Profesor.objects.create_user(
             username='pepe', email='pepe@ugr.es', password='top_secret')
-        self.user_cotutor_tfg = User.objects.create_user(
+        self.user_cotutor_tfg = Profesor.objects.create_user(
             username='paco', email='paco@ugr.es', password='top_secret')
 
         self.tfg = Tfg.objects.create(tipo=self.tipo_tfg, titulo=self.titulo_tfg,
@@ -26,12 +26,18 @@ class TfgServicesTests(TestCase):
                            hard_soft=self.hard_soft_tfg, tutor=self.user_tutor_tfg,
                            cotutor=self.user_cotutor_tfg)
 
-        self.user_alumn1_tfg = User.objects.create_user(
-            username='alumn1', email='alumn1@ugr.es', password='top_secretalumn1')
-        self.user_alumn2_tfg = User.objects.create_user(
-            username='alumn2', email='alumn2@ugr.es', password='top_secretalumn2')
-        self.user_alumn3_tfg = User.objects.create_user(
-            username='alumn3', email='alumn3@ugr.es', password='top_secretalumn3')
+        self.user_alumn1_tfg = tfg_services.insert_alumno(Alumno(username='alumn1@correo.ugr.es', first_name='alumn1',
+                                                                 last_name='apellidos 1'))
+        self.user_alumn2_tfg = tfg_services.insert_alumno(Alumno(username='alumn2@correo.ugr.es', first_name='alumn2',
+                                                                 last_name='apellidos 2'))
+        self.user_alumn3_tfg = tfg_services.insert_alumno(Alumno(username='alumn3@correo.ugr.es', first_name='alumn3',
+                                                                 last_name='apellidos 3'))
+        self.otro_user_alumn1_tfg = tfg_services.insert_alumno(Alumno(username='otro_alumn1@correo.ugr.es', first_name='otro_alumn1',
+                                                                 last_name='otro_apellidos 1'))
+        self.otro_user_alumn2_tfg = tfg_services.insert_alumno(Alumno(username='otro_alumn2@correo.ugr.es', first_name='otro_alumn2',
+                                                                 last_name='otro_apellidos 2'))
+        self.otro_user_alumn3_tfg = tfg_services.insert_alumno(Alumno(username='otro_alumn3@correo.ugr.es', first_name='otro_alumn3',
+                                                                 last_name='otro_apellidos 3'))
 
         self.otro_tipo_tfg = 'otro tipo'
         self.otro_titulo_tfg = 'otro titulo'
@@ -40,17 +46,12 @@ class TfgServicesTests(TestCase):
         self.otro_conocimientos_previos_tfg = 'otros conocimientos previos'
         self.otro_hard_soft_tfg = 'otros hardware y software'
 
-        self.otro_user_tutor_tfg = User.objects.create_user(
-            username='manuel', email='manuel@ugr.es', password='top_secret')
-        self.otro_user_cotutor_tfg = User.objects.create_user(
-            username='manolo', email='manolo@ugr.es', password='top_secret')
 
-        self.otro_user_alumn1_tfg = User.objects.create_user(
-            username='otro_alumn1', email='otro_alumn1@ugr.es', password='otro_top_secretalumn1')
-        self.otro_user_alumn2_tfg = User.objects.create_user(
-            username='otro_alumn2', email='otro_alumn2@ugr.es', password='otro_top_secretalumn2')
-        self.otro_user_alumn3_tfg = User.objects.create_user(
-            username='otro_alumn3', email='otro_alumn3@ugr.es', password='otro_top_secretalumn3')
+        self.otro_user_tutor_tfg = tfg_services.insert_profesor(Profesor(username='manuel@ugr.es',
+                                        first_name='prof 1', last_name='apellidos 1', departamento='departamento 1'))
+
+        self.otro_user_cotutor_tfg = tfg_services.insert_profesor(Profesor(username='comanuel@ugr.es',
+                                        first_name='prof 2', last_name='apellidos 2', departamento='departamento 1'))
 
         self.otro_tfg = Tfg.objects.create(tipo=self.otro_tipo_tfg, titulo=self.otro_titulo_tfg,
                    n_alumnos=self.otro_n_alumnos_tfg, descripcion=self.otro_descripcion_tfg,

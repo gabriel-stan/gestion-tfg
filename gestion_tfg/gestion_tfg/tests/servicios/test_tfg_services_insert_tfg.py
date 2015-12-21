@@ -1,5 +1,5 @@
 from django.test import TestCase
-from gestion_tfg.models import Tfg
+from gestion_tfg.models import Tfg, Profesor, Alumno
 from django.contrib.auth.models import User, Group
 
 from gestion_tfg.servicios import tfg_services
@@ -16,10 +16,10 @@ class TfgServicesTests(TestCase):
         self.conocimientos_previos_tfg = 'conocimientos previos'
         self.hard_soft_tfg = 'hardware software'
 
-        self.user_tutor_tfg = User.objects.create_user(
-            username='pepe', email='pepe@ugr.es', password='top_secret')
-        self.user_cotutor_tfg = User.objects.create_user(
-            username='paco', email='paco@ugr.es', password='top_secret')
+        self.user_tutor_tfg = tfg_services.insert_profesor(Profesor(username='pepe@ugr.es',
+                                        first_name='pepe', last_name='paco', departamento='departamento 1'))
+        self.user_cotutor_tfg = tfg_services.insert_profesor(Profesor(username='paco@ugr.es',
+                                        first_name='paco', last_name='pepe', departamento='departamento 2'))
 
         self.grupo_profesores = Group.objects.get_or_create(name='Profesores')
         self.grupo_alumnos = Group.objects.get_or_create(name='Alumnos')

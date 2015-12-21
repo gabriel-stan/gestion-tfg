@@ -1,5 +1,5 @@
 from django.test import TestCase
-from gestion_tfg.models import Tfg, Tfg_Asig
+from gestion_tfg.models import Tfg, Tfg_Asig, Profesor, Alumno
 from django.contrib.auth.models import User
 
 nuevo_tfg = {}
@@ -22,9 +22,9 @@ class TfgTests(TestCase):
         self.conocimientos_previos_tfg = 'conocimientos previos'
         self.hard_soft_tfg = 'hardware software'
 
-        self.user_tutor_tfg = User.objects.create_user(
+        self.user_tutor_tfg = Profesor.objects.create_user(
             username='pepe', email='pepe@ugr.es', password='top_secret')
-        self.user_cotutor_tfg = User.objects.create_user(
+        self.user_cotutor_tfg = Profesor.objects.create_user(
             username='paco', email='paco@ugr.es', password='top_secret')
 
         self.tfg = Tfg.objects.create(tipo=self.tipo_tfg, titulo=self.titulo_tfg,
@@ -33,11 +33,11 @@ class TfgTests(TestCase):
                            hard_soft=self.hard_soft_tfg, tutor=self.user_tutor_tfg,
                            cotutor=self.user_cotutor_tfg)
 
-        self.user_alumn1_tfg = User.objects.create_user(
+        self.user_alumn1_tfg = Alumno.objects.create_user(
             username='alumn1', email='alumn1@ugr.es', password='top_secretalumn1')
-        self.user_alumn2_tfg = User.objects.create_user(
+        self.user_alumn2_tfg = Alumno.objects.create_user(
             username='alumn2', email='alumn2@ugr.es', password='top_secretalumn2')
-        self.user_alumn3_tfg = User.objects.create_user(
+        self.user_alumn3_tfg = Alumno.objects.create_user(
             username='alumn3', email='alumn3@ugr.es', password='top_secretalumn3')
 
         self.tfg_asig = Tfg_Asig.objects.create(tfg=self.tfg, alumno_1=self.user_alumn1_tfg, alumno_2=self.user_alumn2_tfg, alumno_3=self.user_alumn3_tfg)
