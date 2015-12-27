@@ -68,12 +68,12 @@ def update_alumno(alumno, campos):
         return False
 
 def delete_alumno(alumno):
-    alumno.delete()
+
     try:
-        Alumno.objects.get(username=alumno.username)
-        return False
-    except Alumno.DoesNotExist:
+        Alumno.objects.get(username=alumno.username).delete()
         return True
+    except Alumno.DoesNotExist:
+        return 'No existe'
 
 def insert_profesor(profesor):
 
@@ -106,6 +106,59 @@ def insert_profesor(profesor):
         return False
     except:
         return False
+
+def update_profesor(profesor, campos):
+    try:
+        # comprobando username
+        if 'username' in campos.keys():
+            res = Profesor.objects.filter(username=campos['username'])
+            if res.count() == 0:
+                if (re.match((r'^[a-z][_a-z0-9]+(@ugr\.es)$'), campos['username'])) == None:
+                    raise
+                else:
+                    profesor.username = campos['username']
+            else:
+                raise
+
+        # comprobando nombre
+        if 'first_name' in campos.keys():
+            if campos['first_name'] == '' or not isinstance(campos['first_name'], str):
+                raise
+            else:
+                profesor.first_name = campos['first_name']
+
+        # comprobando apellidos
+        if 'last_name' in campos.keys():
+            if campos['last_name'] == '' or not isinstance(campos['last_name'], str):
+                raise
+            else:
+                profesor.last_name = campos['last_name']
+
+        # comprobando departamento
+        if 'departamento' in campos.keys():
+            if campos['departamento'] == '' or not isinstance(campos['departamento'], str):
+                raise
+            else:
+                profesor.departamento = campos['departamento']
+
+        profesor.save()
+
+        resul = Profesor.objects.get(username=profesor.username)
+        return resul
+
+    except NameError:
+        print 'error de valor'
+        return False
+    except:
+        return False
+
+def delete_profesor(profesor):
+
+    try:
+        Profesor.objects.get(username=profesor.username).delete()
+        return True
+    except Profesor.DoesNotExist:
+        return 'No existe'
 
 def insert_tfg(tfg):
     # comprobando titulo vacio o Tfg con el mismo titulo

@@ -25,7 +25,7 @@ class TfgServicesTests(TestCase):
         self.alumno1 = tfg_services.insert_alumno(Alumno(username=self.alumn1_username, first_name=self.alumn1_nombre,
                                                          last_name=self.alumn1_apellidos))
 
-        self.alumno1 = tfg_services.insert_alumno(Alumno(username=self.otro_username, first_name=self.otro_nombre,
+        self.alumno2 = tfg_services.insert_alumno(Alumno(username=self.otro_username, first_name=self.otro_nombre,
                                                          last_name=self.otro_apellidos))
 
 
