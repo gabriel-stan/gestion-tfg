@@ -3,29 +3,81 @@ from gestion_tfg.servicios.utils import *
 import re
 
 def insert_alumno(alumno):
-    if not alumno.username:
-        return False
-    else:
-        res = Alumno.objects.filter(username=alumno.username)
-        if res.count() != 0:
-            return False
+    try:
+        if not alumno.username:
+            raise
+        else:
+            res = Alumno.objects.filter(username=alumno.username)
+            if res.count() != 0:
+                raise
 
-    if not alumno.first_name or not isinstance(alumno.first_name, str):
+        if not alumno.first_name or not isinstance(alumno.first_name, str):
+            raise
+
+        if not alumno.last_name or not isinstance(alumno.last_name, str):
+            raise
+
+        #exp reg para saber si el nick corresponde al correo de la ugr (@correo.ugr.es)
+        if (re.match((r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$'), alumno.username)) == None:
+            raise
+
+        return Alumno.objects.create_user(username=alumno.username, first_name= alumno.first_name,last_name= alumno.last_name)
+
+    except NameError:
+        print 'error de valor'
+        return False
+    except:
         return False
 
-    if not alumno.last_name or not isinstance(alumno.last_name, str):
+def update_alumno(alumno, campos):
+    try:
+        # comprobando username
+        if 'username' in campos.keys():
+            res = Alumno.objects.filter(username=campos['username'])
+            if res.count() == 0:
+                if (re.match((r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$'), campos['username'])) == None:
+                    raise
+                else:
+                    alumno.username = campos['username']
+            else:
+                raise
+
+        # comprobando nombre
+        if 'first_name' in campos.keys():
+            if campos['first_name'] == '' or not isinstance(campos['first_name'], str):
+                raise
+            else:
+                alumno.first_name = campos['first_name']
+
+        # comprobando apellidos
+        if 'last_name' in campos.keys():
+            if campos['last_name'] == '' or not isinstance(campos['last_name'], str):
+                raise
+            else:
+                alumno.last_name = campos['last_name']
+
+        alumno.save()
+
+        resul = Alumno.objects.get(username=alumno.username)
+        return resul
+
+    except NameError:
+        print 'error de valor'
+        return False
+    except:
         return False
 
-    #exp reg para saber si el nick corresponde al correo de la ugr (@correo.ugr.es)
-    if (re.match((r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$'), alumno.username)) == None:
-        return False
+def delete_alumno(alumno):
 
-    return Alumno.objects.create_user(username=alumno.username, first_name= alumno.first_name,last_name= alumno.last_name)
+    try:
+        Alumno.objects.get(username=alumno.username).delete()
+        return True
+    except Alumno.DoesNotExist:
+        return 'No existe'
 
 def insert_profesor(profesor):
 
     try:
-
         if not profesor.username:
             raise
         else:
@@ -54,6 +106,59 @@ def insert_profesor(profesor):
         return False
     except:
         return False
+
+def update_profesor(profesor, campos):
+    try:
+        # comprobando username
+        if 'username' in campos.keys():
+            res = Profesor.objects.filter(username=campos['username'])
+            if res.count() == 0:
+                if (re.match((r'^[a-z][_a-z0-9]+(@ugr\.es)$'), campos['username'])) == None:
+                    raise
+                else:
+                    profesor.username = campos['username']
+            else:
+                raise
+
+        # comprobando nombre
+        if 'first_name' in campos.keys():
+            if campos['first_name'] == '' or not isinstance(campos['first_name'], str):
+                raise
+            else:
+                profesor.first_name = campos['first_name']
+
+        # comprobando apellidos
+        if 'last_name' in campos.keys():
+            if campos['last_name'] == '' or not isinstance(campos['last_name'], str):
+                raise
+            else:
+                profesor.last_name = campos['last_name']
+
+        # comprobando departamento
+        if 'departamento' in campos.keys():
+            if campos['departamento'] == '' or not isinstance(campos['departamento'], str):
+                raise
+            else:
+                profesor.departamento = campos['departamento']
+
+        profesor.save()
+
+        resul = Profesor.objects.get(username=profesor.username)
+        return resul
+
+    except NameError:
+        print 'error de valor'
+        return False
+    except:
+        return False
+
+def delete_profesor(profesor):
+
+    try:
+        Profesor.objects.get(username=profesor.username).delete()
+        return True
+    except Profesor.DoesNotExist:
+        return 'No existe'
 
 def insert_tfg(tfg):
     # comprobando titulo vacio o Tfg con el mismo titulo
@@ -169,9 +274,9 @@ def delete_tfg(tfg):
 
     try:
         Tfg.objects.get(titulo=tfg)
-        return True
-    except Tfg.DoesNotExist:
         return False
+    except Tfg.DoesNotExist:
+        return True
 
 
 def asignar_tfg(tfg, alumno1, alumno2=None, alumno3=None):
