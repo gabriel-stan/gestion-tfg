@@ -25,6 +25,7 @@ class TfgServicesTests(TestCase):
         self.grupo_alumnos = Group.objects.get_or_create(name='Alumnos')
 
 
+
     def test_formar_comision_error_grupo(self):
 
         self.presidente.groups.add(self.grupo_profesores[0])
