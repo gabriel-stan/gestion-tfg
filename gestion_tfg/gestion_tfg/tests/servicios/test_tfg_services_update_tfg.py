@@ -1,9 +1,8 @@
 from django.test import TestCase
-from gestion_tfg.models import Tfg
+from gestion_tfg.models import Tfg, Profesor
 from django.contrib.auth.models import User, Group
 
 from gestion_tfg.servicios import tfg_services
-
 
 class TfgServicesTests(TestCase):
     def setUp(self):
@@ -15,10 +14,10 @@ class TfgServicesTests(TestCase):
         self.conocimientos_previos_tfg = 'conocimientos previos'
         self.hard_soft_tfg = 'hardware software'
 
-        self.user_tutor_tfg = User.objects.create_user(
-            username='pepe', email='pepe@ugr.es', password='top_secret')
-        self.user_cotutor_tfg = User.objects.create_user(
-            username='paco', email='paco@ugr.es', password='top_secret')
+        self.user_tutor_tfg = tfg_services.insert_profesor(Profesor(username='paco@ugr.es',
+                                        first_name='paco', last_name='pepe', departamento='departamento 1'))
+        self.user_cotutor_tfg = tfg_services.insert_profesor(Profesor(username='pepe@ugr.es',
+                                        first_name='pepe', last_name='paco', departamento='departamento 2'))
 
         self.otro_tipo_tfg = 'otro tipo'
         self.otro_titulo_tfg = 'otro titulo'
@@ -27,10 +26,10 @@ class TfgServicesTests(TestCase):
         self.otro_conocimientos_previos_tfg = 'otros conocimientos previos'
         self.otro_hard_soft_tfg = 'otros hardware y software'
 
-        self.otro_user_tutor_tfg = User.objects.create_user(
-            username='manuel', email='manuel@ugr.es', password='top_secret')
-        self.otro_user_cotutor_tfg = User.objects.create_user(
-            username='manolo', email='manolo@ugr.es', password='top_secret')
+        self.otro_user_tutor_tfg = tfg_services.insert_profesor(Profesor(username='manolo@ugr.es',
+                                        first_name='manolo', last_name='manue', departamento='departamento 1'))
+        self.otro_user_cotutor_tfg = tfg_services.insert_profesor(Profesor(username='manue@ugr.es',
+                                        first_name='manue', last_name='manolo', departamento='departamento 2'))
 
         self.grupo_profesores = Group.objects.get_or_create(name='Profesores')
         self.grupo_alumnos = Group.objects.get_or_create(name='Alumnos')
@@ -241,7 +240,7 @@ class TfgServicesTests(TestCase):
         result = tfg_services.update_tfg(tfg, campos)
         self.assertEqual(result, False)
 
-        #tutor no profesor
+        #tutor no en grupo Profesor
         campos = {}
         campos['tutor'] = self.otro_user_tutor_tfg
 
