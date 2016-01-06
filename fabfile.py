@@ -28,6 +28,7 @@ def  install_environment():
 #prepare app
 def prepare_app():
 	with prefix('source gestion-tfg/venv/bin/activate'):
+		run('cd gestion-tfg/ && pip install -r requirements.txt')
 		run('cd gestion-tfg/gestion_tfg/ && python manage.py syncdb --noinput')
 		run('cd gestion-tfg/gestion_tfg/ && python manage.py migrate')
 		run('cd gestion-tfg/gestion_tfg/ && python manage.py makemigrations')
@@ -60,7 +61,7 @@ def install():
 
 	prepare_app()
 
-	run_app()
+	run_app3()
 
 #delete_sources
 def delete_sources():
@@ -69,3 +70,13 @@ def delete_sources():
 #check
 def check():
 	run('curl http://localhost:80/')
+
+
+def update_sources():
+	run('cd gestion-tfg/ && git pull origin master')
+
+def update_app():
+	
+	update_sources()
+
+	prepare_app()
