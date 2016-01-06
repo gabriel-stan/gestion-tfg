@@ -34,8 +34,14 @@ def prepare_app():
 
 
 #run app
-def run_app():	
-	run('cd gestion-tfg/ && make run &')
+def run_app2():	
+	with prefix('source gestion-tfg/venv/bin/activate'):
+		run('cd gestion-tfg/gestion_tfg && python manage.py runserver 0.0.0.0:8000')
+
+#run app
+def run_app():
+	with prefix('source gestion-tfg/venv/bin/activate'):
+		run('cd gestion-tfg/ && make runserver')
 
 
 #install app

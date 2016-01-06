@@ -18,3 +18,6 @@ install:
 
 run:
 	./run.sh
+
+runserver:
+	cd gestion_tfg/ && python manage.py runserver 0.0.0.0:8000 &
