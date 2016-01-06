@@ -29,4 +29,3 @@ def install():
 #check
 def check():
 	run('curl http://localhost:8000/')
-
