@@ -1,30 +1,59 @@
-from fabric.api import run, local, hosts, cd
+from fabric.api import run, local, hosts, cd, prefix
 from fabric.contrib import django
 
 #host info
 def info():
     run('uname -s')
 
+
+#install packages
+def install_packages():
+
+	run('sudo apt-get update')
+	run('sudo apt-get install -y git')
+	run('sudo apt-get install -y make')
+
+
+#download sources
+def download_sources():
+
+	run('git clone https://github.com/gabriel-stan/gestion-tfg')
+
+
+#install environment
+def  install_environment():
+	run('cd gestion-tfg/ && make install')
+
+
+#prepare app
+def prepare_app():
+	with prefix('source gestion-tfg/venv/bin/activate'):
+		run('cd gestion-tfg/gestion_tfg/ && python manage.py syncdb --noinput')
+		run('cd gestion-tfg/gestion_tfg/ && python manage.py migrate')
+		run('cd gestion-tfg/gestion_tfg/ && python manage.py makemigrations')
+
+
+#run app
+def run_app():	
+	run('cd gestion-tfg/ && make run &')
+
+
 #install app
 def install():
 
-	#install git
-	run('sudo apt-get update')
-	run('sudo apt-get install -y git')
+	install_packages()
 
-	#download sources
-	run('sudo git clone https://github.com/gabriel-stan/gestion-tfg')
+	download_sources()
 
-	#install environment
-	run('cd gestion-tfg/ && make install')
+	install_environment()
 
-	#prepare app
-	run('cd gestion-tfg/gestion_tfg/ && python manage.py syncdb --noinput')
-	run('cd gestion-tfg/gestion_tfg/ && python manage.py migrate')
-	run('cd gestion-tfg/gestion_tfg/ && python manage.py makemigrations')
+	prepare_app()
 
-	#run app
-	run('cd gestion-tfg/ && make run')
+	run_app()
+
+#delete_sources
+def delete_sources():
+	run('rm -rf gestion-tfg/')
 
 #check
 def check():
