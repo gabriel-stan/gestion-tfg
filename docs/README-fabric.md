@@ -24,7 +24,7 @@ Creación de la máquina virtual en azure:
 
 Comprobamos la conexión por ssh:
 
-![connection](https://www.dropbox.com/s/mqcj3qn61h0z2p6/conexion?dl=1)
+![connection](https://www.dropbox.com/s/nubjxp1ttj22jh6/conexion.png?dl=1)
 
 ![connection](https://www.dropbox.com/s/kxg1egff35pnpra/check_connection.png?dl=1)
 
