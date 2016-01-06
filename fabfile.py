@@ -6,6 +6,11 @@ def info():
     run('uname -s')
 
 
+#check
+def check():
+	run('curl http://localhost:80/')
+
+
 #install packages
 def install_packages():
 
@@ -63,13 +68,11 @@ def install():
 
 	run_app3()
 
+	check()
+
 #delete_sources
 def delete_sources():
 	run('rm -rf gestion-tfg/')
-
-#check
-def check():
-	run('curl http://localhost:80/')
 
 
 def update_sources():
@@ -80,3 +83,20 @@ def update_app():
 	update_sources()
 
 	prepare_app()
+
+
+
+def download_docker():
+	run('sudo apt-get update')
+	run('sudo apt-get install -y docker.io')
+
+def pull_docker():
+	run('sudo docker pull hugobarzano/osl-computer-management:computer-management')
+
+def run_docker():
+	run('sudo docker run -i -t hugobarzano/osl-computer-management:computer-management')
+
+def install_docker():
+	download_docker()
+	pull_docker()
+	run_docker()
