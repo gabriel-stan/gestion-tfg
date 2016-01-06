@@ -20,4 +20,4 @@ run:
 	./run.sh
 
 runserver:
-	cd gestion_tfg/ && python manage.py runserver 0.0.0.0:8000 &
+	cd gestion_tfg/ && sudo ../venv/bin/python manage.py runserver 0.0.0.0:80 &

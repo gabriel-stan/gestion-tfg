@@ -36,12 +36,17 @@ def prepare_app():
 #run app
 def run_app2():	
 	with prefix('source gestion-tfg/venv/bin/activate'):
-		run('cd gestion-tfg/gestion_tfg && python manage.py runserver 0.0.0.0:8000')
+		run('cd gestion-tfg/gestion_tfg && sudo ../venv/bin/python manage.py runserver 0.0.0.0:80')
 
 #run app
 def run_app():
 	with prefix('source gestion-tfg/venv/bin/activate'):
 		run('cd gestion-tfg/ && make runserver')
+
+#run app
+def run_app3():
+	run('cd gestion-tfg/ && sudo make runserver')
+	#run('make runserver')
 
 
 #install app
@@ -63,4 +68,4 @@ def delete_sources():
 
 #check
 def check():
-	run('curl http://localhost:8000/')
+	run('curl http://localhost:80/')
