@@ -42,6 +42,12 @@ Para poder realizar pruebas fácilmente en un entorno totalmente aislado, se pue
 
 Más información [aquí](docs/README-contenerizacion.md).
 
+### Despliegue Remoto con Fabric
+
+Para poder desplegar y actualizar la aplciación remotamente, se puede hacer uso de la librería de python [Fabric](http://www.fabfile.org/).
+
+Más información [aquí](docs/README-fabric.md).
+
 ### Asignación de tareas
 
 - Desarrollo: @tonimademo y @gabriel-stan
