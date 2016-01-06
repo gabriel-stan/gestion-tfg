@@ -16,7 +16,7 @@ Para actualizar la aplicación ya desplegada, es suficiente ejecutar el comando 
 
 #### Despliegue actual
 
-La aplicación está desplegada sobre una máquina virtual de Azure, y está disponible [aquí](gestfg.northeurope.cloudapp.azure.com). A continuación se muestra el proceso de despliegue.
+La aplicación está desplegada sobre una máquina virtual de Azure, y está disponible [aquí](http://gestfg.northeurope.cloudapp.azure.com). A continuación se muestra el proceso de despliegue.
 
 Creación de la máquina virtual en azure:
 
