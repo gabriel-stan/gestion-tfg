@@ -2,6 +2,7 @@ from gestion_tfg.models import Comision_Evaluacion
 from gestion_tfg.servicios.utils import *
 import re
 
+
 def insert_alumno(alumno):
     try:
         if not alumno.username:
