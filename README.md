@@ -48,6 +48,9 @@ Para poder desplegar y actualizar la aplciación remotamente, se puede hacer uso
 
 Más información [aquí](docs/README-fabric.md).
 
+Probando travis automerge
+
+
 ### Asignación de tareas
 
 - Desarrollo: @tonimademo y @gabriel-stan
