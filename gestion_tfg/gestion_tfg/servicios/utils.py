@@ -29,3 +29,9 @@ def comprueba_alumno(usuario):
         return True
     else:
         return False
+
+def get_param(request):
+
+    param={}
+
+    return param
