@@ -15,10 +15,12 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from ws import tfg
 import views
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^ejemplo/$', views.under_construction, name='under_construction'),
+    url(r'^insert_tfg/$', tfg.insert_tfg),
 
 ]
