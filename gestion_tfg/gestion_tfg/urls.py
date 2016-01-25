@@ -21,6 +21,6 @@ import views
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^ejemplo/$', views.under_construction, name='under_construction'),
-    url(r'^insert_tfg/$', tfg.insert_tfg),
+    url(r'^alumnos/$', tfg.alumnos),
 
 ]
