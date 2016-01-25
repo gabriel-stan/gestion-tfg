@@ -7,3 +7,4 @@ class AlumnoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Alumno
         fields = ('id', 'username', 'first_name', 'last_name')
+        
