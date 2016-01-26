@@ -7,8 +7,10 @@ from gestion_tfg.serializers import AlumnoSerializer
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.views.decorators.csrf import csrf_exempt
+from django.core.context_processors import csrf
 
-
+@csrf_exempt
 @api_view(['GET', 'POST'])
 def alumnos(request):
     """
