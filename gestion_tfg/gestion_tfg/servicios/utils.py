@@ -1,7 +1,6 @@
 from gestion_tfg.models import Tfg, Tfg_Asig, Profesor, Alumno
 from django.contrib.auth.models import User
 
-
 def existe_tfg_asig(alumno):
 
     if not isinstance(alumno, Alumno):
@@ -29,3 +28,15 @@ def comprueba_alumno(usuario):
         return True
     else:
         return False
+
+def get_param(req):
+
+    datos = {}
+    for key, value in req.REQUEST.iteritems():
+        datos[key] = value
+    return datos
+
+def response(params):
+
+    return HttpResponse(str(params), content_type="text/plain")
+

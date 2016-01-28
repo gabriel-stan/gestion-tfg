@@ -15,9 +15,12 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from ws import alumnos
 import views
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^$', views.under_construction, name='under_construction'),
+    url(r'^ejemplo/$', views.under_construction, name='under_construction'),
+    url(r'^alumnos/$', alumnos.alumnos, name='alumnos'),
+
 ]
