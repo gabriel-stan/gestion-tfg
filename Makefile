@@ -13,6 +13,9 @@ install-docker:
 run-docker:
 	./run_docker.sh
 
+install-packages:
+	./install_packages.sh
+
 install:
 	./install.sh
 
