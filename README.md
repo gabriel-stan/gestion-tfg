@@ -1,6 +1,7 @@
 #GESTFG - Plataforma de Gestión y Evaluación de Trabajos de Fin de Grado y Master
 
-[![Build Status](https://travis-ci.org/gabriel-stan/gestion-tfg.svg?branch=master)](https://travis-ci.org/gabriel-stan/gestion-tfg) [![Heroku](https://heroku-badge.herokuapp.com/?app=gestfg&style=flat)](http://gestfg.herokuapp.com/)
+[![Build Status](https://travis-ci.org/gabriel-stan/gestion-tfg.svg?branch=master)](https://travis-ci.org/gabriel-stan/gestion-tfg) [![Shippable](https://img.shields.io/shippable/565a097570d6b10d000f5ceb.svg)](https://app.shippable.com/builds/565a097570d6b10d000f5ceb) [![Heroku](https://heroku-badge.herokuapp.com/?app=gestfg&style=flat)](http://gestfg.herokuapp.com/)
+
 
 
 Antonio Manuel Rodriguez Castro  
@@ -48,7 +49,6 @@ Para poder desplegar y actualizar la aplciación remotamente, se puede hacer uso
 
 Más información [aquí](docs/README-fabric.md).
 
-Probando travis automerge
 
 
 ### Asignación de tareas
