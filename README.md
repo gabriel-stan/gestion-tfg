@@ -1,6 +1,6 @@
 #GESTFG - Plataforma de Gestión y Evaluación de Trabajos de Fin de Grado y Master
 
-[![Build Status](https://travis-ci.org/gabriel-stan/gestion-tfg.svg?branch=master)](https://travis-ci.org/gabriel-stan/gestion-tfg) [![Shippable](https://img.shields.io/shippable/565a097570d6b10d000f5ceb.svg)](https://app.shippable.com/builds/565a097570d6b10d000f5ceb) [![Heroku](https://heroku-badge.herokuapp.com/?app=gestfg&style=flat)](http://gestfg.herokuapp.com/)
+[![Build Status](https://travis-ci.org/gabriel-stan/gestion-tfg.svg?branch=master)](https://travis-ci.org/gabriel-stan/gestion-tfg) [![Shippable](https://img.shields.io/shippable/562e58f31895ca44742123f9.svg)](https://app.shippable.com/projects/562e58f31895ca44742123f9) [![Heroku](https://heroku-badge.herokuapp.com/?app=gestfg&style=flat)](http://gestfg.herokuapp.com/)
 
 
 
