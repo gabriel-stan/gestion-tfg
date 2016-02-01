@@ -5,29 +5,26 @@ import re
 def insert_alumno(alumno):
     try:
         if not alumno.username:
-            raise
+            raise NameError("Error en el nombre del alumno")
         else:
             res = Alumno.objects.filter(username=alumno.username)
             if res.count() != 0:
-                raise
+                raise NameError("El alumno ya existe")
 
-        if not alumno.first_name or not isinstance(alumno.first_name, str):
-            raise
+        if not alumno.first_name or not is_string(alumno.first_name):
+            raise NameError("Nombre incorrecto")
 
-        if not alumno.last_name or not isinstance(alumno.last_name, str):
-            raise
+        if not alumno.last_name or not is_string(alumno.last_name):
+            raise NameError("Apellidos incorrectos")
 
         #exp reg para saber si el nick corresponde al correo de la ugr (@correo.ugr.es)
         if (re.match((r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$'), alumno.username)) == None:
-            raise
+            raise NameError("El correo no es correcto")
 
-        return Alumno.objects.create_user(username=alumno.username, first_name= alumno.first_name,last_name= alumno.last_name)
+        return dict(status=True, data=Alumno.objects.create_user(username=alumno.username, first_name= alumno.first_name,last_name= alumno.last_name))
 
-    except NameError:
-        print 'error de valor'
-        return False
-    except:
-        return False
+    except NameError as e:
+        return dict(status=False, message=e.message)
 
 def update_alumno(alumno, campos):
     try:

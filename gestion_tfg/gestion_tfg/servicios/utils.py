@@ -36,7 +36,9 @@ def get_param(req):
         datos[key] = value
     return datos
 
-def response(params):
-
-    return HttpResponse(str(params), content_type="text/plain")
-
+def is_string(s):
+    try:
+        str(s)
+        return True
+    except ValueError:
+        return False

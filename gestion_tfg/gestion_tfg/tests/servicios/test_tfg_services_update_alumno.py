@@ -23,10 +23,10 @@ class TfgServicesTests(TestCase):
         self.new_apellidos = 'apellido 3 apellido 33'
 
         self.alumno1 = tfg_services.insert_alumno(Alumno(username=self.alumn1_username, first_name=self.alumn1_nombre,
-                                                         last_name=self.alumn1_apellidos))
+                                                         last_name=self.alumn1_apellidos))['data']
 
         self.alumno2 = tfg_services.insert_alumno(Alumno(username=self.otro_username, first_name=self.otro_nombre,
-                                                         last_name=self.otro_apellidos))
+                                                         last_name=self.otro_apellidos))['data']
 
 
     def test_update_alumno_username(self):

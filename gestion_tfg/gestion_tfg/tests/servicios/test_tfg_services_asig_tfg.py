@@ -27,17 +27,17 @@ class TfgServicesTests(TestCase):
                            cotutor=self.user_cotutor_tfg)
 
         self.user_alumn1_tfg = tfg_services.insert_alumno(Alumno(username='alumn1@correo.ugr.es', first_name='alumn1',
-                                                                 last_name='apellidos 1'))
+                                                                 last_name='apellidos 1'))['data']
         self.user_alumn2_tfg = tfg_services.insert_alumno(Alumno(username='alumn2@correo.ugr.es', first_name='alumn2',
-                                                                 last_name='apellidos 2'))
+                                                                 last_name='apellidos 2'))['data']
         self.user_alumn3_tfg = tfg_services.insert_alumno(Alumno(username='alumn3@correo.ugr.es', first_name='alumn3',
-                                                                 last_name='apellidos 3'))
+                                                                 last_name='apellidos 3'))['data']
         self.otro_user_alumn1_tfg = tfg_services.insert_alumno(Alumno(username='otro_alumn1@correo.ugr.es', first_name='otro_alumn1',
-                                                                 last_name='otro_apellidos 1'))
+                                                                 last_name='otro_apellidos 1'))['data']
         self.otro_user_alumn2_tfg = tfg_services.insert_alumno(Alumno(username='otro_alumn2@correo.ugr.es', first_name='otro_alumn2',
-                                                                 last_name='otro_apellidos 2'))
+                                                                 last_name='otro_apellidos 2'))['data']
         self.otro_user_alumn3_tfg = tfg_services.insert_alumno(Alumno(username='otro_alumn3@correo.ugr.es', first_name='otro_alumn3',
-                                                                 last_name='otro_apellidos 3'))
+                                                                 last_name='otro_apellidos 3'))['data']
 
         self.otro_tipo_tfg = 'otro tipo'
         self.otro_titulo_tfg = 'otro titulo'
