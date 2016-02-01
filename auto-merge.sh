@@ -15,6 +15,8 @@ if $TRAVIS; then
 	echo "Estoy en travis"
 else
 	exit 1
+fi
+
 
 echo $TRAVIS_BRANCH
 echo $COMMIT_MESSAGE
