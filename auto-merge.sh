@@ -11,6 +11,22 @@ SYNC_MASTER="*SYNC_MASTER*"
 AUTO_MERGE="AUTO MERGE:"
 AUTO_MERGE_REGEX="*$AUTO_MERGE*"
 
+# solo hacer automerge en travis
+if [[ $TRAVIS == 'true' ]]; then
+	echo "Estoy en travis"
+else
+	echo "No hago auto-merge, no estoy en Travis"
+	exit 0
+fi
+
+#especial para shippable (parece que no le hace caso al comando anterior...)
+if [[ $USER == 'shippable' ]]; then
+	echo "No hago auto-merge, estoy en Shippable"
+	exit 0
+else
+	echo "No estoy en shippable"
+fi
+
 
 echo $TRAVIS_BRANCH
 echo $COMMIT_MESSAGE
