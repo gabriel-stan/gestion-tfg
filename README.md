@@ -50,7 +50,6 @@ Para poder desplegar y actualizar la aplciación remotamente, se puede hacer uso
 Más información [aquí](docs/README-fabric.md).
 
 
-
 ### Asignación de tareas
 
 - Desarrollo: @tonimademo y @gabriel-stan
