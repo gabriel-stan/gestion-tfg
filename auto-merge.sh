@@ -11,6 +11,10 @@ SYNC_MASTER="*SYNC_MASTER*"
 AUTO_MERGE="AUTO MERGE:"
 AUTO_MERGE_REGEX="*$AUTO_MERGE*"
 
+if $TRAVIS; then
+	echo "Estoy en travis"
+else
+	exit 1
 
 echo $TRAVIS_BRANCH
 echo $COMMIT_MESSAGE
