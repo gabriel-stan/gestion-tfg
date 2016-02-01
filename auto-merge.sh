@@ -14,6 +14,7 @@ AUTO_MERGE_REGEX="*$AUTO_MERGE*"
 if $TRAVIS; then
 	echo "Estoy en travis"
 else
+	echo "No hago auto-merge, no estoy en Travis"
 	exit 1
 fi
 
