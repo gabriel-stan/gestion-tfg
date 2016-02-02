@@ -9,17 +9,17 @@ class TfgServicesTests(TestCase):
     def setUp(self):
 
         self.presidente = tfg_services.insert_profesor(Profesor(username='pepe@ugr.es',
-                first_name='presidente', last_name='pepe', departamento='black mesa4'))
+                first_name='presidente', last_name='pepe', departamento='black mesa4'))['data']
         self.titular_1 = tfg_services.insert_profesor(Profesor(username='titular_1@ugr.es',
-                first_name='titular_1', last_name='paco', departamento='black mesa3'))
+                first_name='titular_1', last_name='paco', departamento='black mesa3'))['data']
         self.titular_2 = tfg_services.insert_profesor(Profesor(username='paco@ugr.es',
-                first_name='titular_2', last_name='pepe', departamento='black mesa1'))
+                first_name='titular_2', last_name='pepe', departamento='black mesa1'))['data']
         self.sup_presidente = tfg_services.insert_profesor(Profesor(username='sup_presidente@ugr.es',
-                first_name='sup_presidente', last_name='pepe', departamento='black mesa3'))
+                first_name='sup_presidente', last_name='pepe', departamento='black mesa3'))['data']
         self.sup_titular_1 = tfg_services.insert_profesor(Profesor(username='manuel3@ugr.es',
-                first_name='sup_titular_1', last_name='manuel', departamento='black mesa2'))
+                first_name='sup_titular_1', last_name='manuel', departamento='black mesa2'))['data']
         self.sup_titular_2 = tfg_services.insert_profesor(Profesor(username='manolo@ugr.es',
-                first_name='sup_titular_2', last_name='pepe', departamento='black mesa2'))
+                first_name='sup_titular_2', last_name='pepe', departamento='black mesa2'))['data']
 
         self.grupo_profesores = Group.objects.get_or_create(name='Profesores')
         self.grupo_alumnos = Group.objects.get_or_create(name='Alumnos')

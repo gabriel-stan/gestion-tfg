@@ -24,16 +24,16 @@ class TfgServicesTests(TestCase):
 
         profesor = Profesor()
         result = tfg_services.insert_profesor(profesor)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
     def test_insert_profesor_repetido(self):
 
         profesor1 = Profesor(username=self.prof1_username, first_name= self.prof1_nombre,
                              last_name= self.prof1_apellidos, departamento=self.prof1_departamento)
         result = tfg_services.insert_profesor(profesor1)
-        self.assertEqual(result.username, profesor1.username)
+        self.assertEqual(result['data'].username, profesor1.username)
         result = tfg_services.insert_profesor(profesor1)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
     def test_insert_profesor_error(self):
 
@@ -41,59 +41,59 @@ class TfgServicesTests(TestCase):
         profesor1 = Profesor(username=self.prof1_username, first_name=self.prof1_nombre, last_name=self.prof1_apellidos,
                              departamento=self.prof1_departamento)
         result = tfg_services.insert_profesor(profesor1)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         username = 'ejemplo34@ug4r.es'
         profesor1 = Profesor(username=username, first_name= self.prof1_nombre,last_name= self.prof1_apellidos,
                              departamento=self.prof1_departamento)
         result = tfg_services.insert_profesor(profesor1)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         username = 'ejemplo34@ugr..es'
         profesor1 = Profesor(username=username, first_name= self.prof1_nombre,last_name= self.prof1_apellidos,
                              departamento=self.prof1_departamento)
         result = tfg_services.insert_profesor(profesor1)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         username = 'ejemplo34@ugr.com'
         profesor1 = Profesor(username=username, first_name= self.prof1_nombre,last_name= self.prof1_apellidos,
                              departamento=self.prof1_departamento)
         result = tfg_services.insert_profesor(profesor1)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         username = 'ejemplo34@correo.ugr.es'
         profesor1 = Profesor(username=username, first_name= self.prof1_nombre,last_name= self.prof1_apellidos,
                              departamento=self.prof1_departamento)
         result = tfg_services.insert_profesor(profesor1)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
     def test_insert_profesor_username(self):
 
         profesor1 = Profesor(first_name=self.prof1_nombre, last_name= self.prof1_apellidos, departamento=self.prof1_departamento)
         result = tfg_services.insert_profesor(profesor1)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
     def test_insert_profesor_nombre(self):
 
         profesor1 = Profesor(username=self.prof1_username, last_name= self.prof1_apellidos, departamento=self.prof1_departamento)
         result = tfg_services.insert_profesor(profesor1)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
     def test_insert_profesor_apellidos(self):
 
         profesor1 = Profesor(username=self.prof1_username, first_name= self.prof1_nombre, departamento=self.prof1_departamento)
         result = tfg_services.insert_profesor(profesor1)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
     def test_insert_profesor_departamento(self):
 
         profesor1 = Profesor(username=self.prof1_username, first_name=self.prof1_nombre, last_name=self.prof1_apellidos)
         result = tfg_services.insert_profesor(profesor1)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
     def test_insert_profesor_valido(self):
 
         profesor1 = Profesor(username=self.prof1_username, first_name=self.prof1_nombre, last_name=self.prof1_apellidos,
                              departamento=self.prof1_departamento)
         result = tfg_services.insert_profesor(profesor1)
-        self.assertEqual(result.username, profesor1.username)
+        self.assertEqual(result['data'].username, profesor1.username)

@@ -48,10 +48,14 @@ class TfgServicesTests(TestCase):
 
 
         self.otro_user_tutor_tfg = tfg_services.insert_profesor(Profesor(username='manuel@ugr.es',
-                                        first_name='prof 1', last_name='apellidos 1', departamento='departamento 1'))
+                                                                         first_name='prof 1',
+                                                                         last_name='apellidos 1',
+                                                                         departamento='departamento 1'))['data']
 
         self.otro_user_cotutor_tfg = tfg_services.insert_profesor(Profesor(username='comanuel@ugr.es',
-                                        first_name='prof 2', last_name='apellidos 2', departamento='departamento 1'))
+                                                                           first_name='prof 2',
+                                                                           last_name='apellidos 2',
+                                                                           departamento='departamento 1'))['data']
 
         self.otro_tfg = Tfg.objects.create(tipo=self.otro_tipo_tfg, titulo=self.otro_titulo_tfg,
                    n_alumnos=self.otro_n_alumnos_tfg, descripcion=self.otro_descripcion_tfg,

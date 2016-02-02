@@ -34,62 +34,62 @@ class TfgServicesTests(TestCase):
         #username vacio
         campos = dict(username='')
         result = tfg_services.update_alumno(self.alumno1, campos)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         #username no string
         campos = dict(username=2)
         result = tfg_services.update_alumno(self.alumno1, campos)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         #username no valido
         campos = dict(username='usuario@ugr.es')
         result = tfg_services.update_alumno(self.alumno1, campos)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         #username repetido
         campos = dict(username=self.otro_username)
         result = tfg_services.update_alumno(self.alumno1, campos)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         #username valido
         campos = dict(username='usuario_nuevo@correo.ugr.es')
         result = tfg_services.update_alumno(self.alumno1, campos)
-        self.assertEqual(result.username, campos['username'])
+        self.assertEqual(result['data'].username, campos['username'])
         
     def test_update_alumno_nombre(self):
 
         #first_name vacio
         campos = dict(first_name='')
         result = tfg_services.update_alumno(self.alumno1, campos)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         #first_name no string
         campos = dict(first_name=1)
         result = tfg_services.update_alumno(self.alumno1, campos)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         #first_name valido
         campos = dict(first_name='Pacopepe')
         result = tfg_services.update_alumno(self.alumno1, campos)
-        self.assertEqual(result.first_name, campos['first_name'])
+        self.assertEqual(result['data'].first_name, campos['first_name'])
 
 
     def test_update_alumno_apellidos(self):
 
         campos = dict(last_name='')
         result = tfg_services.update_alumno(self.alumno1, campos)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         campos = dict(last_name=1)
         result = tfg_services.update_alumno(self.alumno1, campos)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         campos = dict(last_name='Pacopepe Federico')
         result = tfg_services.update_alumno(self.alumno1, campos)
-        self.assertEqual(result.last_name, campos['last_name'])
+        self.assertEqual(result['data'].last_name, campos['last_name'])
 
     def test_update_alumno_valido(self):
 
         campos = dict(username=self.new_username, first_name=self.new_nombre, last_name=self.new_apellidos)
         result = tfg_services.update_alumno(self.alumno1, campos)
-        self.assertEqual(result.username, self.new_username)
+        self.assertEqual(result['data'].username, self.new_username)

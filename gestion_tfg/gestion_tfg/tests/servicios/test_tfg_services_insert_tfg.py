@@ -17,9 +17,9 @@ class TfgServicesTests(TestCase):
         self.hard_soft_tfg = 'hardware software'
 
         self.user_tutor_tfg = tfg_services.insert_profesor(Profesor(username='pepe@ugr.es',
-                                        first_name='pepe', last_name='paco', departamento='departamento 1'))
+                                        first_name='pepe', last_name='paco', departamento='departamento 1'))['data']
         self.user_cotutor_tfg = tfg_services.insert_profesor(Profesor(username='paco@ugr.es',
-                                        first_name='paco', last_name='pepe', departamento='departamento 2'))
+                                        first_name='paco', last_name='pepe', departamento='departamento 2'))['data']
 
         self.grupo_profesores = Group.objects.get_or_create(name='Profesores')
         self.grupo_alumnos = Group.objects.get_or_create(name='Alumnos')
@@ -40,7 +40,7 @@ class TfgServicesTests(TestCase):
 
         tfg = Tfg()
         result = tfg_services.insert_tfg(tfg)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
     def test_insert_tfg_correcto(self):
 
@@ -50,7 +50,7 @@ class TfgServicesTests(TestCase):
                    hard_soft=self.hard_soft_tfg, tutor=self.user_tutor_tfg,
                    cotutor=self.user_cotutor_tfg)
         result = tfg_services.insert_tfg(tfg)
-        self.assertEqual(result, True)
+        self.assertEqual(result['status'], True)
 
     def test_tfg_titulo(self):
 
@@ -62,7 +62,7 @@ class TfgServicesTests(TestCase):
                    cotutor=self.user_cotutor_tfg)
 
         result = tfg_services.insert_tfg(tfg)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         #tfg con titulo duplicado - no deberia pasar
         tfg = Tfg(tipo=self.tipo_tfg, titulo=self.titulo_tfg,
@@ -72,7 +72,7 @@ class TfgServicesTests(TestCase):
                    cotutor=self.user_cotutor_tfg)
 
         result = tfg_services.insert_tfg(tfg)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         #tfg con otro titulo
         tfg = Tfg(tipo=self.tipo_tfg, titulo=self.otro_titulo_tfg,
@@ -82,7 +82,7 @@ class TfgServicesTests(TestCase):
                    cotutor=self.user_cotutor_tfg)
 
         result = tfg_services.insert_tfg(tfg)
-        self.assertEqual(result, True)
+        self.assertEqual(result['status'], True)
 
     def test_tfg_tipo(self):
 
@@ -94,7 +94,7 @@ class TfgServicesTests(TestCase):
                    cotutor=self.user_cotutor_tfg)
 
         result = tfg_services.insert_tfg(tfg)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
     def test_tfg_n_alumnos(self):
 
@@ -106,7 +106,7 @@ class TfgServicesTests(TestCase):
                    cotutor=self.user_cotutor_tfg)
 
         result = tfg_services.insert_tfg(tfg)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
     def test_tfg_n_alumnos_menor(self):
 
@@ -118,7 +118,7 @@ class TfgServicesTests(TestCase):
                    cotutor=self.user_cotutor_tfg)
 
         result = tfg_services.insert_tfg(tfg)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
     def test_tfg_n_alumnos_mayor(self):
 
@@ -130,7 +130,7 @@ class TfgServicesTests(TestCase):
                    cotutor=self.user_cotutor_tfg)
 
         result = tfg_services.insert_tfg(tfg)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
     def test_tfg_descripcion(self):
 
@@ -142,7 +142,7 @@ class TfgServicesTests(TestCase):
                    cotutor=self.user_cotutor_tfg)
 
         result = tfg_services.insert_tfg(tfg)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
     def test_tfg_conocimientos_previos(self):
 
@@ -153,7 +153,7 @@ class TfgServicesTests(TestCase):
                    hard_soft=self.hard_soft_tfg, tutor=self.user_tutor_tfg,
                    cotutor=self.user_cotutor_tfg)
         result = tfg_services.insert_tfg(tfg)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
     def test_tfg_hard_soft(self):
 
@@ -165,7 +165,7 @@ class TfgServicesTests(TestCase):
                    tutor=self.user_tutor_tfg,
                    cotutor=self.user_cotutor_tfg)
         result = tfg_services.insert_tfg(tfg)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
     def test_tfg_tutor(self):
 
@@ -177,7 +177,7 @@ class TfgServicesTests(TestCase):
                    #tutor=self.user_tutor_tfg,
                    cotutor=self.user_cotutor_tfg)
         result = tfg_services.insert_tfg(tfg)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
     def test_tfg_cotutor(self):
 
@@ -190,4 +190,4 @@ class TfgServicesTests(TestCase):
                    #cotutor=self.user_cotutor_tfg
                    )
         result = tfg_services.insert_tfg(tfg)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)

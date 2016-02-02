@@ -15,9 +15,9 @@ class TfgServicesTests(TestCase):
         self.hard_soft_tfg = 'hardware software'
 
         self.user_tutor_tfg = tfg_services.insert_profesor(Profesor(username='paco@ugr.es',
-                                        first_name='paco', last_name='pepe', departamento='departamento 1'))
+                                        first_name='paco', last_name='pepe', departamento='departamento 1'))['data']
         self.user_cotutor_tfg = tfg_services.insert_profesor(Profesor(username='pepe@ugr.es',
-                                        first_name='pepe', last_name='paco', departamento='departamento 2'))
+                                        first_name='pepe', last_name='paco', departamento='departamento 2'))['data']
 
         self.otro_tipo_tfg = 'otro tipo'
         self.otro_titulo_tfg = 'otro titulo'
@@ -27,9 +27,9 @@ class TfgServicesTests(TestCase):
         self.otro_hard_soft_tfg = 'otros hardware y software'
 
         self.otro_user_tutor_tfg = tfg_services.insert_profesor(Profesor(username='manolo@ugr.es',
-                                        first_name='manolo', last_name='manue', departamento='departamento 1'))
+                                        first_name='manolo', last_name='manue', departamento='departamento 1'))['data']
         self.otro_user_cotutor_tfg = tfg_services.insert_profesor(Profesor(username='manue@ugr.es',
-                                        first_name='manue', last_name='manolo', departamento='departamento 2'))
+                                        first_name='manue', last_name='manolo', departamento='departamento 2'))['data']
 
         self.grupo_profesores = Group.objects.get_or_create(name='Profesores')
         self.grupo_alumnos = Group.objects.get_or_create(name='Alumnos')
