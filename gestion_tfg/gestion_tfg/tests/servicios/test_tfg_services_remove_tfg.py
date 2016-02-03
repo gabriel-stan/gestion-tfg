@@ -39,4 +39,4 @@ class TfgServicesTests(TestCase):
 
         tfg = Tfg.objects.get(titulo=self.titulo_tfg)
         result = tfg_services.delete_tfg(tfg)
-        self.assertEqual(result, True)
+        self.assertEqual(result['status'], True)
