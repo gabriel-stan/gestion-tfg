@@ -15,9 +15,9 @@ class TfgServicesTests(TestCase):
         self.hard_soft_tfg = 'hardware software'
 
         self.user_tutor_tfg = tfg_services.insert_profesor(Profesor(username='paco@ugr.es',
-                                        first_name='paco', last_name='pepe', departamento='departamento 1'))
+                                        first_name='paco', last_name='pepe', departamento='departamento 1'))['data']
         self.user_cotutor_tfg = tfg_services.insert_profesor(Profesor(username='pepe@ugr.es',
-                                        first_name='pepe', last_name='paco', departamento='departamento 2'))
+                                        first_name='pepe', last_name='paco', departamento='departamento 2'))['data']
 
         self.otro_tipo_tfg = 'otro tipo'
         self.otro_titulo_tfg = 'otro titulo'
@@ -27,9 +27,9 @@ class TfgServicesTests(TestCase):
         self.otro_hard_soft_tfg = 'otros hardware y software'
 
         self.otro_user_tutor_tfg = tfg_services.insert_profesor(Profesor(username='manolo@ugr.es',
-                                        first_name='manolo', last_name='manue', departamento='departamento 1'))
+                                        first_name='manolo', last_name='manue', departamento='departamento 1'))['data']
         self.otro_user_cotutor_tfg = tfg_services.insert_profesor(Profesor(username='manue@ugr.es',
-                                        first_name='manue', last_name='manolo', departamento='departamento 2'))
+                                        first_name='manue', last_name='manolo', departamento='departamento 2'))['data']
 
         self.grupo_profesores = Group.objects.get_or_create(name='Profesores')
         self.grupo_alumnos = Group.objects.get_or_create(name='Alumnos')
@@ -55,7 +55,7 @@ class TfgServicesTests(TestCase):
         tfg = Tfg.objects.get(titulo=self.titulo_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         #titulo formato erroneo
         campos = {}
@@ -64,7 +64,7 @@ class TfgServicesTests(TestCase):
         tfg = Tfg.objects.get(titulo=self.titulo_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         #titulo correcto
         campos = {}
@@ -73,7 +73,7 @@ class TfgServicesTests(TestCase):
         tfg = Tfg.objects.get(titulo=self.titulo_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result, True)
+        self.assertEqual(result['status'], True)
 
     def test_update_tfg_tipo(self):
 
@@ -84,7 +84,7 @@ class TfgServicesTests(TestCase):
         tfg = Tfg.objects.get(tipo=self.tipo_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         #tipo formato erroneo
         campos = {}
@@ -93,7 +93,7 @@ class TfgServicesTests(TestCase):
         tfg = Tfg.objects.get(tipo=self.tipo_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         #tipo correcto
         campos = {}
@@ -102,7 +102,7 @@ class TfgServicesTests(TestCase):
         tfg = Tfg.objects.get(tipo=self.tipo_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result, True)
+        self.assertEqual(result['status'], True)
 
     def test_update_tfg_n_alumnos(self):
 
@@ -113,7 +113,7 @@ class TfgServicesTests(TestCase):
         tfg = Tfg.objects.get(n_alumnos=self.n_alumnos_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         #n_alumnos formato erroneo
         campos = {}
@@ -122,7 +122,7 @@ class TfgServicesTests(TestCase):
         tfg = Tfg.objects.get(n_alumnos=self.n_alumnos_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         #n_alumnos correcto
         campos = {}
@@ -131,7 +131,7 @@ class TfgServicesTests(TestCase):
         tfg = Tfg.objects.get(n_alumnos=self.n_alumnos_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result, True)
+        self.assertEqual(result['status'], True)
 
     def test_update_tfg_descripcion(self):
 
@@ -142,7 +142,7 @@ class TfgServicesTests(TestCase):
         tfg = Tfg.objects.get(descripcion=self.descripcion_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         #descripcion formato erroneo
         campos = {}
@@ -151,7 +151,7 @@ class TfgServicesTests(TestCase):
         tfg = Tfg.objects.get(descripcion=self.descripcion_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         #descripcion correcto
         campos = {}
@@ -160,7 +160,7 @@ class TfgServicesTests(TestCase):
         tfg = Tfg.objects.get(descripcion=self.descripcion_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result, True)
+        self.assertEqual(result['status'], True)
 
     def test_update_tfg_conocimientos_previos(self):
 
@@ -171,7 +171,7 @@ class TfgServicesTests(TestCase):
         tfg = Tfg.objects.get(conocimientos_previos=self.conocimientos_previos_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         #conocimientos_previos formato erroneo
         campos = {}
@@ -180,7 +180,7 @@ class TfgServicesTests(TestCase):
         tfg = Tfg.objects.get(conocimientos_previos=self.conocimientos_previos_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         #conocimientos_previos correcto
         campos = {}
@@ -189,7 +189,7 @@ class TfgServicesTests(TestCase):
         tfg = Tfg.objects.get(conocimientos_previos=self.conocimientos_previos_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result, True)
+        self.assertEqual(result['status'], True)
 
     def test_update_tfg_hard_soft(self):
 
@@ -200,7 +200,7 @@ class TfgServicesTests(TestCase):
         tfg = Tfg.objects.get(hard_soft=self.hard_soft_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         #hard_soft formato erroneo
         campos = {}
@@ -209,7 +209,7 @@ class TfgServicesTests(TestCase):
         tfg = Tfg.objects.get(hard_soft=self.hard_soft_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         #hard_soft correcto
         campos = {}
@@ -218,7 +218,7 @@ class TfgServicesTests(TestCase):
         tfg = Tfg.objects.get(hard_soft=self.hard_soft_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result, True)
+        self.assertEqual(result['status'], True)
 
     def test_update_tfg_tutor(self):
 
@@ -229,7 +229,7 @@ class TfgServicesTests(TestCase):
         tfg = Tfg.objects.get(tutor=self.user_tutor_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         #tutor formato erroneo
         campos = {}
@@ -238,7 +238,7 @@ class TfgServicesTests(TestCase):
         tfg = Tfg.objects.get(tutor=self.user_tutor_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         #tutor no en grupo Profesor
         campos = {}
@@ -247,7 +247,7 @@ class TfgServicesTests(TestCase):
         tfg = Tfg.objects.get(tutor=self.user_tutor_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         #tutor incorrecto
         campos = {}
@@ -257,7 +257,7 @@ class TfgServicesTests(TestCase):
         tfg = Tfg.objects.get(tutor=self.user_tutor_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         #tutor correcto
         campos = {}
@@ -267,7 +267,7 @@ class TfgServicesTests(TestCase):
         tfg = Tfg.objects.get(tutor=self.user_tutor_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result, True)
+        self.assertEqual(result['status'], True)
 
     def test_update_tfg_cotutor(self):
 
@@ -278,7 +278,7 @@ class TfgServicesTests(TestCase):
         tfg = Tfg.objects.get(cotutor=self.user_cotutor_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         #cotutor formato erroneo
         campos = {}
@@ -287,7 +287,7 @@ class TfgServicesTests(TestCase):
         tfg = Tfg.objects.get(cotutor=self.user_cotutor_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         #cotutor incorrecto
         campos = {}
@@ -297,7 +297,7 @@ class TfgServicesTests(TestCase):
         tfg = Tfg.objects.get(cotutor=self.user_cotutor_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         #cotutor correcto
         campos = {}
@@ -307,4 +307,4 @@ class TfgServicesTests(TestCase):
         tfg = Tfg.objects.get(cotutor=self.user_cotutor_tfg)
 
         result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result, True)
+        self.assertEqual(result['status'], True)
