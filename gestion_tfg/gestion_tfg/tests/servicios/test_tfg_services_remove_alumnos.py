@@ -25,11 +25,11 @@ class TfgServicesTests(TestCase):
         alumno = Alumno(username=self.otro_username, first_name=self.otro_nombre,
                                                          last_name=self.otro_apellidos)
         result = tfg_services.delete_alumno(alumno)
-        self.assertEqual(result, 'No existe')
+        self.assertEqual(result['status'], False)
 
 
     def test_delete_alumno_existe(self):
 
         alumno = Alumno.objects.get(username=self.alumn1_username)
         result = tfg_services.delete_alumno(alumno)
-        self.assertEqual(result, True)
+        self.assertEqual(result['status'], True)

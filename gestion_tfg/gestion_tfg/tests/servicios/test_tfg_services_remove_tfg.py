@@ -16,9 +16,9 @@ class TfgServicesTests(TestCase):
         self.hard_soft_tfg = 'hardware software'
 
         self.user_tutor_tfg = tfg_services.insert_profesor(Profesor(username='pepe@ugr.es',
-                                        first_name='pepe', last_name='paco', departamento='departamento 1'))
+                                        first_name='pepe', last_name='paco', departamento='departamento 1'))['data']
         self.user_cotutor_tfg = tfg_services.insert_profesor(Profesor(username='paco@ugr.es',
-                                        first_name='paco', last_name='pepe', departamento='departamento 2'))
+                                        first_name='paco', last_name='pepe', departamento='departamento 2'))['data']
 
         self.grupo_profesores = Group.objects.get_or_create(name='Profesores')
         self.grupo_alumnos = Group.objects.get_or_create(name='Alumnos')
@@ -39,4 +39,4 @@ class TfgServicesTests(TestCase):
 
         tfg = Tfg.objects.get(titulo=self.titulo_tfg)
         result = tfg_services.delete_tfg(tfg)
-        self.assertEqual(result, True)
+        self.assertEqual(result['status'], True)
