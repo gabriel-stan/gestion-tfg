@@ -30,6 +30,7 @@ ALLOWED_HOSTS = []
 AUTH_USER_MODEL = 'gestion_tfg.Alumno'
 # Application definition
 
+
 INSTALLED_APPS = (
     'django_admin_bootstrapped',
     'django.contrib.admin',
