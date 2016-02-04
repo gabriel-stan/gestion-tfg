@@ -19,6 +19,7 @@ from ws import alumnos
 import views
 
 urlpatterns = [
+    url(r'^', include(admin.site.urls)),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^ejemplo/$', views.under_construction, name='under_construction'),
     url(r'^alumnos/$', alumnos.alumnos, name='alumnos'),

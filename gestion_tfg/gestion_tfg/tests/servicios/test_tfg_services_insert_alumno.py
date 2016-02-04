@@ -23,63 +23,63 @@ class TfgServicesTests(TestCase):
 
         alumno = Alumno()
         result = tfg_services.insert_alumno(alumno)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
     def test_insert_alumno_repetido(self):
 
         alumno1 = Alumno(username=self.alumn1_username, first_name=self.alumn1_nombre, last_name=self.alumn1_apellidos)
         result = tfg_services.insert_alumno(alumno1)
-        self.assertEqual(result.username, alumno1.username)
+        self.assertEqual(result['data'].username, alumno1.username)
         result = tfg_services.insert_alumno(alumno1)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
     def test_insert_alumno_error(self):
 
         username = '34@correo.ugr.es'
         alumno1 = Alumno(username=username, first_name= self.alumn1_nombre,last_name= self.alumn1_apellidos)
         result = tfg_services.insert_alumno(alumno1)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         username = 'ejemplo34@coreo.ugr.es'
         alumno1 = Alumno(username=username, first_name= self.alumn1_nombre,last_name= self.alumn1_apellidos)
         result = tfg_services.insert_alumno(alumno1)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         username = 'ejemplo34@correo..ugr.es'
         alumno1 = Alumno(username=username, first_name= self.alumn1_nombre,last_name= self.alumn1_apellidos)
         result = tfg_services.insert_alumno(alumno1)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         username = 'ejemplo34@correo.ugr.com'
         alumno1 = Alumno(username=username, first_name= self.alumn1_nombre,last_name= self.alumn1_apellidos)
         result = tfg_services.insert_alumno(alumno1)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
         username = 'ejemplo34@ugr.es'
         alumno1 = Alumno(username=username, first_name= self.alumn1_nombre,last_name= self.alumn1_apellidos)
         result = tfg_services.insert_alumno(alumno1)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
     def test_insert_alumno_username(self):
 
         alumno1 = Alumno(first_name=self.alumn1_nombre,last_name= self.alumn1_apellidos)
         result = tfg_services.insert_alumno(alumno1)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
     def test_insert_alumno_nombre(self):
 
         alumno1 = Alumno(username=self.alumn1_username, last_name= self.alumn1_apellidos)
         result = tfg_services.insert_alumno(alumno1)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
     def test_insert_alumno_apellidos(self):
 
         alumno1 = Alumno(username=self.alumn1_username, first_name= self.alumn1_nombre)
         result = tfg_services.insert_alumno(alumno1)
-        self.assertEqual(result, False)
+        self.assertEqual(result['status'], False)
 
     def test_insert_alumno_valido(self):
 
         alumno1 = Alumno(username=self.alumn1_username, first_name=self.alumn1_nombre, last_name=self.alumn1_apellidos)
         result = tfg_services.insert_alumno(alumno1)
-        self.assertEqual(result.username, alumno1.username)
+        self.assertEqual(result['data'].username, alumno1.username)
