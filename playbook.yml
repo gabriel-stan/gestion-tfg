@@ -1,0 +1,50 @@
+---
+- hosts: test
+
+  vars:
+    usuario_remoto: vagrant
+
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+  tasks:
+
+  - name: Test vars
+    command: echo un/{{ usuario_remoto }}/directorio
+    become_user: "{{ usuario_remoto }}"
+    tags:
+      - test
+
+  - name: Instalar dependencias
+    apt: package={{ item }}  update_cache=yes
+    with_items:
+      - python-setuptools
+      - build-essential
+      - python-dev
+      - make
+      - git
+    tags:
+      - dependencias
+
+  - name: Descargar fuentes
+    git: repo=https://github.com/gabriel-stan/gestion-tfg  dest=~/despliegue clone=yes force=yes
+    become_user: "{{ usuario_remoto }}"
+    tags:
+      - git
+
+  - name: Make install-dependencias
+    command: chdir=/home/{{ usuario_remoto }}/despliegue make install-packages
+    tags:
+      - install
+
+  - name: Make install
+    command: chdir=/home/{{ usuario_remoto }}/despliegue make install
+    become_user: "{{ usuario_remoto }}"
+    tags:
+      - install
+
+  - name: Make run
+    shell: chdir=/home/{{ usuario_remoto }}/despliegue nohup make run
+    tags:
+      - runserver
+...
