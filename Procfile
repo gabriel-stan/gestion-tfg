@@ -1,1 +1,1 @@
-web: cd gestion_tfg && python manage.py syncdb && python manage.py makemigrations && gunicorn gestion_tfg.wsgi --log-file -
+web: cd gestion_tfg && ./manage.py syncdb && gunicorn gestion_tfg.wsgi --log-file -
