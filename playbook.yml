@@ -1,21 +1,17 @@
 ---
-- hosts: test
+- hosts: default
 
-  vars:
-    usuario_remoto: vagrant
-
-  remote_user: vagrant
+  remote_user: someuser
   become: yes
   become_method: sudo
+
+  vars:
+    #usuario_remoto: "someuser"
+    usuario_remoto: "{{ lookup('env','VM_USER') }}"
+
   tasks:
 
-  - name: Test vars
-    command: echo un/{{ usuario_remoto }}/directorio
-    become_user: "{{ usuario_remoto }}"
-    tags:
-      - test
-
-  - name: Instalar dependencias
+  - name: Instalar paquetes de
     apt: package={{ item }}  update_cache=yes
     with_items:
       - python-setuptools
