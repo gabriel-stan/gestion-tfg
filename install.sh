@@ -12,7 +12,8 @@ cd gestion_tfg
 
 python manage.py syncdb --noinput
 
-echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@example.com', 'admin')" | python manage.py shell
+#create an initial user for admin interface, change password on first connection recommended
+echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@example.com', 'gestfg')" | python manage.py shell
 
 python manage.py migrate
 #python manage.py migrate
