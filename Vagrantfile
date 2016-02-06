@@ -37,6 +37,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.ssh.username = ENV['VM_USER'] 
   config.ssh.password = ENV['VM_PASS'] 
+
+  config.vm.synced_folder ".", "/vagrant",disabled: true
   
   #config.ssh.private_key_path = "~/.ssh/id_rsa"
   #config.ssh.forward_agent = true
