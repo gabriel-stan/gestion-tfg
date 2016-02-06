@@ -5,73 +5,53 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  # All Vagrant configuration is done here. The most common configuration
-  # options are documented and commented below. For a complete reference,
-  # please see the online documentation at vagrantup.com.
 
-  # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "debian"
+  config.env.enable # enable the plugin vagrant-env
 
-  # Create a forwarded port mapping which allows access to a specific port
-  # within the machine from a port on the host machine. In the example below,
-  # accessing "localhost:8080" will access port 80 on the guest machine.
-  # config.vm.network :forwarded_port, guest: 80, host: 8080
+  config.vm.hostname = "localhost"
+  config.vm.box = 'azure'
+  config.vm.network "public_network"
+  config.vm.network "private_network",ip: "192.168.56.150", virtualbox__intnet: "vboxnet0"
+  config.vm.network "forwarded_port", guest: 80, host: 80
 
-  config.vm.network :forwarded_port, guest: 8000, host: 80
+  config.vm.provider :azure do |azure, override|
+        # Mandatory Settings
+	azure.mgmt_certificate = File.expand_path(ENV['MGMT_CERT'])
+	azure.mgmt_endpoint    = "https://management.core.windows.net"
+	azure.subscription_id = ENV['SUBSCR_ID']
+	azure.vm_name     = ENV['VM_NAME']
+	azure.vm_image    = ENV['VM_IMAGE']
+	azure.cloud_service_name = ENV['CLOUD_SERVICE_NAME']
+	azure.storage_acct_name = ENV['CLOUD_STORAGE_NAME']
+	azure.vm_size     = ENV['VM_SIZE']
+	config.vm.box_url = ENV['BOX_URL']
 
-  # Create a private network, which allows host-only access to the machine
-  # using a specific IP.
+	azure.vm_user = ENV['VM_USER'] 
+	azure.vm_password = ENV['VM_PASS']
+
+	azure.vm_location = ENV['VM_LOCATION'] # e.g., West US
+
+	azure.ssh_port = "22"
+	azure.tcp_endpoints = '8000:80'
+  end
+
+  config.ssh.username = ENV['VM_USER'] 
+  config.ssh.password = ENV['VM_PASS'] 
   
-  config.vm.network :public_network
-  config.vm.network :private_network, ip: "192.168.56.150", virtualbox__intnet: "vboxnet0"
-
-  # Create a public network, which generally matched to bridged network.
-  # Bridged networks make the machine appear as another physical device on
-  # your network.
-  # config.vm.network :public_network
-
-  # If true, then any SSH connections made will enable agent forwarding.
-  # Default value: false
-  # config.ssh.forward_agent = true
+  #config.ssh.private_key_path = "~/.ssh/id_rsa"
+  #config.ssh.forward_agent = true
   
-  config.ssh.private_key_path = "~/.ssh/id_rsa"
-  config.ssh.forward_agent = true
+  #config.vm.provision "file", source: "/home/gaby/.ssh/id_rsa.pub", destination: "/home/vagrant/.ssh/me.pub"
+  #config.vm.provision "shell", inline: "cat /home/vagrant/.ssh/me.pub >> /home/vagrant/.ssh/authorized_keys"
 
-  # Share an additional folder to the guest VM. The first argument is
-  # the path on the host to the actual folder. The second argument is
-  # the path on the guest to mount the folder. And the optional third
-  # argument is a set of non-required options.
-  # config.vm.synced_folder "../data", "/vagrant_data"
+  # Provision with ansible
 
-  # Provider-specific configuration so you can fine-tune various
-  # backing providers for Vagrant. These expose provider-specific options.
-  # Example for VirtualBox:
-  #
-  # config.vm.provider :virtualbox do |vb|
-  #   # Don't boot with headless mode
-  #   vb.gui = true
-  #
-  #   # Use VBoxManage to customize the VM. For example to change memory:
-  #   vb.customize ["modifyvm", :id, "--memory", "1024"]
-  # end
-  #
-  # View the documentation for the provider you're using for more
-  # information on available options.
-
-
-  # Provision via script
-  # config.vm.provision "shell",
-    # inline: "apt-get install nginx && service nginx start"
-  
-  config.vm.provision "file", source: "/home/gaby/.ssh/id_rsa.pub", destination: "/home/vagrant/.ssh/me.pub"
-  config.vm.provision "shell", inline: "cat /home/vagrant/.ssh/me.pub >> /home/vagrant/.ssh/authorized_keys"
-
-  # Provision with Vagrant
   config.vm.provision "ansible" do |ansible|
     ansible.sudo = true
     ansible.playbook = "playbook.yml"
-    ansible.inventory_path = "ansible_hosts"
+    #ansible.inventory_path = "ansible_hosts"
     # ansible.verbose = "v"
     ansible.host_key_checking = false
+    ansible.force_remote_user = ENV['VM_USER']
   end
 end
