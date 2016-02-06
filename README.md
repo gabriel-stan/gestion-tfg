@@ -1,6 +1,6 @@
 #GESTFG - Plataforma de Gestión y Evaluación de Trabajos de Fin de Grado y Master
 
-[![Build Status](https://travis-ci.org/gabriel-stan/gestion-tfg.svg?branch=master)](https://travis-ci.org/gabriel-stan/gestion-tfg) [![Shippable](https://img.shields.io/shippable/562e58f31895ca44742123f9.svg)](https://app.shippable.com/projects/562e58f31895ca44742123f9) [![Heroku](https://heroku-badge.herokuapp.com/?app=gestfg&style=flat)](http://gestfg.herokuapp.com/)
+[![Build Status](https://travis-ci.org/gabriel-stan/gestion-tfg.svg?branch=master)](https://travis-ci.org/gabriel-stan/gestion-tfg) [![Shippable](https://img.shields.io/shippable/562e58f31895ca44742123f9.svg)](https://app.shippable.com/projects/562e58f31895ca44742123f9) [![Heroku](https://heroku-badge.herokuapp.com/?app=gestfg&style=flat)](http://gestfg.herokuapp.com/) [![Deployment](https://img.shields.io/badge/deployment-deployed-brightgreen.svg)](http://gestfg.cloudapp.net/)
 
 
 
@@ -48,6 +48,12 @@ Más información [aquí](docs/README-contenerizacion.md).
 Para poder desplegar y actualizar la aplciación remotamente, se puede hacer uso de la librería de python [Fabric](http://www.fabfile.org/).
 
 Más información [aquí](docs/README-fabric.md).
+
+### Despliegue en un IaaS con Vagrant
+
+El proyecto está preparado para crear la infraestructura necesaria y ser desplegado en un entorno local o en [Azure](https://azure.microsoft.com/es-es/) con la ayuda de Vagrant. Para desplegar en Azure, sólo hay que modificar el fichero [env_vars.sh](env_vars.sh) y ejecutar el script [vagrant-azure.sh](vagrant-azure.sh), aparte de tener el entorno local preparado para el uso de [vagrant](https://www.vagrantup.com/) y [ansible](http://www.ansible.com/).
+
+Más información [aquí](docs/README-vagrant.md).
 
 
 ### Asignación de tareas
