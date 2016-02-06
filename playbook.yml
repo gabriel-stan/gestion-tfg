@@ -11,7 +11,7 @@
 
   tasks:
 
-  - name: Instalar paquetes de
+  - name: Instalar paquetes de sistema
     apt: package={{ item }}  update_cache=yes
     with_items:
       - python-setuptools
