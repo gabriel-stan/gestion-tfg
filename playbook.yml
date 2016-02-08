@@ -23,24 +23,24 @@
       - dependencias
 
   - name: Descargar fuentes
-    git: repo=https://github.com/gabriel-stan/gestion-tfg  dest=~/despliegue clone=yes force=yes
+    git: repo=https://github.com/gabriel-stan/gestion-tfg  dest=~/gestion-tfg clone=yes force=yes
     become_user: "{{ usuario_remoto }}"
     tags:
       - git
 
   - name: Make install-dependencias
-    command: chdir=/home/{{ usuario_remoto }}/despliegue make install-packages
+    command: chdir=/home/{{ usuario_remoto }}/gestion-tfg make install-packages
     tags:
       - install
 
   - name: Make install
-    command: chdir=/home/{{ usuario_remoto }}/despliegue make install
+    command: chdir=/home/{{ usuario_remoto }}/gestion-tfg make install
     become_user: "{{ usuario_remoto }}"
     tags:
       - install
 
   - name: Make run
-    shell: chdir=/home/{{ usuario_remoto }}/despliegue nohup make run
+    shell: chdir=/home/{{ usuario_remoto }}/gestion-tfg nohup make run
     tags:
       - runserver
 ...
