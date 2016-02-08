@@ -47,7 +47,7 @@ def run_app2():
 #run app
 def run_app():
 	with prefix('source gestion-tfg/venv/bin/activate'):
-		run('cd gestion-tfg/ && make runserver')
+		run('cd gestion-tfg/ && make run')
 
 #run app
 def run_app3():
