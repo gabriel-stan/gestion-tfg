@@ -38,6 +38,16 @@ Pasos a sequir para el despliegue en Azure (preparación del entorno local):
 6. Esperar a que se cree la máquina virtual y se despliegue la aplicación.
 7. Enjoy.
 
+#### Provision-only y ejecutar con Fabric
+
+Se puede ejecutar el script anterior para unicamente crear y provisionar la máquina virtual en azure, sin ejecutar el servidor. A posteriori se puede usar fabric para arrancar la aplicación.
+
+	./vagrant-azure.sh norun
+    fab -p pass -H user@host run_app
+
+
+Hay un comando **make** para cada uno de los dos métodos anteriores: `make deploy-azure` y `make deploy-azure-norun` respectivamente.
+
 Actualmente hay un [despliegue](http://gestfg.cloudapp.net/) en azure usando esta configuración. El despliegue estará disponible por un tiempo limitado.
 
 
