@@ -24,3 +24,9 @@ run:
 
 runserver:
 	cd gestion_tfg/ && sudo ../venv/bin/python manage.py runserver 0.0.0.0:80 &
+
+deploy-azure:
+	./vagrant-azure.sh
+
+deploy-azure-norun:
+	./vagrant-azure.sh norun

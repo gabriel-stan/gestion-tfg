@@ -52,7 +52,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     ansible.sudo = true
     ansible.playbook = "playbook.yml"
     #ansible.inventory_path = "ansible_hosts"
-    # ansible.verbose = "v"
+    #ansible.verbose = "v"
+    ansible.raw_arguments = [ENV['SKIP_TAGS']] #no arrancar el servidor, para arrancar con fabric
     ansible.host_key_checking = false
     ansible.force_remote_user = ENV['VM_USER']
   end
