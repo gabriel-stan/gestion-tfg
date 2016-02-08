@@ -12,7 +12,7 @@ from rest_framework.response import Response
 @api_view(['GET', 'POST'])
 def alumnos(request):
     """
-    Insertar un tfg nuevo
+    Insertar un alumno nuevo
     :param request:
     :return :
     {status: True/False, data:{datos del alumno insertado o de todos los alumnos}
@@ -37,18 +37,36 @@ def alumnos(request):
 
 
 @api_view(['POST'])
-def update_alumnos(request):
+def update_alumno(request):
     """
-    Insertar un tfg nuevo
+    Actualizar datos de un alumno
     :param request:
     :return :
     """
 
-    #TODO: Aqui va la comprobacion del perfil del usuario
+    #TODO: Aqui va la comprobacion del perfil del usuario que quiere actualizar
 
     params = get_param(request)
     alumno = Alumno.objects.get(username=params['username'])
     resul = tfg_services.update_alumno(alumno, params)
+    if resul['status']:
+        return Response(to_dict(resul))
+    return Response(resul)
+
+
+@api_view(['POST'])
+def delete_alumno(request):
+    """
+    Eliminar un usuario
+    :param request:
+    :return :
+    """
+
+    #TODO: Aqui va la comprobacion del perfil del usuario que quiere borrar
+
+    params = get_param(request)
+    alumno = Alumno.objects.get(username=params['username'])
+    resul = tfg_services.delete_alumno(alumno)
     if resul['status']:
         return Response(to_dict(resul))
     return Response(resul)

@@ -23,5 +23,6 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^ejemplo/$', views.under_construction, name='under_construction'),
     url(r'^alumnos/$', alumnos.alumnos, name='alumnos'),
-
+    url(r'^update_alumno/$', alumnos.update_alumno, name='update_alumno'),
+    url(r'^delete_alumno/$', alumnos.delete_alumno, name='delete_alumno'),
 ]
