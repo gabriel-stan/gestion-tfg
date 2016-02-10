@@ -16,7 +16,7 @@ import sys
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) #directorio de manage.py
 
-# apps directory
+# django apps directory
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 
 # define apps directories
@@ -27,10 +27,13 @@ MODEL_PATH = os.path.join(BASE_DIR, 'apps', 'model')
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-#SECRET_KEY = os.environ.get('SECRET_KEY') or ''
-SECRET_KEY='3@6-t=xia5pg7zevb^!$45p_d_+94!&^b&n32mq%+)pbpe2ia@'
+
+#Please change the secret key on production
+#SECRET_KEY='3@6-t=xia5pg7zevb^!$45p_d_+94!&^b&n32mq%+)pbpe2ia@'
+SECRET_KEY = os.environ.get('SECRET_KEY') or 'my-supersecret-production-key'
+
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEV') or True
+DEBUG = os.environ.get('DEBUG') or False
 
 ALLOWED_HOSTS = []
 
