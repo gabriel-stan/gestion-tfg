@@ -8,7 +8,6 @@ class Alumno(AbstractUser):
 class Profesor(Alumno):
     departamento = models.CharField(max_length=100)
 
-
 class Tfg(models.Model):
     tipo = models.CharField(max_length=100)
     titulo = models.CharField(max_length=100)
