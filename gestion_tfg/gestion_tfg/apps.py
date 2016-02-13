@@ -4,4 +4,4 @@ class GestionTFGConfig(AppConfig):
     name = 'gestion_tfg'
 
     def ready(self):
-        import gestion_tfg.signals
+        pass

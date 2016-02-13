@@ -1,8 +1,8 @@
+from django.contrib.auth.models import Group
 from django.test import TestCase
-from gestion_tfg.models import Tfg, Tfg_Asig, Profesor, Alumno
-from django.contrib.auth.models import User, Group
 
-from gestion_tfg.servicios import tfg_services
+from apps.controller.servicios import tfg_services
+from apps.model.models import Tfg, Profesor, Alumno
 
 
 class TfgServicesTests(TestCase):
@@ -33,11 +33,11 @@ class TfgServicesTests(TestCase):
         self.user_alumn3_tfg = tfg_services.insert_alumno(Alumno(username='alumn3@correo.ugr.es', first_name='alumn3',
                                                                  last_name='apellidos 3'))['data']
         self.otro_user_alumn1_tfg = tfg_services.insert_alumno(Alumno(username='otro_alumn1@correo.ugr.es', first_name='otro_alumn1',
-                                                                 last_name='otro_apellidos 1'))['data']
+                                                                      last_name='otro_apellidos 1'))['data']
         self.otro_user_alumn2_tfg = tfg_services.insert_alumno(Alumno(username='otro_alumn2@correo.ugr.es', first_name='otro_alumn2',
-                                                                 last_name='otro_apellidos 2'))['data']
+                                                                      last_name='otro_apellidos 2'))['data']
         self.otro_user_alumn3_tfg = tfg_services.insert_alumno(Alumno(username='otro_alumn3@correo.ugr.es', first_name='otro_alumn3',
-                                                                 last_name='otro_apellidos 3'))['data']
+                                                                      last_name='otro_apellidos 3'))['data']
 
         self.otro_tipo_tfg = 'otro tipo'
         self.otro_titulo_tfg = 'otro titulo'

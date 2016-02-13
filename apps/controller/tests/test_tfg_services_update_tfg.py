@@ -1,8 +1,9 @@
+from django.contrib.auth.models import Group
 from django.test import TestCase
-from gestion_tfg.models import Tfg, Profesor
-from django.contrib.auth.models import User, Group
 
-from gestion_tfg.servicios import tfg_services
+from apps.controller.servicios import tfg_services
+from apps.model.models import Tfg, Profesor
+
 
 class TfgServicesTests(TestCase):
     def setUp(self):
@@ -15,9 +16,9 @@ class TfgServicesTests(TestCase):
         self.hard_soft_tfg = 'hardware software'
 
         self.user_tutor_tfg = tfg_services.insert_profesor(Profesor(username='paco@ugr.es',
-                                        first_name='paco', last_name='pepe', departamento='departamento 1'))['data']
+                                                                    first_name='paco', last_name='pepe', departamento='departamento 1'))['data']
         self.user_cotutor_tfg = tfg_services.insert_profesor(Profesor(username='pepe@ugr.es',
-                                        first_name='pepe', last_name='paco', departamento='departamento 2'))['data']
+                                                                      first_name='pepe', last_name='paco', departamento='departamento 2'))['data']
 
         self.otro_tipo_tfg = 'otro tipo'
         self.otro_titulo_tfg = 'otro titulo'
@@ -27,9 +28,9 @@ class TfgServicesTests(TestCase):
         self.otro_hard_soft_tfg = 'otros hardware y software'
 
         self.otro_user_tutor_tfg = tfg_services.insert_profesor(Profesor(username='manolo@ugr.es',
-                                        first_name='manolo', last_name='manue', departamento='departamento 1'))['data']
+                                                                         first_name='manolo', last_name='manue', departamento='departamento 1'))['data']
         self.otro_user_cotutor_tfg = tfg_services.insert_profesor(Profesor(username='manue@ugr.es',
-                                        first_name='manue', last_name='manolo', departamento='departamento 2'))['data']
+                                                                           first_name='manue', last_name='manolo', departamento='departamento 2'))['data']
 
         self.grupo_profesores = Group.objects.get_or_create(name='Profesores')
         self.grupo_alumnos = Group.objects.get_or_create(name='Alumnos')

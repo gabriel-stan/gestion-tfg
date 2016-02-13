@@ -1,8 +1,7 @@
 from django.test import TestCase
-from gestion_tfg.models import Tfg, Alumno
-from django.contrib.auth.models import User, Group
 
-from gestion_tfg.servicios import tfg_services
+from apps.controller.servicios import tfg_services
+from apps.model.models import Alumno
 
 
 class TfgServicesTests(TestCase):

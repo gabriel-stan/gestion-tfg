@@ -1,6 +1,6 @@
-from gestion_tfg.models import Comision_Evaluacion
-from gestion_tfg.servicios.utils import *
 import re
+from apps.controller.servicios.utils import *
+from apps.model.models import Comision_Evaluacion
 
 
 def insert_alumno(alumno):

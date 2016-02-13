@@ -1,5 +1,5 @@
+from apps.model.models import Alumno, Profesor
 from django.test import TestCase
-from gestion_tfg.models import Alumno, Profesor
 
 nuevo_alumno = {}
 nuevo_alumno['username'] = 'nuevo_alumno@correo.ugr.es'

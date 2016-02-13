@@ -1,11 +1,10 @@
 __author__ = 'tonima'
-from gestion_tfg.servicios import tfg_services
-from gestion_tfg.servicios.utils import *
-from gestion_tfg.models import Alumno
-from gestion_tfg.serializers import AlumnoSerializer
-from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+
+from apps.controller.servicios import tfg_services
+from apps.model.models import Alumno
+from apps.model.serializers import AlumnoSerializer
 
 
 @api_view(['GET', 'POST'])

@@ -1,6 +1,5 @@
+from apps.model.models import Tfg, Profesor
 from django.test import TestCase
-from gestion_tfg.models import Tfg, Alumno, Profesor
-from django.contrib.auth.models import User
 
 nuevo_tfg = {}
 nuevo_tfg['tipo_tfg'] = 'tipo2'

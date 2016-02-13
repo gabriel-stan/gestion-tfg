@@ -1,5 +1,4 @@
-from gestion_tfg.models import Tfg, Tfg_Asig, Profesor, Alumno
-from django.contrib.auth.models import User
+from apps.model.models import Tfg_Asig, Profesor, Alumno
 from django.db.models.fields.related import ManyToManyField
 
 

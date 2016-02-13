@@ -1,8 +1,7 @@
 from django.test import TestCase
-from gestion_tfg.models import Tfg, Alumno, Profesor
-from django.contrib.auth.models import User, Group
 
-from gestion_tfg.servicios import tfg_services
+from apps.controller.servicios import tfg_services
+from apps.model.models import Alumno, Profesor
 
 
 class TfgServicesTests(TestCase):
@@ -19,8 +18,8 @@ class TfgServicesTests(TestCase):
         self.otro_departamento = 'otro departamento'
 
         self.prof1 = tfg_services.insert_profesor(Profesor(username=self.prof1_username, first_name=self.prof1_nombre,
-                                                         last_name=self.prof1_apellidos,
-                                                         departamento=self.prof1_departamento))
+                                                           last_name=self.prof1_apellidos,
+                                                           departamento=self.prof1_departamento))
 
     def test_delete_alumno_no_existe(self):
 
