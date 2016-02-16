@@ -2,7 +2,7 @@ install-requirements:
 	pip install -r requirements.txt
 
 test:
-	export DEBUG=False && python manage.py migrate & python manage.py runserver & python manage.py test && pkill python
+	export DEBUG=False ; python manage.py migrate ; python manage.py runserver & python manage.py test ; pkill python
 
 auto-merge:
 	./auto-merge.sh
