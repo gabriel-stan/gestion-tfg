@@ -17,7 +17,7 @@ import sys
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) #directorio de manage.py
 
 # django apps directory
-sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
+sys.path.insert(1, os.path.join(BASE_DIR, 'apps'))
 
 # define apps directories
 CONTROLLER_PATH = os.path.join(BASE_DIR, 'apps', 'controller')
@@ -42,12 +42,13 @@ AUTH_USER_MODEL = 'model.Alumno'
 # Application definition
 
 INSTALLED_APPS = (
-    'django.contrib.admin',
-    'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.auth',
+    'django.contrib.messages',
+    'django.contrib.sites',
+    'django.contrib.admin',
     'controller',
     'model',
 )
