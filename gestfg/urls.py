@@ -16,6 +16,12 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 
+from controller.ws import alumnos
+
 urlpatterns = [
+    url(r'^', include(admin.site.urls)),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^alumnos/$', alumnos.alumnos, name='alumnos'),
+    url(r'^update_alumno/$', alumnos.update_alumno, name='update_alumno'),
+    url(r'^delete_alumno/$', alumnos.delete_alumno, name='delete_alumno'),
 ]
