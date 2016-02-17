@@ -12,4 +12,3 @@ class TfgServicesTests(TestCase):
         res = requests.get('http://127.0.0.1:8000/alumnos')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], False)
-
