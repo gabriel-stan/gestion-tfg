@@ -37,10 +37,12 @@ DEBUG = os.environ.get('DEBUG') or False
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = 'model.Alumno'
 
 # Application definition
 
 INSTALLED_APPS = (
+    'django_admin_bootstrapped',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -49,6 +51,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'controller',
     'model',
+    'rest_framework',
 )
 
 MIDDLEWARE_CLASSES = (
