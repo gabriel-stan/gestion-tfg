@@ -4,6 +4,10 @@ SCRIPTS = utils/scripts
 GUNICORN_PID = gunicorn.pid
 
 
+# travis auto-merge. Use ONLY with Travis
+auto-merge:
+	cd utils/scripts && ./auto-merge.sh
+
 # install requirements in system (no virtualenv)
 install_requirements_no_vnenv:
 	pip install -r utils/requirements_back.txt

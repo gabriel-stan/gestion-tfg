@@ -9,4 +9,4 @@ install: make install_requirements_no_vnenv
 # command to run tests
 script: make test_no_venv
 
-#after_success: make auto-merge
+after_success: make auto-merge
