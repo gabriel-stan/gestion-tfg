@@ -1,0 +1,19 @@
+- paquetes de sistema:
+
+update        sudo apt-get update
+
+make          sudo apt-get install make
+setuptools    sudo apt-get install python-setuptools
+pip           sudo apt-get install python-pip (https://packaging.python.org/en/latest/install_requirements_linux/#installing-pip-setuptools-wheel-with-linux-package-managers)
+virtualenv    sudo pip install virtualenv
+
+
+- paquetes de sistema - upgrades
+
+pip   sudo pip install -U pip
+
+- requirements pip - backend
+
+
+
+- requirements pip - frontend
