@@ -4,6 +4,7 @@ SCRIPTS = utils/scripts
 GUNICORN_PID = gunicorn.pid
 
 
+
 # travis auto-merge. Use ONLY with Travis
 auto-merge:
 	cd utils/scripts && ./auto-merge.sh
