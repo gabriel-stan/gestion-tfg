@@ -28,11 +28,12 @@ MODEL_PATH = os.path.join(BASE_DIR, 'apps', 'model')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-#Please change the secret key on production
-#SECRET_KEY='3@6-t=xia5pg7zevb^!$45p_d_+94!&^b&n32mq%+)pbpe2ia@'
+# Please change the secret key on production
+# SECRET_KEY='3@6-t=xia5pg7zevb^!$45p_d_+94!&^b&n32mq%+)pbpe2ia@'
 SECRET_KEY = os.environ.get('SECRET_KEY') or 'my-supersecret-production-key'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = True
 DEBUG = os.environ.get('DEBUG') or False
 
 ALLOWED_HOSTS = []
@@ -115,3 +116,23 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# Static config for deployment to Heroku/gunicorn
+
+STATIC_ROOT = 'staticfiles'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
+DAB_FIELD_RENDERER = 'django_admin_bootstrapped.renderers.BootstrapFieldRenderer'
+
+# Heroku postgresql
+
+import dj_database_url
+
+if (os.environ.get('HEROKU')):
+    DATABASES['default'] =  dj_database_url.config()

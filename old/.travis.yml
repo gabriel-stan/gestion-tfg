@@ -9,4 +9,4 @@ install: make install-requirements
 # command to run tests
 script: make test
 
-#after_success: make auto-merge
+after_success: make auto-merge
