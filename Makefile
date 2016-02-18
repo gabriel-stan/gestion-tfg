@@ -28,19 +28,10 @@ run_manage:
 stop_manage:
 	pkill python
 
-# install system packages and app with gunicorn webserver
-install_gunicorn:
-	make install_basic
-	make install_dependencies_gunicorn
-
 # install system packages and basic app
 install_basic:
 	make install_system_packages
 	make install_app
-
-# install gunicorn after installing app
-install_dependencies_gunicorn:
-	$(SCRIPTS)/install_gunicorn.sh
 
 # install app after installing system packages
 install_app:
