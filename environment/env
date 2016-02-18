@@ -1,6 +1,0 @@
-#Variables de entorno secretas
-
-SECRET_KEY='my-supersecret-production-key'
-
-# True for dev, False for production
-DEBUG=True
