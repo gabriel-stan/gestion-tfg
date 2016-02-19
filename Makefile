@@ -2,24 +2,34 @@
 
 SCRIPTS = utils/scripts
 GUNICORN_PID = gunicorn.pid
+RUN_ENV = ~/gestfg/run_env
+INSTALL_ENV = ~/gestfg/install_env
+REQUIREMENTS_BACK = utils/requirements_back.txt
 
 
+##############
+##  Travis  ##
+##############
 
 # travis auto-merge. Use ONLY with Travis
 auto-merge:
 	cd utils/scripts && ./auto-merge.sh
 
-# install requirements in system (no virtualenv)
-install_requirements_no_vnenv:
-	pip install -r utils/requirements_back.txt
+###############
+##  testing  ##
+###############
 
 # run all tests using manage.py default server and no venv (everything installed in the system)
 test_no_venv:
 	export DEBUG=False ; python manage.py migrate ; python manage.py runserver & python manage.py test ; pkill python
 
+###################
+##  app control  ##
+###################
+
 # run app with gunicorn server
 run_gunicorn:
-	$(SCRIPTS)/run_gunicorn.sh $(GUNICORN_PID)
+	$(SCRIPTS)/run_gunicorn.sh $(GUNICORN_PID) $(RUN_ENV)
 
 # stop app runned with gunicorn
 stop_gunicorn:
@@ -27,11 +37,20 @@ stop_gunicorn:
 
 # run app with manage runserver
 run_manage:
-	$(SCRIPTS)/run_manage.sh
+	$(SCRIPTS)/run_manage.sh $(RUN_ENV)
 
 # stop app runned with manage runserver
 stop_manage:
 	pkill python
+
+
+###############
+##  install  ##
+###############
+
+# install requirements in system (no virtualenv)
+install_requirements_no_vnenv:
+	pip install -r utils/requirements_back.txt
 
 # install system packages and basic app
 install_basic:
@@ -40,7 +59,7 @@ install_basic:
 
 # install app after installing system packages
 install_app:
-	$(SCRIPTS)/install_app.sh
+	$(SCRIPTS)/install_app.sh $(REQUIREMENTS_BACK)
 
 # install system packages that require sudo privileges
 install_system_packages:
