@@ -1,7 +1,7 @@
 #! /bin/bash
 
-# setting run environment variables
-ENV_VARS=~/gestfg/run_env
+# # set or get run environment variables
+ENV_VARS=$2
 
 if [ ! -f $ENV_VARS ]; then
     ENV_VARS=utils/environment/run_env

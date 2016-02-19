@@ -7,14 +7,21 @@
 virtualenv venv
 source venv/bin/activate
 
+# get or set requirements file
+REQUIREMENTS_BACK=$1
+
+if [ ! -f $REQUIREMENTS_BACK ]; then
+    REQUIREMENTS_BACK=utils/requirements_back.txt
+fi
+
 # install pip requirements
-pip install -r utils/requirements_back.txt
+pip install -r $1
 
 # prepare database
 python manage.py syncdb --noinput
 
-# TO-DO: create superuser
-
+# create superuser
+echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@example.com', 'gestfg')" | python manage.py shell
 
 # apply changes to database
 python manage.py migrate
