@@ -43,7 +43,6 @@ run_manage:
 stop_manage:
 	pkill python
 
-
 ###############
 ##  install  ##
 ###############
