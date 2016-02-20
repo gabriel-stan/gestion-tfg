@@ -1,6 +1,26 @@
 import re
 import utils
 from model.models import Comision_Evaluacion, Alumno, Tfg, Tfg_Asig, Profesor
+from model.serializers import AlumnoSerializer
+
+
+def get_alumnos(username=None):
+
+    try:
+        if username:
+            alumno = Alumno.objects.get(username=str(username))
+            resul = AlumnoSerializer(alumno).data
+        else:
+            alumno = Alumno.objects.all()
+            resul = AlumnoSerializer(alumno, many=True).data
+            if len(resul) == 0:
+                raise NameError("No hay alumnos almacenados")
+
+        return dict(status=True, data=resul)
+    except NameError as e:
+        return dict(status=False, message=e.message)
+    except Alumno.DoesNotExist:
+        return dict(status=False, message="El alumno indicado no existe")
 
 
 def insert_alumno(alumno):
@@ -18,11 +38,12 @@ def insert_alumno(alumno):
         if not alumno.last_name or not utils.is_string(alumno.last_name):
             raise NameError("Apellidos incorrectos")
 
-        #exp reg para saber si el nick corresponde al correo de la ugr (@correo.ugr.es)
-        if (re.match((r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$'), alumno.username)) == None:
+        # exp reg para saber si el nick corresponde al correo de la ugr (@correo.ugr.es)
+        if not re.match(r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$', alumno.username):
             raise NameError("El correo no es correcto")
 
-        return dict(status=True, data=Alumno.objects.create_user(username=alumno.username, first_name= alumno.first_name,last_name= alumno.last_name))
+        return dict(status=True, data=Alumno.objects.create_user(username=alumno.username, first_name=alumno.first_name,
+                                                                 last_name= alumno.last_name))
 
     except NameError as e:
         return dict(status=False, message=e.message)
@@ -34,12 +55,13 @@ def update_alumno(alumno, campos):
         if 'username' in campos.keys():
             res = Alumno.objects.filter(username=campos['username'])
             if res.count() == 0:
-                if not utils.is_string(campos['username']) or (re.match((r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$'), campos['username'])) == None:
+                if not utils.is_string(campos['username']) or not re.match(r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$',
+                                                                           campos['username']):
                     raise NameError("El correo no es correcto")
                 else:
                     alumno.username = campos['username']
             else:
-               raise NameError("El alumno no existe")
+                raise NameError("El alumno no existe")
 
         # comprobando nombre
         if 'first_name' in campos.keys():
@@ -77,7 +99,7 @@ def delete_alumno(alumno):
 def insert_profesor(profesor):
 
     try:
-        if not profesor.username or (re.match((r'^[a-z][_a-z0-9]+(@ugr\.es)$'), profesor.username)) == None:
+        if not profesor.username or not (re.match(r'^[a-z][_a-z0-9]+(@ugr\.es)$', profesor.username)):
             raise NameError("El correo no es correcto")
         else:
             res = Profesor.objects.filter(username=profesor.username)
@@ -94,8 +116,8 @@ def insert_profesor(profesor):
             raise NameError("Error en el departamento")
 
         return dict(status=True, data=Profesor.objects.create_user(username=profesor.username,
-                                                                   first_name= profesor.first_name,
-                                                                   last_name= profesor.last_name,
+                                                                   first_name=profesor.first_name,
+                                                                   last_name=profesor.last_name,
                                                                    departamento=profesor.departamento))
 
     except NameError as e:
@@ -108,7 +130,7 @@ def update_profesor(profesor, campos):
         if 'username' in campos.keys():
             res = Profesor.objects.filter(username=campos['username'])
             if res.count() == 0:
-                if (re.match((r'^[a-z][_a-z0-9]+(@ugr\.es)$'), campos['username'])) == None:
+                if not (re.match(r'^[a-z][_a-z0-9]+(@ugr\.es)$', campos['username'])):
                     raise NameError("El correo no es correcto")
                 else:
                     profesor.username = campos['username']
@@ -192,7 +214,7 @@ def insert_tfg(tfg):
             raise NameError("Tutor ha de ser un profesor")
 
         # comprobando cotutor
-        if (not hasattr(tfg, 'cotutor')):
+        if not hasattr(tfg, 'cotutor'):
             raise NameError("CoTutor necesario")
         elif not tfg.cotutor.groups.filter(name='Profesores').exists():
             raise NameError("CoTutor ha de ser un profesor")
@@ -252,7 +274,8 @@ def update_tfg(tfg, campos):
         # comprobando tutor
         if 'tutor' in campos.keys():
             # NOTA: Cuando este el modelo de profesores, hay que ver que el tutor sea un profesor
-            if not isinstance(campos['tutor'], Profesor) or not campos['tutor'].groups.filter(name='Profesores').exists():
+            if not isinstance(campos['tutor'], Profesor) or not campos['tutor'].groups.filter(
+                    name='Profesores').exists():
                 raise NameError("Tutor incorrecto")
             else:
                 tfg.tutor = campos['tutor']
@@ -260,7 +283,8 @@ def update_tfg(tfg, campos):
         # comprobando cotutor
         if 'cotutor' in campos.keys():
             # NOTA: Cuando este el modelo de profesores, hay que ver que el tutor sea un profesor
-            if not isinstance(campos['cotutor'], Profesor) or not campos['cotutor'].groups.filter(name='Profesores').exists():
+            if not isinstance(campos['cotutor'], Profesor) or not campos['cotutor'].groups.filter(
+                    name='Profesores').exists():
                 raise NameError("CoTutor incorrecto")
             else:
                 tfg.tutor = campos['cotutor']
@@ -301,14 +325,14 @@ def asignar_tfg(tfg, alumno1, alumno2=None, alumno3=None):
                 alumno3_ok = True
 
             # Si tiene 2 alumnos
-            if alumno2 != None and alumno3 == None:
+            if alumno2 and not alumno3:
                 if not alumno2_ok:
                     raise NameError("Error en el segundo alumno")
                 else:
                     tfg_asig = Tfg_Asig.objects.create(tfg=tfg, alumno_1=alumno1, alumno_2=alumno2)
                     tfg_asig.save()
             # Si tiene 3 alumnos
-            elif alumno2 != None and alumno3 != None:
+            elif alumno2 and alumno3:
                 if not alumno2_ok or not alumno3_ok:
                     raise NameError("Error en el tercer alumno")
                 else:
@@ -336,10 +360,9 @@ def formar_comision(presidente, sup_presidente, titular_1, sup_titular_1, titula
             raise NameError("Error en los suplentes del comite")
         else:
             comision = Comision_Evaluacion.objects.create(presidente=presidente, titular_1=titular_1,
-                               titular_2=titular_2, sup_presidente=sup_presidente,
-                               sup_titular_1=sup_titular_1, sup_titular_2=sup_titular_2)
+                                                          titular_2=titular_2, sup_presidente=sup_presidente,
+                                                          sup_titular_1=sup_titular_1, sup_titular_2=sup_titular_2)
             comision.save()
-
         return dict(status=True, data=comision)
     except NameError as e:
         return dict(status=False, message=e.message)
