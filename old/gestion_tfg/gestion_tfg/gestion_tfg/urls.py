@@ -1,4 +1,4 @@
-"""gestfg URL Configuration
+"""gestion_tfg URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.8/topics/http/urls/
@@ -15,13 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-
-from controller.ws import alumnos
+import views
 
 urlpatterns = [
     url(r'^', include(admin.site.urls)),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^ejemplo/$', views.under_construction, name='under_construction'),
     url(r'^alumnos/$', alumnos.alumnos, name='alumnos'),
-    url(r'^alumnos/update_alumno/$', alumnos.update_alumno, name='update_alumno'),
-    url(r'^alumnos/delete_alumno/$', alumnos.delete_alumno, name='delete_alumno'),
+    url(r'^update_alumno/$', alumnos.update_alumno, name='update_alumno'),
+    url(r'^delete_alumno/$', alumnos.delete_alumno, name='delete_alumno'),
 ]
