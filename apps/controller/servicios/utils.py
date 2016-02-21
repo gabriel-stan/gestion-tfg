@@ -1,7 +1,7 @@
 from django.db.models.fields.related import ManyToManyField
 
 from model.models import Tfg_Asig, Profesor, Alumno
-
+import simplejson as json
 
 def existe_tfg_asig(alumno):
 
@@ -38,7 +38,10 @@ def get_param(req):
 
     datos = {}
     for key, value in req.REQUEST.iteritems():
-        datos[key] = value
+        if key == 'campos':
+            datos[key] = json.loads(value)
+        else:
+            datos[key] = value
     return datos
 
 

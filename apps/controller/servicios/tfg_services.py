@@ -1,11 +1,10 @@
 import re
 import utils
 from model.models import Comision_Evaluacion, Alumno, Tfg, Tfg_Asig, Profesor
-from model.serializers import AlumnoSerializer
+from model.serializers import AlumnoSerializer, ProfesorSerializer
 
 
 def get_alumnos(username=None):
-
     try:
         if username:
             alumno = Alumno.objects.get(username=str(username))
@@ -61,7 +60,7 @@ def update_alumno(alumno, campos):
                 else:
                     alumno.username = campos['username']
             else:
-                raise NameError("El alumno no existe")
+                raise NameError("El alumno indicado no existe")
 
         # comprobando nombre
         if 'first_name' in campos.keys():
@@ -94,6 +93,24 @@ def delete_alumno(alumno):
         return dict(status=True)
     except Alumno.DoesNotExist:
         return dict(status=False, message="El alumno no existe")
+
+
+def get_profesores(username=None):
+    try:
+        if username:
+            profesor = Profesor.objects.get(username=str(username))
+            resul = ProfesorSerializer(profesor).data
+        else:
+            profesor = Profesor.objects.all()
+            resul = ProfesorSerializer(profesor, many=True).data
+            if len(resul) == 0:
+                raise NameError("No hay profesores almacenados")
+
+        return dict(status=True, data=resul)
+    except NameError as e:
+        return dict(status=False, message=e.message)
+    except Profesor.DoesNotExist:
+        return dict(status=False, message="El profesor indicado no existe")
 
 
 def insert_profesor(profesor):
