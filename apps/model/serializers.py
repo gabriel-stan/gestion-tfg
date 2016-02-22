@@ -8,7 +8,15 @@ class AlumnoSerializer(serializers.ModelSerializer):
         model = Alumno
         fields = ('id', 'username', 'first_name', 'last_name')
 
+
 class ProfesorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profesor
         fields = ('id', 'username', 'first_name', 'last_name', 'departamento')
+
+
+class TFGSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profesor
+        fields = ('id', 'tipo', 'titulo', 'n_alumnos', 'descripcion', 'conocimientos_previos', 'hard_soft',
+                  'tutor', 'cotutor')
