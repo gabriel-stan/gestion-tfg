@@ -44,12 +44,6 @@ class TfgServicesTests(TestCase):
         self.assertEqual(resul['status'], False)
         self.assertEqual(resul['message'], 'El correo no es correcto')
 
-        # Obtener profesor que no existe
-        res = requests.get('http://127.0.0.1:8000/profesores/', params={'username': 'pepito'})
-        resul = json.loads(res.content)
-        self.assertEqual(resul['status'], False)
-        self.assertEqual(resul['message'], "El profesor indicado no existe")
-
         # Borrar profesor que no existe
         res = requests.post('http://127.0.0.1:8000/profesores/delete_profesor/',
                             params={'username': 'pepito'})
@@ -96,6 +90,7 @@ class TfgServicesTests(TestCase):
                                   'campos': json.dumps({'first_name': 'otro profesor 1'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
+        # self.assertEqual(resul['data']['first_name'], 'otro profesor 1')
 
         # Dejo la BD como estaba
         res = requests.post('http://127.0.0.1:8000/profesores/delete_profesor/',

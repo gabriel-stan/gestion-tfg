@@ -1,7 +1,7 @@
 import re
 import utils
 from model.models import Comision_Evaluacion, Alumno, Tfg, Tfg_Asig, Profesor
-from model.serializers import AlumnoSerializer, ProfesorSerializer
+from model.serializers import AlumnoSerializer, ProfesorSerializer, TFGSerializer
 
 
 def get_alumnos(username=None):
@@ -192,6 +192,25 @@ def delete_profesor(profesor):
         return dict(status=True)
     except Profesor.DoesNotExist:
         return dict(status=False, message="El profesor no existe")
+
+
+# obtener todos los tfgs o solo por id y que el front filtre, e ahi la cuestion...
+def get_tfgs(id_tfg=None):
+    try:
+        if id_tfg:
+            tfg = Tfg.objects.get(id=str(id_tfg))
+            resul = TFGSerializer(tfg).data
+        else:
+            tfg = Tfg.objects.all()
+            resul = TFGSerializer(tfg, many=True).data
+            if len(resul) == 0:
+                raise NameError("No hay tfgs almacenados")
+
+        return dict(status=True, data=resul)
+    except NameError as e:
+        return dict(status=False, message=e.message)
+    except Tfg.DoesNotExist:
+        return dict(status=False, message="El tfg indicado no existe")
 
 
 def insert_tfg(tfg):
