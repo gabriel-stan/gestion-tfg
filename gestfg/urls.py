@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 
-from controller.ws import alumnos, profesores
+from controller.ws import alumnos, profesores, tfg
 
 urlpatterns = [
     url(r'^', include(admin.site.urls)),
@@ -27,4 +27,5 @@ urlpatterns = [
     url(r'^profesores/$', profesores.profesores, name='profesores'),
     url(r'^profesores/update_profesor/$', profesores.update_profesor, name='update_profesor'),
     url(r'^profesores/delete_profesor/$', profesores.delete_profesor, name='delete_profesor'),
+    url(r'^tfgs/$', tfg.tfgs, name='tfg'),
 ]

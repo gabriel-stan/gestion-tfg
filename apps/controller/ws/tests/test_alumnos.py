@@ -43,12 +43,6 @@ class TfgServicesTests(TestCase):
         self.assertEqual(resul['status'], False)
         self.assertEqual(resul['message'], 'El correo no es correcto')
 
-        # Obtener alumno que no existe
-        res = requests.get('http://127.0.0.1:8000/alumnos/', params={'username': 'pepito'})
-        resul = json.loads(res.content)
-        self.assertEqual(resul['status'], False)
-        self.assertEqual(resul['message'], "El alumno indicado no existe")
-
         # Borrar alumno que no existe
         res = requests.post('http://127.0.0.1:8000/alumnos/delete_alumno/',
                             params={'username': 'pepito'})
