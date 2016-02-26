@@ -80,19 +80,15 @@ class TfgServicesTests(TestCase):
         self.assertEqual(result['status'], False)
 
         #Alumno 2 y 3 no pertenecen al grupo de alumnos
-        self.user_alumn1_tfg.groups.add(self.grupo_alumnos[0])
-        result = tfg_services.asignar_tfg(tfg, self.user_alumn1_tfg, self.user_alumn2_tfg, self.user_alumn3_tfg)
+        result = tfg_services.asignar_tfg(tfg, self.user_alumn1_tfg, self.user_tutor_tfg, self.user_cotutor_tfg)
         self.assertEqual(result['status'], False)
 
         #Alumno 1 y 3 no pertenecen al grupo de alumnos
-        self.user_alumn2_tfg.groups.add(self.grupo_alumnos[0])
-        result = tfg_services.asignar_tfg(tfg, self.user_alumn1_tfg, self.user_alumn2_tfg, self.user_alumn3_tfg)
+        result = tfg_services.asignar_tfg(tfg, self.user_tutor_tfg, self.user_alumn2_tfg, self.user_cotutor_tfg)
         self.assertEqual(result['status'], False)
 
-        #Alumno 1 y 3 no pertenecen al grupo de alumnos
-        self.user_alumn2_tfg.groups.remove(self.grupo_alumnos[0])
-        self.user_alumn3_tfg.groups.add(self.grupo_alumnos[0])
-        result = tfg_services.asignar_tfg(tfg, self.user_alumn1_tfg, self.user_alumn2_tfg, self.user_alumn3_tfg)
+        #Alumno 1 y 2 no pertenecen al grupo de alumnos
+        result = tfg_services.asignar_tfg(tfg, self.user_tutor_tfg, self.user_cotutor_tfg, self.user_alumn3_tfg)
         self.assertEqual(result['status'], False)
 
     def test_asig_tfg_ya_asig(self):
