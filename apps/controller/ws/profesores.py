@@ -26,7 +26,7 @@ def profesores(request):
     # Si es un GET, devuelvo la info de todos los profesores
     try:
         if request.method == 'GET':
-            params = utils.get_param(request)
+            params = utils.get_params(request)
             if 'username' in params:
                 resul = tfg_services.get_profesores(params['username'])
             else:
@@ -35,7 +35,7 @@ def profesores(request):
 
         # Si es un POST devuelvo la info del profesor nuevo
         elif request.method == 'POST':
-            params = utils.get_param(request)
+            params = utils.get_params(request)
             profesor = Profesor(username=params['username'], first_name=params['first_name'],
                                 last_name=params['last_name'], departamento=params['departamento'])
             resul = tfg_services.insert_profesor(profesor)
@@ -58,7 +58,7 @@ def update_profesor(request):
     # TODO: Aqui va la comprobacion del perfil del usuario que quiere actualizar
     try:
         if request.method == 'POST':
-            params = utils.get_param(request)
+            params = utils.get_params(request)
             profesor = Profesor.objects.get(username=params['profesor'])
             resul = tfg_services.update_profesor(profesor, params['campos'])
             if resul['status']:
@@ -83,7 +83,7 @@ def delete_profesor(request):
 
     try:
         if request.method == 'POST':
-            params = utils.get_param(request)
+            params = utils.get_params(request)
             if 'username' in params:
                 profesor = Profesor.objects.get(username=params['username'])
                 resul = tfg_services.delete_profesor(profesor)

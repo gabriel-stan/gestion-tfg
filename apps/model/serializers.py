@@ -1,5 +1,5 @@
 __author__ = 'tonima'
-from models import Alumno, Profesor
+from models import Alumno, Profesor, Tfg
 from rest_framework import serializers
 
 
@@ -17,6 +17,6 @@ class ProfesorSerializer(serializers.ModelSerializer):
 
 class TFGSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Profesor
+        model = Tfg
         fields = ('id', 'tipo', 'titulo', 'n_alumnos', 'descripcion', 'conocimientos_previos', 'hard_soft',
                   'tutor', 'cotutor')

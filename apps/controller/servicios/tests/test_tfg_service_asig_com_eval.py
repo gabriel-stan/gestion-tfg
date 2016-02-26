@@ -22,6 +22,9 @@ class TfgServicesTests(TestCase):
         self.sup_titular_2 = tfg_services.insert_profesor(Profesor(username='manolo@ugr.es',
                                                                    first_name='sup_titular_2', last_name='pepe', departamento='black mesa2'))['data']
 
+        self.user_alumn1_tfg = tfg_services.insert_alumno(Alumno(username='alumn1@correo.ugr.es', first_name='alumn1',
+                                                                 last_name='apellidos 1'))['data']
+
         self.grupo_profesores = Group.objects.get_or_create(name='Profesores')
         self.grupo_alumnos = Group.objects.get_or_create(name='Alumnos')
 
@@ -35,7 +38,7 @@ class TfgServicesTests(TestCase):
         self.sup_titular_2.groups.add(self.grupo_profesores[0])
 
         # suplente del presidente no profesor
-        result = tfg_services.formar_comision(presidente=self.presidente, sup_presidente=self.sup_presidente,
+        result = tfg_services.formar_comision(presidente=self.presidente, sup_presidente=self.user_alumn1_tfg,
                                               titular_1=self.titular_1, sup_titular_1=self.sup_titular_1,
                                               titular_2=self.titular_2, sup_titular_2=self.sup_titular_2)
         self.assertEqual(result['status'], False)
@@ -43,7 +46,7 @@ class TfgServicesTests(TestCase):
         # no primer titular profesor
         self.sup_presidente.groups.add(self.grupo_profesores[0])
         result = tfg_services.formar_comision(presidente=self.presidente, sup_presidente=self.sup_presidente,
-                                              titular_1=self.titular_1, sup_titular_1=self.sup_titular_1,
+                                              titular_1=self.user_alumn1_tfg, sup_titular_1=self.sup_titular_1,
                                               titular_2=self.titular_2, sup_titular_2=self.sup_titular_2)
         self.assertEqual(result['status'], False)
         # Valido
