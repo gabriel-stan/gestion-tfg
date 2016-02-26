@@ -28,4 +28,6 @@ urlpatterns = [
     url(r'^profesores/update_profesor/$', profesores.update_profesor, name='update_profesor'),
     url(r'^profesores/delete_profesor/$', profesores.delete_profesor, name='delete_profesor'),
     url(r'^tfgs/$', tfg.tfgs, name='tfg'),
+    url(r'^tfgs/update_tfg/$', tfg.update_tfg, name='update_tfg'),
+    url(r'^tfgs/delete_tfg/$', tfg.delete_tfg, name='delete_tfg'),
 ]

@@ -26,16 +26,16 @@ def tfgs(request):
     # Si es un GET, devuelvo la info de todos los tfgs
     try:
         if request.method == 'GET':
-            params = utils.get_param(request)
-            if 'id_tfg' in params:
-                resul = tfg_services.get_tfgs(id_tfg=params['id_tfg'])
+            params = utils.get_params(request)
+            if 'titulo' in params:
+                resul = tfg_services.get_tfgs(titulo=params['titulo'])
             else:
                 resul = tfg_services.get_tfgs()
             return Response(resul)
 
         # Si es un POST devuelvo la info del tfg nuevo
         elif request.method == 'POST':
-            params = utils.get_param(request)
+            params = utils.get_params(request)
             tfg = Tfg(tipo=params['tipo'], titulo=params['titulo'], n_alumnos=params['n_alumnos'],
                       descripcion=params['descripcion'], conocimientos_previos=params['conocimientos_previos'],
                       hard_soft=params['hard_soft'],
@@ -59,8 +59,8 @@ def update_tfg(request):
     # TODO: Aqui va la comprobacion del perfil del usuario que quiere actualizar
     try:
         if request.method == 'POST':
-            params = utils.get_param(request)
-            tfg = Tfg.objects.get(username=params['tfg'])
+            params = utils.get_params(request)
+            tfg = Tfg.objects.get(titulo=params['titulo'])
             resul = tfg_services.update_tfg(tfg, params['campos'])
             if resul['status']:
                 return Response(utils.to_dict(resul))
@@ -84,9 +84,9 @@ def delete_tfg(request):
 
     try:
         if request.method == 'POST':
-            params = utils.get_param(request)
-            if 'username' in params:
-                tfg = Tfg.objects.get(username=params['username'])
+            params = utils.get_params(request)
+            if 'titulo' in params:
+                tfg = Tfg.objects.get(titulo=params['titulo'])
                 resul = tfg_services.delete_tfg(tfg)
             else:
                 resul = dict(status=False, message="Parametros incorrectos")

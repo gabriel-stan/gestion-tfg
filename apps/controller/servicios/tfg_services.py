@@ -2,7 +2,7 @@ import re
 import utils
 from model.models import Comision_Evaluacion, Alumno, Tfg, Tfg_Asig, Profesor
 from model.serializers import AlumnoSerializer, ProfesorSerializer, TFGSerializer
-
+from django.contrib.auth.models import Group
 
 def get_alumnos(username=None):
     try:
@@ -41,8 +41,11 @@ def insert_alumno(alumno):
         if not re.match(r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$', alumno.username):
             raise NameError("El correo no es correcto")
 
-        return dict(status=True, data=Alumno.objects.create_user(username=alumno.username, first_name=alumno.first_name,
-                                                                 last_name= alumno.last_name))
+        grupo_alumnos = Group.objects.get_or_create(name='Alumnos')
+        alumno.save()
+        alumno.groups.add(grupo_alumnos[0])
+
+        return dict(status=True, data=Alumno.objects.get(username=alumno.username))
 
     except NameError as e:
         return dict(status=False, message=e.message)
@@ -132,10 +135,12 @@ def insert_profesor(profesor):
         if not profesor.departamento or not utils.is_string(profesor.departamento):
             raise NameError("Error en el departamento")
 
-        return dict(status=True, data=Profesor.objects.create_user(username=profesor.username,
-                                                                   first_name=profesor.first_name,
-                                                                   last_name=profesor.last_name,
-                                                                   departamento=profesor.departamento))
+        grupo_profesores = Group.objects.get_or_create(name='Profesores')
+        profesor.save()
+        profesor.groups.add(grupo_profesores[0])
+
+        return dict(status=True, data=Profesor.objects.get(username=profesor.username))
+
 
     except NameError as e:
         return dict(status=False, message=e.message)
@@ -195,10 +200,10 @@ def delete_profesor(profesor):
 
 
 # obtener todos los tfgs o solo por id y que el front filtre, e ahi la cuestion...
-def get_tfgs(id_tfg=None):
+def get_tfgs(titulo=None):
     try:
-        if id_tfg:
-            tfg = Tfg.objects.get(id=str(id_tfg))
+        if titulo:
+            tfg = Tfg.objects.get(titulo=str(titulo))
             resul = TFGSerializer(tfg).data
         else:
             tfg = Tfg.objects.all()
@@ -228,7 +233,7 @@ def insert_tfg(tfg):
             raise NameError("Tipo de TFG necesario")
 
         # comprobando numero de alumnos
-        if (tfg.n_alumnos is None) or (tfg.n_alumnos <= 0) or (tfg.n_alumnos > 3):
+        if tfg.n_alumnos is None or not utils.is_int(tfg.n_alumnos) or int(tfg.n_alumnos) <= 0 or int(tfg.n_alumnos) > 3:
             raise NameError("Numero de alumnos incorrecto")
 
         # comprobando descripcion
@@ -309,7 +314,6 @@ def update_tfg(tfg, campos):
 
         # comprobando tutor
         if 'tutor' in campos.keys():
-            # NOTA: Cuando este el modelo de profesores, hay que ver que el tutor sea un profesor
             if not isinstance(campos['tutor'], Profesor) or not campos['tutor'].groups.filter(
                     name='Profesores').exists():
                 raise NameError("Tutor incorrecto")
@@ -318,7 +322,6 @@ def update_tfg(tfg, campos):
 
         # comprobando cotutor
         if 'cotutor' in campos.keys():
-            # NOTA: Cuando este el modelo de profesores, hay que ver que el tutor sea un profesor
             if not isinstance(campos['cotutor'], Profesor) or not campos['cotutor'].groups.filter(
                     name='Profesores').exists():
                 raise NameError("CoTutor incorrecto")
