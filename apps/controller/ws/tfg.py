@@ -2,42 +2,45 @@ __author__ = 'tonima'
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from controller.servicios import tfg_services, utils
-from model.models import Alumno
+from model.models import Tfg
 
 
 @api_view(['GET', 'POST'])
-def alumnos(request):
+def tfgs(request):
     """
     GET
-    Obtener los datos de todos o de algun alumno
+    Obtener los datos de todos o de algun tfg
     :param request:
     :return :
-    {status: True/False, data:{serializer del alumno o alumnos}
+    {status: True/False, data:{serializer del tfg o tfgs}
 
     POST
-    Insertar un alumno nuevo
+    Insertar un tfg nuevo
     :param request:
     :return :
-    {status: True/False, data:{datos del alumno insertado o de todos los alumnos}
+    {status: True/False, data:{datos del tfg insertado o de todos los tfgs}
     """
 
     # TODO: Aqui va la comprobacion del perfil del usuario
 
-    # Si es un GET, devuelvo la info de todos los alumnos
+    # Si es un GET, devuelvo la info de todos los tfgs
     try:
         if request.method == 'GET':
             params = utils.get_params(request)
-            if 'username' in params:
-                resul = tfg_services.get_alumnos(params['username'])
+            if 'titulo' in params:
+                resul = tfg_services.get_tfgs(titulo=params['titulo'])
             else:
-                resul = tfg_services.get_alumnos()
+                resul = tfg_services.get_tfgs()
             return Response(resul)
 
-        # Si es un POST devuelvo la info del alumno nuevo
+        # Si es un POST devuelvo la info del tfg nuevo
         elif request.method == 'POST':
             params = utils.get_params(request)
-            alumno = Alumno(username=params['username'], first_name=params['first_name'], last_name=params['last_name'])
-            resul = tfg_services.insert_alumno(alumno)
+            tfg = Tfg(tipo=params['tipo'], titulo=params['titulo'], n_alumnos=params['n_alumnos'],
+                      descripcion=params['descripcion'], conocimientos_previos=params['conocimientos_previos'],
+                      hard_soft=params['hard_soft'],
+                      tutor=params['tutor'], cotutor=params['cotutor'])
+            resul = tfg_services.insert_tfg(tfg)
             if resul['status']:
                 return Response(utils.to_dict(resul))
             return Response(resul)
@@ -46,10 +49,10 @@ def alumnos(request):
         return Response(dict(status=False, message="Error en la llamada"))
 
 @api_view(['POST'])
-def update_alumno(request):
+def update_tfg(request):
     """
-    Actualizar datos de un alumno
-    :param request: alumno <str>, campos <dict>
+    Actualizar datos de un tfg
+    :param request: tfg <str>, campos <dict>
     :return :
     """
 
@@ -57,20 +60,20 @@ def update_alumno(request):
     try:
         if request.method == 'POST':
             params = utils.get_params(request)
-            alumno = Alumno.objects.get(username=params['alumno'])
-            resul = tfg_services.update_alumno(alumno, params['campos'])
+            tfg = Tfg.objects.get(titulo=params['titulo'])
+            resul = tfg_services.update_tfg(tfg, params['campos'])
             if resul['status']:
                 return Response(utils.to_dict(resul))
             return Response(resul)
 
-    except Alumno.DoesNotExist:
-        return Response(dict(status=False, message="El alumno indicado no existe"))
+    except Tfg.DoesNotExist:
+        return Response(dict(status=False, message="El tfg indicado no existe"))
     except Exception:
         return Response(dict(status=False, message="Error en la llamada"))
 
 
 @api_view(['POST'])
-def delete_alumno(request):
+def delete_tfg(request):
     """
     Eliminar un usuario
     :param request:
@@ -82,15 +85,15 @@ def delete_alumno(request):
     try:
         if request.method == 'POST':
             params = utils.get_params(request)
-            if 'username' in params:
-                alumno = Alumno.objects.get(username=params['username'])
-                resul = tfg_services.delete_alumno(alumno)
+            if 'titulo' in params:
+                tfg = Tfg.objects.get(titulo=params['titulo'])
+                resul = tfg_services.delete_tfg(tfg)
             else:
                 resul = dict(status=False, message="Parametros incorrectos")
 
             return Response(resul)
 
-    except Alumno.DoesNotExist:
-        return Response(dict(status=False, message="El alumno indicado no existe"))
+    except Tfg.DoesNotExist:
+        return Response(dict(status=False, message="El tfg indicado no existe"))
     except Exception:
         return Response(dict(status=False, message="Error en la llamada"))

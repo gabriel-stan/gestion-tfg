@@ -2,11 +2,20 @@ from django.db import models
 from django.contrib.auth.models import Group, User, AbstractUser
 
 
-class Alumno(AbstractUser):
+class Usuario(AbstractUser):
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELD = USERNAME_FIELD
+
+
+class Administrador(Usuario):
     pass
 
 
-class Profesor(Alumno):
+class Alumno(Usuario):
+    pass
+
+
+class Profesor(Usuario):
     departamento = models.CharField(max_length=100)
 
 

@@ -1,7 +1,7 @@
 from django.db.models.fields.related import ManyToManyField
 
 from model.models import Tfg_Asig, Profesor, Alumno
-
+import simplejson as json
 
 def existe_tfg_asig(alumno):
 
@@ -34,11 +34,16 @@ def comprueba_alumno(usuario):
         return False
 
 
-def get_param(req):
+def get_params(req):
 
     datos = {}
     for key, value in req.REQUEST.iteritems():
-        datos[key] = value
+        if key == 'campos':
+            datos[key] = json.loads(value)
+        elif key == 'tutor' or  key == 'cotutor':
+            datos[key] = Profesor.objects.get(username=str(value))
+        else:
+            datos[key] = value
     return datos
 
 
@@ -47,6 +52,16 @@ def is_string(s):
         if isinstance(s, int) or isinstance(s, float):
             raise ValueError
         str(s)
+        return True
+    except ValueError:
+        return False
+
+
+def is_int(s):
+    try:
+        if isinstance(s, str) or isinstance(s, float):
+            raise ValueError
+        int(s)
         return True
     except ValueError:
         return False

@@ -2,7 +2,7 @@ from django.contrib.auth.models import Group
 from django.test import TestCase
 
 from controller.servicios import tfg_services
-from model.models import Tfg, Profesor
+from model.models import Tfg, Profesor, Alumno
 
 
 class TfgServicesTests(TestCase):
@@ -20,6 +20,9 @@ class TfgServicesTests(TestCase):
         self.user_cotutor_tfg = tfg_services.insert_profesor(Profesor(username='pepe@ugr.es',
                                                                       first_name='pepe', last_name='paco', departamento='departamento 2'))['data']
 
+        self.user_alumn1_tfg = tfg_services.insert_alumno(Alumno(username='alumn1@correo.ugr.es', first_name='alumn1',
+                                                                 last_name='apellidos 1'))['data']
+
         self.otro_tipo_tfg = 'otro tipo'
         self.otro_titulo_tfg = 'otro titulo'
         self.otro_n_alumnos_tfg = 3
@@ -28,9 +31,11 @@ class TfgServicesTests(TestCase):
         self.otro_hard_soft_tfg = 'otros hardware y software'
 
         self.otro_user_tutor_tfg = tfg_services.insert_profesor(Profesor(username='manolo@ugr.es',
-                                                                         first_name='manolo', last_name='manue', departamento='departamento 1'))['data']
-        self.otro_user_cotutor_tfg = tfg_services.insert_profesor(Profesor(username='manue@ugr.es',
-                                                                           first_name='manue', last_name='manolo', departamento='departamento 2'))['data']
+                                                                         first_name='manolo', last_name='manue',
+                                                                         departamento='departamento 1'))['data']
+        self.otro_user_cotutor_tfg = tfg_services.insert_profesor(
+            Profesor(username='manue@ugr.es', first_name='manue', last_name='manolo', departamento='departamento 2'))[
+            'data']
 
         self.grupo_profesores = Group.objects.get_or_create(name='Profesores')
         self.grupo_alumnos = Group.objects.get_or_create(name='Alumnos')
@@ -243,17 +248,7 @@ class TfgServicesTests(TestCase):
 
         #tutor no en grupo Profesor
         campos = {}
-        campos['tutor'] = self.otro_user_tutor_tfg
-
-        tfg = Tfg.objects.get(tutor=self.user_tutor_tfg)
-
-        result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result['status'], False)
-
-        #tutor incorrecto
-        campos = {}
-        self.otro_user_tutor_tfg.groups.add(self.grupo_alumnos[0])
-        campos['tutor'] = self.otro_user_tutor_tfg
+        campos['tutor'] = self.user_alumn1_tfg
 
         tfg = Tfg.objects.get(tutor=self.user_tutor_tfg)
 
@@ -284,16 +279,6 @@ class TfgServicesTests(TestCase):
         #cotutor formato erroneo
         campos = {}
         campos['cotutor'] = 3
-
-        tfg = Tfg.objects.get(cotutor=self.user_cotutor_tfg)
-
-        result = tfg_services.update_tfg(tfg, campos)
-        self.assertEqual(result['status'], False)
-
-        #cotutor incorrecto
-        campos = {}
-        self.otro_user_cotutor_tfg.groups.add(self.grupo_alumnos[0])
-        campos['cotutor'] = self.otro_user_cotutor_tfg
 
         tfg = Tfg.objects.get(cotutor=self.user_cotutor_tfg)
 
