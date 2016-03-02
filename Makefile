@@ -21,7 +21,7 @@ auto-merge:
 
 # run all tests using manage.py default server and no venv (everything installed in the system)
 test_no_venv:
-	export DEBUG=False ; python manage.py migrate ; python manage.py runserver & python manage.py test ; pkill python
+	export DEBUG=False ; python manage.py migrate ; python manage.py test
 
 ###################
 ##  app control  ##
