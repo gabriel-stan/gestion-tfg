@@ -8,7 +8,7 @@ from openpyxl import load_workbook
 
 
 def get_alumnos(username=None):
-    try: 
+    try:
         if username:
             alumno = Alumno.objects.get(username=str(username))
             resul = AlumnoSerializer(alumno).data
