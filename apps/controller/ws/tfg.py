@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 __author__ = 'tonima'
 from rest_framework.decorators import api_view
 from rest_framework.response import Response

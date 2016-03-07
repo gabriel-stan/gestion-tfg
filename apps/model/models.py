@@ -24,10 +24,10 @@ class Tfg(models.Model):
     titulo = models.CharField(max_length=100)
     n_alumnos = models.IntegerField()
     descripcion = models.TextField()
-    conocimientos_previos = models.CharField(max_length=100)
-    hard_soft = models.CharField(max_length=100)
+    conocimientos_previos = models.CharField(max_length=100, null=True)
+    hard_soft = models.CharField(max_length=100, null=True)
     tutor = models.ForeignKey(Profesor, related_name='tutor',default=None)
-    cotutor = models.ForeignKey(Profesor, related_name='cotutor', default=None)
+    cotutor = models.ForeignKey(Profesor, related_name='cotutor', default=None, null=True)
 
 
 class Tfg_Asig(models.Model):
