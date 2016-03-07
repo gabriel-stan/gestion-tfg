@@ -81,6 +81,7 @@ class TfgServicesTests(TestCase):
         # Envio el fichero y carga TFGs
         location = os.path.join(os.path.dirname(__file__), 'test_upload_file_tfgs', 'ListaTFGs.xlsx')
         data = {'file': ('ListaTFGs.xlsx', open(location, 'rb')), 'filas': 5}
-        res = self.client.post('/upload_file_tfgs/', data, format='multipart')
-        tfg = Tfg.objects.get(titulo=self.TFG1['titulo'])
-        self.assertEqual(self.TFG1['tutor'], tfg.tutor.username)
+        self.client.post('/upload_file_tfgs/', data, format='multipart')
+        res = self.client.get('/tfgs/', {'titulo': self.TFG1['titulo']})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)

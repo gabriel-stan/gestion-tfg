@@ -205,7 +205,7 @@ def delete_profesor(profesor):
 def get_tfgs(titulo=None):
     try:
         if titulo:
-            tfg = Tfg.objects.get(titulo=str(titulo))
+            tfg = Tfg.objects.get(titulo=titulo)
             resul = TFGSerializer(tfg).data
         else:
             tfg = Tfg.objects.all()
