@@ -1,8 +1,11 @@
+# -*- coding: utf-8 -*-
 import re
 import utils
 from model.models import Comision_Evaluacion, Alumno, Tfg, Tfg_Asig, Profesor
 from model.serializers import AlumnoSerializer, ProfesorSerializer, TFGSerializer
 from django.contrib.auth.models import Group
+from openpyxl import load_workbook
+
 
 def get_alumnos(username=None):
     try:
@@ -141,7 +144,6 @@ def insert_profesor(profesor):
 
         return dict(status=True, data=Profesor.objects.get(username=profesor.username))
 
-
     except NameError as e:
         return dict(status=False, message=e.message)
 
@@ -233,20 +235,13 @@ def insert_tfg(tfg):
             raise NameError("Tipo de TFG necesario")
 
         # comprobando numero de alumnos
-        if tfg.n_alumnos is None or not utils.is_int(tfg.n_alumnos) or int(tfg.n_alumnos) <= 0 or int(tfg.n_alumnos) > 3:
+        if tfg.n_alumnos is None or not utils.is_int(tfg.n_alumnos) or int(tfg.n_alumnos) <= 0 \
+                or int(tfg.n_alumnos) > 3:
             raise NameError("Numero de alumnos incorrecto")
 
         # comprobando descripcion
         if not tfg.descripcion:
             raise NameError("Descripcion necesaria")
-
-        # comprobando conocimientos previos
-        if not tfg.conocimientos_previos:
-            raise NameError("Conocimientos Previos necesarios")
-
-        # comprobando requisitos HW SW
-        if not tfg.hard_soft:
-            raise NameError("Hard/Soft necesario")
 
         # comprobando tutor
         if not hasattr(tfg, 'tutor'):
@@ -255,10 +250,9 @@ def insert_tfg(tfg):
             raise NameError("Tutor ha de ser un profesor")
 
         # comprobando cotutor
-        if not hasattr(tfg, 'cotutor'):
-            raise NameError("CoTutor necesario")
-        elif not tfg.cotutor.groups.filter(name='Profesores').exists():
-            raise NameError("CoTutor ha de ser un profesor")
+        if hasattr(tfg, 'cotutor') and tfg.cotutor:
+            if not tfg.cotutor.groups.filter(name='Profesores').exists():
+                raise NameError("Cotutor ha de ser un profesor")
 
         tfg.save()
         return dict(status=True, data=Tfg.objects.get(titulo=tfg.titulo))
@@ -405,3 +399,39 @@ def formar_comision(presidente, sup_presidente, titular_1, sup_titular_1, titula
         return dict(status=True, data=comision)
     except NameError as e:
         return dict(status=False, message=e.message)
+
+
+def subida_masiva(fichero, filas):
+    wb = load_workbook(fichero)
+    ws = wb.active
+    errores = []
+    for i in range(5, 5+filas):
+        datos = dict(tipo=ws['D' + str(i)].value,
+                     titulo=ws['E' + str(i)].value,
+                     n_alumnos=ws['F' + str(i)].value, descripcion=ws['G' + str(i)].value,
+                     conocimientos_previos=ws['H' + str(i)].value,
+                     hard_soft=ws['I' + str(i)].value)
+        if not datos['titulo']:
+            errores.append(ws['A' + str(i)].value)
+            continue
+        try:
+            datos['tutor'] = Profesor.objects.get(username=str(ws['B' + str(i)].value))
+            if ws['C' + str(i)].value:
+                datos['cotutor'] = Profesor.objects.get(username=str(ws['C' + str(i)].value))
+                tfg = Tfg(tipo=datos['tipo'], titulo=datos['titulo'], n_alumnos=datos['n_alumnos'],
+                          descripcion=datos['descripcion'], conocimientos_previos=datos['conocimientos_previos'],
+                          hard_soft=datos['hard_soft'],
+                          tutor=datos['tutor'], cotutor=datos['cotutor'])
+            else:
+                tfg = Tfg(tipo=datos['tipo'], titulo=datos['titulo'], n_alumnos=datos['n_alumnos'],
+                          descripcion=datos['descripcion'], conocimientos_previos=datos['conocimientos_previos'],
+                          hard_soft=datos['hard_soft'],
+                          tutor=datos['tutor'])
+            insert_tfg(tfg)
+        except Profesor.DoesNotExist:
+            errores.append(dict(fila=ws['A' + str(i)].value, message='El profesor no existe'))
+            continue
+        except Exception as e:
+            errores.append(dict(fila=ws['A' + str(i)].value, message=e.message))
+            continue
+    return dict(status=True, data=errores)
