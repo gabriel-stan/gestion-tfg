@@ -83,7 +83,6 @@ class TfgServicesTests(TestCase):
         data = {'file': ('ListaTFGs.xlsx', open(location, 'rb')), 'filas': 5}
         res = self.client.post('/upload_file_tfgs/', data, format='multipart')
         resul = json.loads(res.content)
-        print resul['data']
         res = self.client.get('/tfgs/', {'titulo': self.TFG1['titulo']})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
