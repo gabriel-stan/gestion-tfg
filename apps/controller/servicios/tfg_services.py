@@ -401,23 +401,24 @@ def formar_comision(presidente, sup_presidente, titular_1, sup_titular_1, titula
         return dict(status=False, message=e.message)
 
 
-def subida_masiva(fichero, filas):
+def subida_masiva(fichero, filas, p_fila, cabeceras):
     wb = load_workbook(fichero)
     ws = wb.active
     errores = []
-    for i in range(5, 5+filas):
-        datos = dict(tipo=ws['D' + str(i)].value,
-                     titulo=ws['E' + str(i)].value,
-                     n_alumnos=ws['F' + str(i)].value, descripcion=ws['G' + str(i)].value,
-                     conocimientos_previos=ws['H' + str(i)].value,
-                     hard_soft=ws['I' + str(i)].value)
-        if not datos['titulo']:
-            errores.append(ws['A' + str(i)].value)
-            continue
+    for i in range(p_fila, 5+filas):
         try:
-            datos['tutor'] = Profesor.objects.get(username=str(ws['B' + str(i)].value))
-            if ws['C' + str(i)].value:
-                datos['cotutor'] = Profesor.objects.get(username=str(ws['C' + str(i)].value))
+            datos = dict(tipo=ws[cabeceras['tipo'] + str(i)].value,
+                         titulo=ws[cabeceras['titulo'] + str(i)].value,
+                         n_alumnos=ws[cabeceras['n_alumnos'] + str(i)].value,
+                         descripcion=ws[cabeceras['descripcion'] + str(i)].value,
+                         conocimientos_previos=ws[cabeceras['conocimientos_previos'] + str(i)].value,
+                         hard_soft=ws[cabeceras['hard_soft'] + str(i)].value)
+            if not datos['titulo']:
+                errores.append(dict(fila=i, message='El TFG no tiene titulo'))
+                continue
+            datos['tutor'] = Profesor.objects.get(username=str(ws[cabeceras['tutor'] + str(i)].value))
+            if ws[cabeceras['cotutor'] + str(i)].value:
+                datos['cotutor'] = Profesor.objects.get(username=str(ws[cabeceras['cotutor'] + str(i)].value))
                 tfg = Tfg(tipo=datos['tipo'], titulo=datos['titulo'], n_alumnos=datos['n_alumnos'],
                           descripcion=datos['descripcion'], conocimientos_previos=datos['conocimientos_previos'],
                           hard_soft=datos['hard_soft'],
@@ -429,9 +430,9 @@ def subida_masiva(fichero, filas):
                           tutor=datos['tutor'])
             insert_tfg(tfg)
         except Profesor.DoesNotExist:
-            errores.append(dict(fila=ws['A' + str(i)].value, message='El profesor no existe'))
+            errores.append(dict(fila=i, message='El profesor no existe'))
             continue
         except Exception as e:
-            errores.append(dict(fila=ws['A' + str(i)].value, message=e.message))
+            errores.append(dict(fila=i, message=e.message))
             continue
     return dict(status=True, data=errores)

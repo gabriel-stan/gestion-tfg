@@ -80,9 +80,20 @@ class TfgServicesTests(TestCase):
     def test_ws_upload_file_tfgs(self):
         # Envio el fichero y carga TFGs
         location = os.path.join(os.path.dirname(__file__), 'test_upload_file_tfgs', 'ListaTFGs.xlsx')
-        data = {'file': ('ListaTFGs.xlsx', open(location, 'rb')), 'filas': 5}
+        data = {'file': ('ListaTFGs.xlsx', open(location, 'rb')), 'filas': 5, 'p_fila': 5,
+                'cabeceras': json.dumps(dict(tipo='D', titulo='E',
+                                  n_alumnos='F', descripcion='G',
+                                  conocimientos_previos='H',
+                                  hard_soft='I', tutor='B',
+                                  cotutor='C'))}
         res = self.client.post('/upload_file_tfgs/', data, format='multipart')
         resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+        self.assertEqual(resul['data'][1]['fila'], 8)
+        self.assertEqual(resul['data'][1]['message'], 'El TFG no tiene titulo')
+        self.assertEqual(resul['data'][0]['fila'], 6)
+        self.assertEqual(resul['data'][0]['message'], 'El profesor no existe')
         res = self.client.get('/tfgs/', {'titulo': self.TFG1['titulo']})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
+
