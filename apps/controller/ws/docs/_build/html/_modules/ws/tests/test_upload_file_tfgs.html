@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ws.tests.test_upload_file_tfgs &mdash; GESTFG 1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="GESTFG 1 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for ws.tests.test_upload_file_tfgs</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;tonima&#39;</span>
+<span class="kn">import</span> <span class="nn">simplejson</span> <span class="kn">as</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">Group</span>
+<span class="kn">from</span> <span class="nn">django.test</span> <span class="kn">import</span> <span class="n">TestCase</span>
+<span class="kn">from</span> <span class="nn">model.models</span> <span class="kn">import</span> <span class="n">Tfg</span>
+<span class="kn">from</span> <span class="nn">controller.servicios</span> <span class="kn">import</span> <span class="n">tfg_services</span>
+<span class="kn">from</span> <span class="nn">rest_framework.test</span> <span class="kn">import</span> <span class="n">APIClient</span>
+
+
+<div class="viewcode-block" id="TfgServicesTests"><a class="viewcode-back" href="../../../ws.tests.html#ws.tests.test_upload_file_tfgs.TfgServicesTests">[docs]</a><span class="k">class</span> <span class="nc">TfgServicesTests</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+<div class="viewcode-block" id="TfgServicesTests.setUp"><a class="viewcode-back" href="../../../ws.tests.html#ws.tests.test_upload_file_tfgs.TfgServicesTests.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">APIClient</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_prof1</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s1">&#39;jorgecasillas@ugr.es&#39;</span><span class="p">,</span> <span class="n">first_name</span><span class="o">=</span><span class="s1">&#39;profesor 1&#39;</span><span class="p">,</span>
+                               <span class="n">last_name</span><span class="o">=</span><span class="s1">&#39;apellido 1 apellido 12&#39;</span><span class="p">,</span> <span class="n">departamento</span><span class="o">=</span><span class="s1">&#39;el mas mejor&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_prof2</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s1">&#39;juanmanuelfernandez@ugr.es&#39;</span><span class="p">,</span> <span class="n">first_name</span><span class="o">=</span><span class="s1">&#39;profesor 2&#39;</span><span class="p">,</span>
+                               <span class="n">last_name</span><span class="o">=</span><span class="s1">&#39;apellido 12 apellido 122&#39;</span><span class="p">,</span> <span class="n">departamento</span><span class="o">=</span><span class="s1">&#39;el mas mejor&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_prof3</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s1">&#39;eugenioaguirre@ugr.es&#39;</span><span class="p">,</span> <span class="n">first_name</span><span class="o">=</span><span class="s1">&#39;profesor 2&#39;</span><span class="p">,</span>
+                               <span class="n">last_name</span><span class="o">=</span><span class="s1">&#39;apellido 12 apellido 122&#39;</span><span class="p">,</span> <span class="n">departamento</span><span class="o">=</span><span class="s1">&#39;el mas mejor&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_prof4</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s1">&#39;miguelgarcia@ugr.es&#39;</span><span class="p">,</span> <span class="n">first_name</span><span class="o">=</span><span class="s1">&#39;profesor 2&#39;</span><span class="p">,</span>
+                               <span class="n">last_name</span><span class="o">=</span><span class="s1">&#39;apellido 12 apellido 122&#39;</span><span class="p">,</span> <span class="n">departamento</span><span class="o">=</span><span class="s1">&#39;el mas mejor&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_prof5</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s1">&#39;franciscoherrera@ugr.es&#39;</span><span class="p">,</span> <span class="n">first_name</span><span class="o">=</span><span class="s1">&#39;profesor 2&#39;</span><span class="p">,</span>
+                               <span class="n">last_name</span><span class="o">=</span><span class="s1">&#39;apellido 12 apellido 122&#39;</span><span class="p">,</span> <span class="n">departamento</span><span class="o">=</span><span class="s1">&#39;el mas mejor&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_tutor1_tfg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/profesores/&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_prof1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_tutor2_tfg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/profesores/&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_prof2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_tutor3_tfg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/profesores/&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_prof3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_tutor4_tfg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/profesores/&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_prof4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_tutor5_tfg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/profesores/&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_prof5</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_tfg1</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">tipo</span><span class="o">=</span><span class="s1">&#39;tipo1&#39;</span><span class="p">,</span> <span class="n">titulo</span><span class="o">=</span><span class="s1">&#39;titulo1&#39;</span><span class="p">,</span>
+                              <span class="n">n_alumnos</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s1">&#39;descripcion&#39;</span><span class="p">,</span>
+                              <span class="n">conocimientos_previos</span><span class="o">=</span><span class="s1">&#39;conocimientos previos&#39;</span><span class="p">,</span>
+                              <span class="n">hard_soft</span><span class="o">=</span><span class="s1">&#39;hard_soft&#39;</span><span class="p">,</span> <span class="n">tutor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_prof1</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">],</span>
+                              <span class="n">cotutor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_prof2</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_tfg2</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">tipo</span><span class="o">=</span><span class="s1">&#39;tipo1&#39;</span><span class="p">,</span> <span class="n">titulo</span><span class="o">=</span><span class="s1">&#39;titulo1&#39;</span><span class="p">,</span>
+                              <span class="n">n_alumnos</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s1">&#39;descripcion&#39;</span><span class="p">,</span>
+                              <span class="n">conocimientos_previos</span><span class="o">=</span><span class="s1">&#39;conocimientos previos&#39;</span><span class="p">,</span>
+                              <span class="n">hard_soft</span><span class="o">=</span><span class="s1">&#39;hard_soft&#39;</span><span class="p">,</span> <span class="n">tutor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_prof2</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">],</span>
+                              <span class="n">cotutor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_prof2</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_tfg_error</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">titulo</span><span class="o">=</span><span class="s1">&#39;titulo1&#39;</span><span class="p">,</span>
+                                   <span class="n">n_alumnos</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s1">&#39;descripcion&#39;</span><span class="p">,</span>
+                                   <span class="n">conocimientos_previos</span><span class="o">=</span><span class="s1">&#39;conocimientos previos&#39;</span><span class="p">,</span>
+                                   <span class="n">hard_soft</span><span class="o">=</span><span class="s1">&#39;conocimientos previos&#39;</span><span class="p">,</span> <span class="n">tutor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">user_tutor1_tfg</span><span class="p">,</span>
+                                   <span class="n">cotutor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">user_tutor2_tfg</span><span class="p">)</span>
+
+        <span class="c1"># TODO: Hacer que carge desde el fichero cases sin que pete el test,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TFG1</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;tipo&#39;</span><span class="p">:</span> <span class="s1">&#39;T2&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;titulo&#39;</span><span class="p">:</span> <span class="s1">&#39;Análisis Exploratorio de Datos Mediante Técnicas de Visualización Avanzada&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;n_alumnos&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;descripcion&#39;</span><span class="p">:</span> <span class="s1">&#39;Vivimos en la era de la información y la transparencia. Nos rodea una inmensidad de datos que &#39;</span>
+                                    <span class="s1">&#39;dificilmente podemos abordar con las técnicas clásisas de análisis de datos y aprendizaje. &#39;</span>
+                                    <span class="s1">&#39;Existen numerosas fuentes públicas (por ejemplo, http://www.ine.es, http://www.dgt.es, &#39;</span>
+                                    <span class="s1">&#39;http://ers.usda.gov, http://badc.nerc.ac.uk, http://www.edenextdata.com) que ofrecen datos &#39;</span>
+                                    <span class="s1">&#39;interesantísimos sobre aspectos cruciales para la sociedad actual tales como educación, &#39;</span>
+                                    <span class="s1">&#39;sanidad, igualdad, migración, economía, etc. Sin embargo, quedan en eso, en gran cantidad de &#39;</span>
+                                    <span class="s1">&#39;datos difíciles de procesar, estudiar, analizar, relacionar o contextualizar. Se trata además &#39;</span>
+                                    <span class="s1">&#39;de datos poco estructurados y sin relaciones de causalidad que permitan abordar el tradicional&#39;</span>
+                                    <span class="s1">&#39; enfoque predictivo. Por todo ello, con el desarrollo de la tecnología y el software, cada vez &#39;</span>
+                                    <span class="s1">&#39;está cobrando más interés el análisis exploratorio de estos datos empleando recursos gráficos &#39;</span>
+                                    <span class="s1">&#39;y visuales impactantes y esclarecedores. Aquí encontramos algunos ejemplos prácticos &#39;</span>
+                                    <span class="s1">&#39;relacionados con el periodismo de datos: http://www.theguardian.com/data, &#39;</span>
+                                    <span class="s1">&#39;http://www.tableausoftware.com/public/community/viz-of-the-day, &#39;</span>
+                                    <span class="s1">&#39;http://granadaendatos.granadaimedia.com/. El proyecto abordará ente novedoso enfoque de &#39;</span>
+                                    <span class="s1">&#39;análisis de datos mediante la selección de casos de especial interés y actualidad, &#39;</span>
+                                    <span class="s1">&#39;recuperación de datos, manipulación y tratamiento, y su exploración mediante software &#39;</span>
+                                    <span class="s1">&#39;específico tal como Tableau Software, TIBCO Spotfire o R así como numerosas bibliotecas &#39;</span>
+                                    <span class="s1">&#39;de JavaScript.&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;conocimientos_previos&#39;</span><span class="p">:</span> <span class="s1">&#39;Ninguno.&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;hard_soft&#39;</span><span class="p">:</span> <span class="s1">&#39;Ninguno.&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;tutor&#39;</span><span class="p">:</span> <span class="s1">&#39;jorgecasillas@ugr.es&#39;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="TfgServicesTests.test_ws_upload_file_tfgs"><a class="viewcode-back" href="../../../ws.tests.html#ws.tests.test_upload_file_tfgs.TfgServicesTests.test_ws_upload_file_tfgs">[docs]</a>    <span class="k">def</span> <span class="nf">test_ws_upload_file_tfgs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Envio el fichero y carga TFGs</span>
+        <span class="n">location</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span> <span class="s1">&#39;test_upload_file_tfgs&#39;</span><span class="p">,</span> <span class="s1">&#39;ListaTFGs.xlsx&#39;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;file&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;ListaTFGs.xlsx&#39;</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)),</span> <span class="s1">&#39;filas&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;p_fila&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+                <span class="s1">&#39;cabeceras&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">tipo</span><span class="o">=</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="n">titulo</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span>
+                                  <span class="n">n_alumnos</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s1">&#39;G&#39;</span><span class="p">,</span>
+                                  <span class="n">conocimientos_previos</span><span class="o">=</span><span class="s1">&#39;H&#39;</span><span class="p">,</span>
+                                  <span class="n">hard_soft</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">tutor</span><span class="o">=</span><span class="s1">&#39;B&#39;</span><span class="p">,</span>
+                                  <span class="n">cotutor</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">))}</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/upload_file_tfgs/&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s1">&#39;multipart&#39;</span><span class="p">)</span>
+        <span class="n">resul</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">resul</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">],</span> <span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">resul</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;fila&#39;</span><span class="p">],</span> <span class="mi">8</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">resul</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;message&#39;</span><span class="p">],</span> <span class="s1">&#39;El TFG no tiene titulo&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">resul</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;fila&#39;</span><span class="p">],</span> <span class="mi">6</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">resul</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;message&#39;</span><span class="p">],</span> <span class="s1">&#39;El profesor no existe&#39;</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/tfgs/&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;titulo&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">TFG1</span><span class="p">[</span><span class="s1">&#39;titulo&#39;</span><span class="p">]})</span>
+        <span class="n">resul</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">resul</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">],</span> <span class="bp">True</span><span class="p">)</span></div></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, tonima&gaby.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

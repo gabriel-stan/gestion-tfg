@@ -6,6 +6,7 @@ from django.dispatch import receiver
 @receiver(post_migrate)
 def create_groups(sender, **kwargs):
     group, created = Group.objects.get_or_create(name='Profesores')
+    #group.permissions.add(codename='add_tfg')
     if created:
         print "Group %s created successfully\n" % group.name
     else:

@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>ws package &mdash; GESTFG 1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="GESTFG 1 documentation" href="index.html" />
+    <link rel="next" title="ws.tests package" href="ws.tests.html" />
+    <link rel="prev" title="Welcome to GESTFG’s documentation!" href="index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="ws-package">
+<h1>ws package<a class="headerlink" href="#ws-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ws.tests.html">ws.tests package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ws.tests.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ws.tests.html#module-ws.tests.test_alumnos">ws.tests.test_alumnos module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ws.tests.html#module-ws.tests.test_asig_tfg">ws.tests.test_asig_tfg module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ws.tests.html#module-ws.tests.test_profesor">ws.tests.test_profesor module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ws.tests.html#module-ws.tests.test_tfg">ws.tests.test_tfg module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ws.tests.html#module-ws.tests.test_upload_file_tfgs">ws.tests.test_upload_file_tfgs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ws.tests.html#module-ws.tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ws.alumnos">
+<span id="ws-alumnos-module"></span><h2>ws.alumnos module<a class="headerlink" href="#module-ws.alumnos" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="ws.alumnos.alumnos">
+<code class="descclassname">alumnos.</code><code class="descname">alumnos</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="headerlink" href="#ws.alumnos.alumnos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Llamada desde: /alumnos/
+Obtiene uno o todos los usuarios o inserta un nuevo usuario (segun la llamada sea GET o POST)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>username</strong> (string p.e <a class="reference external" href="mailto:alumno&#37;&#52;&#48;correo&#46;ugr&#46;es">alumno<span>&#64;</span>correo<span>&#46;</span>ugr<span>&#46;</span>es</a>) &#8211; correo del nuevo alumno / alumno buscado (GET/POST)</li>
+<li><strong>first_name</strong> (<em>string</em>) &#8211; Nombre del alumno (POST)</li>
+<li><strong>last_name</strong> (<em>string</em>) &#8211; Apellidos del alumno (POST)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span></span>{
+status: &lt;bool&gt;,
+data: {data_alumn} (GET)
+data: [{data_alumn},...] (POST)
+}
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">JSON</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span></span>{
+status: &lt;bool&gt;,
+message: &lt;string&gt;
+}
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ws.asig_tfg">
+<span id="ws-asig-tfg-module"></span><h2>ws.asig_tfg module<a class="headerlink" href="#module-ws.asig_tfg" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ws.profesores">
+<span id="ws-profesores-module"></span><h2>ws.profesores module<a class="headerlink" href="#module-ws.profesores" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ws.tfg">
+<span id="ws-tfg-module"></span><h2>ws.tfg module<a class="headerlink" href="#module-ws.tfg" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ws.upload_file_tfgs">
+<span id="ws-upload-file-tfgs-module"></span><h2>ws.upload_file_tfgs module<a class="headerlink" href="#module-ws.upload_file_tfgs" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ws">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ws" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">ws package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-ws.alumnos">ws.alumnos module</a></li>
+<li><a class="reference internal" href="#module-ws.asig_tfg">ws.asig_tfg module</a></li>
+<li><a class="reference internal" href="#module-ws.profesores">ws.profesores module</a></li>
+<li><a class="reference internal" href="#module-ws.tfg">ws.tfg module</a></li>
+<li><a class="reference internal" href="#module-ws.upload_file_tfgs">ws.upload_file_tfgs module</a></li>
+<li><a class="reference internal" href="#module-ws">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to GESTFG&#8217;s documentation!</a></li>
+      <li>Next: <a href="ws.tests.html" title="next chapter">ws.tests package</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/ws.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, tonima&gaby.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="_sources/ws.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

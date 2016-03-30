@@ -3,12 +3,13 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from controller.servicios import tfg_services, utils
 from model.models import Tfg
+import simplejson as json
 
 
 @api_view(['POST'])
 def upload_file(request):
     """
-    Carga masiva de TFGs mediante un fichero en .ods
+    Carga masiva de TFGs mediante un fichero en .xlsx
     :param request: tfg <str>, campos <dict>
     :return :
     """
@@ -18,7 +19,9 @@ def upload_file(request):
         if request.method == 'POST':
             file = request.FILES['file']
             filas = int(request.POST['filas'])
-            resul = tfg_services.subida_masiva(file,filas)
+            p_fila = int(request.POST['p_fila'])
+            cabeceras = json.loads(request.POST['cabeceras'])
+            resul = tfg_services.subida_masiva(file, filas, p_fila, cabeceras)
             return Response(resul)
 
     except Tfg.DoesNotExist:

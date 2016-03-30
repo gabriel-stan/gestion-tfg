@@ -16,16 +16,13 @@ class TfgServicesTests(TestCase):
         self.otro_apellidos = 'apellido 2 apellido 22'
 
         self.alumno1 = tfg_services.insert_alumno(Alumno(username=self.alumn1_username, first_name=self.alumn1_nombre,
-                                                         last_name=self.alumn1_apellidos))
-
+                                                         last_name=self.alumn1_apellidos, password='75169052'))
 
     def test_delete_alumno_no_existe(self):
 
-        alumno = Alumno(username=self.otro_username, first_name=self.otro_nombre,
-                                                         last_name=self.otro_apellidos)
+        alumno = Alumno(username=self.otro_username, first_name=self.otro_nombre, last_name=self.otro_apellidos)
         result = tfg_services.delete_alumno(alumno)
         self.assertEqual(result['status'], False)
-
 
     def test_delete_alumno_existe(self):
 
