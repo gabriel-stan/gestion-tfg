@@ -14,7 +14,8 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 import os
 import sys
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) #directorio de manage.py
+# directorio de manage.py
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # django apps directory
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
@@ -65,6 +66,17 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
 )
+
+AUTHENTICATION_BACKENDS = (
+    'controller.servicios.authenticate.Authentication',
+)
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    )
+}
 
 ROOT_URLCONF = 'gestfg.urls'
 
