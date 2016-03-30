@@ -11,14 +11,13 @@ class TfgServicesTests(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.data_prof1 = dict(username='prof_ejemplo@ugr.es', first_name='profesor 1',
-                               last_name='apellido 1 apellido 12', departamento='el mas mejor')
+                               last_name='apellido 1 apellido 12', departamento='el mas mejor', password='1234')
 
         self.data_prof2 = dict(username='prof_ejemplo2@ugr.es', first_name='profesor 2',
-                               last_name='apellido 12 apellido 122', departamento='el mas mejor')
+                               last_name='apellido 12 apellido 122', departamento='el mas mejor', password='1234')
 
         self.data_prof_error = dict(username='prof_ejemplo2', first_name='profesor 2',
-                                    last_name='apellido 12 apellido 122', departamento='el mas mejor')
-
+                                    last_name='apellido 12 apellido 122', departamento='el mas mejor', password='1234')
 
     def test_ws_profesors_error(self):
         # Sin profesors

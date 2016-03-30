@@ -4,7 +4,7 @@ import simplejson as json
 import os
 from django.contrib.auth.models import Group
 from django.test import TestCase
-from model.models import Tfg
+from model.models import Tfg, Profesor
 from controller.servicios import tfg_services
 from rest_framework.test import APIClient
 
@@ -12,44 +12,49 @@ from rest_framework.test import APIClient
 class TfgServicesTests(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.data_prof1 = dict(username='jorgecasillas@ugr.es', first_name='profesor 1',
-                               last_name='apellido 1 apellido 12', departamento='el mas mejor')
 
-        self.data_prof2 = dict(username='juanmanuelfernandez@ugr.es', first_name='profesor 2',
-                               last_name='apellido 12 apellido 122', departamento='el mas mejor')
+        self.grupo_profesores = Group.objects.get(name='Profesores')
 
-        self.data_prof3 = dict(username='eugenioaguirre@ugr.es', first_name='profesor 2',
-                               last_name='apellido 12 apellido 122', departamento='el mas mejor')
+        self.prof1 = Profesor(username='jorgecasillas@ugr.es', first_name='profesor 1',
+                               last_name='apellido 1 apellido 12', departamento='el mas mejor', password='75169052')
+        self.prof2 = Profesor(username='juanmanuelfernandez@ugr.es', first_name='profesor 2',
+                               last_name='apellido 12 apellido 122', departamento='el mas mejor', password='75169052')
+        self.prof3 = Profesor(username='eugenioaguirre@ugr.es', first_name='profesor 2',
+                               last_name='apellido 12 apellido 122', departamento='el mas mejor', password='75169052')
+        self.prof4 = Profesor(username='miguelgarcia@ugr.es', first_name='profesor 2',
+                               last_name='apellido 12 apellido 122', departamento='el mas mejor', password='75169052')
+        self.prof5 = Profesor(username='franciscoherrera@ugr.es', first_name='profesor 2',
+                               last_name='apellido 12 apellido 122', departamento='el mas mejor', password='75169052')
 
-        self.data_prof4 = dict(username='miguelgarcia@ugr.es', first_name='profesor 2',
-                               last_name='apellido 12 apellido 122', departamento='el mas mejor')
+        self.prof1.save()
+        self.prof2.save()
+        self.prof3.save()
+        self.prof4.save()
+        self.prof5.save()
 
-        self.data_prof5 = dict(username='franciscoherrera@ugr.es', first_name='profesor 2',
-                               last_name='apellido 12 apellido 122', departamento='el mas mejor')
-
-        self.user_tutor1_tfg = self.client.post('/profesores/', self.data_prof1)
-        self.user_tutor2_tfg = self.client.post('/profesores/', self.data_prof2)
-        self.user_tutor3_tfg = self.client.post('/profesores/', self.data_prof3)
-        self.user_tutor4_tfg = self.client.post('/profesores/', self.data_prof4)
-        self.user_tutor5_tfg = self.client.post('/profesores/', self.data_prof5)
+        self.grupo_profesores.user_set.add(self.prof1)
+        self.grupo_profesores.user_set.add(self.prof2)
+        self.grupo_profesores.user_set.add(self.prof3)
+        self.grupo_profesores.user_set.add(self.prof4)
+        self.grupo_profesores.user_set.add(self.prof5)
 
         self.data_tfg1 = dict(tipo='tipo1', titulo='titulo1',
                               n_alumnos=2, descripcion='descripcion',
                               conocimientos_previos='conocimientos previos',
-                              hard_soft='hard_soft', tutor=self.data_prof1['username'],
-                              cotutor=self.data_prof2['username'])
+                              hard_soft='hard_soft', tutor=self.prof1,
+                              cotutor=self.prof2)
 
         self.data_tfg2 = dict(tipo='tipo1', titulo='titulo1',
                               n_alumnos=2, descripcion='descripcion',
                               conocimientos_previos='conocimientos previos',
-                              hard_soft='hard_soft', tutor=self.data_prof2['username'],
-                              cotutor=self.data_prof2['username'])
+                              hard_soft='hard_soft', tutor=self.prof1,
+                              cotutor=self.prof2)
 
         self.data_tfg_error = dict(titulo='titulo1',
                                    n_alumnos=2, descripcion='descripcion',
                                    conocimientos_previos='conocimientos previos',
-                                   hard_soft='conocimientos previos', tutor=self.user_tutor1_tfg,
-                                   cotutor=self.user_tutor2_tfg)
+                                   hard_soft='conocimientos previos', tutor=self.prof1,
+                                   cotutor=self.prof2)
 
         # TODO: Hacer que carge desde el fichero cases sin que pete el test,
         self.TFG1 = {'tipo': 'T2',
@@ -80,9 +85,22 @@ class TfgServicesTests(TestCase):
     def test_ws_upload_file_tfgs(self):
         # Envio el fichero y carga TFGs
         location = os.path.join(os.path.dirname(__file__), 'test_upload_file_tfgs', 'ListaTFGs.xlsx')
-        data = {'file': ('ListaTFGs.xlsx', open(location, 'rb')), 'filas': 5}
+        data = {'file': ('ListaTFGs.xlsx', open(location, 'rb')), 'filas': 5, 'p_fila': 5,
+                'cabeceras': json.dumps(dict(tipo='D', titulo='E',
+                                  n_alumnos='F', descripcion='G',
+                                  conocimientos_previos='H',
+                                  hard_soft='I', tutor='B',
+                                  cotutor='C'))}
         res = self.client.post('/upload_file_tfgs/', data, format='multipart')
         resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+        self.assertEqual(resul['data'][1]['fila'], 8)
+        self.assertEqual(resul['data'][1]['message'], 'El TFG no tiene titulo')
+        self.assertEqual(resul['data'][0]['fila'], 6)
+        self.assertEqual(resul['data'][0]['message'], 'El profesor no existe')
+        res = self.client.login(username='jorgecasillas@ugr.es', password='75169052')
+        self.assertEqual(res, True)
         res = self.client.get('/tfgs/', {'titulo': self.TFG1['titulo']})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
+

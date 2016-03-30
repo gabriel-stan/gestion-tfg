@@ -10,17 +10,26 @@ from rest_framework.test import APIClient
 class TfgServicesTests(TestCase):
     def setUp(self):
         self.client = APIClient()
+
+        self.data_login = Profesor(username='ejemplo3@ugr.es', first_name='profesor 1',
+                               last_name='apellido 1 apellido 12', departamento='el mas mejor', password='75169052')
+        grupo_profesores = Group.objects.get(name='Profesores')
+        self.data_login.save()
+        grupo_profesores.user_set.add(self.data_login)
+
         self.data_alum1 = dict(username='ejemplo@correo.ugr.es', first_name='alumno 1',
-                               last_name='apellido 1 apellido 12')
+                               last_name='apellido 1 apellido 12', password='75169052')
 
         self.data_alum2 = dict(username='ejemplo2@correo.ugr.es', first_name='alumno 2',
-                               last_name='apellido 12 apellido 122')
+                               last_name='apellido 12 apellido 122', password='75169052')
 
         self.data_alum_error = dict(username='ejemplo2', first_name='alumno 2',
-                                    last_name='apellido 12 apellido 122')
+                                    last_name='apellido 12 apellido 122', password='75169052')
 
     def test_ws_alumnos_error(self):
         # Sin alumnos
+        res = self.client.login(username='ejemplo3@ugr.es', password='75169052')
+        self.assertEqual(res, True)
         res = self.client.get('/alumnos/')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], False)
@@ -54,6 +63,8 @@ class TfgServicesTests(TestCase):
 
     def test_ws_alumnos(self):
         # inserto un alumno
+        res = self.client.login(username='ejemplo3@ugr.es', password='75169052')
+        self.assertEqual(res, True)
         res = self.client.post('/alumnos/', self.data_alum1)
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)

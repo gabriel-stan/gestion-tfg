@@ -5,20 +5,20 @@ from model.models import Profesor
 from controller.servicios import tfg_services
 from rest_framework.test import APIClient
 import simplejson as json
+from model import signals
 
 
 class TfgServicesTests(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.data_prof1 = dict(username='prof_ejemplo@ugr.es', first_name='profesor 1',
-                               last_name='apellido 1 apellido 12', departamento='el mas mejor')
+                               last_name='apellido 1 apellido 12', departamento='el mas mejor', password='75169052')
 
         self.data_prof2 = dict(username='prof_ejemplo2@ugr.es', first_name='profesor 2',
-                               last_name='apellido 12 apellido 122', departamento='el mas mejor')
+                               last_name='apellido 12 apellido 122', departamento='el mas mejor', password='75169052')
 
         self.user_tutor_tfg = self.client.post('/profesores/', self.data_prof1)
         self.user_cotutor_tfg = self.client.post('/profesores/', self.data_prof2)
-
 
         self.data_tfg1 = dict(tipo='tipo1', titulo='titulo1',
                    n_alumnos=2, descripcion='descripcion',
@@ -40,6 +40,9 @@ class TfgServicesTests(TestCase):
 
     def test_ws_tfgs_error(self):
         # Sin tfgs
+        res = self.client.post('/logueo/', dict(username=self.data_prof1['username'], password=self.data_prof1['password']))
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
         res = self.client.get('/tfgs/')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], False)
@@ -52,6 +55,7 @@ class TfgServicesTests(TestCase):
         self.assertEqual(resul['message'], 'El tfg indicado no existe')
 
         # inserto un tfg erroneo, sin titulo
+        self.client.login(username=self.data_prof1['username'], password=self.data_prof1['password'])
         res = self.client.post('/tfgs/', self.data_tfg_error)
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], False)
@@ -83,6 +87,7 @@ class TfgServicesTests(TestCase):
 
     def test_ws_tfgs(self):
         # inserto un tfg
+        res = self.client.post('/logueo/', dict(username=self.data_prof1['username'], password=self.data_prof1['password']))
         res = self.client.post('/tfgs/', self.data_tfg1)
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)

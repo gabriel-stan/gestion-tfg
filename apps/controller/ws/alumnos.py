@@ -1,11 +1,16 @@
 __author__ = 'tonima'
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from controller.servicios import tfg_services, utils
 from model.models import Alumno
+from django.contrib.auth.decorators import login_required
 
 
 @api_view(['GET', 'POST'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
 def alumnos(request):
     """
     GET
@@ -36,7 +41,8 @@ def alumnos(request):
         # Si es un POST devuelvo la info del alumno nuevo
         elif request.method == 'POST':
             params = utils.get_params(request)
-            alumno = Alumno(username=params['username'], first_name=params['first_name'], last_name=params['last_name'])
+            alumno = Alumno(username=params['username'], first_name=params['first_name'], last_name=params['last_name'],
+                            password=params['password'])
             resul = tfg_services.insert_alumno(alumno)
             if resul['status']:
                 return Response(utils.to_dict(resul))
@@ -44,6 +50,7 @@ def alumnos(request):
 
     except Exception as e:
         return Response(dict(status=False, message="Error en la llamada"))
+
 
 @api_view(['POST'])
 def update_alumno(request):
