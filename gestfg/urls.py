@@ -16,10 +16,13 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 
+from gestfg.views import IndexView
+
 from controller.ws import alumnos, profesores, upload_file_tfgs, login
 from gestion_tfgs import views as views_tfg
 
 urlpatterns = [
+    url('^.*$', IndexView.as_view(), name='index'),
     url(r'^', include(admin.site.urls)),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^alumnos/$', alumnos.alumnos, name='alumnos'),
