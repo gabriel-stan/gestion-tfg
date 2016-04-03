@@ -19,6 +19,7 @@ pip install -r $1
 
 # prepare database
 python manage.py syncdb --noinput
+python manage.py makemigrations
 
 # create superuser
 echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@example.com', 'gestfg')" | python manage.py shell
