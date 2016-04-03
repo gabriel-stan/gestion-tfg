@@ -50,6 +50,7 @@ stop_manage:
 # install requirements in system (no virtualenv)
 install_requirements_no_vnenv:
 	pip install -r utils/requirements_back.txt
+	pip install -r utils/requirements_front.txt
 
 # install system packages and basic app
 install_basic:
