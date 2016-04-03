@@ -1,5 +1,8 @@
 #Virtual env
-venv
+venv*
+
+#gunicorn pid file
+gunicorn.pid
 
 #vagrant env
 .env
