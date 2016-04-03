@@ -17,6 +17,9 @@ exclude
 staticfiles
 static/bower_components
 
+# node generated
+node_modules
+
 #Database
 *sqlite3
 db.sqlite3
