@@ -15,6 +15,7 @@ exclude
 
 #static files
 staticfiles
+static/bower_components
 
 #Database
 *sqlite3
