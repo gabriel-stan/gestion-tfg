@@ -22,6 +22,7 @@ python manage.py syncdb --noinput
 
 # create superuser
 echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@example.com', 'gestfg')" | python manage.py shell
+#python utils/scripts/createsuperuser.py
 
 # apply changes to database
 python manage.py migrate
