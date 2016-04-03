@@ -13,6 +13,9 @@ gunicorn.pid
 #exclude
 exclude
 
+#migrations generated
+apps/*/migrations/0*
+
 #static files
 staticfiles
 static/bower_components
