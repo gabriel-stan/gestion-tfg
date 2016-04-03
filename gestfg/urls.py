@@ -16,11 +16,12 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 
+from gestfg.views import IndexView
+
 from controller.ws import alumnos, profesores, upload_file_tfgs, login
 from gestion_tfgs import views as views_tfg
 
 urlpatterns = [
-    url(r'^', include(admin.site.urls)),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^alumnos/$', alumnos.alumnos, name='alumnos'),
     url(r'^logueo/$', login.login, name='login'),
@@ -35,4 +36,5 @@ urlpatterns = [
     url(r'^asig_tfg/$', views_tfg.asig_tfg, name='asig_tfg'),
     url(r'^asig_tfg/remove/$', views_tfg.remove_asig_tfg, name='remove_asig_tfg'),
     url(r'^upload_file_tfgs/$', upload_file_tfgs.upload_file, name='upload_file_tfgs'),
+    url('^.*$', IndexView.as_view(), name='index'),
 ]

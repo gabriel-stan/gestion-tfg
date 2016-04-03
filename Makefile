@@ -21,7 +21,7 @@ auto-merge:
 
 # run all tests using manage.py default server and no venv (everything installed in the system)
 test_no_venv:
-	export DEBUG=False ; python manage.py migrate ; python manage.py test
+	export DEBUG=False ; python manage.py makemigrations ; python manage.py migrate ; python manage.py test
 
 ###################
 ##  app control  ##
@@ -50,6 +50,7 @@ stop_manage:
 # install requirements in system (no virtualenv)
 install_requirements_no_vnenv:
 	pip install -r utils/requirements_back.txt
+	pip install -r utils/requirements_front.txt
 
 # install system packages and basic app
 install_basic:
