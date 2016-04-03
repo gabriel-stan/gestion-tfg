@@ -37,7 +37,8 @@ def profesores(request):
         elif request.method == 'POST':
             params = utils.get_params(request)
             profesor = Profesor(username=params['username'], first_name=params['first_name'],
-                                last_name=params['last_name'], departamento=params['departamento'])
+                                last_name=params['last_name'], departamento=params['departamento'],
+                                password=params['password'])
             resul = tfg_services.insert_profesor(profesor)
             if resul['status']:
                 return Response(utils.to_dict(resul))

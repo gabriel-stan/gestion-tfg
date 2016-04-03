@@ -37,13 +37,22 @@ def comprueba_alumno(usuario):
 def get_params(req):
 
     datos = {}
-    for key, value in req.REQUEST.iteritems():
-        if key == 'campos':
-            datos[key] = json.loads(value)
-        elif key == 'tutor' or  key == 'cotutor':
-            datos[key] = Profesor.objects.get(username=str(value))
-        else:
-            datos[key] = value
+    if req.method == 'POST':
+        for key, value in req.POST.items():
+            if key == 'campos':
+                datos[key] = json.loads(value)
+            elif key == 'tutor' or key == 'cotutor':
+                datos[key] = Profesor.objects.get(username=str(value))
+            else:
+                datos[key] = value
+    else:
+        for key, value in req.query_params.items():
+            if key == 'campos':
+                datos[key] = json.loads(value)
+            elif key == 'tutor' or key == 'cotutor':
+                datos[key] = Profesor.objects.get(username=str(value))
+            else:
+                datos[key] = value
     return datos
 
 

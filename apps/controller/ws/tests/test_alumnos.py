@@ -3,95 +3,101 @@ from django.contrib.auth.models import Group
 from django.test import TestCase
 from controller.servicios import tfg_services
 from model.models import Alumno, Profesor
-import requests
 import simplejson as json
+from rest_framework.test import APIClient
 
 
 class TfgServicesTests(TestCase):
     def setUp(self):
+        self.client = APIClient()
+
+        self.data_login = Profesor(username='ejemplo3@ugr.es', first_name='profesor 1',
+                               last_name='apellido 1 apellido 12', departamento='el mas mejor', password='75169052')
+        grupo_profesores = Group.objects.get(name='Profesores')
+        self.data_login.save()
+        grupo_profesores.user_set.add(self.data_login)
+
         self.data_alum1 = dict(username='ejemplo@correo.ugr.es', first_name='alumno 1',
-                               last_name='apellido 1 apellido 12')
+                               last_name='apellido 1 apellido 12', password='75169052')
 
         self.data_alum2 = dict(username='ejemplo2@correo.ugr.es', first_name='alumno 2',
-                               last_name='apellido 12 apellido 122')
+                               last_name='apellido 12 apellido 122', password='75169052')
 
         self.data_alum_error = dict(username='ejemplo2', first_name='alumno 2',
-                                    last_name='apellido 12 apellido 122')
+                                    last_name='apellido 12 apellido 122', password='75169052')
 
     def test_ws_alumnos_error(self):
         # Sin alumnos
-        res = requests.get('http://127.0.0.1:8000/alumnos')
+        res = self.client.login(username='ejemplo3@ugr.es', password='75169052')
+        self.assertEqual(res, True)
+        res = self.client.get('/alumnos/')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], False)
         self.assertEqual(resul['message'], 'No hay alumnos almacenados')
 
         # El alumno no existe
-        res = requests.get('http://127.0.0.1:8000/alumnos', params={'username': 'pepito'})
+        res = self.client.get('/alumnos/',  {'username': 'pepito'})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], False)
         self.assertEqual(resul['message'], 'El alumno indicado no existe')
 
-        # inserto un alumno con parametros incorrectos
-        res = requests.post('http://127.0.0.1:8000/alumnos/', data='perico')
-        resul = json.loads(res.content)
-        self.assertEqual(resul['status'], False)
-        self.assertEqual(resul['message'], 'Error en la llamada')
-
         # inserto un alumno erroneo
-        res = requests.post('http://127.0.0.1:8000/alumnos/', data=self.data_alum_error)
+        res = self.client.post('/alumnos/', self.data_alum_error)
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], False)
         self.assertEqual(resul['message'], 'El correo no es correcto')
 
         # Borrar alumno que no existe
-        res = requests.post('http://127.0.0.1:8000/alumnos/delete_alumno/',
-                            params={'username': 'pepito'})
+        res = self.client.post('/alumnos/delete_alumno/',
+                             {'username': 'pepito'})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], False)
         self.assertEqual(resul['message'], "El alumno indicado no existe")
 
         # Modificar un alumno que no existe
-        res = requests.post('http://127.0.0.1:8000/alumnos/update_alumno/',
-                            params={'alumno': 'pepito', 'campos': json.dumps({'first_name': 'otro alumno 2'})})
+        res = self.client.post('/alumnos/update_alumno/',
+                             {'alumno': 'pepito', 'campos': json.dumps({'first_name': 'otro alumno 2'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], False)
         self.assertEqual(resul['message'], "El alumno indicado no existe")
 
     def test_ws_alumnos(self):
         # inserto un alumno
-        res = requests.post('http://127.0.0.1:8000/alumnos/', data=self.data_alum1)
+        res = self.client.login(username='ejemplo3@ugr.es', password='75169052')
+        self.assertEqual(res, True)
+        res = self.client.post('/alumnos/', self.data_alum1)
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Alumno recien insertado
-        res = requests.get('http://127.0.0.1:8000/alumnos', params={'username': 'ejemplo@correo.ugr.es'})
+        res = self.client.get('/alumnos/',  {'username': 'ejemplo@correo.ugr.es'})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
         self.assertEqual(resul['data']['first_name'], 'alumno 1')
 
         # Todos los alumnos
-        res = requests.get('http://127.0.0.1:8000/alumnos')
+        res = self.client.get('/alumnos/')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
         self.assertEqual(resul['data'][0]['first_name'], 'alumno 1')
 
         # Modificar un alumno con parametros  incorrectos
-        res = requests.post('http://127.0.0.1:8000/alumnos/update_alumno/',
-                            params={'alumno': 'ejemplo@correo.ugr.es',
+        res = self.client.post('/alumnos/update_alumno/',
+                             {'alumno': 'ejemplo@correo.ugr.es',
                                     'nocampos': json.dumps({'first_name': 'otro alumno 2'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], False)
         self.assertEqual(resul['message'], "Error en la llamada")
 
         # Modificar un alumno
-        res = requests.post('http://127.0.0.1:8000/alumnos/update_alumno/',
-                            data={'alumno': self.data_alum1['username'],
+        res = self.client.post('/alumnos/update_alumno/',
+                            {'alumno': self.data_alum1['username'],
                                   'campos': json.dumps({'first_name': 'otro alumno 1'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Dejo la BD como estaba
-        res = requests.post('http://127.0.0.1:8000/alumnos/delete_alumno/',
-                            params={'username': 'ejemplo@correo.ugr.es'})
+        res = self.client.post('/alumnos/delete_alumno/',
+                             {'username': 'ejemplo@correo.ugr.es'})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)

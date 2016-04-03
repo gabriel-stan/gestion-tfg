@@ -3,22 +3,22 @@ from django.contrib.auth.models import Group
 from django.test import TestCase
 from model.models import Profesor
 from controller.servicios import tfg_services
-import requests
+from rest_framework.test import APIClient
 import simplejson as json
+from model import signals
 
 
 class TfgServicesTests(TestCase):
     def setUp(self):
-
+        self.client = APIClient()
         self.data_prof1 = dict(username='prof_ejemplo@ugr.es', first_name='profesor 1',
-                               last_name='apellido 1 apellido 12', departamento='el mas mejor')
+                               last_name='apellido 1 apellido 12', departamento='el mas mejor', password='75169052')
 
         self.data_prof2 = dict(username='prof_ejemplo2@ugr.es', first_name='profesor 2',
-                               last_name='apellido 12 apellido 122', departamento='el mas mejor')
+                               last_name='apellido 12 apellido 122', departamento='el mas mejor', password='75169052')
 
-        self.user_tutor_tfg = requests.post('http://127.0.0.1:8000/profesores/', data=self.data_prof1)
-        self.user_cotutor_tfg = requests.post('http://127.0.0.1:8000/profesores/', data=self.data_prof2)
-
+        self.user_tutor_tfg = self.client.post('/profesores/', self.data_prof1)
+        self.user_cotutor_tfg = self.client.post('/profesores/', self.data_prof2)
 
         self.data_tfg1 = dict(tipo='tipo1', titulo='titulo1',
                    n_alumnos=2, descripcion='descripcion',
@@ -40,97 +40,97 @@ class TfgServicesTests(TestCase):
 
     def test_ws_tfgs_error(self):
         # Sin tfgs
-        res = requests.get('http://127.0.0.1:8000/tfgs')
+        res = self.client.post('/logueo/', dict(username=self.data_prof1['username'], password=self.data_prof1['password']))
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+        res = self.client.get('/tfgs/')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], False)
         self.assertEqual(resul['message'], 'No hay tfgs almacenados')
 
         # El tfg no existe
-        res = requests.get('http://127.0.0.1:8000/tfgs', params={'titulo': self.data_tfg1['titulo']})
+        res = self.client.get('/tfgs/', {'titulo': self.data_tfg1['titulo']})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], False)
         self.assertEqual(resul['message'], 'El tfg indicado no existe')
 
-        # inserto un tfg con parametros incorrectos
-        res = requests.post('http://127.0.0.1:8000/tfgs/', data='perico')
-        resul = json.loads(res.content)
-        self.assertEqual(resul['status'], False)
-        self.assertEqual(resul['message'], 'Error en la llamada')
-
         # inserto un tfg erroneo, sin titulo
-        res = requests.post('http://127.0.0.1:8000/tfgs/', data=self.data_tfg_error)
+        self.client.login(username=self.data_prof1['username'], password=self.data_prof1['password'])
+        res = self.client.post('/tfgs/', self.data_tfg_error)
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], False)
         self.assertEqual(resul['message'], 'Error en la llamada')
 
         # Borrar tfg que no existe
-        res = requests.post('http://127.0.0.1:8000/tfgs/delete_tfg/',
-                            params={'titulo': self.data_tfg1['titulo']})
+        res = self.client.post('/tfgs/delete_tfg/',
+                            {'titulo': self.data_tfg1['titulo']})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], False)
         self.assertEqual(resul['message'], "El tfg indicado no existe")
 
         # Modificar un tfg que no existe
-        res = requests.post('http://127.0.0.1:8000/tfgs/update_tfg/',
-                            params={'titulo': self.data_tfg1['titulo'], 'campos': json.dumps({'tipo': 'tipo 2'})})
+        res = self.client.post('/tfgs/update_tfg/',
+                            {'titulo': self.data_tfg1['titulo'], 'campos': json.dumps({'tipo': 'tipo 2'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], False)
         self.assertEqual(resul['message'], "El tfg indicado no existe")
 
-        res = requests.post('http://127.0.0.1:8000/profesores/delete_profesor/',
-                    params={'username': self.data_prof1['username']})
+        # Dejo la BD como estaba
+        res = self.client.post('/profesores/delete_profesor/',
+                    {'username': self.data_prof1['username']})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
-        res = requests.post('http://127.0.0.1:8000/profesores/delete_profesor/',
-                            params={'username': self.data_prof2['username']})
+        res = self.client.post('/profesores/delete_profesor/',
+                            {'username': self.data_prof2['username']})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
     def test_ws_tfgs(self):
         # inserto un tfg
-        res = requests.post('http://127.0.0.1:8000/tfgs/', data=self.data_tfg1)
+        res = self.client.post('/logueo/', dict(username=self.data_prof1['username'], password=self.data_prof1['password']))
+        res = self.client.post('/tfgs/', self.data_tfg1)
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # tfg recien insertado
-        res = requests.get('http://127.0.0.1:8000/tfgs', params={'titulo': self.data_tfg1['titulo']})
+        res = self.client.get('/tfgs/', {'titulo': self.data_tfg1['titulo']})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
         self.assertEqual(resul['data']['titulo'], self.data_tfg1['titulo'])
 
         # Todos los tfgs
-        res = requests.get('http://127.0.0.1:8000/tfgs')
+        res = self.client.get('/tfgs/')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
         self.assertEqual(resul['data'][0]['titulo'], self.data_tfg1['titulo'])
 
         # Modificar un tfg con parametros  incorrectos
-        res = requests.post('http://127.0.0.1:8000/tfgs/update_tfg/',
-                            params={'tfg': 'ejemplo@correo.ugr.es',
+        res = self.client.post('/tfgs/update_tfg/',
+                            {'tfg': 'ejemplo@correo.ugr.es',
                                     'nocampos': json.dumps({'titulo': 'otro tfg 2'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], False)
         self.assertEqual(resul['message'], "Error en la llamada")
 
         # Modificar un tfg
-        res = requests.post('http://127.0.0.1:8000/tfgs/update_tfg/',
-                            data={'titulo': self.data_tfg1['titulo'],
+        res = self.client.post('/tfgs/update_tfg/',
+                            {'titulo': self.data_tfg1['titulo'],
                                   'campos': json.dumps({'titulo': 'otro tfg 1'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Dejo la BD como estaba
-        res = requests.post('http://127.0.0.1:8000/tfgs/delete_tfg/',
-                            params={'titulo': 'otro tfg 1'})
+        res = self.client.post('/tfgs/delete_tfg/',
+                            {'titulo': 'otro tfg 1'})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
-        res = requests.post('http://127.0.0.1:8000/profesores/delete_profesor/',
-                            params={'username': self.data_prof1['username']})
+        res = self.client.post('/profesores/delete_profesor/',
+                            {'username': self.data_prof1['username']})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
-        res = requests.post('http://127.0.0.1:8000/profesores/delete_profesor/',
-                            params={'username': self.data_prof2['username']})
+        res = self.client.post('/profesores/delete_profesor/',
+                            {'username': self.data_prof2['username']})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
