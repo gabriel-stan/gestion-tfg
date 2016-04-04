@@ -17,10 +17,11 @@ class TfgServicesTests(TestCase):
         self.alumn2_username = 'ejemplo2@correo.ugr.es'
         self.alumn2_nombre = 'alumno 2'
         self.alumn2_apellidos = 'apellido 2 apellido 22'
+        self.serializer_class = AlumnoSerializer
 
     def test_insert_alumno_vacio(self):
 
-        alumno = AlumnoSerializer()
+        alumno = self.serializer_class()
         result = alumno.create({'email': self.alumn1_username, 'first_name': self.alumn1_nombre,
                                 'last_name': self.alumn1_apellidos})
         self.assertEqual(result.email, self.alumn1_username)

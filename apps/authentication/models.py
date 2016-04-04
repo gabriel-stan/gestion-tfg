@@ -68,14 +68,13 @@ class Administrador(Usuario):
     pass
 
 
-class Alumno(Usuario):
-
+class AlumnoManager(BaseUserManager):
     def create_user(self, email, password=None, **kwargs):
         try:
             if not email:
                 raise NameError("Error en el email del alumno")
             else:
-                res = Alumno.objects.filter(email=kwargs.get('email'))
+                res = Alumno.objects.filter(email=email)
                 if res.count() != 0:
                     raise NameError("El alumno ya existe")
 
@@ -86,10 +85,10 @@ class Alumno(Usuario):
                 raise NameError("Apellidos incorrectos")
 
             # exp reg para saber si el nick corresponde al correo de la ugr (@correo.ugr.es)
-            if not re.match(r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$', kwargs.get('email')):
+            if not re.match(r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$', email):
                 raise NameError("El email no es correcto")
 
-            alumno = self.model(email=kwargs.get('email'), first_name=kwargs.get('first_name'),
+            alumno = self.model(email=email, first_name=kwargs.get('first_name'),
                                 last_name=kwargs.get('last_name'))
 
             grupo_alumnos = Group.objects.get(name='Alumnos')
@@ -101,6 +100,10 @@ class Alumno(Usuario):
 
         except NameError as e:
             return dict(status=False, message=e.message)
+
+
+class Alumno(Usuario):
+    objects = AlumnoManager()
 
 
 class Profesor(Usuario):
@@ -127,7 +130,7 @@ class Profesor(Usuario):
             if not kwargs.get('departamento') or not utils.is_string(kwargs.get('departamento')):
                 raise NameError("Error en el departamento")
 
-            profesor = self.model(email=kwargs.get('email'), first_name=kwargs.get('first_name'),
+            profesor = self.model(email=email, first_name=kwargs.get('first_name'),
                                 last_name=kwargs.get('last_name'), departamento=kwargs.get('departamento'))
 
             grupo_profesores = Group.objects.get(name='Profesores')
