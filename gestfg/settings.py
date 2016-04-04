@@ -39,7 +39,7 @@ DEBUG = os.environ.get('DEBUG') or False
 
 ALLOWED_HOSTS = []
 
-AUTH_USER_MODEL = 'model.Administrador'
+AUTH_USER_MODEL = 'authentication.Usuario'
 
 # Application definition
 
