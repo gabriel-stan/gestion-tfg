@@ -1,7 +1,7 @@
 import re
 import utils
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import Group
 
@@ -33,7 +33,7 @@ class AccountManager(BaseUserManager):
         return account
 
 
-class Usuario(AbstractBaseUser):
+class Usuario(AbstractBaseUser, PermissionsMixin):
 
     email = models.EmailField(unique=True)
     # username = models.CharField(max_length=40, unique=True)

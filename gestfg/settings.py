@@ -39,7 +39,7 @@ DEBUG = os.environ.get('DEBUG') or False
 
 ALLOWED_HOSTS = []
 
-AUTH_USER_MODEL = 'authentication.Usuario'
+AUTH_USER_MODEL = 'authentication.Alumno'
 
 # Application definition
 
@@ -53,8 +53,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'rest_framework',
     'compressor',
-    'controller',
-    'model',
     'authentication'
 )
 
