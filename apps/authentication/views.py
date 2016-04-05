@@ -3,8 +3,6 @@ from rest_framework import permissions, viewsets
 from authentication.models import Alumno
 from authentication.serializers import AlumnoSerializer
 from rest_framework.response import Response
-from rest_framework.parsers import JSONParser
-from django.utils.six import BytesIO
 
 
 class AlumnosViewSet(viewsets.ModelViewSet):
@@ -71,6 +69,9 @@ class AlumnosViewSet(viewsets.ModelViewSet):
                 resul = Alumno.objects.create_user(**serializer.validated_data)
                 if resul['status']:
                     return Response(utils.to_dict(resul))
+                else:
+                    return Response(resul)
+
             else:
                 raise
         except Exception as e:

@@ -12,8 +12,7 @@ class AlumnoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Alumno
         fields = ('id', 'email', 'created_at', 'updated_at',
-                  'first_name', 'last_name', 'password',
-                  'confirm_password',)
+                  'first_name', 'last_name',)
         read_only_fields = ('created_at', 'updated_at',)
 
     def create(self, validated_data):
