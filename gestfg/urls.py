@@ -44,4 +44,3 @@ urlpatterns = [
     url(r'^upload_file_tfgs/$', upload_file_tfgs.upload_file, name='upload_file_tfgs'),
     url('^.*$', IndexView.as_view(), name='index'),
 ]
-print urlpatterns
