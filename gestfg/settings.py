@@ -67,9 +67,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.security.SecurityMiddleware',
 )
 
-AUTHENTICATION_BACKENDS = (
-    'controller.servicios.authenticate.Authentication',
-)
+# AUTHENTICATION_BACKENDS = (
+#     'authentication.authenticate.Authentication',
+# )
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (

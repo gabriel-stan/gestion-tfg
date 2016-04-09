@@ -1,6 +1,38 @@
 from django.db.models.fields.related import ManyToManyField
 import simplejson as json
 
+from old.model import Tfg_Asig, Profesor, Alumno
+
+def existe_tfg_asig(alumno):
+
+    if not isinstance(alumno, Alumno):
+        return False
+    else:
+        alumno1 = Tfg_Asig.objects.filter(alumno_1=alumno)
+        alumno2 = Tfg_Asig.objects.filter(alumno_2=alumno)
+        alumno3 = Tfg_Asig.objects.filter(alumno_3=alumno)
+
+        if alumno1.count() > 0 or alumno2.count() > 0 or alumno3.count() > 0:
+            return True
+        else:
+            return False
+
+
+def comprueba_profesor(usuario):
+
+    if isinstance(usuario, Profesor) and usuario.groups.filter(name='Profesores').exists():
+        return True
+    else:
+        return False
+
+
+def comprueba_alumno(usuario):
+
+    if isinstance(usuario, Alumno) and usuario.groups.filter(name='Alumnos').exists():
+        return True
+    else:
+        return False
+
 
 def get_params(req):
 
@@ -9,12 +41,16 @@ def get_params(req):
         for key, value in req.POST.items():
             if key == 'campos':
                 datos[key] = json.loads(value)
+            elif key == 'tutor' or key == 'cotutor':
+                datos[key] = Profesor.objects.get(username=str(value))
             else:
                 datos[key] = value
     else:
         for key, value in req.query_params.items():
             if key == 'campos':
                 datos[key] = json.loads(value)
+            elif key == 'tutor' or key == 'cotutor':
+                datos[key] = Profesor.objects.get(username=str(value))
             else:
                 datos[key] = value
     return datos

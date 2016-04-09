@@ -1,8 +1,13 @@
-import utils
-from rest_framework import permissions, viewsets
-from authentication.models import Alumno
-from authentication.serializers import AlumnoSerializer
+from django.contrib.auth import authenticate, login, logout
+from authentication.models import Alumno, Profesor
+from authentication.serializers import AlumnoSerializer, ProfesorSerializer
+from rest_framework import permissions, viewsets, status, views
 from rest_framework.response import Response
+from rest_framework.decorators import authentication_classes, permission_classes
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
+import json
+import utils
 
 
 class AlumnosViewSet(viewsets.ModelViewSet):
@@ -35,7 +40,7 @@ class AlumnosViewSet(viewsets.ModelViewSet):
             params = utils.get_params(request)
             try:
                 if 'email' in params:
-                    alumno = Alumno.objects.get(username=params['email'])
+                    alumno = Alumno.objects.get(email=params['email'])
                     resul = AlumnoSerializer(alumno).data
                 else:
                     alumno = Alumno.objects.all()
@@ -45,9 +50,9 @@ class AlumnosViewSet(viewsets.ModelViewSet):
 
                 return Response(utils.to_dict(dict(status=True, data=resul)))
             except NameError as e:
-                return dict(status=False, message=e.message)
+                return Response(dict(status=False, message=e.message))
             except Alumno.DoesNotExist:
-                return dict(status=False, message="El alumno indicado no existe")
+                return  Response(dict(status=False, message="El alumno indicado no existe"))
 
         except Exception as e:
             return Response(dict(status=False, message="Error en la llamada"))
@@ -73,6 +78,46 @@ class AlumnosViewSet(viewsets.ModelViewSet):
                     return Response(resul)
 
             else:
-                raise
+                return Response(dict(status=False, message=serializer.errors), status=status.HTTP_200_OK)
         except Exception as e:
-            return Response(dict(status=False, message="Error en la llamada"))
+            return Response(dict(status=False, message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)
+
+
+class LoginView(views.APIView):
+    def post(self, request, format=None):
+        # params = utils.get_params(request)
+        params = json.loads(request.body)
+
+        email = params.get('email', None)
+        password = params.get('password', None)
+
+        account = authenticate(email=email, password=password)
+
+        if account is not None:
+            if account.is_active:
+                login(request, account)
+                if isinstance(account, Alumno):
+                    serialized = AlumnoSerializer(account)
+                elif isinstance(account, Profesor):
+                    serialized = ProfesorSerializer(account)
+
+                return Response(serialized.data)
+            else:
+                return Response({
+                    'status': 'Unauthorized',
+                    'message': 'This account has been disabled.'
+                }, status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            return Response({
+                'status': 'Unauthorized',
+                'message': 'Username/password combination invalid.'
+            }, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class LogoutView(views.APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, format=None):
+        logout(request)
+
+        return Response({}, status=status.HTTP_204_NO_CONTENT)

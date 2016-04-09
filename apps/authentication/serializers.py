@@ -6,13 +6,14 @@ from authentication.models import Alumno, Profesor
 
 
 class AlumnoSerializer(serializers.ModelSerializer):
-    #password = serializers.CharField(write_only=True, required=False)
-    #confirm_password = serializers.CharField(write_only=True, required=False)
+    password = serializers.CharField(write_only=True, required=False)
+    confirm_password = serializers.CharField(write_only=True, required=False)
 
     class Meta:
         model = Alumno
         fields = ('id', 'email', 'created_at', 'updated_at',
-                  'first_name', 'last_name',)
+                  'first_name', 'last_name', 'password',
+                  'confirm_password',)
         read_only_fields = ('created_at', 'updated_at',)
 
     def create(self, validated_data):
@@ -31,7 +32,7 @@ class AlumnoSerializer(serializers.ModelSerializer):
                     else:
                         alumno.email = new_email
                 else:
-                    raise NameError("El alumno indicado no existe")
+                    raise NameError("El alumno indicado ya existe")
 
             # comprobando nombre
             if 'first_name' in validated_data.keys():
@@ -73,8 +74,8 @@ class AlumnoSerializer(serializers.ModelSerializer):
 
 
 class ProfesorSerializer(serializers.ModelSerializer):
-    #password = serializers.CharField(write_only=True, required=False)
-    #confirm_password = serializers.CharField(write_only=True, required=False)
+    password = serializers.CharField(write_only=True, required=False)
+    confirm_password = serializers.CharField(write_only=True, required=False)
 
     class Meta:
         model = Profesor

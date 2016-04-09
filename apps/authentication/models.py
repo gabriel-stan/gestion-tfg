@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import Group
+import signals
 
 
 class AccountManager(BaseUserManager):
@@ -92,7 +93,7 @@ class AlumnoManager(BaseUserManager):
                                 last_name=kwargs.get('last_name'))
 
             grupo_alumnos = Group.objects.get(name='Alumnos')
-            #alumno.set_password(password)
+            alumno.set_password(password)
             alumno.save()
             grupo_alumnos.user_set.add(alumno)
 
@@ -106,12 +107,7 @@ class Alumno(Usuario):
     objects = AlumnoManager()
 
 
-class Profesor(Usuario):
-    departamento = models.CharField(max_length=100)
-
-    def get_departamento(self):
-        return self.departamento
-
+class ProseforManager(BaseUserManager):
     def create_user(self, email, password=None, **kwargs):
         try:
             if not email or not (re.match(r'^[a-z][_a-z0-9]+(@ugr\.es)$', email)):
@@ -134,7 +130,7 @@ class Profesor(Usuario):
                                 last_name=kwargs.get('last_name'), departamento=kwargs.get('departamento'))
 
             grupo_profesores = Group.objects.get(name='Profesores')
-            #profesor.set_password(password)
+            profesor.set_password(password)
             profesor.save()
             grupo_profesores.user_set.add(profesor)
 
@@ -142,3 +138,11 @@ class Profesor(Usuario):
 
         except NameError as e:
             return dict(status=False, message=e.message)
+
+
+class Profesor(Usuario):
+    departamento = models.CharField(max_length=100)
+    objects = ProseforManager()
+
+    def get_departamento(self):
+        return self.departamento

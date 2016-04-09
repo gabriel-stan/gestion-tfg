@@ -1,8 +1,5 @@
 __author__ = 'tonima'
-from django.contrib.auth.models import Group
 from django.test import TestCase
-from controller.servicios import tfg_services
-from model.models import Alumno, Profesor
 import simplejson as json
 from rest_framework.test import APIClient
 
@@ -17,25 +14,27 @@ class TfgServicesTests(TestCase):
         # self.data_login.save()
         # grupo_profesores.user_set.add(self.data_login)
 
-        self.data_alum1 = dict(username='ejemplo@correo.ugr.es', first_name='alumno 1',
+        self.data_alum1 = dict(email='ejemplo@correo.ugr.es', first_name='alumno 1',
                                last_name='apellido 1 apellido 12', password='75169052')
 
-        self.data_alum2 = dict(username='ejemplo2@correo.ugr.es', first_name='alumno 2',
+        self.data_alum2 = dict(email='ejemplo2@correo.ugr.es', first_name='alumno 2',
                                last_name='apellido 12 apellido 122', password='75169052')
 
-        self.data_alum_error = dict(username='ejemplo2', first_name='alumno 2',
+        self.data_alum_error = dict(email='ejemplo2', first_name='alumno 2',
                                     last_name='apellido 12 apellido 122', password='75169052')
 
-    def test_ws_alumnos(self):
+    def test_ws_alumnos_get(self):
         # Sin alumnos
         # res = self.client.login(username='ejemplo3@ugr.es', password='75169052')
         # self.assertEqual(res, True)
-        res = self.client.post('/api/v1/alumnos/', self.data_alum1)
+        res = self.client.get('/api/v1/alumnos/', self.data_alum1)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], False)
+        self.assertEqual(resul['message'], 'El alumno indicado no existe')
+        res = self.client.get('/api/v1/alumnos/')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], False)
         self.assertEqual(resul['message'], 'No hay alumnos almacenados')
-        res = self.client.get('/api/v1/alumnos/')
-        resul = json.loads(res.content)
 
     #
     #     # El alumno no existe
@@ -64,13 +63,10 @@ class TfgServicesTests(TestCase):
     #     self.assertEqual(resul['status'], False)
     #     self.assertEqual(resul['message'], "El alumno indicado no existe")
     #
-    # def test_ws_alumnos(self):
-    #     # inserto un alumno
-    #     res = self.client.login(username='ejemplo3@ugr.es', password='75169052')
-    #     self.assertEqual(res, True)
-    #     res = self.client.post('/alumnos/', self.data_alum1)
-    #     resul = json.loads(res.content)
-    #     self.assertEqual(resul['status'], True)
+    def test_ws_alumnos_post(self):
+        # inserto un alumno
+        resul = self.client.post('/api/v1/alumnos/', self.data_alum1)
+        self.assertEqual(resul['status'], True)
     #
     #     # Alumno recien insertado
     #     res = self.client.get('/alumnos/',  {'username': 'ejemplo@correo.ugr.es'})
