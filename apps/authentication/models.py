@@ -13,11 +13,11 @@ class AccountManager(BaseUserManager):
         if not email:
             raise ValueError('Users must have a valid email address.')
 
-        if not kwargs.get('username'):
-            raise ValueError('Users must have a valid username.')
+        # if not kwargs.get('username'):
+        #     raise ValueError('Users must have a valid username.')
 
         account = self.model(
-            email=self.normalize_email(email), username=kwargs.get('username')
+            email=self.normalize_email(email)
         )
 
         account.set_password(password)
@@ -107,7 +107,7 @@ class Alumno(Usuario):
     objects = AlumnoManager()
 
 
-class ProseforManager(BaseUserManager):
+class ProfesorManager(BaseUserManager):
     def create_user(self, email, password=None, **kwargs):
         try:
             if not email or not (re.match(r'^[a-z][_a-z0-9]+(@ugr\.es)$', email)):
@@ -142,7 +142,7 @@ class ProseforManager(BaseUserManager):
 
 class Profesor(Usuario):
     departamento = models.CharField(max_length=100)
-    objects = ProseforManager()
+    objects = ProfesorManager()
 
     def get_departamento(self):
         return self.departamento
