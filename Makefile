@@ -5,6 +5,7 @@ GUNICORN_PID = gunicorn.pid
 RUN_ENV = ~/gestfg/run_env
 INSTALL_ENV = ~/gestfg/install_env
 REQUIREMENTS_BACK = utils/requirements_back.txt
+REQUIREMENTS_BACK = utils/requirements_front.txt
 
 
 ##############
@@ -59,7 +60,7 @@ install_basic:
 
 # install app after installing system packages
 install_app:
-	$(SCRIPTS)/install_app.sh $(REQUIREMENTS_BACK)
+	$(SCRIPTS)/install_app.sh $(REQUIREMENTS_BACK) $(REQUIREMENTS_FRONT)
 
 # install system packages that require sudo privileges
 install_system_packages:
