@@ -2,7 +2,22 @@ import re
 import utils
 from django.contrib.auth import update_session_auth_hash
 from rest_framework import serializers
-from authentication.models import Alumno, Profesor
+from authentication.models import Alumno, Profesor, Usuario
+
+
+class UsuarioSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=False)
+    confirm_password = serializers.CharField(write_only=True, required=False)
+
+    class Meta:
+        model = Alumno
+        fields = ('id', 'email', 'created_at', 'updated_at',
+                  'first_name', 'last_name', 'password',
+                  'confirm_password',)
+        read_only_fields = ('created_at', 'updated_at',)
+
+    def create(self, validated_data):
+        return Usuario.objects.create_user(**validated_data)
 
 
 class AlumnoSerializer(serializers.ModelSerializer):

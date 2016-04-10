@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from authentication.models import Alumno, Profesor
-from authentication.serializers import AlumnoSerializer, ProfesorSerializer
+from authentication.serializers import AlumnoSerializer, ProfesorSerializer, UsuarioSerializer
 from rest_framework import permissions, viewsets, status, views
 from rest_framework.response import Response
 from rest_framework.decorators import authentication_classes, permission_classes
@@ -100,7 +100,8 @@ class LoginView(views.APIView):
                     serialized = AlumnoSerializer(account)
                 elif isinstance(account, Profesor):
                     serialized = ProfesorSerializer(account)
-
+                else:
+                    serialized = UsuarioSerializer(account)
                 return Response(serialized.data)
             else:
                 return Response({
