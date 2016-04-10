@@ -6,7 +6,8 @@
         'gestfg.config',
         'gestfg.routes',
         'gestfg.authentication',
-        'gestfg.layout'
+        'gestfg.layout',
+          'ngMaterial'
       ]);
 
     angular
@@ -26,8 +27,11 @@
     * @desc Update xsrf $http headers to align with Django's defaults
     */
     function run($http) {
-      $http.defaults.xsrfHeaderName = 'X-CSRFToken';
-      $http.defaults.xsrfCookieName = 'csrftoken';
+        $http.defaults.xsrfHeaderName = 'X-CSRFToken';
+        $http.defaults.xsrfCookieName = 'csrftoken';
+
+        //initialize material theme
+        $.material.init();
     }
 
   })();

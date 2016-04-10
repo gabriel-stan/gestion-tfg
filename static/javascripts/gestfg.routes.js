@@ -20,6 +20,8 @@
       controller: 'LoginController',
       controllerAs: 'vm',
       templateUrl: '/static/templates/authentication/login.html'
-    }).otherwise('/');
+    }).otherwise('/',{
+      templateUrl: '/templates/content.html'
+    });
   }
 })();
