@@ -13,8 +13,8 @@ class UsuarioSerializer(serializers.ModelSerializer):
         model = Alumno
         fields = ('id', 'email', 'created_at', 'updated_at',
                   'first_name', 'last_name', 'password',
-                  'confirm_password',)
-        read_only_fields = ('created_at', 'updated_at',)
+                  'confirm_password', 'is_admin')
+        read_only_fields = ('created_at', 'updated_at', 'is_admin')
 
     def create(self, validated_data):
         return Usuario.objects.create_user(**validated_data)
