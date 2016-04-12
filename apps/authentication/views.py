@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from authentication.models import Alumno, Profesor
-from authentication.serializers import AlumnoSerializer, ProfesorSerializer
+from authentication.serializers import AlumnoSerializer, ProfesorSerializer, UsuarioSerializer
 from rest_framework import permissions, viewsets, status, views
 from rest_framework.response import Response
 from rest_framework.decorators import authentication_classes, permission_classes
@@ -84,6 +84,7 @@ class AlumnosViewSet(viewsets.ModelViewSet):
 
 
 class LoginView(views.APIView):
+
     def post(self, request, format=None):
         # params = utils.get_params(request)
         params = json.loads(request.body)
@@ -100,7 +101,8 @@ class LoginView(views.APIView):
                     serialized = AlumnoSerializer(account)
                 elif isinstance(account, Profesor):
                     serialized = ProfesorSerializer(account)
-
+                else:
+                    serialized = UsuarioSerializer(account)
                 return Response(serialized.data)
             else:
                 return Response({
@@ -115,7 +117,7 @@ class LoginView(views.APIView):
 
 
 class LogoutView(views.APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, )
 
     def post(self, request, format=None):
         logout(request)
