@@ -106,6 +106,11 @@ class AlumnoManager(BaseUserManager):
 class Alumno(Usuario):
     objects = AlumnoManager()
 
+    class Meta:
+        permissions = (
+            ('can_login', 'Can login'),
+        )
+
 
 class ProfesorManager(BaseUserManager):
     def create_user(self, email, password=None, **kwargs):

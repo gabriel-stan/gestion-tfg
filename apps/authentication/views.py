@@ -84,6 +84,7 @@ class AlumnosViewSet(viewsets.ModelViewSet):
 
 
 class LoginView(views.APIView):
+
     def post(self, request, format=None):
         # params = utils.get_params(request)
         params = json.loads(request.body)
@@ -116,7 +117,7 @@ class LoginView(views.APIView):
 
 
 class LogoutView(views.APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, )
 
     def post(self, request, format=None):
         logout(request)
