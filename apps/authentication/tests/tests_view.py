@@ -65,7 +65,13 @@ class TfgServicesTests(TestCase):
     #
     def test_ws_alumnos_post(self):
         # inserto un alumno
-        resul = self.client.post('/api/v1/alumnos/', self.data_alum1)
+        res = self.client.post('/api/v1/alumnos/', self.data_alum1)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        # Modificar un alumno con parametros  incorrectos
+        res = self.client.put('/api/v1/alumnos/', {'alumno': self.data_alum1['email'], 'datos': json.dumps({'first_name': 'otro alumno 2'})})
+        resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
     #
     #     # Alumno recien insertado
@@ -80,10 +86,6 @@ class TfgServicesTests(TestCase):
     #     self.assertEqual(resul['status'], True)
     #     self.assertEqual(resul['data'][0]['first_name'], 'alumno 1')
     #
-    #     # Modificar un alumno con parametros  incorrectos
-    #     res = self.client.post('/alumnos/update_alumno/',
-    #                          {'alumno': 'ejemplo@correo.ugr.es',
-    #                                 'nocampos': json.dumps({'first_name': 'otro alumno 2'})})
     #     resul = json.loads(res.content)
     #     self.assertEqual(resul['status'], False)
     #     self.assertEqual(resul['message'], "Error en la llamada")

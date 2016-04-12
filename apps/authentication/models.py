@@ -89,14 +89,13 @@ class AlumnoManager(BaseUserManager):
             if not re.match(r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$', email):
                 raise NameError("El email no es correcto")
 
-            alumno = self.model(email=email, first_name=kwargs.get('first_name'),
+            alumno = self.model.objects.create(email=email, first_name=kwargs.get('first_name'),
                                 last_name=kwargs.get('last_name'))
 
             grupo_alumnos = Group.objects.get(name='Alumnos')
             alumno.set_password(password)
             alumno.save()
             grupo_alumnos.user_set.add(alumno)
-
             return dict(status=True, data=alumno)
 
         except NameError as e:
@@ -108,7 +107,7 @@ class Alumno(Usuario):
 
     class Meta:
         permissions = (
-            ('can_login', 'Can login'),
+            ('can_get_all', 'Puede consultar todos los alumnos'),
         )
 
 

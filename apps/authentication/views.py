@@ -42,7 +42,7 @@ class AlumnosViewSet(viewsets.ModelViewSet):
                 if 'email' in params:
                     alumno = Alumno.objects.get(email=params['email'])
                     resul = AlumnoSerializer(alumno).data
-                else:
+                elif request.user.has_perm('authentication.can_get_all'):
                     alumno = Alumno.objects.all()
                     resul = AlumnoSerializer(alumno, many=True).data
                     if len(resul) == 0:
@@ -82,6 +82,29 @@ class AlumnosViewSet(viewsets.ModelViewSet):
         except Exception as e:
             return Response(dict(status=False, message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)
 
+    def put(self, request):
+        """
+        PUT
+        Insertar un alumno nuevo
+        :param request:
+        :return :
+        {status: True/False, data:{datos del alumno insertado o de todos los alumnos}
+
+        :param request:
+        :return:
+        """
+        try:
+            alumno = Alumno.objects.get(email=request.data['alumno'])
+            params = json.loads(request.data['datos'])
+            serializer =AlumnoSerializer(alumno)
+            resul = serializer.update(alumno, params)
+            if resul['status']:
+                return Response(utils.to_dict(resul))
+            else:
+                return Response(resul)
+        except Exception as e:
+            return Response(dict(status=False, message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)
+
 
 class LoginView(views.APIView):
 
@@ -117,9 +140,8 @@ class LoginView(views.APIView):
 
 
 class LogoutView(views.APIView):
-    permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, format=None):
         logout(request)
-
         return Response({}, status=status.HTTP_204_NO_CONTENT)
