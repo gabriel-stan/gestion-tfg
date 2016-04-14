@@ -18,10 +18,11 @@ from django.contrib import admin
 from rest_framework_nested import routers
 
 from gestfg.views import IndexView
-from authentication.views import AlumnosViewSet, LoginView, LogoutView
+from authentication.views import AlumnosViewSet, LoginView, LogoutView, ProfesoresViewSet
 
 router = routers.SimpleRouter()
 router.register(r'alumnos', AlumnosViewSet)
+router.register(r'profesores', ProfesoresViewSet)
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),

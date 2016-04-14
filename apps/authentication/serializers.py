@@ -104,7 +104,7 @@ class ProfesorSerializer(serializers.ModelSerializer):
 
     def update(self, profesor, validated_data):
         try:
-            # comprobando username
+            # comprobando email
             if 'email' in validated_data.keys():
                 new_email = validated_data.get('email')
                 res = Profesor.objects.filter(email=new_email)
@@ -112,7 +112,7 @@ class ProfesorSerializer(serializers.ModelSerializer):
                     if not (re.match(r'^[a-z][_a-z0-9]+(@ugr\.es)$', new_email)):
                         raise NameError("El email no es correcto")
                     else:
-                        profesor.username = new_email
+                        profesor.email = new_email
                 else:
                     raise NameError("No existe el profesor")
 

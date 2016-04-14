@@ -15,13 +15,16 @@ class TfgServicesTests(TestCase):
         # grupo_profesores.user_set.add(self.data_login)
 
         self.data_alum1 = dict(email='ejemplo@correo.ugr.es', first_name='alumno 1',
-                               last_name='apellido 1 apellido 12', password='75169052')
+                               last_name='apellido 1 apellido 12', password='0000')
 
         self.data_alum2 = dict(email='ejemplo2@correo.ugr.es', first_name='alumno 2',
-                               last_name='apellido 12 apellido 122', password='75169052')
+                               last_name='apellido 12 apellido 122', password='0000')
 
         self.data_alum_error = dict(email='ejemplo2', first_name='alumno 2',
-                                    last_name='apellido 12 apellido 122', password='75169052')
+                                    last_name='apellido 12 apellido 122', password='0000')
+
+        self.data_prof1 = dict(email='ejemploprof2@ugr.es', first_name='profesor 2',
+                                    last_name='apellido 12 apellido 122', departamento='departamento1', password='0000')
 
     def test_ws_alumnos_get(self):
         # Sin alumnos
@@ -34,7 +37,7 @@ class TfgServicesTests(TestCase):
         res = self.client.get('/api/v1/alumnos/')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], False)
-        self.assertEqual(resul['message'], 'No hay alumnos almacenados')
+        self.assertEqual(resul['message'], 'No tienes los permisos necesarios')
 
     #
     #     # El alumno no existe
@@ -69,7 +72,7 @@ class TfgServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
-        # Modificar un alumno con parametros  incorrectos
+        # Modificar un alumno
         res = self.client.put('/api/v1/alumnos/', {'alumno': self.data_alum1['email'], 'datos': json.dumps({'first_name': 'otro alumno 2'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
@@ -102,3 +105,28 @@ class TfgServicesTests(TestCase):
     #                          {'username': 'ejemplo@correo.ugr.es'})
     #     resul = json.loads(res.content)
     #     self.assertEqual(resul['status'], True)
+
+    def test_ws_profesores_get(self):
+        # inserto un profesor
+        res = self.client.post('/api/v1/profesores/', self.data_prof1)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        # Modificar un profesor
+        res = self.client.put('/api/v1/profesores/', {'profesor': self.data_prof1['email'], 'datos': json.dumps({'first_name': 'otro profesor 2'})})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        # Me logueo con un profesor
+        res = self.client.post('/api/v1/auth/login/', {'email': self.data_prof1['email'], 'password': self.data_prof1['password']})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['email'], self.data_prof1['email'])
+        # Introduzco 2 alumnos
+        res = self.client.post('/api/v1/alumnos/', self.data_alum1)
+        res = self.client.post('/api/v1/alumnos/', self.data_alum2)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+        # obtengo todos los alumnos por que soy un profesor
+        res = self.client.get('/api/v1/alumnos/')
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)

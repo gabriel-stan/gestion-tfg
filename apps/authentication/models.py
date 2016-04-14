@@ -105,11 +105,6 @@ class AlumnoManager(BaseUserManager):
 class Alumno(Usuario):
     objects = AlumnoManager()
 
-    class Meta:
-        permissions = (
-            ('can_get_all', 'Puede consultar todos los alumnos'),
-        )
-
 
 class ProfesorManager(BaseUserManager):
     def create_user(self, email, password=None, **kwargs):
@@ -138,7 +133,7 @@ class ProfesorManager(BaseUserManager):
             profesor.save()
             grupo_profesores.user_set.add(profesor)
 
-            return dict(status=True, data=Profesor.objects.get(username=profesor.username))
+            return dict(status=True, data=Profesor.objects.get(email=profesor.email))
 
         except NameError as e:
             return dict(status=False, message=e.message)
