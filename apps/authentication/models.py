@@ -89,14 +89,14 @@ class AlumnoManager(BaseUserManager):
             if not re.match(r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$', email):
                 raise NameError("El email no es correcto")
 
-            alumno = self.model.objects.create(email=email, first_name=kwargs.get('first_name'),
+            usuario = self.model.objects.create(email=email, first_name=kwargs.get('first_name'),
                                 last_name=kwargs.get('last_name'))
 
             grupo_alumnos = Group.objects.get(name='Alumnos')
-            alumno.set_password(password)
-            alumno.save()
-            grupo_alumnos.user_set.add(alumno)
-            return dict(status=True, data=alumno)
+            usuario.set_password(password)
+            usuario.save()
+            grupo_alumnos.user_set.add(usuario)
+            return dict(status=True, data=usuario)
 
         except NameError as e:
             return dict(status=False, message=e.message)
@@ -125,15 +125,15 @@ class ProfesorManager(BaseUserManager):
             if not kwargs.get('departamento') or not utils.is_string(kwargs.get('departamento')):
                 raise NameError("Error en el departamento")
 
-            profesor = self.model(email=email, first_name=kwargs.get('first_name'),
+            usuario = self.model.objects.create(email=email, first_name=kwargs.get('first_name'),
                                 last_name=kwargs.get('last_name'), departamento=kwargs.get('departamento'))
 
             grupo_profesores = Group.objects.get(name='Profesores')
-            profesor.set_password(password)
-            profesor.save()
-            grupo_profesores.user_set.add(profesor)
+            usuario.set_password(password)
+            usuario.save()
+            grupo_profesores.user_set.add(usuario)
 
-            return dict(status=True, data=Profesor.objects.get(email=profesor.email))
+            return dict(status=True, data=Profesor.objects.get(email=usuario.email))
 
         except NameError as e:
             return dict(status=False, message=e.message)

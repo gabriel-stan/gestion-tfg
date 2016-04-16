@@ -37,7 +37,7 @@ class TfgServicesTests(TestCase):
         res = self.client.get('/api/v1/alumnos/')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], False)
-        self.assertEqual(resul['message'], 'No tienes los permisos necesarios')
+        self.assertEqual(resul['message'], 'No hay alumnos almacenados')
 
     #
     #     # El alumno no existe
@@ -73,7 +73,10 @@ class TfgServicesTests(TestCase):
         self.assertEqual(resul['status'], True)
 
         # Modificar un alumno
-        res = self.client.put('/api/v1/alumnos/', {'alumno': self.data_alum1['email'], 'datos': json.dumps({'first_name': 'otro alumno 2'})})
+        res = self.client.post('/api/v1/auth/login/', dict(email=self.data_alum1['email'],
+                                                           password=self.data_alum1['password']))
+        res = self.client.put('/api/v1/alumnos/', {'alumno': self.data_alum1['email'],
+                                                   'datos': json.dumps({'first_name': 'otro alumno 2'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
     #
@@ -112,15 +115,15 @@ class TfgServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
+        # Me logueo con un profesor
+        res = self.client.post('/api/v1/auth/login/', {'email': self.data_prof1['email'], 'password': self.data_prof1['password']})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['email'], self.data_prof1['email'])
         # Modificar un profesor
         res = self.client.put('/api/v1/profesores/', {'profesor': self.data_prof1['email'], 'datos': json.dumps({'first_name': 'otro profesor 2'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
-        # Me logueo con un profesor
-        res = self.client.post('/api/v1/auth/login/', {'email': self.data_prof1['email'], 'password': self.data_prof1['password']})
-        resul = json.loads(res.content)
-        self.assertEqual(resul['email'], self.data_prof1['email'])
         # Introduzco 2 alumnos
         res = self.client.post('/api/v1/alumnos/', self.data_alum1)
         res = self.client.post('/api/v1/alumnos/', self.data_alum2)

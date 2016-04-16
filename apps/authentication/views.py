@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.contrib.auth import authenticate, login, logout
 from authentication.models import Alumno, Profesor
 from authentication.serializers import AlumnoSerializer, ProfesorSerializer, UsuarioSerializer
@@ -33,31 +34,27 @@ class AlumnosViewSet(viewsets.ModelViewSet):
         {status: True/False, data:{serializer del alumno o alumnos}
         """
 
-        # TODO: Aqui va la comprobacion del perfil del usuario
-
         # Si es un GET, devuelvo la info de todos los alumnos
         try:
             params = utils.get_params(request)
             try:
                 if 'email' in params:
                     alumno = Alumno.objects.get(email=params['email'])
-                    resul = AlumnoSerializer(alumno).data
-                elif request.user.has_perm('authentication.alumns_can_get_all'):
+                    resul = self.serializer_class(alumno).data
+                else:
                     alumno = Alumno.objects.all()
-                    resul = AlumnoSerializer(alumno, many=True).data
+                    resul = self.serializer_class(alumno, many=True).data
                     if len(resul) == 0:
                         raise NameError("No hay alumnos almacenados")
-                else:
-                    return Response(dict(status=False, message="No tienes los permisos necesarios"))
 
-                return Response(dict(status=True, data=resul))
+                return Response(dict(status=True, data=json.dumps(resul)))
             except NameError as e:
                 return Response(dict(status=False, message=e.message))
             except Alumno.DoesNotExist:
                 return Response(dict(status=False, message="El alumno indicado no existe"))
 
         except Exception as e:
-            return Response(dict(status=False, message="Error en la llamada"))
+            return Response(dict(status=False, message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)
 
     def create(self, request):
         """
@@ -78,7 +75,6 @@ class AlumnosViewSet(viewsets.ModelViewSet):
                     return Response(utils.to_dict(resul))
                 else:
                     return Response(resul)
-
             else:
                 return Response(dict(status=False, message=serializer.errors), status=status.HTTP_200_OK)
         except Exception as e:
@@ -87,23 +83,27 @@ class AlumnosViewSet(viewsets.ModelViewSet):
     def put(self, request):
         """
         PUT
-        Insertar un alumno nuevo
+        Modificar los datos de un alumno
         :param request:
         :return :
-        {status: True/False, data:{datos del alumno insertado o de todos los alumnos}
+        {status: True/False, data:{datos del alumno}
 
         :param request:
         :return:
         """
         try:
-            alumno = Alumno.objects.get(email=request.data['alumno'])
-            params = json.loads(request.data['datos'])
-            serializer = AlumnoSerializer(alumno)
-            resul = serializer.update(alumno, params)
-            if resul['status']:
-                return Response(utils.to_dict(resul))
+            if utils.check_usuario(request.user, request.data['alumno']):
+                alumno = Alumno.objects.get(email=request.data['alumno'])
+                params = json.loads(request.data['datos'])
+                serializer = self.serializer_class(alumno)
+                resul = serializer.update(alumno, params)
+                if resul['status']:
+                    return Response(utils.to_dict(resul))
+                else:
+                    return Response(resul)
             else:
-                return Response(resul)
+                return Response(dict(status=False, message="Sin privilegios"),
+                                status=status.HTTP_405_METHOD_NOT_ALLOWED)
         except Exception as e:
             return Response(dict(status=False, message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)
 
@@ -112,15 +112,6 @@ class ProfesoresViewSet(viewsets.ModelViewSet):
     lookup_field = 'email'
     queryset = Profesor.objects.all()
     serializer_class = ProfesorSerializer
-
-    # def get_permissions(self):
-    #     if self.request.method in permissions.SAFE_METHODS:
-    #         return (permissions.AllowAny(),)
-    #
-    #     if self.request.method == 'POST':
-    #         return (permissions.AllowAny(),)
-    #
-    #     return (permissions.IsAuthenticated(), IsAccountOwner(),)
 
     def list(self, request):
         """
@@ -131,8 +122,6 @@ class ProfesoresViewSet(viewsets.ModelViewSet):
         {status: True/False, data:{serializer del alumno o alumnos}
         """
 
-        # TODO: Aqui va la comprobacion del perfil del usuario
-
         # Si es un GET, devuelvo la info de todos los alumnos
         try:
             params = utils.get_params(request)
@@ -140,22 +129,19 @@ class ProfesoresViewSet(viewsets.ModelViewSet):
                 if 'email' in params:
                     profesor = Profesor.objects.get(email=params['email'])
                     resul = ProfesorSerializer(profesor).data
-                elif request.user.has_perm('authentication.profesores_can_get_all') or request.user.is_admin:
+                else:
                     profesores = Profesor.objects.all()
                     resul = ProfesorSerializer(profesores, many=True).data
                     if len(resul) == 0:
                         raise NameError("No hay profesores almacenados")
-                else:
-                    return Response(dict(status=False, message="No tienes los permisos necesarios"))
 
-                return Response(utils.to_dict(dict(status=True, data=json.dumps(resul))))
+                return Response(dict(status=True, data=json.dumps(resul)))
             except NameError as e:
                 return Response(dict(status=False, message=e.message))
             except Profesor.DoesNotExist:
-                return  Response(dict(status=False, message="El profesor indicado no existe"))
-
+                return Response(dict(status=False, message="El profesor indicado no existe"))
         except Exception as e:
-            return Response(dict(status=False, message="Error en la llamada"))
+            return Response(dict(status=False, message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)
 
     def create(self, request):
         """
@@ -176,7 +162,6 @@ class ProfesoresViewSet(viewsets.ModelViewSet):
                     return Response(utils.to_dict(resul))
                 else:
                     return Response(resul)
-
             else:
                 return Response(dict(status=False, message=serializer.errors), status=status.HTTP_200_OK)
         except Exception as e:
@@ -185,23 +170,27 @@ class ProfesoresViewSet(viewsets.ModelViewSet):
     def put(self, request):
         """
         PUT
-        Insertar un alumno nuevo
+        Cambia los datos de un profesor
         :param request:
         :return :
-        {status: True/False, data:{datos del alumno insertado o de todos los alumnos}
+        {status: True/False, data:{datos del profesor cambiado}
 
         :param request:
         :return:
         """
         try:
-            profesor = Profesor.objects.get(email=request.data['profesor'])
-            params = json.loads(request.data['datos'])
-            serializer = ProfesorSerializer(profesor)
-            resul = serializer.update(profesor, params)
-            if resul['status']:
-                return Response(utils.to_dict(resul))
+            if utils.check_usuario(request.user, request.data['profesor']):
+                profesor = Profesor.objects.get(email=request.data['profesor'])
+                params = json.loads(request.data['datos'])
+                serializer = ProfesorSerializer(profesor)
+                resul = serializer.update(profesor, params)
+                if resul['status']:
+                    return Response(utils.to_dict(resul))
+                else:
+                    return Response(resul)
             else:
-                return Response(resul)
+                return Response(dict(status=False, message="Sin privilegios"),
+                                status=status.HTTP_405_METHOD_NOT_ALLOWED)
         except Exception as e:
             return Response(dict(status=False, message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)
 
@@ -220,10 +209,10 @@ class LoginView(views.APIView):
         if account is not None:
             if account.is_active:
                 login(request, account)
-                if isinstance(account, Alumno):
-                    serialized = AlumnoSerializer(account)
-                elif isinstance(account, Profesor):
-                    serialized = ProfesorSerializer(account)
+                if hasattr(account, 'alumno') and isinstance(account.alumno, Alumno):
+                    serialized = AlumnoSerializer(account.alumno)
+                elif hasattr(account, 'profesor') and isinstance(account.profesor, Profesor):
+                    serialized = ProfesorSerializer(account.profesor)
                 else:
                     serialized = UsuarioSerializer(account)
                 return Response(serialized.data)

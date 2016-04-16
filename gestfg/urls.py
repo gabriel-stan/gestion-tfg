@@ -19,10 +19,13 @@ from rest_framework_nested import routers
 
 from gestfg.views import IndexView
 from authentication.views import AlumnosViewSet, LoginView, LogoutView, ProfesoresViewSet
+from tfgs.views import Tfg_asigViewSet, TfgViewSet
 
 router = routers.SimpleRouter()
 router.register(r'alumnos', AlumnosViewSet)
 router.register(r'profesores', ProfesoresViewSet)
+router.register(r'tfgs', TfgViewSet)
+router.register(r'tfgs_asig', Tfg_asigViewSet)
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
