@@ -5,14 +5,14 @@ import simplejson as json
 def get_params(req):
 
     datos = {}
-    if req.method == 'POST':
-        for key, value in req.POST.items():
+    if req.method == 'GET':
+        for key, value in req.query_params.items():
             if key == 'campos':
                 datos[key] = json.loads(value)
             else:
                 datos[key] = value
     else:
-        for key, value in req.query_params.items():
+        for key, value in req.data.items():
             if key == 'campos':
                 datos[key] = json.loads(value)
             else:
@@ -58,7 +58,7 @@ def to_dict(resul):
 
 
 # Comprueba que un usuario va a modificar los datos de si mismo
-def check_usuario(user, email):
+def check_usuario(user, email=None):
     if user.email == email:
         return True
     elif user.is_admin:

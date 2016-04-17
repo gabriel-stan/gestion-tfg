@@ -80,12 +80,10 @@ class AlumnoSerializer(serializers.ModelSerializer):
         except:
             return dict(status=False, message="El email no es correcto")
 
-    def delete_alumno(self, alumno):
-        try:
-            Alumno.objects.get(email=alumno.email).delete()
-            return dict(status=True)
-        except Alumno.DoesNotExist:
-            return dict(status=False, message="El alumno no existe")
+    def delete(self, alumno):
+        alumno.delete()
+        return dict(status=True)
+
 
 
 class ProfesorSerializer(serializers.ModelSerializer):
@@ -150,9 +148,5 @@ class ProfesorSerializer(serializers.ModelSerializer):
             return dict(status=False, message="El email no es correcto")
 
     def delete(self, profesor):
-
-        try:
-            Profesor.objects.get(email=profesor.email).delete()
-            return dict(status=True)
-        except Profesor.DoesNotExist:
-            return dict(status=False, message="El profesor no existe")
+        profesor.delete()
+        return dict(status=True)

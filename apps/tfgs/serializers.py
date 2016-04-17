@@ -83,7 +83,7 @@ class TfgSerializer(serializers.ModelSerializer):
         except NameError as e:
             return dict(status=False, message=e.message)
 
-    def delete_tfg(self, tfg):
+    def delete(self, tfg):
         try:
             Tfg.objects.get(titulo=tfg.titulo).delete()
             return dict(status=True)

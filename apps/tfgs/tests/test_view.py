@@ -39,7 +39,7 @@ class TfgServicesTests(TestCase):
         res = self.client.post('/api/v1/auth/login/', dict(email=self.data_prof1['email'],
                                                            password=self.data_prof1['password']))
         resul = json.loads(res.content)
-        self.assertEqual(resul['email'], self.data_prof1['email'])
+        self.assertEqual(resul['data']['email'], self.data_prof1['email'])
         res = self.client.get('/api/v1/tfgs/')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], False)

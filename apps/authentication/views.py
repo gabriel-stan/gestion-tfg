@@ -4,9 +4,7 @@ from authentication.models import Alumno, Profesor
 from authentication.serializers import AlumnoSerializer, ProfesorSerializer, UsuarioSerializer
 from rest_framework import permissions, viewsets, status, views
 from rest_framework.response import Response
-from rest_framework.decorators import authentication_classes, permission_classes
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.models import Permission
 import json
 import utils
 
@@ -68,7 +66,8 @@ class AlumnosViewSet(viewsets.ModelViewSet):
         :return:
         """
         try:
-            serializer = self.serializer_class(data=request.data)
+            params = utils.get_params(request)
+            serializer = self.serializer_class(data=params)
             if serializer.is_valid():
                 resul = Alumno.objects.create_user(**serializer.validated_data)
                 if resul['status']:
@@ -92,8 +91,9 @@ class AlumnosViewSet(viewsets.ModelViewSet):
         :return:
         """
         try:
-            if utils.check_usuario(request.user, request.data['alumno']):
-                alumno = Alumno.objects.get(email=request.data['alumno'])
+            params = utils.get_params(request)
+            if utils.check_usuario(request.user, params['alumno']):
+                alumno = Alumno.objects.get(email=params['alumno'])
                 params = json.loads(request.data['datos'])
                 serializer = self.serializer_class(alumno)
                 resul = serializer.update(alumno, params)
@@ -106,6 +106,29 @@ class AlumnosViewSet(viewsets.ModelViewSet):
                                 status=status.HTTP_405_METHOD_NOT_ALLOWED)
         except Exception as e:
             return Response(dict(status=False, message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request):
+        """
+        Eliminar un alumno
+        :param request:
+        :return :
+        """
+
+        try:
+            params = utils.get_params(request)
+            if 'email' in params and utils.check_usuario(request.user):
+                alumno = Alumno.objects.get(email=params['email'])
+                serializer = self.serializer_class(alumno)
+                resul = serializer.delete(alumno)
+            else:
+                resul = dict(status=False, message="Parametros incorrectos")
+
+            return Response(resul)
+
+        except Profesor.DoesNotExist:
+            return Response(dict(status=False, message="El alumno indicado no existe"))
+        except Exception:
+            return Response(dict(status=False, message="Error en la llamada"))
 
 
 class ProfesoresViewSet(viewsets.ModelViewSet):
@@ -155,7 +178,8 @@ class ProfesoresViewSet(viewsets.ModelViewSet):
         :return:
         """
         try:
-            serializer = self.serializer_class(data=request.data)
+            params = utils.get_params(request)
+            serializer = self.serializer_class(data=params)
             if serializer.is_valid():
                 resul = Profesor.objects.create_user(**serializer.validated_data)
                 if resul['status']:
@@ -179,9 +203,10 @@ class ProfesoresViewSet(viewsets.ModelViewSet):
         :return:
         """
         try:
-            if utils.check_usuario(request.user, request.data['profesor']):
-                profesor = Profesor.objects.get(email=request.data['profesor'])
-                params = json.loads(request.data['datos'])
+            params = utils.get_params(request)
+            if utils.check_usuario(request.user, params['profesor']):
+                profesor = Profesor.objects.get(email=params['profesor'])
+                params = json.loads(params['datos'])
                 serializer = ProfesorSerializer(profesor)
                 resul = serializer.update(profesor, params)
                 if resul['status']:
@@ -193,6 +218,29 @@ class ProfesoresViewSet(viewsets.ModelViewSet):
                                 status=status.HTTP_405_METHOD_NOT_ALLOWED)
         except Exception as e:
             return Response(dict(status=False, message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request):
+        """
+        Eliminar un profesor
+        :param request:
+        :return :
+        """
+
+        try:
+            params = utils.get_params(request)
+            if 'email' in params and utils.check_usuario(request.user):
+                profesor = Profesor.objects.get(email=params['email'])
+                serializer = self.serializer_class(profesor)
+                resul = serializer.delete(profesor)
+            else:
+                resul = dict(status=False, message="Parametros incorrectos")
+
+            return Response(resul)
+
+        except Profesor.DoesNotExist:
+            return Response(dict(status=False, message="El profesor indicado no existe"))
+        except Exception:
+            return Response(dict(status=False, message="Error en la llamada"))
 
 
 class LoginView(views.APIView):
@@ -215,7 +263,11 @@ class LoginView(views.APIView):
                     serialized = ProfesorSerializer(account.profesor)
                 else:
                     serialized = UsuarioSerializer(account)
-                return Response(serialized.data)
+                permissions = Permission.objects.filter(group=serialized.instance.groups.all()).values('codename')
+                list_permissions = []
+                for permission in permissions:
+                    list_permissions.append(permission['codename'])
+                return Response(dict(data=serialized.data, permissions=list_permissions))
             else:
                 return Response({
                     'status': 'Unauthorized',
@@ -234,3 +286,16 @@ class LogoutView(views.APIView):
     def post(self, request, format=None):
         logout(request)
         return Response({}, status=status.HTTP_204_NO_CONTENT)
+
+
+class PermissionsView(views.APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, format=None):
+        permissions = Permission.objects.filter(group=request.user.groups.all()).values('codename')
+        list_permissions = []
+        for permission in permissions:
+            list_permissions.append(permission['codename'])
+        return Response(dict(permissions=list_permissions))
+
+    # TODO el POST sera para cambiar de grupo a un usuario

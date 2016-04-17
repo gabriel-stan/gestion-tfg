@@ -91,7 +91,7 @@ class TfgViewSet(viewsets.ModelViewSet):
         except Exception as e:
             return Response(dict(status=False, message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)
 
-    def delete_tfg(self, request):
+    def delete(self, request):
         """
         Eliminar un usuario
         :param request:

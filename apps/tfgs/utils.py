@@ -6,14 +6,14 @@ import simplejson as json
 def get_params(req):
 
     datos = {}
-    if req.method == 'POST':
-        for key, value in req.POST.items():
+    if req.method == 'GET':
+        for key, value in req.query_params.items():
             if key == 'campos':
                 datos[key] = json.loads(value)
             else:
                 datos[key] = value
     else:
-        for key, value in req.query_params.items():
+        for key, value in req.data.items():
             if key == 'campos':
                 datos[key] = json.loads(value)
             else:
