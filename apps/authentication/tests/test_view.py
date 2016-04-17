@@ -95,15 +95,15 @@ class AuthenticationServicesTests(TestCase):
         res = self.client.post('/api/v1/auth/login/', dict(email='admin@admin.es',
                                                            password='0000'))
 
-        # Borro al alumno
-        res = self.client.delete('/api/v1/alumnos/', {'email': self.data_alum1['email']})
-        resul = json.loads(res.content)
-        self.assertEqual(resul['status'], True)
-
-        # Compruebo que se ha borrado
-        res = self.client.get('/api/v1/alumnos/', self.data_alum1)
-        resul = json.loads(res.content)
-        self.assertEqual(resul['status'], False)
+        # # Borro al alumno
+        # res = self.client.delete('/api/v1/alumnos/', {'email': self.data_alum1['email']})
+        # resul = json.loads(res.content)
+        # self.assertEqual(resul['status'], True)
+        #
+        # # Compruebo que se ha borrado
+        # res = self.client.get('/api/v1/alumnos/', self.data_alum1)
+        # resul = json.loads(res.content)
+        # self.assertEqual(resul['status'], False)
 
 
     #
