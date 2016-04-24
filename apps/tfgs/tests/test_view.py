@@ -30,16 +30,21 @@ class TfgServicesTests(TestCase):
                                    conocimientos_previos='conocimientos previos',
                                    hard_soft='conocimientos previos', tutor='prof_ejemplo@ugr.es',
                                    cotutor='prof_ejemplo2@ugr.es')
+        self.data_alum1 = dict(email='alumno1@correo.ugr.es', first_name='profesor 2',
+                               last_name='apellido 12 apellido 122', password='75169052')
 
     def test_ws_tfgs_error(self):
         # Sin tfgs
         res = self.client.post('/api/v1/profesores/', self.data_prof1)
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
+        self.assertEqual(resul['data']['email'], self.data_prof1['email'])
         res = self.client.post('/api/v1/auth/login/', dict(email=self.data_prof1['email'],
                                                            password=self.data_prof1['password']))
+        res = self.client.post('/api/v1/alumnos/', self.data_alum1)
         resul = json.loads(res.content)
-        self.assertEqual(resul['data']['email'], self.data_prof1['email'])
+        self.assertEqual(resul['status'], True)
+
         res = self.client.get('/api/v1/tfgs/')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], False)
@@ -58,17 +63,15 @@ class TfgServicesTests(TestCase):
         self.assertEqual(resul['message']['tipo'][0], 'This field is required.')
 
         # inserto un tfg erroneo, sin titulo
-        res = self.client.post('/api/v1/tfgs/', self.data_tfg_error)
+        res = self.client.post('/api/v1/tfgs/', self.data_tfg1)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        # Borrar tfg que no existe
+        res = self.client.post('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'], 'alumno1': self.data_alum1['email']})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], False)
-        self.assertEqual(resul['message']['tipo'][0], 'This field is required.')
-
-    #     # Borrar tfg que no existe
-    #     res = self.client.post('/tfgs/delete_tfg/',
-    #                            {'titulo': self.data_tfg1['titulo']})
-    #     resul = json.loads(res.content)
-    #     self.assertEqual(resul['status'], False)
-    #     self.assertEqual(resul['message'], "El tfg indicado no existe")
+        self.assertEqual(resul['message'], "El tfg indicado no existe")
     #
     #     # Modificar un tfg que no existe
     #     res = self.client.post('/tfgs/update_tfg/',

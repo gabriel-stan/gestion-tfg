@@ -45,7 +45,7 @@ class TfgManager(BaseUserManager):
                 if not cotutor.groups.filter(name='Profesores').exists():
                     raise NameError("Cotutor ha de ser un profesor")
 
-            tfg = self.model(tipo=kwargs.get('tipo'), titulo=kwargs.get('titulo'),
+            tfg = self.model(tipo=kwargs.get('tipo'), titulo=titulo,
                         n_alumnos=kwargs.get('n_alumnos'), descripcion=kwargs.get('descripcion'),
                         conocimientos_previos=kwargs.get('conocimientos_previos'),
                         hard_soft=kwargs.get('hard_soft'), tutor=tutor,
@@ -103,13 +103,13 @@ class Tfg(models.Model):
 
 class Tfg_AsigManager(BaseUserManager):
 
-    def create_tfg_asig(self, tfg, alumno1, alumno2=None, alumno3=None):
+    def create_tfg_asig(self, tfg, **kwargs):
         alumno2_ok = False
         alumno3_ok = False
         try:
             # Compruebo lo minimo para asignar el tfg
-            if not isinstance(tfg, Tfg) or not isinstance(alumno1, Alumno) or not alumno1.groups.filter(
-                    name='Alumnos').exists() or utils.existe_tfg_asig(alumno1):
+            if not isinstance(tfg, Tfg) or not isinstance(kwargs.get('alumno1'), Alumno) or not alumno1.groups.filter(
+                    name='Alumnos').exists() or utils.existe_tfg_asig(kwargs.get('alumno1')):
                 raise NameError("Error en los parametros de entrada")
 
             # Compruebo que no este ya asignado

@@ -54,7 +54,8 @@ INSTALLED_APPS = (
     'rest_framework',
     'compressor',
     'authentication',
-    'tfgs'
+    'tfgs',
+    'eventos'
 )
 
 MIDDLEWARE_CLASSES = (

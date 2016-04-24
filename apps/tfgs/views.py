@@ -2,7 +2,7 @@
 from tfgs.models import Tfg, Tfg_Asig
 from tfgs.serializers import TfgSerializer, Tfg_AsigSerializer
 from authentication.models import Alumno, Profesor
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, views
 from rest_framework.response import Response
 import json
 import utils
@@ -115,7 +115,7 @@ class TfgViewSet(viewsets.ModelViewSet):
             return Response(dict(status=False, message="Error en la llamada"))
 
 
-class Tfg_asigViewSet(viewsets.ModelViewSet):
+class Tfg_asigView(views.APIView):
     lookup_field = 'tfg'
     queryset = Tfg_Asig.objects.all()
     serializer_class = Tfg_AsigSerializer
@@ -139,10 +139,10 @@ class Tfg_asigViewSet(viewsets.ModelViewSet):
                 alumno_2 = Alumno.objects.get(email=params['alumno_2'])
             if 'alumno_3' in params:
                 alumno_3 = Alumno.objects.get(email=params['alumno_3'])
-            serializer = self.serializer_class(data=dict(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2,
+            serializer = self.serializer_class(data=dict(tfg=tfg.id, alumno_1=alumno_1.id, alumno_2=alumno_2,
                                                          alumno_3=alumno_3))
             if serializer.is_valid():
-                resul = Tfg_Asig.objects.create_tfg(**serializer.validated_data)
+                resul = Tfg_Asig.objects.create_tfg_asig(**serializer.validated_data)
                 if resul['status']:
                     return Response(utils.to_dict(resul))
                 else:
