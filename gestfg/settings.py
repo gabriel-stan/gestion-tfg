@@ -39,7 +39,7 @@ DEBUG = os.environ.get('DEBUG') or False
 
 ALLOWED_HOSTS = []
 
-AUTH_USER_MODEL = 'model.Administrador'
+AUTH_USER_MODEL = 'authentication.Usuario'
 
 # Application definition
 
@@ -51,9 +51,10 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'controller',
-    'model',
     'rest_framework',
+    'compressor',
+    'authentication',
+    'tfgs'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -68,7 +69,8 @@ MIDDLEWARE_CLASSES = (
 )
 
 AUTHENTICATION_BACKENDS = (
-    'controller.servicios.authenticate.Authentication',
+    'django.contrib.auth.backends.ModelBackend',
+    #'guardian.backends.ObjectPermissionBackend',
 )
 
 REST_FRAMEWORK = {
@@ -83,7 +85,7 @@ ROOT_URLCONF = 'gestfg.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -137,6 +139,14 @@ STATIC_ROOT = 'staticfiles'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+)
+
+COMPRESS_ENABLED = os.environ.get('COMPRESS_ENABLED', False)
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
