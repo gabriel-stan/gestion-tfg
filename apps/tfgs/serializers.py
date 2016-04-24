@@ -2,7 +2,7 @@ import re
 import utils
 from django.contrib.auth import update_session_auth_hash
 from rest_framework import serializers
-from tfgs.models import Tfg
+from tfgs.models import Tfg, Tfg_Asig
 from authentication.models import Profesor, Alumno
 
 
@@ -93,13 +93,9 @@ class TfgSerializer(serializers.ModelSerializer):
 
 class Tfg_AsigSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Tfg
+        model = Tfg_Asig
         fields = ('id', 'tfg', 'alumno_1', 'alumno_2', 'alumno_3', 'created_at', 'updated_at',)
         read_only_fields = ('created_at', 'updated_at',)
 
-    def create(self, validated_data):
-        validated_data['tfg'] = Tfg.objects.get(email=validated_data.get('tfg'))
-        validated_data['alumno_1'] = Alumno.objects.get(email=validated_data.get('alumno_1'))
-        validated_data['alumno_2'] = Alumno.objects.get(email=validated_data.get('alumno_2'))
-        validated_data['alumno_2'] = Alumno.objects.get(email=validated_data.get('alumno_3'))
-        return Tfg.objects.create_tfg_asig(**validated_data)
+    def create_tfg_asig(self, validated_data):
+        return Tfg_Asig.objects.create_tfg_asig(**validated_data)
