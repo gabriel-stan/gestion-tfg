@@ -5,6 +5,7 @@ GUNICORN_PID = gunicorn.pid
 RUN_ENV = ~/gestfg/run_env
 INSTALL_ENV = ~/gestfg/install_env
 REQUIREMENTS_BACK = utils/requirements_back.txt
+REQUIREMENTS_BACK = utils/requirements_front.txt
 
 
 ##############
@@ -21,7 +22,7 @@ auto-merge:
 
 # run all tests using manage.py default server and no venv (everything installed in the system)
 test_no_venv:
-	export DEBUG=False ; python manage.py migrate ; python manage.py test
+	export DEBUG=False ; python manage.py makemigrations ; python manage.py migrate ; python manage.py test
 
 ###################
 ##  app control  ##
@@ -50,6 +51,7 @@ stop_manage:
 # install requirements in system (no virtualenv)
 install_requirements_no_vnenv:
 	pip install -r utils/requirements_back.txt
+	pip install -r utils/requirements_front.txt
 
 # install system packages and basic app
 install_basic:
@@ -58,7 +60,7 @@ install_basic:
 
 # install app after installing system packages
 install_app:
-	$(SCRIPTS)/install_app.sh $(REQUIREMENTS_BACK)
+	$(SCRIPTS)/install_app.sh $(REQUIREMENTS_BACK) $(REQUIREMENTS_FRONT)
 
 # install system packages that require sudo privileges
 install_system_packages:
