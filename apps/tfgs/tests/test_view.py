@@ -70,8 +70,7 @@ class TfgServicesTests(TestCase):
         # Borrar tfg que no existe
         res = self.client.post('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'], 'alumno1': self.data_alum1['email']})
         resul = json.loads(res.content)
-        self.assertEqual(resul['status'], False)
-        self.assertEqual(resul['message'], "El tfg indicado no existe")
+        self.assertEqual(resul['status'], True)
     #
     #     # Modificar un tfg que no existe
     #     res = self.client.post('/tfgs/update_tfg/',

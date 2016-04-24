@@ -136,13 +136,13 @@ class Tfg_asigView(views.APIView):
             tfg = Tfg.objects.get(titulo=params['tfg'])
             alumno_1 = Alumno.objects.get(email=params['alumno1'])
             if 'alumno_2' in params:
-                alumno_2 = Alumno.objects.get(email=params['alumno_2'])
+                alumno_2 = Alumno.objects.get(email=params['alumno_2'])['id']
             if 'alumno_3' in params:
-                alumno_3 = Alumno.objects.get(email=params['alumno_3'])
+                alumno_3 = Alumno.objects.get(email=params['alumno_3'])['id']
             serializer = self.serializer_class(data=dict(tfg=tfg.id, alumno_1=alumno_1.id, alumno_2=alumno_2,
                                                          alumno_3=alumno_3))
             if serializer.is_valid():
-                resul = Tfg_Asig.objects.create_tfg_asig(**serializer.validated_data)
+                resul = serializer.create_tfg_asig(serializer.validated_data)
                 if resul['status']:
                     return Response(utils.to_dict(resul))
                 else:
