@@ -1,0 +1,21 @@
+.no-events-here {
+  text-align: center;
+}
+
+.event {}
+
+.event .event__meta {
+  font-weight: bold;
+  text-align: right;
+  padding-bottom: 19px;
+}
+
+.event .event__meta a:hover {
+  text-decoration: none;
+}
+
+.btn-add-new-event {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}

@@ -7,7 +7,9 @@
         'gestfg.routes',
         'gestfg.authentication',
         'gestfg.layout',
-          'ngMaterial'
+        'gestfg.events',
+        'gestfg.utils',
+        'ngMaterial'
       ]);
 
     angular
