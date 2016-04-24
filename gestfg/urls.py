@@ -18,16 +18,21 @@ from django.contrib import admin
 from rest_framework_nested import routers
 
 from gestfg.views import IndexView
-from authentication.views import AlumnosViewSet, LoginView, LogoutView
+from authentication.views import AlumnosViewSet, LoginView, LogoutView, ProfesoresViewSet, PermissionsView
+from tfgs.views import Tfg_asigViewSet, TfgViewSet
 
 router = routers.SimpleRouter()
 router.register(r'alumnos', AlumnosViewSet)
+router.register(r'profesores', ProfesoresViewSet)
+router.register(r'tfgs', TfgViewSet)
+router.register(r'tfgs_asig', Tfg_asigViewSet)
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/v1/', include(router.urls)),
     url(r'^api/v1/auth/login/$', LoginView.as_view(), name='login'),
     url(r'^api/v1/auth/logout/$', LogoutView.as_view(), name='logout'),
+    url(r'^api/v1/auth/permisos/$', PermissionsView.as_view(), name='permisos'),
     # url(r'^alumnos/$', authentication_views.AlumnosViewSet.alumnos, name='alumnos'),
     # url(r'^logueo/$', login.login, name='login'),
     # url(r'^alumnos/update_alumno/$', alumnos.update_alumno, name='update_alumno'),

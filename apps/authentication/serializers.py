@@ -2,7 +2,22 @@ import re
 import utils
 from django.contrib.auth import update_session_auth_hash
 from rest_framework import serializers
-from authentication.models import Alumno, Profesor
+from authentication.models import Alumno, Profesor, Usuario
+
+
+class UsuarioSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=False)
+    confirm_password = serializers.CharField(write_only=True, required=False)
+
+    class Meta:
+        model = Alumno
+        fields = ('id', 'email', 'created_at', 'updated_at',
+                  'first_name', 'last_name', 'password',
+                  'confirm_password', 'is_admin')
+        read_only_fields = ('created_at', 'updated_at', 'is_admin')
+
+    def create(self, validated_data):
+        return Usuario.objects.create_user(**validated_data)
 
 
 class AlumnoSerializer(serializers.ModelSerializer):
@@ -65,12 +80,10 @@ class AlumnoSerializer(serializers.ModelSerializer):
         except:
             return dict(status=False, message="El email no es correcto")
 
-    def delete_alumno(self, alumno):
-        try:
-            Alumno.objects.get(email=alumno.email).delete()
-            return dict(status=True)
-        except Alumno.DoesNotExist:
-            return dict(status=False, message="El alumno no existe")
+    def delete(self, alumno):
+        alumno.delete()
+        return dict(status=True)
+
 
 
 class ProfesorSerializer(serializers.ModelSerializer):
@@ -89,7 +102,7 @@ class ProfesorSerializer(serializers.ModelSerializer):
 
     def update(self, profesor, validated_data):
         try:
-            # comprobando username
+            # comprobando email
             if 'email' in validated_data.keys():
                 new_email = validated_data.get('email')
                 res = Profesor.objects.filter(email=new_email)
@@ -97,7 +110,7 @@ class ProfesorSerializer(serializers.ModelSerializer):
                     if not (re.match(r'^[a-z][_a-z0-9]+(@ugr\.es)$', new_email)):
                         raise NameError("El email no es correcto")
                     else:
-                        profesor.username = new_email
+                        profesor.email = new_email
                 else:
                     raise NameError("No existe el profesor")
 
@@ -135,9 +148,5 @@ class ProfesorSerializer(serializers.ModelSerializer):
             return dict(status=False, message="El email no es correcto")
 
     def delete(self, profesor):
-
-        try:
-            Profesor.objects.get(email=profesor.email).delete()
-            return dict(status=True)
-        except Profesor.DoesNotExist:
-            return dict(status=False, message="El profesor no existe")
+        profesor.delete()
+        return dict(status=True)

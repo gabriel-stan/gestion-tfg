@@ -1,172 +1,180 @@
 # -*- coding: utf-8 -*-
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.permissions import IsAuthenticated
+from tfgs.models import Tfg, Tfg_Asig
+from tfgs.serializers import TfgSerializer, Tfg_AsigSerializer
+from authentication.models import Alumno, Profesor
+from rest_framework import viewsets, status
 from rest_framework.response import Response
-
-from controller.servicios import tfg_services
-from old.controller.servicios import utils
-from model.models import Tfg
-import servicios
+import json
+import utils
 
 
-@api_view(['GET', 'POST'])
-@authentication_classes((SessionAuthentication, BasicAuthentication))
-@permission_classes((IsAuthenticated,))
-def tfgs(request):
-    """
-    GET
-    Obtener los datos de todos o de algun tfg
-    :param request:
-    :return :
-    {status: True/False, data:{serializer del tfg o tfgs}
+class TfgViewSet(viewsets.ModelViewSet):
+    lookup_field = 'titulo'
+    queryset = Tfg.objects.all()
+    serializer_class = TfgSerializer
 
-    POST
-    Insertar un tfg nuevo
-    :param request:
-    :return :
-    {status: True/False, data:{datos del tfg insertado o de todos los tfgs}
-    """
+    def list(self, request):
+        """
+        GET
+        Obtener los datos de todos o de algun tfg
+        :param request:
+        :return :
+        {status: True/False, data:{serializer del tfg o tfgs}
 
-    # TODO: Aqui va la comprobacion del perfil del usuario
-
-    # Si es un GET, devuelvo la info de todos los tfgs
-    try:
-        if request.method == 'GET':
-            params = utils.get_params(request)
-            if 'titulo' in params:
-                resul = servicios.get_tfgs(titulo=params['titulo'])
-            else:
-                resul = servicios.get_tfgs()
-            return Response(resul)
-
-        # Si es un POST devuelvo la info del tfg nuevo
-        elif request.method == 'POST':
-            per = request.user.get_all_permissions()
-            # if not request.user.has_perm('model.add_tfg'):
-            #     return Response(dict(status=False, message="No tiene los permisos necesarios"))
-            # else:
-            params = utils.get_params(request)
-            tfg = Tfg(tipo=params['tipo'], titulo=params['titulo'], n_alumnos=params['n_alumnos'],
-                      descripcion=params['descripcion'], conocimientos_previos=params['conocimientos_previos'],
-                      hard_soft=params['hard_soft'],
-                      tutor=params['tutor'], cotutor=params['cotutor'])
-            resul = servicios.insert_tfg(tfg)
-            if resul['status']:
-                return Response(utils.to_dict(resul))
-            return Response(resul)
-
-    except Exception as e:
-        return Response(dict(status=False, message="Error en la llamada"))
-
-@api_view(['POST'])
-def update_tfg(request):
-    """
-    Actualizar datos de un tfg
-    :param request: tfg <str>, campos <dict>
-    :return :
-    """
-
-    # TODO: Aqui va la comprobacion del perfil del usuario que quiere actualizar
-    try:
-        if request.method == 'POST':
-            params = utils.get_params(request)
-            tfg = Tfg.objects.get(titulo=params['titulo'])
-            resul = servicios.update_tfg(tfg, params['campos'])
-            if resul['status']:
-                return Response(utils.to_dict(resul))
-            return Response(resul)
-
-    except Tfg.DoesNotExist:
-        return Response(dict(status=False, message="El tfg indicado no existe"))
-    except Exception:
-        return Response(dict(status=False, message="Error en la llamada"))
-
-
-@api_view(['POST'])
-def delete_tfg(request):
-    """
-    Eliminar un usuario
-    :param request:
-    :return :
-    """
-
-    # TODO: Aqui va la comprobacion del perfil del usuario que quiere borrar
-
-    try:
-        if request.method == 'POST':
+        """
+        try:
             params = utils.get_params(request)
             if 'titulo' in params:
                 tfg = Tfg.objects.get(titulo=params['titulo'])
-                resul = servicios.delete_tfg(tfg)
+                resul = self.serializer_class(tfg).data
+            else:
+                tfg = Tfg.objects.all()
+                resul = self.serializer_class(tfg, many=True).data
+                if len(resul) == 0:
+                    raise NameError("No hay tfgs almacenados")
+            return Response(dict(status=True, data=resul))
+        except NameError as e:
+            return Response(dict(status=False, message=e.message))
+        except Tfg.DoesNotExist:
+            return Response(dict(status=False, message="El tfg indicado no existe"))
+        except Exception as e:
+            return Response(dict(status=False, message="Error en la llamada"))
+
+    def create(self, request):
+        """
+        POST
+        Insertar un tfg nuevo
+        :param request:
+        :return :
+        {status: True/False, data:{datos del tfg insertado o de todos los tfgs}
+        """
+        try:
+            if request.user.has_perm('tfgs.can_create_tfgs') or request.user.is_admin:
+                request.data['tutor'] = Profesor.objects.get(email=request.data['tutor'])
+                if 'cotutor' in request.data:
+                    request.data['cotutor'] = Profesor.objects.get(email=request.data['tutor'])
+                serializer = self.serializer_class(data=request.data)
+                if serializer.is_valid():
+                    resul = Tfg.objects.create_tfg(**serializer.validated_data)
+                    if resul['status']:
+                        return Response(utils.to_dict(resul))
+                    else:
+                        return Response(resul)
+                else:
+                    return Response(dict(status=False, message=serializer.errors), status=status.HTTP_200_OK)
+            else:
+                return Response(dict(status=False, message="Sin privilegios"),
+                                status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        except Exception as e:
+            return Response(dict(status=False, message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request):
+        """
+        Actualizar datos de un tfg
+        :param request: tfg <str>, campos <dict>
+        :return :
+        """
+
+        try:
+            if request.user.has_perm('tfgs.can_change_tfgs') or request.user.is_admin:
+                tfg = Tfg.objects.get(titulo=request.data['titulo'])
+                params = json.loads(request.data['datos'])
+                serializer = self.serializer_class(tfg)
+                resul = serializer.update(tfg, params)
+                if resul['status']:
+                    return Response(utils.to_dict(resul))
+                else:
+                    return Response(resul)
+            else:
+                return Response(dict(status=False, message="Sin privilegios"),
+                                status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        except Exception as e:
+            return Response(dict(status=False, message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request):
+        """
+        Eliminar un usuario
+        :param request:
+        :return :
+        """
+
+        try:
+            params = utils.get_params(request)
+            if 'titulo' in params:
+                tfg = Tfg.objects.get(titulo=params['titulo'])
+                serializer = self.serializer_class(tfg)
+                resul = serializer.delete_tfg(tfg)
             else:
                 resul = dict(status=False, message="Parametros incorrectos")
 
             return Response(resul)
 
-    except Tfg.DoesNotExist:
-        return Response(dict(status=False, message="El tfg indicado no existe"))
-    except Exception:
-        return Response(dict(status=False, message="Error en la llamada"))
+        except Tfg.DoesNotExist:
+            return Response(dict(status=False, message="El tfg indicado no existe"))
+        except Exception:
+            return Response(dict(status=False, message="Error en la llamada"))
 
 
-@api_view(['POST'])
-def asig_tfg(request):
-    """
-    POST
-    Asignar un TFG a uno o varios alumnos
-    :param request:
-    :return :
-    {status: True/False, data:{serializer del tfg asignado y de los alumnos}
-    """
+class Tfg_asigViewSet(viewsets.ModelViewSet):
+    lookup_field = 'tfg'
+    queryset = Tfg_Asig.objects.all()
+    serializer_class = Tfg_AsigSerializer
 
-    # TODO: Aqui va la comprobacion del perfil del usuario
+    def post(self, request):
+        """
+        POST
+        Asignar un TFG a uno o varios alumnos
+        :param request:
+        :return:
+        {status: True/False, data:{serializer del tfg asignado y de los alumnos}
+        """
 
-    try:
-        if request.method == 'POST':
-            # TODO: pasar los laumnos a un dict, cambiar aqui y en el servicio
-            alumno2 = None
-            alumno3 = None
+        try:
+            alumno_2 = None
+            alumno_3 = None
             params = utils.get_params(request)
-            tfg = servicios.get_tfgs(titulo=params['titulo'])['data'].serializer.instance
-            alumno = tfg_services.get_alumnos(params['username'])['data'].serializer.instance
-            if 'username2' in params:
-                alumno2 = tfg_services.get_alumnos(params['username2'])['data'].serializer.instance
-            if 'username3' in params:
-                alumno3 = tfg_services.get_alumnos(params['username3'])['data'].serializer.instance
-            resul = servicios.asignar_tfg(tfg, alumno, alumno2, alumno3)
-            if resul['status']:
-                return Response(utils.to_dict(resul))
-            return Response(resul)
+            tfg = Tfg.objects.get(titulo=params['tfg'])
+            alumno_1 = Alumno.objects.get(email=params['alumno1'])
+            if 'alumno_2' in params:
+                alumno_2 = Alumno.objects.get(email=params['alumno_2'])
+            if 'alumno_3' in params:
+                alumno_3 = Alumno.objects.get(email=params['alumno_3'])
+            serializer = self.serializer_class(data=dict(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2,
+                                                         alumno_3=alumno_3))
+            if serializer.is_valid():
+                resul = Tfg_Asig.objects.create_tfg(**serializer.validated_data)
+                if resul['status']:
+                    return Response(utils.to_dict(resul))
+                else:
+                    return Response(resul)
+            else:
+                return Response(dict(status=False, message=serializer.errors), status=status.HTTP_200_OK)
 
-    except Exception as e:
-        return Response(dict(status=False, message="Error en la llamada"))
+        except Exception as e:
+            return Response(dict(status=False, message="Error en la llamada"))
 
+    def delete(self, request):
+        """
+        DELETE
+        Elimina la asignacion un TFG a uno o varios alumnos
+        :param request:
+        :return :
+        {status: True/False, data:{serializer del tfg que ha quedado libre}
+        """
 
-@api_view(['POST'])
-def remove_asig_tfg(request):
-    """
-    POST
-    Elimina la asignacion un TFG a uno o varios alumnos
-    :param request:
-    :return :
-    {status: True/False, data:{serializer del tfg que ha quedado libre}
-    """
-
-    # TODO: Aqui va la comprobacion del perfil del usuario que quiere borrar
-
-    try:
-        if request.method == 'POST':
+        try:
             params = utils.get_params(request)
             if 'titulo' in params:
                 tfg = Tfg.objects.get(titulo=params['titulo'])
-                resul = servicios.delete_tfg(tfg)
+                tfg_asig = Tfg_Asig.objects.get(tfg=tfg)
+                serializer = self.serializer_class(tfg_asig)
+                resul = serializer.delete_tfg(tfg_asig)
             else:
                 resul = dict(status=False, message="Parametros incorrectos")
 
             return Response(resul)
 
-    except Tfg.DoesNotExist:
-        return Response(dict(status=False, message="El tfg indicado no existe"))
-    except Exception:
-        return Response(dict(status=False, message="Error en la llamada"))
+        except Tfg.DoesNotExist:
+            return Response(dict(status=False, message="El tfg indicado no existe"))
+        except Exception:
+            return Response(dict(status=False, message="Error en la llamada"))

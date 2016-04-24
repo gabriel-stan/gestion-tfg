@@ -1,4 +1,4 @@
-from django.db.models.signals import post_migrate
+from django.db.models.signals import post_migrate, post_syncdb
 from django.dispatch import receiver
 from django.contrib.auth.models import User, Group, Permission
 from django.contrib.contenttypes.models import ContentType
@@ -7,7 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 @receiver(post_migrate)
 def create_groups(sender, **kwargs):
     group, created = Group.objects.get_or_create(name='Profesores')
-    #load_permission_profesores(group)
+    load_permission_profesores(group)
     if created:
         print "Group %s created successfully\n" % group.name
     else:
@@ -23,9 +23,12 @@ def create_groups(sender, **kwargs):
 post_migrate.connect(create_groups)
 
 
-# def load_permission_profesores(group):
-#     content_type = ContentType.objects.get(model='profesor')
-#     permission = Permission.objects.create(codename='can_get_alumnos',
-#                                            name='Puede obtener los datos de alumno/s',
-#                                            content_type=content_type)
-#     group.permissions.add(permission)
+def load_permission_profesores(group):
+    content, created = ContentType.objects.get_or_create(app_label='tfgs', model='tfg')
+    can_create_tfgs, created = Permission.objects.get_or_create(content_type=content, codename='can_create_tfgs',
+                                                                name='Puede crear tfgs')
+    group.permissions.add(can_create_tfgs)
+
+    can_change_tfgs, created = Permission.objects.get_or_create(content_type=content, codename='can_change_tfgs',
+                                                                name='Puede modificar tfgs')
+    group.permissions.add(can_create_tfgs)
