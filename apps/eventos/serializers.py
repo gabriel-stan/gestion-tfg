@@ -1,8 +1,10 @@
 from rest_framework import serializers
 from eventos.models import Evento
+from authentication.serializers import UsuarioSerializer
 
 
 class EventoSerializer(serializers.ModelSerializer):
+    autor = UsuarioSerializer()
 
     class Meta:
         model = Evento
