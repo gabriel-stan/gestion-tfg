@@ -14,7 +14,7 @@ class EventoManager(models.Manager):
                                            tipo=kwargs.get('tipo'))
             evento.save()
 
-            return dict(status=True, data=Evento.objects.get(contenido=contenido))
+            return dict(status=True, data=evento)
 
         except NameError as e:
             return dict(status=False, message=e.message)

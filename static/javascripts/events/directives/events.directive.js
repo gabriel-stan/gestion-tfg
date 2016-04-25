@@ -6,7 +6,7 @@
   'use strict';
 
   angular
-    .module('gestfg.events..directives')
+    .module('gestfg.events.directives')
     .directive('events', events);
 
   /**
@@ -23,7 +23,7 @@
       controllerAs: 'vm',
       restrict: 'E',
       scope: {
-        posts: '='
+        events: '='
       },
       templateUrl: '/static/templates/events/events.html'
     };

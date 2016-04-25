@@ -9,7 +9,7 @@
     .module('gestfg.events.services')
     .factory('Events', Events);
 
-  Posts.$inject = ['$http'];
+  Events.$inject = ['$http'];
 
   /**
   * @namespace Events

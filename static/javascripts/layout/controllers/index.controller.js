@@ -44,7 +44,7 @@
       * @desc Update events array on view
       */
       function eventsSuccessFn(data, status, headers, config) {
-        vm.events = data.data;
+        vm.events = data.data.data;
       }
 
 
