@@ -23,7 +23,7 @@
       controllerAs: 'vm',
       restrict: 'E',
       scope: {
-        posts: '='
+        events: '='
       },
       templateUrl: '/static/templates/events/events.html'
     };
