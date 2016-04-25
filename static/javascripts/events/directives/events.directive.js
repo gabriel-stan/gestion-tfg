@@ -6,7 +6,7 @@
   'use strict';
 
   angular
-    .module('gestfg.events..directives')
+    .module('gestfg.events.directives')
     .directive('events', events);
 
   /**
