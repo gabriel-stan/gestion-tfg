@@ -41,9 +41,8 @@ class EventosViewSet(viewsets.ModelViewSet):
         """
         try:
             content = request.data['content']
-            author = request.user.alumno
             tipo = 'info'
-            serializer = self.serializer_class(data={'contenido': content, 'tipo': tipo, 'autor': author.id})
+            serializer = self.serializer_class(data={'contenido': content, 'tipo': tipo, 'autor': request.user.id})
             if serializer.is_valid():
                 resul = serializer.create_evento(serializer.validated_data)
                 if resul['status']:

@@ -29,7 +29,8 @@
         contenido: vm.content,
         autor: {
           email: Authentication.getAuthenticatedAccount().data.email
-        }
+        },
+        created_at: vm.created_at
       });
 
       $scope.closeThisDialog();
