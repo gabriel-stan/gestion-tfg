@@ -7,5 +7,5 @@
     ]);
 
   angular
-    .module('gestfg.layout.controllers', []);
+    .module('gestfg.layout.controllers', ['ngMaterial']);
 })();
