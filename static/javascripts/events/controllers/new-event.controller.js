@@ -26,9 +26,9 @@
     */
     function submit() {
       $rootScope.$broadcast('event.created', {
-        content: vm.content,
-        author: {
-          username: Authentication.getAuthenticatedAccount().username
+        contenido: vm.content,
+        autor: {
+          email: Authentication.getAuthenticatedAccount().data.email
         }
       });
 

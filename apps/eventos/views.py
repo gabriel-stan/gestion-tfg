@@ -13,32 +13,23 @@ class EventosViewSet(viewsets.ModelViewSet):
     queryset = Evento.objects.order_by('-created_at')
     serializer_class = EventoSerializer
 
-    # def list(self, request):
-    #     """
-    #     GET
-    #     Obtener los datos de todos o de algun tfg
-    #     :param request:
-    #     :return :
-    #     {status: True/False, data:{serializer del tfg o tfgs}
-    #
-    #     """
-    #     try:
-    #         params = utils.get_params(request)
-    #         if 'titulo' in params:
-    #             tfg = Tfg.objects.get(titulo=params['titulo'])
-    #             resul = self.serializer_class(tfg).data
-    #         else:
-    #             tfg = Tfg.objects.all()
-    #             resul = self.serializer_class(tfg, many=True).data
-    #             if len(resul) == 0:
-    #                 raise NameError("No hay tfgs almacenados")
-    #         return Response(dict(status=True, data=resul))
-    #     except NameError as e:
-    #         return Response(dict(status=False, message=e.message))
-    #     except Tfg.DoesNotExist:
-    #         return Response(dict(status=False, message="El tfg indicado no existe"))
-    #     except Exception as e:
-    #         return Response(dict(status=False, message="Error en la llamada"))
+    def list(self, request):
+        """
+        GET
+        Obtener los datos de los eventos
+        :param request:
+        :return :
+        {status: True/False, data:{serializer de los eventos}
+
+        """
+        try:
+            eventos = Evento.objects.filter(autor=request.user.alumno.id)
+            resul = self.serializer_class(eventos, many=True).data
+            return Response(dict(status=True, data=resul))
+        except NameError as e:
+            return Response(dict(status=False, message=e.message))
+        except Exception as e:
+            return Response(dict(status=False, message="Error en la llamada"))
 
     def create(self, request):
         """
@@ -49,12 +40,12 @@ class EventosViewSet(viewsets.ModelViewSet):
         {status: True/False, data:{datos del evento}
         """
         try:
-            request.data['autor'] = Usuario.objects.get(email=request.data['autor'])
-            if 'cotutor' in request.data:
-                request.data['cotutor'] = Profesor.objects.get(email=request.data['tutor'])
-            serializer = self.serializer_class(data=request.data)
+            content = request.data['content']
+            author = request.user.alumno
+            tipo = 'info'
+            serializer = self.serializer_class(data={'contenido': content, 'tipo': tipo, 'autor': author.id})
             if serializer.is_valid():
-                resul = Evento.objects.create_tfg(**serializer.validated_data)
+                resul = serializer.create_evento(serializer.validated_data)
                 if resul['status']:
                     return Response(utils.to_dict(resul))
                 else:

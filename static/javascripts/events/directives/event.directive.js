@@ -21,7 +21,7 @@
     var directive = {
       restrict: 'E',
       scope: {
-        post: '='
+        event: '='
       },
       templateUrl: '/static/templates/events/event.html'
     };
