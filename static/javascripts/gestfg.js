@@ -7,7 +7,6 @@
         'gestfg.routes',
         'gestfg.authentication',
         'gestfg.layout',
-          'ngMaterial'
       ]);
 
     angular
@@ -31,7 +30,7 @@
         $http.defaults.xsrfCookieName = 'csrftoken';
 
         //initialize material theme
-        $.material.init();
+        // $.material.init();
     }
 
   })();
