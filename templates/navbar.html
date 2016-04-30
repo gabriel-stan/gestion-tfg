@@ -13,6 +13,10 @@
         <ul class="nav navbar-nav">
           <li class="active"><a href="#">Inicio <span class="sr-only">(current)</span></a></li>
           <li><a href="#">TFGs</a></li>
+          {% if user.is_admin %}
+            <li><a href="/dashboard">Dashboard</a><li>
+          {% endif %}
+
           <!-- <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
@@ -54,7 +58,7 @@
                         <a href="#">
                           <div class="pull-left">
                             <!-- User Image -->
-                            <img src="../../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                            <img src="static/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
                           </div>
                           <!-- Message title and timestamp -->
                           <h4>
@@ -133,16 +137,16 @@
                 <!-- Menu Toggle Button -->
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                   <!-- The user image in the navbar-->
-                  <img src="../../dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
+                  <img src="static/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
                   <!-- hidden-xs hides the username on small devices so only the image appears. -->
-                  <span class="hidden-xs">Alexander Pierce</span>
+                  <span class="hidden-xs">{{ user.email }}</span>
                 </a>
                 <ul class="dropdown-menu">
                   <!-- The user image in the menu -->
                   <li class="user-header">
-                    <img src="../../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                    <img src="static/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
                     <p>
-                      Alexander Pierce - Web Developer
+                      {{ user.email }} - Web Developer
                       <small>Member since Nov. 2012</small>
                     </p>
                   </li>
@@ -170,7 +174,7 @@
                 </ul>
               </li>
 
-              <li><a href="/+{{ user.username }}">+{{ user.username }}</a></li>
+              <li><a href="/+{{ user.username }}">{{ user.email }}</a></li>
               <li><a href="/+{{ user.username }}/settings">Settings</a></li>
               <li><a href="javascript:void(0)" ng-click="vm.logout()">Logout</a></li>
             {% else %}
