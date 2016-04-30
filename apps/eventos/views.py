@@ -2,6 +2,7 @@
 from eventos.models import Evento
 from eventos.serializers import EventoSerializer
 from authentication.models import Usuario, Profesor
+from authentication.serializers import UsuarioSerializer
 from rest_framework import viewsets, status, views
 from rest_framework.response import Response
 import json
@@ -50,6 +51,6 @@ class EventosViewSet(viewsets.ModelViewSet):
                 else:
                     return Response(resul)
             else:
-                return Response(dict(status=False, message=serializer.errors), status=status.HTTP_200_OK)
+                return Response(dict(status=False, message=serializer.errors), status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response(dict(status=False, message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)

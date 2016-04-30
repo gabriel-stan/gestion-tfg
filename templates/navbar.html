@@ -1,9 +1,9 @@
 <header class="main-header">
-  <nav class="navbar navbar-static-top" role="navigation" ng-controller="NavbarController as vm">
+  <nav class="navbar navbar-static-top" role="navigation" ng-controller="NavbarController as navCtrl">
     <div class="container">
       <div class="navbar-header">
         <a href="/" class="navbar-brand">GES<b>TFG</b></a>
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
           <i class="fa fa-bars"></i>
         </button>
       </div>
@@ -36,11 +36,14 @@
           </div>
         </form> -->
       </div><!-- /.navbar-collapse -->
+
+
+
+      {% if user.is_authenticated %}
       <!-- Navbar Right Menu -->
         <div class="navbar-custom-menu">
           <ul class="nav navbar-nav">
 
-            {% if user.is_authenticated %}
 
               <!-- Messages: style can be found in dropdown.less-->
               <li class="dropdown messages-menu">
@@ -156,34 +159,42 @@
                       <a href="#">Followers</a>
                     </div>
                     <div class="col-xs-4 text-center">
-                      <a href="#">Sales</a>
+                      <a href="#">Friends</a>
                     </div>
                     <div class="col-xs-4 text-center">
-                      <a href="#">Friends</a>
+                      <a href="/+{{ user.username }}/settings">Settings</a>
                     </div>
                   </li>
                   <!-- Menu Footer-->
                   <li class="user-footer">
                     <div class="pull-left">
-                      <a href="#" class="btn btn-default btn-flat">Profile</a>
+                      <a href="/+{{ user.username }}" class="btn btn-default btn-flat">Profile</a>
                     </div>
                     <div class="pull-right">
-                      <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                      <a href="javascript:void(0)" ng-click="navCtrl.logout()" class="btn btn-default btn-flat">Sign out</a>
                     </div>
                   </li>
                 </ul>
               </li>
 
-              <li><a href="/+{{ user.username }}">{{ user.email }}</a></li>
-              <li><a href="/+{{ user.username }}/settings">Settings</a></li>
-              <li><a href="javascript:void(0)" ng-click="vm.logout()">Logout</a></li>
-            {% else %}
-              <li><a href="/login">Login</a></li>
-              <li><a href="/register">Register</a></li>
-            {% endif %}
 
           </ul>
         </div><!-- /.navbar-custom-menu -->
+        {% endif %}
+
+
+        {% if not user.is_authenticated %}
+          <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+
+                <li><a href="/login">Login</a></li>
+                <li><a href="/register">Register</a></li>
+
+            </ul>
+          </div>
+        {% endif %}
+
+
     </div><!-- /.container-fluid -->
   </nav>
 </header>

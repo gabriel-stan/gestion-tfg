@@ -53,7 +53,7 @@
       */
       function createEventErrorFn(data, status, headers, config) {
         $rootScope.$broadcast('event.created.error');
-        Snackbar.error(data.error);
+        Snackbar.error(data.message);
       }
     }
   }

@@ -87,7 +87,7 @@ class AlumnoManager(BaseUserManager):
 
             # exp reg para saber si el nick corresponde al correo de la ugr (@correo.ugr.es)
             if not re.match(r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$', email):
-                raise NameError("El email no es correcto")
+                raise NameError("El email no es correcto o no pertenece a la UGR")
 
             usuario = self.model.objects.create(email=email, first_name=kwargs.get('first_name'),
                                 last_name=kwargs.get('last_name'))

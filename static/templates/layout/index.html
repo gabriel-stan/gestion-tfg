@@ -10,9 +10,20 @@
   </ol>
 </section>
 
+<section class="content">
+
+
 <!-- Main content -->
   <div class="col-md-8">
     <!-- Block buttons -->
+      <button class="btn btn-sm btn-default" ng-show="indexCtrl.isAdmin" style="margin-bottom:10px;"
+      href="javascript:void(0)"
+      ng-show="vm.isAuthenticated"
+      ng-dialog="/static/templates/events/new-event.html"
+      ng-dialog-controller="NewEventController as vm">
+        <i class="fa fa-fw fa-plus"></i>
+          Anadir Evento
+      </button>
     <!-- Box Comment -->
     <div class="box box-widget">
       <div class='box-header with-border'>
@@ -208,6 +219,7 @@
   </div>
 
 
+  </section>
 
 <!-- antiguo index -->
 

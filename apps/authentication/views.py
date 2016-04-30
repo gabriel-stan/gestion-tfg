@@ -73,9 +73,9 @@ class AlumnosViewSet(viewsets.ModelViewSet):
                 if resul['status']:
                     return Response(utils.to_dict(resul))
                 else:
-                    return Response(resul)
+                    return Response(resul, status=status.HTTP_400_BAD_REQUEST)
             else:
-                return Response(dict(status=False, message=serializer.errors), status=status.HTTP_200_OK)
+                return Response(dict(status=False, message=serializer.errors), status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response(dict(status=False, message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)
 

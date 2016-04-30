@@ -22,6 +22,7 @@ class EventoManager(models.Manager):
 
 class Evento(models.Model):
     autor = models.ForeignKey(Usuario)
+    #autor = models.ForeignKey(Usuario, related_name='eventos')
     contenido = models.TextField()
     tipo = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
