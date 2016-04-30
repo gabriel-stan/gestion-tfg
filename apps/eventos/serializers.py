@@ -1,8 +1,6 @@
 from rest_framework import serializers
 from eventos.models import Evento
 from authentication.serializers import UsuarioSerializer
-import datetime
-import dateutil.parser
 
 
 class EventoSerializer(serializers.ModelSerializer):

@@ -24,8 +24,6 @@
       controller: 'IndexController',
       controllerAs: 'vm',
       templateUrl: '/static/templates/layout/index.html'
-    }).otherwise('/',{
-      templateUrl: '/templates/content.html'
-    });
+    }).otherwise('/');
   }
 })();
