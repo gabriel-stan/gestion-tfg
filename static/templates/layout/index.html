@@ -10,20 +10,48 @@
   </ol>
 </section>
 
-<section class="content">
+<section>
 
 
 <!-- Main content -->
   <div class="col-md-8">
     <!-- Block buttons -->
-      <button class="btn btn-sm btn-default" ng-show="indexCtrl.isAdmin" style="margin-bottom:10px;"
-      href="javascript:void(0)"
-      ng-show="vm.isAuthenticated"
-      ng-dialog="/static/templates/events/new-event.html"
-      ng-dialog-controller="NewEventController as vm">
+    <div style="text-align:right;">
+      <button class="btn btn-sm btn-default"
+              style="margin-bottom:10px;"
+              ng-show="indexCtrl.isAdmin"
+              href="javascript:void(0)"
+              ng-dialog="/static/templates/events/new-event.html"
+              ng-dialog-controller="NewEventController as vm">
         <i class="fa fa-fw fa-plus"></i>
           Anadir Evento
       </button>
+    </div>
+
+    <!-- Aqui se muestran los eventos TODO evento directive or template -->
+    <div class="box box-primary" ng-repeat="evento in indexCtrl.events | orderBy: '-updated_at'">
+      <div class="box-header with-border">
+        <h3 class="box-title">Titulo del evento</h3>
+        <div class="box-tools pull-right">
+          <!-- Buttons, labels, and many other things can be placed here! -->
+          <!-- Here is a label for example -->
+          <span class="label label-primary">info</span>
+        </div><!-- /.box-tools -->
+      </div><!-- /.box-header -->
+      <div class="box-body">
+        {{evento.contenido}}
+      </div><!-- /.box-body -->
+      <div class="box-footer">
+        <div class='user-block'>
+          <img class='img-circle' src='static/dist/img/user1-128x128.jpg' alt='user image'>
+          <span class='username'><a href="#">{{evento.autor.email}}</a></span>
+          <span class='description'>{{evento.created_at}}</span>
+        </div><!-- /.user-block -->
+      </div><!-- box-footer -->
+    </div><!-- /.box -->
+
+    <!-- fin eventos -->
+
     <!-- Box Comment -->
     <div class="box box-widget">
       <div class='box-header with-border'>

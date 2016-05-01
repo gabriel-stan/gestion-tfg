@@ -24,7 +24,8 @@ class EventosViewSet(viewsets.ModelViewSet):
 
         """
         try:
-            eventos = Evento.objects.filter(autor=request.user.alumno.id)
+            # eventos = Evento.objects.filter(autor=request.user.id)
+            eventos = Evento.objects.all()
             resul = self.serializer_class(eventos, many=True).data
             return Response(dict(status=True, data=resul))
         except NameError as e:
@@ -43,14 +44,18 @@ class EventosViewSet(viewsets.ModelViewSet):
         try:
             content = request.data['content']
             tipo = 'info'
-            serializer = self.serializer_class(data={'contenido': content, 'tipo': tipo, 'autor': request.user.id})
-            if serializer.is_valid():
-                resul = serializer.create_evento(serializer.validated_data)
-                if resul['status']:
-                    return Response(utils.to_dict(resul))
-                else:
-                    return Response(resul)
-            else:
-                return Response(dict(status=False, message=serializer.errors), status=status.HTTP_400_BAD_REQUEST)
+            # serializer = self.serializer_class(data={'contenido': content, 'tipo': tipo, 'autor': request.user.id})
+            # if serializer.is_valid():
+            #     resul = serializer.create_evento(serializer.validated_data)
+            #     if resul['status']:
+            #         return Response(utils.to_dict(resul))
+            #     else:
+            #         return Response(resul)
+            # else:
+            #     return Response(dict(status=False, message=serializer.errors), status=status.HTTP_400_BAD_REQUEST)
+            resul = Evento.objects.create_evento(contenido=content, tipo=tipo, autor=Usuario.objects.get(id=request.user.id))
+
+            return Response(utils.to_dict(resul))
+
         except Exception as e:
             return Response(dict(status=False, message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)

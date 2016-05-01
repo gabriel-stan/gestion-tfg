@@ -3,7 +3,8 @@ from eventos.models import Evento
 from authentication.serializers import UsuarioSerializer
 
 
-class EventoSerializer(serializers.PrimaryKeyRelatedField, serializers.ModelSerializer):
+# class EventoSerializer(serializers.PrimaryKeyRelatedField, serializers.ModelSerializer):
+class EventoSerializer(serializers.ModelSerializer):
     autor = UsuarioSerializer()
     #autor = serializers.PrimaryKeyRelatedField(read_only=True)
     created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
