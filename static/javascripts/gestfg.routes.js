@@ -20,6 +20,10 @@
       controller: 'LoginController',
       controllerAs: 'loginCtrl',
       templateUrl: '/static/templates/authentication/login.html'
+    }).when('/dashboard', {
+      controller: 'DashboardController',
+      controllerAs: 'dashCtrl',
+      templateUrl: '/static/templates/layout/dashboard.html'
     }).when('/', {
       controller: 'IndexController',
       controllerAs: 'indexCtrl',
