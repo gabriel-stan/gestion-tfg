@@ -1,6 +1,7 @@
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic.base import TemplateView
 from django.utils.decorators import method_decorator
+from django.http import HttpResponseRedirect
 
 
 class IndexView(TemplateView):
@@ -16,4 +17,8 @@ class DashboardView(TemplateView):
 
     @method_decorator(ensure_csrf_cookie)
     def dispatch(self, *args, **kwargs):
-        return super(DashboardView, self).dispatch(*args, **kwargs)
+
+        if self.request.user.is_authenticated() and self.request.user.is_admin:
+            return super(DashboardView, self).dispatch(*args, **kwargs)
+
+        return HttpResponseRedirect("/")
