@@ -6,14 +6,15 @@ from django.contrib.contenttypes.models import ContentType
 
 @receiver(post_migrate)
 def create_groups(sender, **kwargs):
-    group, created = Group.objects.get_or_create(name='Profesores')
+    from authentication.models import Grupos
+    group, created = Grupos.objects.get_or_create(name='Profesores', code=20)
     load_permission_profesores(group)
     if created:
         print "Group %s created successfully\n" % group.name
     else:
         print "Group %s already exists\n" % group.name
 
-    group, created = Group.objects.get_or_create(name='Alumnos')
+    group, created = Grupos.objects.get_or_create(name='Alumnos', code=30)
     if created:
         print "Group %s created successfully\n" % group.name
     else:

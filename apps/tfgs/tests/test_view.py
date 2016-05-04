@@ -37,29 +37,24 @@ class TfgServicesTests(TestCase):
         # Sin tfgs
         res = self.client.post('/api/v1/profesores/', self.data_prof1)
         resul = json.loads(res.content)
-        self.assertEqual(resul['status'], True)
         self.assertEqual(resul['data']['email'], self.data_prof1['email'])
         res = self.client.post('/api/v1/auth/login/', dict(email=self.data_prof1['email'],
                                                            password=self.data_prof1['password']))
         res = self.client.post('/api/v1/alumnos/', self.data_alum1)
         resul = json.loads(res.content)
-        self.assertEqual(resul['status'], True)
 
         res = self.client.get('/api/v1/tfgs/')
         resul = json.loads(res.content)
-        self.assertEqual(resul['status'], False)
         self.assertEqual(resul['message'], 'No hay tfgs almacenados')
 
         # El tfg no existe
         res = self.client.get('/api/v1/tfgs/', {'titulo': self.data_tfg1['titulo']})
         resul = json.loads(res.content)
-        self.assertEqual(resul['status'], False)
         self.assertEqual(resul['message'], 'El tfg indicado no existe')
 
         # inserto un tfg erroneo, sin tipo
         res = self.client.post('/api/v1/tfgs/', self.data_tfg_error)
         resul = json.loads(res.content)
-        self.assertEqual(resul['status'], False)
         self.assertEqual(resul['message']['tipo'][0], 'This field is required.')
 
         # inserto un tfg erroneo, sin titulo

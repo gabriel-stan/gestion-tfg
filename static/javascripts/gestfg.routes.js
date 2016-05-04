@@ -14,18 +14,20 @@
   function config($routeProvider) {
     $routeProvider.when('/register', {
       controller: 'RegisterController',
-      controllerAs: 'vm',
+      controllerAs: 'registerCtrl',
       templateUrl: '/static/templates/authentication/register.html'
     }).when('/login', {
       controller: 'LoginController',
-      controllerAs: 'vm',
+      controllerAs: 'loginCtrl',
       templateUrl: '/static/templates/authentication/login.html'
+    }).when('/dashboard', {
+      controller: 'DashboardController',
+      controllerAs: 'dashCtrl',
+      templateUrl: '/static/templates/layout/dashboard.html'
     }).when('/', {
       controller: 'IndexController',
-      controllerAs: 'vm',
+      controllerAs: 'indexCtrl',
       templateUrl: '/static/templates/layout/index.html'
-    }).otherwise('/',{
-      templateUrl: '/templates/content.html'
-    });
+    }).otherwise('/');
   }
 })();
