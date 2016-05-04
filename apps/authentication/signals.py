@@ -26,10 +26,11 @@ post_migrate.connect(create_groups)
 
 def load_permission_profesores(group):
     content, created = ContentType.objects.get_or_create(app_label='tfgs', model='tfg')
-    can_create_tfgs, created = Permission.objects.get_or_create(content_type=content, codename='can_create_tfgs',
+    can_create_tfgs, created = Permission.objects.get_or_create(content_type=content, codename='tfg.create',
                                                                 name='Puede crear tfgs')
     group.permissions.add(can_create_tfgs)
 
-    can_change_tfgs, created = Permission.objects.get_or_create(content_type=content, codename='can_change_tfgs',
-                                                                name='Puede modificar tfgs')
+    content, created = ContentType.objects.get_or_create(app_label='eventos', model='evento')
+    can_create_events, created = Permission.objects.get_or_create(content_type=content, codename='evento.create',
+                                                                name='Puede crear eventos')
     group.permissions.add(can_create_tfgs)

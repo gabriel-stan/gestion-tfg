@@ -49,7 +49,7 @@ class TfgViewSet(viewsets.ModelViewSet):
         {status: True/False, data:{datos del tfg insertado o de todos los tfgs}
         """
         try:
-            if request.user.has_perm('tfgs.can_create_tfgs') or request.user.is_admin:
+            if request.user.has_perm('tfgs.tfg.create') or request.user.is_admin:
                 request.data['tutor'] = Profesor.objects.get(email=request.data['tutor'])
                 if 'cotutor' in request.data:
                     request.data['cotutor'] = Profesor.objects.get(email=request.data['tutor'])
@@ -80,7 +80,7 @@ class TfgViewSet(viewsets.ModelViewSet):
         """
 
         try:
-            if request.user.has_perm('tfgs.can_change_tfgs') or request.user.is_admin:
+            if request.user.has_perm('tfgs.tfg.create') or request.user.is_admin:
                 tfg = Tfg.objects.get(titulo=request.data['titulo'])
                 params = json.loads(request.data['datos'])
                 serializer = self.serializer_class(tfg)

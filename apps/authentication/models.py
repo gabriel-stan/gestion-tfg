@@ -91,7 +91,7 @@ class AlumnoManager(BaseUserManager):
             usuario = self.model.objects.create(email=email, first_name=kwargs.get('first_name'),
                                 last_name=kwargs.get('last_name'))
 
-            grupo_alumnos = Group.objects.get(name='Alumnos')
+            grupo_alumnos = Grupos.objects.get(name='Alumnos')
             usuario.set_password(password)
             usuario.save()
             grupo_alumnos.user_set.add(usuario)
@@ -127,7 +127,7 @@ class ProfesorManager(BaseUserManager):
             usuario = self.model.objects.create(email=email, first_name=kwargs.get('first_name'),
                                 last_name=kwargs.get('last_name'), departamento=kwargs.get('departamento'))
 
-            grupo_profesores = Group.objects.get(name='Profesores')
+            grupo_profesores = Grupos.objects.get(name='Profesores')
             usuario.set_password(password)
             usuario.save()
             grupo_profesores.user_set.add(usuario)

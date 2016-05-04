@@ -295,7 +295,8 @@ class PermissionsView(views.APIView):
         permissions = Permission.objects.filter(group=request.user.groups.all()).values('codename')
         list_permissions = []
         for permission in permissions:
-            list_permissions.append(permission['codename'])
+            model, codename = permission['codename'].split('.')
+            list_permissions.append({model: codename})
         return Response(dict(permissions=list_permissions))
 
     # TODO el POST sera para cambiar de grupo a un usuario
