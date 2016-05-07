@@ -19,8 +19,8 @@
     * @memberOf gestfg.events.directives.Events
     */
     var directive = {
-      controller: 'EventsController',
-      controllerAs: 'vm',
+      controller: 'IndexController',
+      controllerAs: 'indexCtrl',
       restrict: 'E',
       scope: {
         events: '='
