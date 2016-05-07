@@ -15,9 +15,9 @@
   * @namespace RegisterController
   */
   function RegisterController($location, $scope, Authentication) {
-    var vm = this;
+    var registerCtrl = this;
 
-    vm.register = register;
+    registerCtrl.register = register;
 
     activate();
 
@@ -39,7 +39,7 @@
     * @memberOf gestfg.authentication.controllers.RegisterController
     */
     function register() {
-      Authentication.register(vm.email, vm.password, vm.first_name, vm.last_name);
+      Authentication.register(registerCtrl.email, registerCtrl.password, registerCtrl.first_name, registerCtrl.last_name);
     }
   }
 })();

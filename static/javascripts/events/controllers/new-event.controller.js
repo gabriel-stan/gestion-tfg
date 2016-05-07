@@ -15,9 +15,9 @@
   * @namespace NewEventController
   */
   function NewEventController($rootScope, $scope, Authentication, Snackbar, Events) {
-    var vm = this;
+    var newEventCtrl = this;
 
-    vm.submit = submit;
+    newEventCtrl.submit = submit;
 
     /**
     * @name submit
@@ -26,15 +26,16 @@
     */
     function submit() {
       $rootScope.$broadcast('event.created', {
-        contenido: vm.content,
+        contenido: newEventCtrl.content,
         autor: {
           email: Authentication.getAuthenticatedAccount().data.email
-        }
+        },
+        created_at: newEventCtrl.created_at
       });
 
       $scope.closeThisDialog();
 
-      Events.create(vm.content).then(createEventSuccessFn, createEventErrorFn);
+      Events.create(newEventCtrl.content).then(createEventSuccessFn, createEventErrorFn);
 
 
       /**
@@ -42,7 +43,7 @@
       * @desc Show snackbar with success message
       */
       function createEventSuccessFn(data, status, headers, config) {
-        Snackbar.show('El evento se ha creado con exito.');
+        Snackbar.success('El evento se ha creado con exito.');
       }
 
 
@@ -52,7 +53,7 @@
       */
       function createEventErrorFn(data, status, headers, config) {
         $rootScope.$broadcast('event.created.error');
-        Snackbar.error(data.error);
+        Snackbar.error(data.message);
       }
     }
   }

@@ -32,13 +32,13 @@ class TfgViewSet(viewsets.ModelViewSet):
                 resul = self.serializer_class(tfg, many=True).data
                 if len(resul) == 0:
                     raise NameError("No hay tfgs almacenados")
-            return Response(dict(status=True, data=resul))
+            return Response(dict(data=resul), status.HTTP_200_OK)
         except NameError as e:
-            return Response(dict(status=False, message=e.message))
+            return Response(dict(message=e.message), status.HTTP_400_BAD_REQUEST)
         except Tfg.DoesNotExist:
-            return Response(dict(status=False, message="El tfg indicado no existe"))
+            return Response(dict(message="El tfg indicado no existe"), status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            return Response(dict(status=False, message="Error en la llamada"))
+            return Response(dict(message="Error en la llamada"), status.HTTP_400_BAD_REQUEST)
 
     def create(self, request):
         """
@@ -49,7 +49,7 @@ class TfgViewSet(viewsets.ModelViewSet):
         {status: True/False, data:{datos del tfg insertado o de todos los tfgs}
         """
         try:
-            if request.user.has_perm('tfgs.can_create_tfgs') or request.user.is_admin:
+            if request.user.has_perm('tfgs.tfg.create') or request.user.is_admin:
                 request.data['tutor'] = Profesor.objects.get(email=request.data['tutor'])
                 if 'cotutor' in request.data:
                     request.data['cotutor'] = Profesor.objects.get(email=request.data['tutor'])
@@ -57,16 +57,20 @@ class TfgViewSet(viewsets.ModelViewSet):
                 if serializer.is_valid():
                     resul = Tfg.objects.create_tfg(**serializer.validated_data)
                     if resul['status']:
-                        return Response(utils.to_dict(resul))
+                        resul = utils.to_dict(resul)
+                        resul_status = status.HTTP_200_OK
                     else:
-                        return Response(resul)
+                        resul = dict(message=resul['message'])
+                        resul_status = status.HTTP_400_BAD_REQUEST
                 else:
-                    return Response(dict(status=False, message=serializer.errors), status=status.HTTP_200_OK)
+                    resul = dict(message=serializer.errors)
+                    resul_status = status.HTTP_400_BAD_REQUEST
             else:
-                return Response(dict(status=False, message="Sin privilegios"),
-                                status=status.HTTP_405_METHOD_NOT_ALLOWED)
+                resul = dict(message="Sin privilegios")
+                resul_status = status.HTTP_405_METHOD_NOT_ALLOWED
+            return Response(resul, status=resul_status)
         except Exception as e:
-            return Response(dict(status=False, message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)
+            return Response(dict(message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request):
         """
@@ -76,20 +80,23 @@ class TfgViewSet(viewsets.ModelViewSet):
         """
 
         try:
-            if request.user.has_perm('tfgs.can_change_tfgs') or request.user.is_admin:
+            if request.user.has_perm('tfgs.tfg.create') or request.user.is_admin:
                 tfg = Tfg.objects.get(titulo=request.data['titulo'])
                 params = json.loads(request.data['datos'])
                 serializer = self.serializer_class(tfg)
                 resul = serializer.update(tfg, params)
                 if resul['status']:
-                    return Response(utils.to_dict(resul))
+                    resul = utils.to_dict(resul)
+                    resul_status = status.HTTP_200_OK
                 else:
-                    return Response(resul)
+                    resul = dict(message=resul['message'])
+                    resul_status = status.HTTP_400_BAD_REQUEST
             else:
-                return Response(dict(status=False, message="Sin privilegios"),
-                                status=status.HTTP_405_METHOD_NOT_ALLOWED)
+                resul = dict(message="Parametros incorrectos")
+                resul_status = status.HTTP_400_BAD_REQUEST
+            return Response(resul, status=resul_status)
         except Exception as e:
-            return Response(dict(status=False, message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)
+            return Response(dict(message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request):
         """
@@ -104,15 +111,20 @@ class TfgViewSet(viewsets.ModelViewSet):
                 tfg = Tfg.objects.get(titulo=params['titulo'])
                 serializer = self.serializer_class(tfg)
                 resul = serializer.delete_tfg(tfg)
+                if resul['status']:
+                    resul = utils.to_dict(resul)
+                    resul_status = status.HTTP_200_OK
+                else:
+                    resul = dict(message=resul['message'])
+                    resul_status = status.HTTP_400_BAD_REQUEST
             else:
-                resul = dict(status=False, message="Parametros incorrectos")
-
-            return Response(resul)
-
+                resul = dict(message="Parametros incorrectos")
+                resul_status = status.HTTP_400_BAD_REQUEST
+            return Response(resul, status=resul_status)
         except Tfg.DoesNotExist:
-            return Response(dict(status=False, message="El tfg indicado no existe"))
+            return Response(dict(message="El tfg indicado no existe"), status=status.HTTP_400_BAD_REQUEST)
         except Exception:
-            return Response(dict(status=False, message="Error en la llamada"))
+            return Response(dict(message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)
 
 
 class Tfg_asigView(views.APIView):
@@ -144,14 +156,17 @@ class Tfg_asigView(views.APIView):
             if serializer.is_valid():
                 resul = serializer.create_tfg_asig(serializer.validated_data)
                 if resul['status']:
-                    return Response(utils.to_dict(resul))
+                    resul = utils.to_dict(resul)
+                    resul_status = status.HTTP_200_OK
                 else:
-                    return Response(resul)
+                    resul = dict(message=resul['message'])
+                    resul_status = status.HTTP_400_BAD_REQUEST
             else:
-                return Response(dict(status=False, message=serializer.errors), status=status.HTTP_200_OK)
-
+                resul = dict(message=serializer.errors)
+                resul_status = status.HTTP_400_BAD_REQUEST
+            return Response(resul, status=resul_status)
         except Exception as e:
-            return Response(dict(status=False, message="Error en la llamada"))
+            return Response(dict(message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request):
         """
@@ -169,12 +184,18 @@ class Tfg_asigView(views.APIView):
                 tfg_asig = Tfg_Asig.objects.get(tfg=tfg)
                 serializer = self.serializer_class(tfg_asig)
                 resul = serializer.delete_tfg(tfg_asig)
+                if resul['status']:
+                    resul = utils.to_dict(resul)
+                    resul_status = status.HTTP_200_OK
+                else:
+                    resul = dict(message=resul['message'])
+                    resul_status = status.HTTP_400_BAD_REQUEST
             else:
-                resul = dict(status=False, message="Parametros incorrectos")
+                resul = dict(message="Parametros incorrectos")
+                resul_status = status.HTTP_400_BAD_REQUEST
 
-            return Response(resul)
-
+            return Response(resul, status=resul_status)
         except Tfg.DoesNotExist:
-            return Response(dict(status=False, message="El tfg indicado no existe"))
+            return Response(dict(message="El tfg indicado no existe", status=status.HTTP_400_BAD_REQUEST))
         except Exception:
-            return Response(dict(status=False, message="Error en la llamada"))
+            return Response(dict(message="Error en la llamada", status=status.HTTP_400_BAD_REQUEST))

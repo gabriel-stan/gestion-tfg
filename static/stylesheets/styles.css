@@ -10,6 +10,10 @@
   padding-bottom: 19px;
 }
 
+.event .event__created {
+  text-align: right;
+}
+
 .event .event__meta a:hover {
   text-decoration: none;
 }

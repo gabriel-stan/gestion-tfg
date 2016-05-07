@@ -73,9 +73,9 @@ class AlumnosViewSet(viewsets.ModelViewSet):
                 if resul['status']:
                     return Response(utils.to_dict(resul))
                 else:
-                    return Response(resul)
+                    return Response(resul, status=status.HTTP_400_BAD_REQUEST)
             else:
-                return Response(dict(status=False, message=serializer.errors), status=status.HTTP_200_OK)
+                return Response(dict(status=False, message=serializer.errors), status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response(dict(status=False, message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)
 
@@ -295,7 +295,8 @@ class PermissionsView(views.APIView):
         permissions = Permission.objects.filter(group=request.user.groups.all()).values('codename')
         list_permissions = []
         for permission in permissions:
-            list_permissions.append(permission['codename'])
+            model, codename = permission['codename'].split('.')
+            list_permissions.append({model: codename})
         return Response(dict(permissions=list_permissions))
 
     # TODO el POST sera para cambiar de grupo a un usuario

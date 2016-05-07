@@ -9,13 +9,13 @@
     .module('gestfg.authentication.services')
     .factory('Authentication', Authentication);
 
-  Authentication.$inject = ['$cookies', '$http'];
+  Authentication.$inject = ['$cookies', '$http', 'Snackbar'];
 
   /**
   * @namespace Authentication
   * @returns {Factory}
   */
-  function Authentication($cookies, $http) {
+  function Authentication($cookies, $http, Snackbar) {
     /**
     * @name Authentication
     * @desc The Factory to be returned
@@ -23,6 +23,7 @@
     var Authentication = {
       getAuthenticatedAccount: getAuthenticatedAccount,
       isAuthenticated: isAuthenticated,
+      isAdmin: isAdmin,
       login: login,
       logout: logout,
       register: register,
@@ -66,6 +67,10 @@
       */
       function registerErrorFn(data, status, headers, config) {
         console.error('Epic failure!');
+        jQuery.each(data.data.message, function(i, val) {
+          Snackbar.error(i + ": " + val[0]);
+        });
+        //Snackbar.error(data.data.message);
       }
     }
 
@@ -97,7 +102,7 @@
        * @desc Log "Epic failure!" to the console
        */
       function loginErrorFn(data, status, headers, config) {
-        console.error('Epic failure!');
+        Snackbar.error(data.data);
       }
     }
 
@@ -123,6 +128,17 @@
      */
     function isAuthenticated() {
       return !!$cookies.authenticatedAccount;
+    }
+
+    /**
+     * @name isAdmin
+     * @desc Check if the current user is admin
+     * @returns {boolean} True is user is admin, else false.
+     * @memberOf gestfg.authentication.services.Authentication
+     */
+    function isAdmin() {
+      var user = getAuthenticatedAccount();
+      return (user === undefined) ? false : user.data.is_admin;
     }
 
     /**

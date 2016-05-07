@@ -15,10 +15,11 @@
   * @namespace IndexController
   */
   function IndexController($scope, Authentication, Events, Snackbar) {
-    var vm = this;
+    var indexCtrl = this;
 
-    vm.isAuthenticated = Authentication.isAuthenticated();
-    vm.events = [];
+    indexCtrl.isAuthenticated = Authentication.isAuthenticated();
+    indexCtrl.isAdmin = Authentication.isAdmin();
+    indexCtrl.events = [];
 
     activate();
 
@@ -31,11 +32,11 @@
       Events.all().then(eventsSuccessFn, eventsErrorFn);
 
       $scope.$on('event.created', function (event, ev) {
-        vm.events.unshift(ev);
+        indexCtrl.events.unshift(ev);
       });
 
       $scope.$on('event.created.error', function () {
-        vm.events.shift();
+        indexCtrl.events.shift();
       });
 
 
@@ -44,7 +45,7 @@
       * @desc Update events array on view
       */
       function eventsSuccessFn(data, status, headers, config) {
-        vm.events = data.data.data;
+        indexCtrl.events = data.data.data;
       }
 
 

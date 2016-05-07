@@ -3,25 +3,25 @@
     <h1>Register</h1>
 
     <div class="well">
-      <form role="form" ng-submit="vm.register()">
+      <form role="form" ng-submit="registerCtrl.register()">
         <div class="form-group">
           <label for="register__email">Email</label>
-          <input type="email" class="form-control" id="register__email" ng-model="vm.email" placeholder="ex. john@notgoogle.com" />
+          <input type="email" class="form-control" id="register__email" ng-model="registerCtrl.email" placeholder="ex. john@notgoogle.com" />
         </div>
 
         <div class="form-group">
           <label for="register__first_name">First Name</label>
-          <input type="text" class="form-control" id="register__first_name" ng-model="vm.first_name" placeholder="ex. john" />
+          <input type="text" class="form-control" id="register__first_name" ng-model="registerCtrl.first_name" placeholder="ex. john" />
         </div>
 
         <div class="form-group">
           <label for="register__last_name">Last Name</label>
-          <input type="text" class="form-control" id="register__last_name" ng-model="vm.last_name" placeholder="ex. john" />
+          <input type="text" class="form-control" id="register__last_name" ng-model="registerCtrl.last_name" placeholder="ex. john" />
         </div>
 
         <div class="form-group">
           <label for="register__password">Password</label>
-          <input type="password" class="form-control" id="register__password" ng-model="vm.password" placeholder="ex. thisisnotgoogleplus" />
+          <input type="password" class="form-control" id="register__password" ng-model="registerCtrl.password" placeholder="ex. thisisnotgoogleplus" />
         </div>
 
         <div class="form-group">
