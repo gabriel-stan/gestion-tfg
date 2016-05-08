@@ -18,13 +18,15 @@ from django.contrib import admin
 from rest_framework_nested import routers
 
 from gestfg.views import IndexView, DashboardView
-from authentication.views import AlumnosViewSet, LoginView, LogoutView, ProfesoresViewSet, PermissionsView
+from authentication.views import AlumnosViewSet, LoginView, LogoutView, ProfesoresViewSet, PermissionsView, \
+    UsuariosViewSet
 from tfgs.views import Tfg_asigView, TfgViewSet
 from eventos.views import EventosViewSet
 
 router = routers.SimpleRouter()
 router.register(r'alumnos', AlumnosViewSet)
 router.register(r'profesores', ProfesoresViewSet)
+router.register(r'usuarios', UsuariosViewSet)
 router.register(r'tfgs', TfgViewSet)
 router.register(r'events', EventosViewSet)
 

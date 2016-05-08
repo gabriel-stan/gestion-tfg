@@ -10,12 +10,12 @@ class AuthenticationServicesTests(TestCase):
     def setUp(self):
         self.client = APIClient()
 
-        self.data_admin = Usuario(email='admin@admin.es', first_name='profesor 1',
+        self.data_admin = dict(email='admin@admin.es', first_name='admin 1',
                                last_name='apellido 1 apellido 12', password='0000', is_admin=True)
-        grupo_profesores = Group.objects.get(name='Profesores')
-        self.data_admin.save()
+        Usuario.objects.create_superuser(**self.data_admin)
 
-        grupo_profesores.user_set.add(self.data_admin)
+        self.data_admin2 = dict(email='admin2@admin.es', first_name='admin 2',
+                               last_name='apellido 1 apellido 12', password='0000', is_admin=True)
 
         self.data_alum1 = dict(email='ejemplo@correo.ugr.es', first_name='alumno 1',
                                last_name='apellido 1 apellido 12', password='0000')
@@ -156,12 +156,39 @@ class AuthenticationServicesTests(TestCase):
         res = self.client.post('/api/v1/alumnos/', self.data_alum2)
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
+
         # obtengo todos los alumnos por que soy un profesor
         res = self.client.get('/api/v1/alumnos/')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
+    def test_ws_admins_get(self):
+        # Me logueo con un admin
+        res = self.client.post('/api/v1/auth/login/', {'email': self.data_admin['email'],
+                                                       'password': self.data_admin['password']})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['email'], self.data_admin['email'])
+
+        # Creo otro admin
+        res = self.client.post('/api/v1/usuarios/', self.data_admin2)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
     def test_ws_permisos_get(self):
+        # inserto un profesor
+        res = self.client.post('/api/v1/profesores/', self.data_prof1)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+        # Me logueo con un profesor
+        res = self.client.post('/api/v1/auth/login/', {'email': self.data_prof1['email'], 'password': self.data_prof1['password']})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['email'], self.data_prof1['email'])
+        # Me logueo con un profesor
+        res = self.client.get('/api/v1/auth/permisos/')
+        resul = json.loads(res.content)
+        self.assertEqual(resul['permissions'][0]['evento'], 'create')
+
+    def test_ws_permisos_post(self):
         # inserto un profesor
         res = self.client.post('/api/v1/profesores/', self.data_prof1)
         resul = json.loads(res.content)

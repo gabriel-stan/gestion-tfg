@@ -22,13 +22,13 @@ class AccountManager(BaseUserManager):
         account.set_password(password)
         account.save()
 
-        return account
+        return dict(status=True, data=account)
 
     def create_superuser(self, email, password, **kwargs):
         account = self.create_user(email, password, **kwargs)
 
-        account.is_admin = True
-        account.save()
+        account['data'].is_admin = True
+        account['data'].save()
 
         return account
 
@@ -152,6 +152,3 @@ class Grupos(Group):
     class Meta:
         verbose_name_plural = "Grupos"
         ordering = ['code']
-
-    def __unicode__(self):
-        return u'%s' % (self.nombre)
