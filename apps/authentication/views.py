@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth import authenticate, login, logout
-from authentication.models import Alumno, Profesor
+from authentication.models import Alumno, Profesor, Grupos
 from authentication.serializers import AlumnoSerializer, ProfesorSerializer, UsuarioSerializer
 from rest_framework import permissions, viewsets, status, views
 from rest_framework.response import Response
@@ -292,11 +292,12 @@ class PermissionsView(views.APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, format=None):
+        grupo = Grupos.objects.get(user=request.user)
         permissions = Permission.objects.filter(group=request.user.groups.all()).values('codename')
         list_permissions = []
         for permission in permissions:
             model, codename = permission['codename'].split('.')
             list_permissions.append({model: codename})
-        return Response(dict(permissions=list_permissions))
+        return Response(dict(grupo=grupo, permissions=list_permissions))
 
     # TODO el POST sera para cambiar de grupo a un usuario

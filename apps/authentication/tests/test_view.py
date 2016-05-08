@@ -173,4 +173,4 @@ class AuthenticationServicesTests(TestCase):
         # Me logueo con un profesor
         res = self.client.get('/api/v1/auth/permisos/')
         resul = json.loads(res.content)
-        self.assertEqual(resul['permissions'][0]['tfg'], 'create')
+        self.assertEqual(resul['permissions'][0]['evento'], 'create')
