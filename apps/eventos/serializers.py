@@ -11,7 +11,7 @@ class EventoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Evento
-        fields = ('id', 'contenido', 'tipo', 'autor', 'created_at', 'updated_at')
+        fields = ('id', 'contenido', 'tipo', 'autor', 'titulo', 'created_at', 'updated_at')
         read_only_fields = ('created_at', 'updated_at')
 
     def create_evento(self, validated_data):

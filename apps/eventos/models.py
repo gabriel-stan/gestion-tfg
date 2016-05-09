@@ -11,7 +11,7 @@ class EventoManager(models.Manager):
                 raise NameError("Autor no valido")
 
             evento = Evento.objects.create(contenido=contenido, autor=kwargs.get('autor'),
-                                           tipo=kwargs.get('tipo'))
+                                           tipo=kwargs.get('tipo'), titulo=kwargs.get('titulo'))
             evento.save()
 
             return dict(status=True, data=evento)
@@ -22,9 +22,10 @@ class EventoManager(models.Manager):
 
 class Evento(models.Model):
     autor = models.ForeignKey(Usuario)
+    titulo = models.CharField(max_length=50, blank=True)
     #autor = models.ForeignKey(Usuario, related_name='eventos')
     contenido = models.TextField()
-    tipo = models.CharField(max_length=100)
+    tipo = models.CharField(max_length=100, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -41,3 +42,6 @@ class Evento(models.Model):
 
     def get_tipo(self):
         return self.tipo
+
+    def get_titulo(self):
+        return self.titulo
