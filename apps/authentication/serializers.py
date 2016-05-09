@@ -12,7 +12,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
     #eventos = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
-        model = Alumno
+        model = Usuario
         fields = ('id', 'email', 'created_at', 'updated_at',
                   'first_name', 'last_name', 'password',
                   'confirm_password', 'is_admin')

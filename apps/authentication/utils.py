@@ -1,5 +1,6 @@
 from django.db.models.fields.related import ManyToManyField
 import simplejson as json
+from django.contrib.auth.models import Permission
 
 
 def get_params(req):
@@ -66,3 +67,11 @@ def check_usuario(user, email=None):
     else:
         return False
 
+
+def permisos(usuario):
+    permissions = Permission.objects.filter(group=usuario.groups.all()).values('codename')
+    list_permissions = []
+    for permission in permissions:
+        model, codename = permission['codename'].split('.')
+        list_permissions.append({model: codename})
+    return list_permissions
