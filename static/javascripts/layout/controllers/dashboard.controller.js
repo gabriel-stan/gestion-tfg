@@ -29,9 +29,14 @@
     function activate() {
 
       // cargar datos de relleno para la demo TODO quitar cuando no nos haga falta en el dashboard
-      var s = document.createElement('script'); // use global document since Angular's $document is weak
-      s.src = 'static/dist/js/pages/dashboard2.js';
-      document.body.appendChild(s);
+      try {
+        var s = document.createElement('script'); // use global document since Angular's $document is weak
+        s.src = 'static/dist/js/pages/dashboard2.js';
+        document.body.appendChild(s);
+      } catch (e) {
+        console.log(e);
+      }
+
 
       Events.all().then(eventsSuccessFn, eventsErrorFn);
       //

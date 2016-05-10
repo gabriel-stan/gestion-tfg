@@ -9,15 +9,24 @@
     .module('gestfg.layout.controllers')
     .controller('NavbarController', NavbarController);
 
-  NavbarController.$inject = ['$scope', 'Authentication'];
+  NavbarController.$inject = ['$scope', '$location', 'Authentication'];
 
   /**
   * @namespace NavbarController
   */
-  function NavbarController($scope, Authentication) {
+  function NavbarController($scope, $location, Authentication) {
     var navCtrl = this;
 
     navCtrl.logout = logout;
+    navCtrl.isDashboard = isDashboard;
+
+    function isDashboard(){
+      if ($location.path().match("^/dashboard")) {
+        return true;
+      } else {
+        return false;
+      }
+    }
 
     /**
     * @name logout
@@ -27,5 +36,6 @@
     function logout() {
       Authentication.logout();
     }
+
   }
 })();

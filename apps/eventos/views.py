@@ -43,7 +43,9 @@ class EventosViewSet(viewsets.ModelViewSet):
         """
         try:
             content = request.data['content']
-            tipo = 'info'
+            titulo = content['titulo']
+            tipo = content['tipo']
+            contenido = content['contenido']
             # serializer = self.serializer_class(data={'contenido': content, 'tipo': tipo, 'autor': request.user.id})
             # if serializer.is_valid():
             #     resul = serializer.create_evento(serializer.validated_data)
@@ -53,7 +55,9 @@ class EventosViewSet(viewsets.ModelViewSet):
             #         return Response(resul)
             # else:
             #     return Response(dict(status=False, message=serializer.errors), status=status.HTTP_400_BAD_REQUEST)
-            resul = Evento.objects.create_evento(contenido=content, tipo=tipo, autor=Usuario.objects.get(id=request.user.id))
+            resul = Evento.objects.create_evento(contenido=contenido, tipo=tipo, titulo= titulo,
+                                                 autor=Usuario.objects.get(id=request.user.id))
+            # resul = Evento.objects.create_evento(contenido=content['contenido'], titulo=content['titulo'], tipo=tipo, autor=Usuario.objects.get(id=request.user.id))
             if resul['status']:
                 resul = utils.to_dict(resul)
                 resul_status = status.HTTP_200_OK
