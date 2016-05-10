@@ -24,6 +24,12 @@
       controller: 'DashboardController',
       controllerAs: 'dashCtrl',
       templateUrl: '/static/templates/layout/dashboard.html'
+    }).when('/dashboard/eventos', {
+      templateUrl: '/static/templates/layout/dashboard/events/events.html'
+    }).when('/dashboard/eventos/add', {
+      controller: 'NewEventController',
+      controllerAs: 'vm',
+      templateUrl: '/static/templates/layout/dashboard/events/add-event.html'
     }).when('/', {
       controller: 'IndexController',
       controllerAs: 'indexCtrl',
