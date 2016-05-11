@@ -19,6 +19,8 @@
 
     userCtrl.isAuthenticated = isAuthenticated;
     userCtrl.isAdmin = isAdmin;
+    userCtrl.user = Authentication.getAuthenticatedAccount();
+    userCtrl.getAuthenticatedAccount = getAuthenticatedAccount;
 
     activate();
 
@@ -50,6 +52,10 @@
     */
     function isAdmin() {
       return Authentication.isAdmin()
+    }
+
+    function getAuthenticatedAccount() {
+      return Authentication.getAuthenticatedAccount();
     }
   }
 })();

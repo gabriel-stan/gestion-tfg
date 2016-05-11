@@ -19,23 +19,31 @@
 
     newEventCtrl.submit = submit;
 
+    var contenido = $("#wysihtml5-editor").val();
+
     /**
     * @name submit
     * @desc Create a new Event
     * @memberOf gestfg.events.controllers.NewEventController
     */
     function submit() {
+
+      // recogemos el contenido del wysihtml5 editor
+      newEventCtrl.event.contenido = $("#wysihtml5-editor").val();
+
       $rootScope.$broadcast('event.created', {
-        contenido: newEventCtrl.content,
+        titulo: newEventCtrl.event.titulo,
+        tipo: newEventCtrl.event.tipo,
+        contenido: newEventCtrl.event.contenido,
         autor: {
           email: Authentication.getAuthenticatedAccount().data.email
         },
         created_at: newEventCtrl.created_at
       });
 
-      $scope.closeThisDialog();
+      // $scope.closeThisDialog();
 
-      Events.create(newEventCtrl.content).then(createEventSuccessFn, createEventErrorFn);
+      Events.create(newEventCtrl.event).then(createEventSuccessFn, createEventErrorFn);
 
 
       /**
