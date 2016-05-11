@@ -42,10 +42,10 @@ class EventosViewSet(viewsets.ModelViewSet):
         {status: True/False, data:{datos del evento}
         """
         try:
-            content = request.data['content']
-            titulo = content['titulo']
-            tipo = content['tipo']
-            contenido = content['contenido']
+            #content = request.data['content']
+            titulo = request.data['titulo']
+            tipo = request.data['tipo']
+            contenido = request.data['contenido']
             # serializer = self.serializer_class(data={'contenido': content, 'tipo': tipo, 'autor': request.user.id})
             # if serializer.is_valid():
             #     resul = serializer.create_evento(serializer.validated_data)
