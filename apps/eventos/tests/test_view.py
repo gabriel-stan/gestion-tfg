@@ -2,7 +2,6 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
 from authentication.models import Usuario
-from django.contrib.auth.models import Group
 import simplejson as json
 
 
@@ -14,8 +13,8 @@ class EventosServicesTests(TestCase):
                                last_name='apellido 1 apellido 12', password='0000', is_admin=True)
         Usuario.objects.create_superuser(**self.data_admin)
 
-        self.data_evento1 = dict(contenido='admin2@admin.es', tipo='admin 2',
-                               titulo='titulo 1')
+        self.data_evento1 = dict(content=dict(contenido='admin2@admin.es', tipo='admin 2',
+                               titulo='titulo 1'))
 
     def test_ws_eventos_post(self):
         # Me logueo con un admin
@@ -24,7 +23,7 @@ class EventosServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['data']['email'], self.data_admin['email'])
         # Inserto un evento
-        res = self.client.post('/api/v1/events/', self.data_evento1)
+        res = self.client.post('/api/v1/events/',  self.data_evento1, format='json')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
-        self.assertEqual(resul['data']['contenido'], self.data_evento1['contenido'])
+        self.assertEqual(resul['data']['contenido'], self.data_evento1['content']['contenido'])
