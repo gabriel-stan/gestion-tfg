@@ -6,7 +6,6 @@ from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import Group
 import signals
 
-
 class AccountManager(BaseUserManager):
 
     def create_user(self, email, password=None, **kwargs):
@@ -23,13 +22,13 @@ class AccountManager(BaseUserManager):
         account.set_password(password)
         account.save()
 
-        return account
+        return dict(status=True, data=account)
 
     def create_superuser(self, email, password, **kwargs):
         account = self.create_user(email, password, **kwargs)
 
-        account.is_admin = True
-        account.save()
+        account['data'].is_admin = True
+        account['data'].save()
 
         return account
 
@@ -87,12 +86,12 @@ class AlumnoManager(BaseUserManager):
 
             # exp reg para saber si el nick corresponde al correo de la ugr (@correo.ugr.es)
             if not re.match(r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$', email):
-                raise NameError("El email no es correcto")
+                raise NameError("El email no es correcto o no pertenece a la UGR")
 
             usuario = self.model.objects.create(email=email, first_name=kwargs.get('first_name'),
                                 last_name=kwargs.get('last_name'))
 
-            grupo_alumnos = Group.objects.get(name='Alumnos')
+            grupo_alumnos = Grupos.objects.get(name='Alumnos')
             usuario.set_password(password)
             usuario.save()
             grupo_alumnos.user_set.add(usuario)
@@ -128,7 +127,7 @@ class ProfesorManager(BaseUserManager):
             usuario = self.model.objects.create(email=email, first_name=kwargs.get('first_name'),
                                 last_name=kwargs.get('last_name'), departamento=kwargs.get('departamento'))
 
-            grupo_profesores = Group.objects.get(name='Profesores')
+            grupo_profesores = Grupos.objects.get(name='Profesores')
             usuario.set_password(password)
             usuario.save()
             grupo_profesores.user_set.add(usuario)
@@ -145,3 +144,11 @@ class Profesor(Usuario):
 
     def get_departamento(self):
         return self.departamento
+
+
+class Grupos(Group):
+    code = models.IntegerField()
+
+    class Meta:
+        verbose_name_plural = "Grupos"
+        ordering = ['code']

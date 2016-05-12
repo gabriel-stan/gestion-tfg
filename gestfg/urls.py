@@ -17,14 +17,16 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from rest_framework_nested import routers
 
-from gestfg.views import IndexView
-from authentication.views import AlumnosViewSet, LoginView, LogoutView, ProfesoresViewSet, PermissionsView
+from gestfg.views import IndexView, DashboardView
+from authentication.views import AlumnosViewSet, LoginView, LogoutView, ProfesoresViewSet, PermissionsView, \
+    UsuariosViewSet
 from tfgs.views import Tfg_asigView, TfgViewSet
 from eventos.views import EventosViewSet
 
 router = routers.SimpleRouter()
 router.register(r'alumnos', AlumnosViewSet)
 router.register(r'profesores', ProfesoresViewSet)
+router.register(r'usuarios', UsuariosViewSet)
 router.register(r'tfgs', TfgViewSet)
 router.register(r'events', EventosViewSet)
 
@@ -48,5 +50,6 @@ urlpatterns = [
     # url(r'^asig_tfg/$', views_tfg.asig_tfg, name='asig_tfg'),
     # url(r'^asig_tfg/remove/$', views_tfg.remove_asig_tfg, name='remove_asig_tfg'),
     # url(r'^upload_file_tfgs/$', upload_file_tfgs.upload_file, name='upload_file_tfgs'),
+    url('^dashboard.*', DashboardView.as_view(), name='dashboard'),
     url('^.*$', IndexView.as_view(), name='index'),
 ]

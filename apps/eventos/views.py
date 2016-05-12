@@ -2,6 +2,7 @@
 from eventos.models import Evento
 from eventos.serializers import EventoSerializer
 from authentication.models import Usuario, Profesor
+from authentication.serializers import UsuarioSerializer
 from rest_framework import viewsets, status, views
 from rest_framework.response import Response
 import json
@@ -23,13 +24,14 @@ class EventosViewSet(viewsets.ModelViewSet):
 
         """
         try:
-            eventos = Evento.objects.filter(autor=request.user.alumno.id)
+            # eventos = Evento.objects.filter(autor=request.user.id)
+            eventos = Evento.objects.all()
             resul = self.serializer_class(eventos, many=True).data
-            return Response(dict(status=True, data=resul))
+            return Response(dict(data=resul), status=status.HTTP_200_OK)
         except NameError as e:
-            return Response(dict(status=False, message=e.message))
+            return Response(dict(message=e.message), status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            return Response(dict(status=False, message="Error en la llamada"))
+            return Response(dict(message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)
 
     def create(self, request):
         """
@@ -41,16 +43,27 @@ class EventosViewSet(viewsets.ModelViewSet):
         """
         try:
             content = request.data['content']
-            author = request.user.alumno
-            tipo = 'info'
-            serializer = self.serializer_class(data={'contenido': content, 'tipo': tipo, 'autor': author.id})
-            if serializer.is_valid():
-                resul = serializer.create_evento(serializer.validated_data)
-                if resul['status']:
-                    return Response(utils.to_dict(resul))
-                else:
-                    return Response(resul)
+            titulo = content['titulo']
+            tipo = content['tipo']
+            contenido = content['contenido']
+            # serializer = self.serializer_class(data={'contenido': content, 'tipo': tipo, 'autor': request.user.id})
+            # if serializer.is_valid():
+            #     resul = serializer.create_evento(serializer.validated_data)
+            #     if resul['status']:
+            #         return Response(utils.to_dict(resul))
+            #     else:
+            #         return Response(resul)
+            # else:
+            #     return Response(dict(status=False, message=serializer.errors), status=status.HTTP_400_BAD_REQUEST)
+            resul = Evento.objects.create_evento(contenido=contenido, tipo=tipo, titulo= titulo,
+                                                 autor=Usuario.objects.get(id=request.user.id))
+            # resul = Evento.objects.create_evento(contenido=content['contenido'], titulo=content['titulo'], tipo=tipo, autor=Usuario.objects.get(id=request.user.id))
+            if resul['status']:
+                resul = utils.to_dict(resul)
+                resul_status = status.HTTP_200_OK
             else:
-                return Response(dict(status=False, message=serializer.errors), status=status.HTTP_200_OK)
+                resul = dict(message=resul['message'])
+                resul_status = status.HTTP_400_BAD_REQUEST
+            return Response(resul, status=resul_status)
         except Exception as e:
-            return Response(dict(status=False, message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)
+            return Response(dict(message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)

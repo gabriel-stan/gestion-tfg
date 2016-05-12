@@ -15,9 +15,11 @@
   * @namespace NewEventController
   */
   function NewEventController($rootScope, $scope, Authentication, Snackbar, Events) {
-    var vm = this;
+    var newEventCtrl = this;
 
-    vm.submit = submit;
+    newEventCtrl.submit = submit;
+
+    var contenido = $("#wysihtml5-editor").val();
 
     /**
     * @name submit
@@ -25,16 +27,23 @@
     * @memberOf gestfg.events.controllers.NewEventController
     */
     function submit() {
+
+      // recogemos el contenido del wysihtml5 editor
+      newEventCtrl.event.contenido = $("#wysihtml5-editor").val();
+
       $rootScope.$broadcast('event.created', {
-        contenido: vm.content,
+        titulo: newEventCtrl.event.titulo,
+        tipo: newEventCtrl.event.tipo,
+        contenido: newEventCtrl.event.contenido,
         autor: {
           email: Authentication.getAuthenticatedAccount().data.email
-        }
+        },
+        created_at: newEventCtrl.created_at
       });
 
-      $scope.closeThisDialog();
+      // $scope.closeThisDialog();
 
-      Events.create(vm.content).then(createEventSuccessFn, createEventErrorFn);
+      Events.create(newEventCtrl.event).then(createEventSuccessFn, createEventErrorFn);
 
 
       /**
@@ -42,7 +51,7 @@
       * @desc Show snackbar with success message
       */
       function createEventSuccessFn(data, status, headers, config) {
-        Snackbar.show('El evento se ha creado con exito.');
+        Snackbar.success('El evento se ha creado con exito.');
       }
 
 
@@ -52,7 +61,7 @@
       */
       function createEventErrorFn(data, status, headers, config) {
         $rootScope.$broadcast('event.created.error');
-        Snackbar.error(data.error);
+        Snackbar.error(data.message);
       }
     }
   }

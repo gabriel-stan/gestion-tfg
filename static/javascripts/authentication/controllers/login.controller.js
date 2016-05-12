@@ -15,9 +15,9 @@
   * @namespace LoginController
   */
   function LoginController($location, $scope, Authentication) {
-    var vm = this;
+    var loginCtrl = this;
 
-    vm.login = login;
+    loginCtrl.login = login;
 
     activate();
 
@@ -39,7 +39,7 @@
     * @memberOf gestfg.authentication.controllers.LoginController
     */
     function login() {
-      Authentication.login(vm.email, vm.password);
+      Authentication.login(loginCtrl.email, loginCtrl.password);
     }
   }
 })();

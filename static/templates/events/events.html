@@ -1,15 +1,4 @@
-<div class="row" ng-cloak>
-  <div ng-repeat="column in vm.columns">
-    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-      <div ng-repeat="event in column">
-        <event event="event"></event>
-      </div>
-    </div>
-  </div>
-
-  <div ng-hide="vm.columns && vm.columns.length">
-    <div class="col-sm-12 no-events-here">
-      <em>No hay eventos a mostrar.</em>
-    </div>
-  </div>
+<!-- Aqui se muestran los eventos TODO evento directive or template -->
+<div ng-repeat="evento in indexCtrl.events | orderBy: '-updated_at'">
+  <event event="evento"></event>
 </div>
