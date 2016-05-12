@@ -4,9 +4,9 @@ python:
   - "2.7"
 
 # command to install dependencies
-install: make install-requirements
+install: make install_requirements_no_vnenv
 
 # command to run tests
-script: make test
+script: make test_no_venv
 
 after_success: make auto-merge

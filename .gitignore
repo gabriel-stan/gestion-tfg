@@ -1,5 +1,8 @@
 #Virtual env
-venv
+venv*
+
+#gunicorn pid file
+gunicorn.pid
 
 #vagrant env
 .env
@@ -7,8 +10,18 @@ venv
 #vagrant directory
 .vagrant
 
+#exclude
+exclude
+
+#migrations generated
+apps/*/migrations/0*
+
 #static files
 staticfiles
+static/bower_components
+
+# node generated
+node_modules
 
 #Database
 *sqlite3

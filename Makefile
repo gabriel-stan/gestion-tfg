@@ -1,32 +1,67 @@
-install-requirements:
-	pip install -r requirements.txt
+# Makefile - use this file for all project-related actions
 
-test:
-	cd gestion_tfg && python manage.py test
+SCRIPTS = utils/scripts
+GUNICORN_PID = gunicorn.pid
+RUN_ENV = ~/gestfg/run_env
+INSTALL_ENV = ~/gestfg/install_env
+REQUIREMENTS_BACK = utils/requirements_back.txt
+REQUIREMENTS_BACK = utils/requirements_front.txt
 
+
+##############
+##  Travis  ##
+##############
+
+# travis auto-merge. Use ONLY with Travis
 auto-merge:
-	./auto-merge.sh
+	cd utils/scripts && ./auto-merge.sh
 
-install-docker:
-	./install_docker.sh
+###############
+##  testing  ##
+###############
 
-run-docker:
-	./run_docker.sh
+# run all tests using manage.py default server and no venv (everything installed in the system)
+test_no_venv:
+	export DEBUG=False ; python manage.py makemigrations ; python manage.py migrate ; python manage.py test
 
-install-packages:
-	./install_packages.sh
+###################
+##  app control  ##
+###################
 
-install:
-	./install.sh
+# run app with gunicorn server
+run_gunicorn:
+	$(SCRIPTS)/run_gunicorn.sh $(GUNICORN_PID) $(RUN_ENV)
 
-run:
-	./run.sh
+# stop app runned with gunicorn
+stop_gunicorn:
+	$(SCRIPTS)/stop_gunicorn.sh $(GUNICORN_PID)
 
-runserver:
-	cd gestion_tfg/ && sudo ../venv/bin/python manage.py runserver 0.0.0.0:80 &
+# run app with manage runserver
+run_manage:
+	$(SCRIPTS)/run_manage.sh $(RUN_ENV)
 
-deploy-azure:
-	./vagrant-azure.sh
+# stop app runned with manage runserver
+stop_manage:
+	pkill python
 
-deploy-azure-norun:
-	./vagrant-azure.sh norun
+###############
+##  install  ##
+###############
+
+# install requirements in system (no virtualenv)
+install_requirements_no_vnenv:
+	pip install -r utils/requirements_back.txt
+	pip install -r utils/requirements_front.txt
+
+# install system packages and basic app
+install_basic:
+	make install_system_packages
+	make install_app
+
+# install app after installing system packages
+install_app:
+	$(SCRIPTS)/install_app.sh $(REQUIREMENTS_BACK) $(REQUIREMENTS_FRONT)
+
+# install system packages that require sudo privileges
+install_system_packages:
+	sudo $(SCRIPTS)/install_system_packages.sh
