@@ -11,9 +11,9 @@ RUN apt-get install -y build-essential
 
 # Descarga del repositorio y preparacion de la aplicacion
 RUN git clone https://github.com/gabriel-stan/gestion-tfg.git
-RUN cd gestion-tfg && git checkout BACKEND-1
+# RUN cd gestion-tfg && git checkout BACKEND-1
 
-RUN cd gestion-tfg && make run-docker
+RUN cd gestion-tfg && make install_basic
 
 # Comando para lanzar la aplicacion
-CMD cd gestion-tfg && make run
+CMD cd gestion-tfg && make run_gunicorn
