@@ -64,4 +64,4 @@ install_app:
 
 # install system packages that require sudo privileges
 install_system_packages:
-	$(SCRIPTS)/install_system_packages.sh
+	sudo $(SCRIPTS)/install_system_packages.sh
