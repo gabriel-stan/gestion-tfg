@@ -34,6 +34,16 @@ npm install -g bower
 npm install
 bower install --allow-root
 
+# get or ser env vars
+ENV_VARS=$3
+
+if [ ! -f $ENV_VARS ]; then
+    ENV_VARS=utils/environment/install_env
+fi
+
+source $ENV_VARS
+export $(cut -d= -f1 "$ENV_VARS")
+
 # prepare database
 # python manage.py syncdb --noinput
 python manage.py makemigrations

@@ -3,6 +3,6 @@ ADMIN_PASS=admin
 
 PGDATABASE=gestfg
 PGUSER=postgres
-PGPASSWORD=gestfg
+PGPASSWORD=postgres
 PGHOST=localhost
 PGPORT=5432
