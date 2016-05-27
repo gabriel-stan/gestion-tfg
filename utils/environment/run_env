@@ -6,6 +6,6 @@ PORT=8000
 
 PGDATABASE=gestfg
 PGUSER=postgres
-PGPASSWORD=gestfg
+PGPASSWORD=postgres
 PGHOST=localhost
 PGPORT=5432

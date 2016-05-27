@@ -50,6 +50,7 @@ stop_manage:
 
 # install requirements in system (no virtualenv)
 install_requirements_no_vnenv:
+	sudo apt-get update
 	pip install -r utils/requirements_back.txt
 	pip install -r utils/requirements_front.txt
 	make install_postgres
@@ -62,7 +63,7 @@ install_basic:
 
 # install app after installing system packages
 install_app:
-	$(SCRIPTS)/install_app.sh $(REQUIREMENTS_BACK) $(REQUIREMENTS_FRONT)
+	$(SCRIPTS)/install_app.sh $(REQUIREMENTS_BACK) $(REQUIREMENTS_FRONT) $(INSTALL_ENV)
 
 # install system packages that require sudo privileges
 install_system_packages:
