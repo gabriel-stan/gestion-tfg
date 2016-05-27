@@ -11,6 +11,7 @@ apt-get install -y libffi-dev libssl-dev
 pip install virtualenv
 
 apt-get update
+apt-get install -y sudo
 apt-get install -y postgresql-9.4
 sudo -u postgres psql -U postgres -d postgres -c "ALTER USER postgres with password 'postgres';"
 sudo -u postgres psql -U postgres -d postgres -c "ALTER ROLE postgres SET client_encoding TO 'utf8';"
