@@ -5,7 +5,7 @@ GUNICORN_PID = gunicorn.pid
 RUN_ENV = ~/gestfg/run_env
 INSTALL_ENV = ~/gestfg/install_env
 REQUIREMENTS_BACK = utils/requirements_back.txt
-REQUIREMENTS_BACK = utils/requirements_front.txt
+REQUIREMENTS_FRONT = utils/requirements_front.txt
 
 
 ##############
