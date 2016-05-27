@@ -8,4 +8,5 @@ gunicorn==19.3.0
 requests==2.9.1
 simplejson==3.8.2
 openpyxl==2.3.3
+psycopg2==2.6.1
 
