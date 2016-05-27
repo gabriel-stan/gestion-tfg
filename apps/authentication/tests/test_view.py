@@ -42,33 +42,6 @@ class AuthenticationServicesTests(TestCase):
         self.assertEqual(resul['status'], False)
         self.assertEqual(resul['message'], 'No hay alumnos almacenados')
 
-    #
-    #     # El alumno no existe
-    #     res = self.client.get('/alumnos/',  {'username': 'pepito'})
-    #     resul = json.loads(res.content)
-    #     self.assertEqual(resul['status'], False)
-    #     self.assertEqual(resul['message'], 'El alumno indicado no existe')
-    #
-    #     # inserto un alumno erroneo
-    #     res = self.client.post('/alumnos/', self.data_alum_error)
-    #     resul = json.loads(res.content)
-    #     self.assertEqual(resul['status'], False)
-    #     self.assertEqual(resul['message'], 'El correo no es correcto')
-    #
-    #     # Borrar alumno que no existe
-    #     res = self.client.post('/alumnos/delete_alumno/',
-    #                          {'username': 'pepito'})
-    #     resul = json.loads(res.content)
-    #     self.assertEqual(resul['status'], False)
-    #     self.assertEqual(resul['message'], "El alumno indicado no existe")
-    #
-    #     # Modificar un alumno que no existe
-    #     res = self.client.post('/alumnos/update_alumno/',
-    #                          {'alumno': 'pepito', 'campos': json.dumps({'first_name': 'otro alumno 2'})})
-    #     resul = json.loads(res.content)
-    #     self.assertEqual(resul['status'], False)
-    #     self.assertEqual(resul['message'], "El alumno indicado no existe")
-    #
     def test_ws_alumnos_post(self):
 
         # inserto un alumno
@@ -95,47 +68,6 @@ class AuthenticationServicesTests(TestCase):
         res = self.client.post('/api/v1/auth/login/', dict(email='admin@admin.es',
                                                            password='0000'))
 
-        # # Borro al alumno
-        # res = self.client.delete('/api/v1/alumnos/', {'email': self.data_alum1['email']})
-        # resul = json.loads(res.content)
-        # self.assertEqual(resul['status'], True)
-        #
-        # # Compruebo que se ha borrado
-        # res = self.client.get('/api/v1/alumnos/', self.data_alum1)
-        # resul = json.loads(res.content)
-        # self.assertEqual(resul['status'], False)
-
-
-    #
-    #     # Alumno recien insertado
-    #     res = self.client.get('/alumnos/',  {'username': 'ejemplo@correo.ugr.es'})
-    #     resul = json.loads(res.content)
-    #     self.assertEqual(resul['status'], True)
-    #     self.assertEqual(resul['data']['first_name'], 'alumno 1')
-    #
-    #     # Todos los alumnos
-    #     res = self.client.get('/alumnos/')
-    #     resul = json.loads(res.content)
-    #     self.assertEqual(resul['status'], True)
-    #     self.assertEqual(resul['data'][0]['first_name'], 'alumno 1')
-    #
-    #     resul = json.loads(res.content)
-    #     self.assertEqual(resul['status'], False)
-    #     self.assertEqual(resul['message'], "Error en la llamada")
-    #
-    #     # Modificar un alumno
-    #     res = self.client.post('/alumnos/update_alumno/',
-    #                         {'alumno': self.data_alum1['username'],
-    #                               'campos': json.dumps({'first_name': 'otro alumno 1'})})
-    #     resul = json.loads(res.content)
-    #     self.assertEqual(resul['status'], True)
-    #
-    #     # Dejo la BD como estaba
-    #     res = self.client.post('/alumnos/delete_alumno/',
-    #                          {'username': 'ejemplo@correo.ugr.es'})
-    #     resul = json.loads(res.content)
-    #     self.assertEqual(resul['status'], True)
-
     def test_ws_profesores_get(self):
         # inserto un profesor
         res = self.client.post('/api/v1/profesores/', self.data_prof1)
@@ -161,6 +93,25 @@ class AuthenticationServicesTests(TestCase):
         res = self.client.get('/api/v1/alumnos/')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
+
+    def test_ws_usuarios_get(self):
+        # Me logueo con un admin
+        res = self.client.post('/api/v1/auth/login/', {'email': self.data_admin['email'],
+                                                       'password': self.data_admin['password']})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['email'], self.data_admin['email'])
+
+        # Introduzco 2 usuarios
+        res = self.client.post('/api/v1/profesores/', self.data_prof1)
+        res = self.client.post('/api/v1/alumnos/', self.data_alum2)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        # obtengo todos los alumnos por que soy un profesor
+        res = self.client.get('/api/v1/usuarios/')
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
 
     def test_ws_admins_get(self):
         # Me logueo con un admin
