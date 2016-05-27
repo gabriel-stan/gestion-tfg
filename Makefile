@@ -52,6 +52,7 @@ stop_manage:
 install_requirements_no_vnenv:
 	pip install -r utils/requirements_back.txt
 	pip install -r utils/requirements_front.txt
+	sudo apt-get purge postgresql-9.1 postgresql-9.2 postgresql-9.3
 	make install_postgres
 
 # install system packages and basic app

@@ -14,7 +14,6 @@ SCRIPTS=utils/scripts
 
 # sudo apt-get update
 sudo apt-get install -y sudo
-sudo dpkg --remove postgresql-9.1 postgresql-9.2 postgresql-9.3
 sudo apt-get install -y postgresql-9.4
 sudo -u postgres psql -U postgres -d postgres -c "CREATE USER $PGUSER with password '$PGPASSWORD';"
 sudo -u postgres psql -U postgres -d postgres -c "CREATE ROLE $PGUSER;"
