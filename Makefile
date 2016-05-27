@@ -69,4 +69,4 @@ install_system_packages:
 
 # install postgres
 install_postgres:
-	sudo $(SCRIPTS)/postgres.sh
+	sudo ./$(SCRIPTS)/postgres.sh
