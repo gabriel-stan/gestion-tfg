@@ -71,5 +71,6 @@ install_system_packages:
 install_postgres:
 	sudo apt-get update
 	sudo apt-get install -y sudo
+	sudo apt-get purge -y postgresql-9.1 postgresql-9.2 postgresql-9.3
 	sudo apt-get install -y postgresql-9.4
 
