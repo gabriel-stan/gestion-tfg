@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 apt-get update
-apt-get install postgresql-9.4
+apt-get install -y postgresql-9.4
 sudo -u postgres psql -U postgres -d postgres -c "alter user postgres with password 'postgres';"
 sudo -u postgres psql -U postgres -d postgres -c "ALTER ROLE postgres SET client_encoding TO 'utf8';"
 sudo -u postgres psql -U postgres -d postgres -c "ALTER ROLE postgres SET default_transaction_isolation TO 'read committed';"
