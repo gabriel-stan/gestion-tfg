@@ -12,7 +12,6 @@ addons:
   postgresql: "9.4"
 
 before_script:
-  - psql -c 'create database gestfg;' -U postgres
   - psql -c "CREATE USER gestfg WITH PASSWORD 'gestfg';" -U postgres
 
 # command to install dependencies
