@@ -52,6 +52,7 @@ stop_manage:
 install_requirements_no_vnenv:
 	pip install -r utils/requirements_back.txt
 	pip install -r utils/requirements_front.txt
+	make install_postgres
 
 # install system packages and basic app
 install_basic:
@@ -65,3 +66,7 @@ install_app:
 # install system packages that require sudo privileges
 install_system_packages:
 	sudo $(SCRIPTS)/install_system_packages.sh
+
+# install postgres
+install_postgres:
+	sudo $(SCRIPTS)/postgres.sh
