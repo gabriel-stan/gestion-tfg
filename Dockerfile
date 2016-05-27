@@ -5,7 +5,7 @@ FROM ubuntu:latest
 MAINTAINER Gabriel Stan
 
 # Preparacion del contenedor
-RUN apt-get clean
+# RUN apt-get clean
 RUN apt-get update
 RUN apt-get install -y git build-essential make sudo
 
