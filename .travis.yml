@@ -11,9 +11,6 @@ services:
 addons:
   postgresql: "9.4"
 
-before_script:
-  - psql -c "CREATE USER gestfg WITH PASSWORD 'gestfg';" -U postgres
-
 # command to install dependencies
 install: make install_requirements_no_vnenv
 
