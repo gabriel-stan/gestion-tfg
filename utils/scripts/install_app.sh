@@ -14,6 +14,7 @@ if [ ! -f $REQUIREMENTS_BACK ]; then
     REQUIREMENTS_BACK=utils/requirements_back.txt
 fi
 
+
 # get or set front requirements file
 REQUIREMENTS_FRONT=$2
 
@@ -34,7 +35,7 @@ npm install
 bower install --allow-root
 
 # prepare database
-python manage.py syncdb --noinput
+# python manage.py syncdb --noinput
 python manage.py makemigrations
 
 # apply changes to database

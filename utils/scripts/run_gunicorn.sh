@@ -23,8 +23,12 @@ if [[ $1 != '' ]]; then
   GUNICORN_PID=$1
 fi
 
+if [[ $PORT == '' ]]; then
+  PORT=8000
+fi
+
 # run with gunicorn
-gunicorn gestfg.wsgi --log-file - --daemon --pid $GUNICORN_PID
+gunicorn gestfg.wsgi --log-file - --daemon --pid $GUNICORN_PID --bind=0.0.0.0:$PORT
 
 # quit venv
 deactivate
