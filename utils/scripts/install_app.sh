@@ -34,7 +34,7 @@ npm install
 bower install --allow-root
 
 # prepare database
-python manage.py syncdb --noinput
+# python manage.py syncdb --noinput
 python manage.py makemigrations
 
 # apply changes to database
