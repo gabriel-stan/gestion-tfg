@@ -115,11 +115,11 @@ WSGI_APPLICATION = 'gestfg.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('GTFG_DB') or 'gestfg',
-        'USER': os.environ.get('GTFG_USER_DB') or 'postgres',
-        'PASSWORD': os.environ.get('GTFG_PASS_DB') or 'postgres',
-        'HOST': os.environ.get('GTFG_HOST_DB') or 'localhost',
-        'PORT': os.environ.get('GTFG_PORT_DB') or '5432',
+        'NAME': os.environ.get('PGDATABASE') or 'gestfg',
+        'USER': os.environ.get('PGUSER') or 'gestfg',
+        'PASSWORD': os.environ.get('PGPASSWORD') or 'gestfg',
+        'HOST': os.environ.get('PGHOST') or 'localhost',
+        'PORT': os.environ.get('PGPORT') or '5432',
     }
 }
 

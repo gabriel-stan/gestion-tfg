@@ -3,3 +3,9 @@ SECRET_KEY='my-supersecret-production-key'
 DEBUG=True
 
 PORT=8000
+
+PGDATABASE=gestfg
+PGUSER=gestfg
+PGPASSWORD=gestfg
+PGHOST=localhost
+PGPORT=5432

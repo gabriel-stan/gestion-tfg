@@ -1,2 +1,8 @@
 ADMIN_USERNAME=admin
 ADMIN_PASS=admin
+
+PGDATABASE=gestfg
+PGUSER=gestfg
+PGPASSWORD=gestfg
+PGHOST=localhost
+PGPORT=5432
