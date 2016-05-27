@@ -1,3 +1,5 @@
+#!/bin/bash
+
 apt-get update
 apt-get install -y sudo
 apt-get install -y postgresql-9.4
