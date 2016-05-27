@@ -12,8 +12,6 @@ export $(cut -d= -f1 "$ENV_VARS")
 SCRIPTS=utils/scripts
 
 
-# sudo apt-get update
-apt-get install -y sudo
 
 # solo instalar pg si no estoy en travis
 if [[ $TRAVIS != 'true' ]]; then
@@ -29,5 +27,6 @@ sudo -u postgres psql -U postgres -d postgres -c "CREATE ROLE $PGUSER;"
 sudo -u postgres psql -U postgres -d postgres -c "ALTER ROLE $PGUSER SET client_encoding TO 'utf8';"
 sudo -u postgres psql -U postgres -d postgres -c "ALTER ROLE $PGUSER SET default_transaction_isolation TO 'read committed';"
 sudo -u postgres psql -U postgres -d postgres -c "ALTER ROLE $PGUSER SET timezone TO 'UTC';"
+sudo -u postgres psql -U postgres -d postgres -c "CREATE DATABASE $PGDATABASE;"
 # sudo -u postgres psql -U postgres -d postgres --set=nombredb="$PGDATABASE" -f $SCRIPTS/create_database.sql
 sudo -u postgres psql -U postgres -d postgres -c "GRANT ALL PRIVILEGES ON DATABASE $PGDATABASE TO $PGUSER;"
