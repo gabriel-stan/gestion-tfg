@@ -11,6 +11,9 @@ services:
 addons:
   postgresql: "9.4"
 
+before_script:
+  - psql -c 'create database gestfg;' -U postgres
+
 # command to install dependencies
 install: make install_requirements_no_vnenv
 
