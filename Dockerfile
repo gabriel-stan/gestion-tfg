@@ -5,13 +5,12 @@ FROM ubuntu:latest
 MAINTAINER Gabriel Stan
 
 # Preparacion del contenedor
+# RUN apt-get clean
 RUN apt-get update
-RUN apt-get install -y git
-RUN apt-get install -y build-essential
+RUN apt-get install -y git build-essential make sudo
 
 # Descarga del repositorio y preparacion de la aplicacion
-RUN git clone https://github.com/gabriel-stan/gestion-tfg.git
-# RUN cd gestion-tfg && git checkout BACKEND-1
+RUN git clone -b BACKEND-1 --single-branch https://github.com/gabriel-stan/gestion-tfg.git
 
 RUN cd gestion-tfg && make install_basic
 
