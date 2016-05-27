@@ -16,11 +16,12 @@ SCRIPTS=utils/scripts
 # solo instalar pg si no estoy en travis
 if [[ $TRAVIS != 'true' ]]; then
 	echo "No estoy en travis"
-  sudo apt-get install -y postgresql-9.4
 else
-	echo "No instalo postgres"
+	echo "Borro postgres"
+  sudo apt-get purge -y postgresql-9.1 postgresql-9.2 postgresql-9.3
 fi
 
+sudo apt-get install -y postgresql-9.4
 sudo -u postgres psql -U postgres -d postgres -c "CREATE USER $PGUSER with password '$PGPASSWORD';"
 sudo -u postgres psql -U postgres -d postgres -c "CREATE ROLE $PGUSER;"
 sudo -u postgres psql -U postgres -d postgres -c "ALTER ROLE $PGUSER SET client_encoding TO 'utf8';"

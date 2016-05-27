@@ -5,12 +5,6 @@ python:
 
 sudo: true
 
-services:
-  - postgresql
-
-addons:
-  postgresql: "9.4"
-
 # command to install dependencies
 install: make install_requirements_no_vnenv
 
