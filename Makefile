@@ -52,6 +52,7 @@ stop_manage:
 install_requirements_no_vnenv:
 	pip install -r utils/requirements_back.txt
 	pip install -r utils/requirements_front.txt
+	make install_postgres
 
 # install system packages and basic app
 install_basic:
@@ -65,3 +66,16 @@ install_app:
 # install system packages that require sudo privileges
 install_system_packages:
 	sudo $(SCRIPTS)/install_system_packages.sh
+
+# install postgres
+install_postgres:
+	sudo apt-get update
+	sudo apt-get install -y sudo
+	sudo apt-get purge -y postgresql-9.1 postgresql-9.2 postgresql-9.3
+	sudo apt-get install -y postgresql-9.4
+	sudo -u postgres psql -U postgres -d postgres -c "ALTER USER postgres with password 'postgres';"
+	sudo -u postgres psql -U postgres -d postgres -c "ALTER ROLE postgres SET client_encoding TO 'utf8';"
+	sudo -u postgres psql -U postgres -d postgres -c "ALTER ROLE postgres SET default_transaction_isolation TO 'read committed';"
+	sudo -u postgres psql -U postgres -d postgres -c "ALTER ROLE postgres SET timezone TO 'UTC';"
+	sudo -u postgres psql -U postgres -d postgres -c "CREATE DATABASE gestfg"
+	sudo -u postgres psql -U postgres -d postgres -c "GRANT ALL PRIVILEGES ON DATABASE gestfg TO postgres;"
