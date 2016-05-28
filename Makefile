@@ -72,3 +72,22 @@ install_system_packages:
 # install postgres
 install_postgres:
 	$(SCRIPTS)/postgres.sh $(INSTALL_ENV)
+
+
+# install fabric locally
+install_fabric:
+	sudo apt-get install fabric
+	sudo pip install -U pip
+
+
+##############
+##  update  ##
+##############
+
+# update sources
+update_sources:
+	$(SCRIPTS)/update_sources.sh
+
+update_app:
+	make install_system_packages
+	$(SCRIPTS)/update_app.sh $(REQUIREMENTS_BACK) $(REQUIREMENTS_FRONT) $(INSTALL_ENV)
