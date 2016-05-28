@@ -46,6 +46,10 @@
       */
       function eventsSuccessFn(data, status, headers, config) {
         indexCtrl.events = data.data.data;
+        if(indexCtrl.events.length==0){
+            $("#events-empty").removeClass("hidden");
+            $("#events-loading").addClass("hidden");
+        }
       }
 
 
