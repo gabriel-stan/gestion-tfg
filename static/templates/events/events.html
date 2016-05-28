@@ -3,9 +3,23 @@
   <event event="evento"></event>
 </div>
 
-<div ng-show="indexCtrl.events.length == 0">
+<div id="events-empty" class="hidden">
   <div class="callout callout-info">
     <h4>Info</h4>
     <p>Todavía no hay eventos.</p>
   </div>
 </div>
+
+<div id="events-loading" class="box box-info" ng-show="!indexCtrl.events.length">
+  <div class="box-header">
+    <h3 class="box-title">Cargando...</h3>
+  </div>
+  <div class="box-body">
+    <p>Cargando eventos...</p>
+  </div><!-- /.box-body -->
+  <!-- Loading (remove the following to stop the loading)-->
+  <div class="overlay">
+    <i class="fa fa-refresh fa-spin"></i>
+  </div>
+  <!-- end loading -->
+</div><!-- /.box -->
