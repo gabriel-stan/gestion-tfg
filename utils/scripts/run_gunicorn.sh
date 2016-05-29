@@ -27,8 +27,12 @@ if [[ $PORT == '' ]]; then
   PORT=8000
 fi
 
+if [[ $WORKERS == '' ]]; then
+  WORKERS=3
+fi
+
 # run with gunicorn
-gunicorn gestfg.wsgi --log-file - --daemon --pid $GUNICORN_PID --bind=0.0.0.0:$PORT
+gunicorn gestfg.wsgi --log-file - --daemon --pid $GUNICORN_PID --bind 0.0.0.0:$PORT --workers $WORKERS --reload
 
 # quit venv
 deactivate
