@@ -22,6 +22,7 @@ from authentication.views import AlumnosViewSet, LoginView, LogoutView, Profesor
     UsuariosViewSet
 from tfgs.views import Tfg_asigView, TfgViewSet
 from eventos.views import EventosViewSet
+from upload_files.views import Upload_fileView
 
 router = routers.SimpleRouter()
 router.register(r'alumnos', AlumnosViewSet)
@@ -37,6 +38,7 @@ urlpatterns = [
     url(r'^api/v1/auth/logout/$', LogoutView.as_view(), name='logout'),
     url(r'^api/v1/auth/permisos/$', PermissionsView.as_view(), name='permisos'),
     url(r'^api/v1/tfgs_asig/$', Tfg_asigView.as_view(), name='tfg_asig'),
+    url(r'^api/v1/upload_file_tfgs/$', Upload_fileView.as_view(), name='upload_file_tfgs'),
     # url(r'^alumnos/$', authentication_views.AlumnosViewSet.alumnos, name='alumnos'),
     # url(r'^logueo/$', login.login, name='login'),
     # url(r'^alumnos/update_alumno/$', alumnos.update_alumno, name='update_alumno'),
@@ -49,7 +51,6 @@ urlpatterns = [
     # url(r'^tfgs/delete_tfg/$', views_tfg.delete_tfg, name='delete_tfg'),
     # url(r'^asig_tfg/$', views_tfg.asig_tfg, name='asig_tfg'),
     # url(r'^asig_tfg/remove/$', views_tfg.remove_asig_tfg, name='remove_asig_tfg'),
-    # url(r'^upload_file_tfgs/$', upload_file_tfgs.upload_file, name='upload_file_tfgs'),
     url('^dashboard.*', DashboardView.as_view(), name='dashboard'),
     url('^.*$', IndexView.as_view(), name='index'),
 ]

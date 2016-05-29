@@ -65,8 +65,13 @@ class AuthenticationServicesTests(TestCase):
         self.assertEqual(resul['status'], True)
 
         # Login con un administrador
-        res = self.client.post('/api/v1/auth/login/', dict(email='admin@admin.es',
-                                                           password='0000'))
+        res = self.client.post('/api/v1/auth/login/', dict(email=self.data_admin['email'],
+                                                           password=self.data_admin['password']))
+
+         # elimino el alumno
+        res = self.client.delete('/api/v1/alumnos/', self.data_alum1)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
 
     def test_ws_profesores_get(self):
         # inserto un profesor
@@ -111,7 +116,6 @@ class AuthenticationServicesTests(TestCase):
         res = self.client.get('/api/v1/usuarios/')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
-
 
     def test_ws_admins_get(self):
         # Me logueo con un admin

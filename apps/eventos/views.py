@@ -55,7 +55,7 @@ class EventosViewSet(viewsets.ModelViewSet):
             #         return Response(resul)
             # else:
             #     return Response(dict(status=False, message=serializer.errors), status=status.HTTP_400_BAD_REQUEST)
-            resul = Evento.objects.create_evento(contenido=contenido, tipo=tipo, titulo= titulo,
+            resul = Evento.objects.create_evento(contenido=contenido, tipo=tipo, titulo=titulo,
                                                  autor=Usuario.objects.get(id=request.user.id))
             # resul = Evento.objects.create_evento(contenido=content['contenido'], titulo=content['titulo'], tipo=tipo, autor=Usuario.objects.get(id=request.user.id))
             if resul['status']:

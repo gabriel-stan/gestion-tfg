@@ -4,9 +4,14 @@ from django.contrib.auth import update_session_auth_hash
 from rest_framework import serializers
 from tfgs.models import Tfg, Tfg_Asig
 from authentication.models import Profesor, Alumno
+from authentication.serializers import ProfesorSerializer
 
 
 class TfgSerializer(serializers.ModelSerializer):
+    tutor = ProfesorSerializer()
+    cotutor = ProfesorSerializer()
+    created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
+
     class Meta:
         model = Tfg
         fields = ('id', 'tipo', 'titulo', 'updated_at', 'n_alumnos', 'descripcion', 'conocimientos_previos',
