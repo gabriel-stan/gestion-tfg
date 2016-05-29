@@ -1,8 +1,7 @@
 SECRET_KEY='my-supersecret-production-key'
-
 DEBUG=True
-
 PORT=8000
+WORKERS=5
 
 PGDATABASE=gestfg
 PGUSER=postgres
