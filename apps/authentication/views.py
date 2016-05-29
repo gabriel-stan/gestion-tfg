@@ -190,7 +190,7 @@ class AlumnosViewSet(viewsets.ModelViewSet):
 
         try:
             params = utils.get_params(request)
-            if 'email' in params and utils.check_usuario(request.user):
+            if request.user.is_admin:
                 alumno = Alumno.objects.get(email=params['email'])
                 serializer = self.serializer_class(alumno)
                 resul = serializer.delete(alumno)
