@@ -52,5 +52,5 @@ urlpatterns = [
     # url(r'^asig_tfg/$', views_tfg.asig_tfg, name='asig_tfg'),
     # url(r'^asig_tfg/remove/$', views_tfg.remove_asig_tfg, name='remove_asig_tfg'),
     url('^dashboard.*', DashboardView.as_view(), name='dashboard'),
-    url('^.*$', IndexView.as_view(), name='index'),
+    url('^/?$', IndexView.as_view(), name='index'),
 ]

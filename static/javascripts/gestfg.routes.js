@@ -24,6 +24,8 @@
       controller: 'DashboardController',
       controllerAs: 'dashCtrl',
       templateUrl: '/static/templates/layout/dashboard.html'
+    }).when('/dashboard/usuarios', {
+      templateUrl: '/static/templates/layout/dashboard/users/users.html'
     }).when('/dashboard/eventos', {
       templateUrl: '/static/templates/layout/dashboard/events/events.html'
     }).when('/dashboard/eventos/add', {
