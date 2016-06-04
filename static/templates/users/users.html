@@ -136,13 +136,58 @@
   </div><!-- /.box-body -->
 </div><!-- /.box -->
 
+<style>
+  div.dataTables_filter{
+    float: right;
+  }
+
+  div.dataTables_paginate{
+    float: right;
+  }
+
+  div.clear{
+    clear: both;
+  }
+</style>
+
 <script>
-  $(function () {
+  $(document).ready(function () {
+    $.fn.dataTable.ext.buttons.alert = {
+    className: 'buttons-alert',
+
+    action: function ( e, dt, node, config ) {
+            alert( this.text() );
+        }
+    };
+
     $("#example1").DataTable({
-      "language": {
-          "url": "/static/plugins/datatables/language/Spanish.json"
-      }
-    });
+        //sDom: '<Bf>rt<"col-md-6"i><"col-md-6"p><"col-md-12"l>',
+        sDom: '<Bf>rt<pi><"clear"l>',
+        language: {
+            "url": "/static/plugins/datatables/language/Spanish.json"
+        },
+        select: {
+            style: 'multi'
+        },
+        responsive: true,
+        buttons: [
+            {
+                text: 'Reload',
+                action: function ( e, dt, node, config ) {
+                    dt.ajax.reload();
+                }
+            },
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+            'pdfHtml5',
+            {
+                extend: 'alert',
+                text: 'My button 2'
+            },
+        ]
+      });
+
     // $('#example2').DataTable({
     //   "paging": true,
     //   "lengthChange": false,
