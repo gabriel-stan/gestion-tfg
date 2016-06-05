@@ -10,9 +10,6 @@ import utils
 
 
 class Upload_fileView(views.APIView):
-    lookup_field = 'titulo'
-    queryset = Tfg.objects.all()
-    serializer_class = TfgSerializer
 
     def post(self, request):
         """
