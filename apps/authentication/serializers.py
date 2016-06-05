@@ -13,7 +13,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Usuario
-        fields = ('id', 'email', 'created_at', 'updated_at',
+        fields = ('id', 'email', 'dni', 'created_at', 'updated_at',
                   'first_name', 'last_name', 'password',
                   'confirm_password', 'is_admin')
         read_only_fields = ('created_at', 'updated_at', 'is_admin')
@@ -21,20 +21,21 @@ class UsuarioSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return Usuario.objects.create_user(**validated_data)
 
-
 class AlumnoSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=False)
     confirm_password = serializers.CharField(write_only=True, required=False)
 
     class Meta:
         model = Alumno
-        fields = ('id', 'email', 'created_at', 'updated_at',
+        fields = ('id', 'email', 'dni', 'created_at', 'updated_at',
                   'first_name', 'last_name', 'password',
                   'confirm_password',)
         read_only_fields = ('created_at', 'updated_at',)
 
     def create(self, validated_data):
-        return Alumno.objects.create_user(**validated_data)
+        if validated_data.get('email') or validated_data.get('dni'):
+            return Alumno.objects.create_user(**validated_data)
+        return dict(status=False, message='Error en parametros')
 
     def update(self, alumno, validated_data):
         try:
@@ -48,6 +49,19 @@ class AlumnoSerializer(serializers.ModelSerializer):
                         raise NameError("El email no es correcto")
                     else:
                         alumno.email = new_email
+                else:
+                    raise NameError("El alumno indicado ya existe")
+
+            # comprobando dni
+            if 'dni' in validated_data.keys():
+                new_dni = validated_data.get('dni')
+                res = Alumno.objects.filter(dni=new_dni)
+                if res.count() == 0:
+                    if not utils.is_string(new_dni) or not \
+                            re.match(r'(\d{8})([-]?)([A-Z]{1})', new_dni):
+                        raise NameError("El dni no es correcto")
+                    else:
+                        alumno.email = new_dni
                 else:
                     raise NameError("El alumno indicado ya existe")
 
@@ -80,7 +94,7 @@ class AlumnoSerializer(serializers.ModelSerializer):
         except NameError as e:
             return dict(status=False, message=e.message)
         except:
-            return dict(status=False, message="El email no es correcto")
+            return dict(status=False, message="Error en los parametros")
 
     def delete(self, alumno):
         alumno.delete()
@@ -94,13 +108,15 @@ class ProfesorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profesor
-        fields = ('id', 'email', 'created_at', 'updated_at',
+        fields = ('id', 'email', 'dni', 'created_at', 'updated_at',
                   'first_name', 'last_name', 'password',
                   'confirm_password', 'departamento')
         read_only_fields = ('created_at', 'updated_at',)
 
     def create(self, validated_data):
-        return Profesor.objects.create_user(**validated_data)
+        if validated_data.get('email') or validated_data.get('dni'):
+            return Profesor.objects.create_user(**validated_data)
+        return dict(status=False, message='Error en parametros')
 
     def update(self, profesor, validated_data):
         try:
@@ -115,6 +131,19 @@ class ProfesorSerializer(serializers.ModelSerializer):
                         profesor.email = new_email
                 else:
                     raise NameError("No existe el profesor")
+
+            # comprobando dni
+            if 'dni' in validated_data.keys():
+                new_dni = validated_data.get('dni')
+                res = Profesor.objects.filter(dni=new_dni)
+                if res.count() == 0:
+                    if not utils.is_string(new_dni) or not \
+                            re.match(r'(\d{8})([-]?)([A-Z]{1})', new_dni):
+                        raise NameError("El dni no es correcto")
+                    else:
+                        profesor.email = new_dni
+                else:
+                    raise NameError("El profesor indicado ya existe")
 
             # comprobando nombre
             if 'first_name' in validated_data.keys():
@@ -147,7 +176,7 @@ class ProfesorSerializer(serializers.ModelSerializer):
         except NameError as e:
             return dict(status=False, message=e.message)
         except:
-            return dict(status=False, message="El email no es correcto")
+            return dict(status=False, message="Error en los parametros")
 
     def delete(self, profesor):
         profesor.delete()

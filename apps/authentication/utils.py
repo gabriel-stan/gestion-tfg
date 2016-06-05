@@ -1,7 +1,7 @@
-from django.db.models.fields.related import ManyToManyField
+import re
 import simplejson as json
+from django.db.models.fields.related import ManyToManyField
 from django.contrib.auth.models import Permission
-
 
 def get_params(req):
 
@@ -41,6 +41,26 @@ def is_int(s):
         return False
 
 
+def is_email(param):
+    try:
+        if not re.match(r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$', param):
+            return False
+        else:
+            return True
+    except Exception:
+            return False
+
+
+def is_dni(param):
+    try:
+        if not re.match(r'(\d{8})([-]?)([A-Z]{1})', param):
+            return False
+        else:
+            return True
+    except Exception:
+            return False
+
+
 def to_dict(resul):
     instance = resul['data']
     opts = instance._meta
@@ -59,8 +79,8 @@ def to_dict(resul):
 
 
 # Comprueba que un usuario va a modificar los datos de si mismo
-def check_usuario(user, email=None):
-    if user.email == email:
+def check_usuario(user, credential=None):
+    if credential in [user.email, user.dni]:
         return True
     elif user.is_admin:
         return True
@@ -70,8 +90,11 @@ def check_usuario(user, email=None):
 
 def permisos(usuario):
     permissions = Permission.objects.filter(group=usuario.groups.all()).values('codename')
-    list_permissions = []
+    list_permissions = {}
     for permission in permissions:
         model, codename = permission['codename'].split('.')
-        list_permissions.append({model: codename})
+        if list_permissions.get(model):
+            list_permissions[model].append(codename)
+        else:
+            list_permissions[model] = [codename]
     return list_permissions

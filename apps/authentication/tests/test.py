@@ -71,10 +71,10 @@ class TfgServicesTests(TestCase):
 
         alumno = self.serializer_class()
         result = alumno.create({'email': self.alumn1_username, 'last_name': self.alumn1_apellidos})
-        self.assertEqual(result['status'], False)
+        self.assertEqual(result['status'], True)
 
     def test_insert_alumno_apellidos(self):
 
         alumno = self.serializer_class()
         result = alumno.create({'email': self.alumn1_username, 'firs_name': self.alumn1_nombre})
-        self.assertEqual(result['status'], False)
+        self.assertEqual(result['status'], True)
