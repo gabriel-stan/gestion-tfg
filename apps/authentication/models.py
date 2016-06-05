@@ -111,6 +111,7 @@ class Alumno(Usuario):
     objects = AlumnoManager()
 
 
+
 class ProfesorManager(BaseUserManager):
     def create_user(self, password=None, **kwargs):
         try:
