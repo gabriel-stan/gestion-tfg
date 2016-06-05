@@ -31,6 +31,9 @@ class UsuariosViewSet(viewsets.ModelViewSet):
                     if 'email' in params:
                         usuario = Usuario.objects.get(email=params['email'])
                         resul = self.serializer_class(usuario).data
+                    elif 'dni' in params:
+                        usuario = Usuario.objects.get(dni=params['dni'])
+                        resul = self.serializer_class(usuario).data
                     else:
                         usuario = Usuario.objects.all()
                         resul = self.serializer_class(usuario, many=True).data
@@ -88,15 +91,6 @@ class AlumnosViewSet(viewsets.ModelViewSet):
     queryset = Alumno.objects.all()
     serializer_class = AlumnoSerializer
 
-    # def get_permissions(self):
-    #     if self.request.method in permissions.SAFE_METHODS:
-    #         return (permissions.AllowAny(),)
-    #
-    #     if self.request.method == 'POST':
-    #         return (permissions.AllowAny(),)
-    #
-    #     return (permissions.IsAuthenticated(), IsAccountOwner(),)
-
     def list(self, request):
         """
         GET
@@ -112,6 +106,9 @@ class AlumnosViewSet(viewsets.ModelViewSet):
             try:
                 if 'email' in params:
                     alumno = Alumno.objects.get(email=params['email'])
+                    resul = self.serializer_class(alumno).data
+                elif 'dni' in params:
+                    alumno = Alumno.objects.get(dni=params['dni'])
                     resul = self.serializer_class(alumno).data
                 else:
                     alumno = Alumno.objects.all()
@@ -166,8 +163,11 @@ class AlumnosViewSet(viewsets.ModelViewSet):
         """
         try:
             params = utils.get_params(request)
-            if utils.check_usuario(request.user, params['alumno']):
-                alumno = Alumno.objects.get(email=params['alumno'])
+            if utils.check_usuario(request.user, params['usuario']):
+                if utils.is_email(params['usuario']):
+                    alumno = Alumno.objects.get(email=params['usuario'])
+                elif utils.is_dni(params['usuario']):
+                    alumno = Alumno.objects.get(dni=params['usuario'])
                 params = json.loads(request.data['datos'])
                 serializer = self.serializer_class(alumno)
                 resul = serializer.update(alumno, params)
@@ -191,7 +191,10 @@ class AlumnosViewSet(viewsets.ModelViewSet):
         try:
             params = utils.get_params(request)
             if request.user.is_admin:
-                alumno = Alumno.objects.get(email=params['email'])
+                if utils.is_email(params.get('email')):
+                    alumno = Alumno.objects.get(email=params.get('email'))
+                elif utils.is_dni(params.get('dni')):
+                    alumno = Alumno.objects.get(dni=params.get('dni'))
                 serializer = self.serializer_class(alumno)
                 resul = serializer.delete(alumno)
             else:
@@ -213,25 +216,26 @@ class ProfesoresViewSet(viewsets.ModelViewSet):
     def list(self, request):
         """
         GET
-        Obtener los datos de todos o de algun alumno
+        Obtener los datos de todos o de algun profesor
         :param request:
         :return :
-        {status: True/False, data:{serializer del alumno o alumnos}
+        {status: True/False, data:{serializer del profesor o profesores}
         """
-
         # Si es un GET, devuelvo la info de todos los alumnos
         try:
             params = utils.get_params(request)
             try:
                 if 'email' in params:
                     profesor = Profesor.objects.get(email=params['email'])
-                    resul = ProfesorSerializer(profesor).data
+                    resul = self.serializer_class(profesor).data
+                elif 'dni' in params:
+                    profesor = Profesor.objects.get(dni=params['dni'])
+                    resul = self.serializer_class(profesor).data
                 else:
                     profesores = Profesor.objects.all()
                     resul = ProfesorSerializer(profesores, many=True).data
                     if len(resul) == 0:
                         raise NameError("No hay profesores almacenados")
-
                 return Response(dict(status=True, data=resul))
             except NameError as e:
                 return Response(dict(status=False, message=e.message))
@@ -246,7 +250,7 @@ class ProfesoresViewSet(viewsets.ModelViewSet):
         Insertar un profesor nuevo
         :param request:
         :return :
-        {status: True/False, data:{datos del profesor insertado o de todos los profesores}
+        {status: True/False, data:{datos del profesor insertado}
 
         :param request:
         :return:
@@ -278,8 +282,11 @@ class ProfesoresViewSet(viewsets.ModelViewSet):
         """
         try:
             params = utils.get_params(request)
-            if utils.check_usuario(request.user, params['profesor']):
-                profesor = Profesor.objects.get(email=params['profesor'])
+            if utils.check_usuario(request.user, params['usuario']):
+                if utils.is_email(params['usuario']):
+                    profesor = Profesor.objects.get(email=params['usuario'])
+                elif utils.is_dni(params['usuario']):
+                    profesor = Profesor.objects.get(dni=params['usuario'])
                 params = json.loads(params['datos'])
                 serializer = ProfesorSerializer(profesor)
                 resul = serializer.update(profesor, params)
@@ -299,11 +306,13 @@ class ProfesoresViewSet(viewsets.ModelViewSet):
         :param request:
         :return :
         """
-
         try:
             params = utils.get_params(request)
-            if 'email' in params and utils.check_usuario(request.user):
-                profesor = Profesor.objects.get(email=params['email'])
+            if request.user.is_admin:
+                if utils.is_email(params.get('email')):
+                    profesor = Profesor.objects.get(email=params.get('email'))
+                elif utils.is_dni(params.get('dni')):
+                    profesor = Profesor.objects.get(dni=params.get('dni'))
                 serializer = self.serializer_class(profesor)
                 resul = serializer.delete(profesor)
             else:
@@ -318,41 +327,54 @@ class ProfesoresViewSet(viewsets.ModelViewSet):
 
 
 class LoginView(views.APIView):
+    lookup_field = 'email'
+    queryset = Usuario.objects.all()
 
     def post(self, request, format=None):
-        # params = utils.get_params(request)
-        params = request.data
 
-        email = params.get('email', None)
-        password = params.get('password', None)
+        try:
+            # params = utils.get_params(request)
+            params = request.data
 
-        account = authenticate(email=email, password=password)
+            email = params.get('email', None)
+            dni = params.get('dni', None)
+            password = params.get('password', None)
 
-        if account is not None:
-            if account.is_active:
-                login(request, account)
-                if hasattr(account, 'alumno') and isinstance(account.alumno, Alumno):
-                    serialized = AlumnoSerializer(account.alumno)
-                elif hasattr(account, 'profesor') and isinstance(account.profesor, Profesor):
-                    serialized = ProfesorSerializer(account.profesor)
-                else:
-                    serialized = UsuarioSerializer(account)
-                # permissions = Permission.objects.filter(group=serialized.instance.groups.all()).values('codename')
-                # list_permissions = []
-                # for permission in permissions:
-                #     list_permissions.append(permission['codename'])
-                list_permissions = utils.permisos(request.user)
-                return Response(dict(data=serialized.data, permissions=list_permissions))
+            if email:
+                user = Usuario.objects.get(email=params['email'])
+            elif dni:
+                user = Usuario.objects.get(dni=params['dni'])
             else:
-                return Response({
-                    'status': 'Unauthorized',
-                    'message': 'This account has been disabled.'
-                }, status=status.HTTP_401_UNAUTHORIZED)
-        else:
-            return Response({
-                'status': 'Unauthorized',
-                'message': 'Username/password combination invalid.'
-            }, status=status.HTTP_401_UNAUTHORIZED)
+                raise NameError("Es necesario un dni o email validos")
+            account = authenticate(id=user.id, password=password)
+
+            if account is not None:
+                if account.is_active:
+                    login(request, account)
+                    if hasattr(account, 'alumno') and isinstance(account.alumno, Alumno):
+                        serialized = AlumnoSerializer(account.alumno)
+                    elif hasattr(account, 'profesor') and isinstance(account.profesor, Profesor):
+                        serialized = ProfesorSerializer(account.profesor)
+                    else:
+                        serialized = UsuarioSerializer(account)
+                    # permissions = Permission.objects.filter(group=serialized.instance.groups.all()).values('codename')
+                    # list_permissions = []
+                    # for permission in permissions:
+                    #     list_permissions.append(permission['codename'])
+                    list_permissions = utils.permisos(request.user)
+                    resul = dict(data=serialized.data, permissions=list_permissions)
+                    resul_status = status.HTTP_200_OK
+                else:
+                    resul = dict(message='This account has been disabled.')
+                    resul_status = status.HTTP_401_UNAUTHORIZED
+            else:
+                resul = dict(message='Usuario/Clave incorrectos.')
+                resul_status = status.HTTP_401_UNAUTHORIZED
+            return Response(resul, status=resul_status)
+        except NameError as e:
+                return Response(dict(status=False, message=e.message))
+        except Exception:
+            return Response(dict(status=False, message="Error en la llamada"))
 
 
 class LogoutView(views.APIView):

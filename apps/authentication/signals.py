@@ -3,6 +3,9 @@ from django.dispatch import receiver
 from django.contrib.auth.models import User, Group, Permission
 from django.contrib.contenttypes.models import ContentType
 
+PERMISOS_PROFESORES={'tfgs': {'tfg': ['create', 'select', 'change', 'delete']},
+                     'eventos': {'evento': ['create', 'select', 'change', 'delete']}}
+
 
 @receiver(post_migrate)
 def create_groups(sender, **kwargs):
@@ -14,7 +17,7 @@ def create_groups(sender, **kwargs):
         print "Group %s already exists\n" % group.name
 
     group, created = Grupos.objects.get_or_create(name='Profesores', code=20)
-    load_permission_profesores(group)
+    load_permission(group, PERMISOS_PROFESORES)
     if created:
         print "Group %s created successfully\n" % group.name
     else:
@@ -30,13 +33,12 @@ def create_groups(sender, **kwargs):
 post_migrate.connect(create_groups)
 
 
-def load_permission_profesores(group):
-    content, created = ContentType.objects.get_or_create(app_label='tfgs', model='tfg')
-    can_create_tfgs, created = Permission.objects.get_or_create(content_type=content, codename='tfg.create',
-                                                                name='Puede crear tfgs')
-    group.permissions.add(can_create_tfgs)
-
-    content, created = ContentType.objects.get_or_create(app_label='eventos', model='evento')
-    can_create_events, created = Permission.objects.get_or_create(content_type=content, codename='evento.create',
-                                                                name='Puede crear eventos')
-    group.permissions.add(can_create_events)
+def load_permission(group, permissions):
+    for app, dict_permission in permissions.items():
+        for model, perms in dict_permission.items():
+            for i in perms:
+                content, created = ContentType.objects.get_or_create(app_label=app, model=model)
+                codename = "%s.%s" % (model, i)
+                new_perm, created = Permission.objects.get_or_create(content_type=content, codename=codename,
+                                                                     name=codename)
+                group.permissions.add(new_perm)
