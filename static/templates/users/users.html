@@ -13,115 +13,9 @@
           <th>Apellidos</th>
           <th>Email</th>
           <th>Rol</th>
-          <th>Acciones</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>usuario1</td>
-          <td>Usuario</td>
-          <td>Fulanito</td>
-          <td>fulanito@correo.ugr.es</td>
-          <td>Administrador</td>
-          <td> - </td>
-        </tr>
-        <tr>
-          <td>usuario1</td>
-          <td>Usuario</td>
-          <td>Fulanito</td>
-          <td>fulanito@correo.ugr.es</td>
-          <td>Alumno</td>
-          <td> - </td>
-        </tr>
-        <tr>
-          <td>usuario1</td>
-          <td>Usuario</td>
-          <td>Fulanito</td>
-          <td>fulanito@correo.ugr.es</td>
-          <td>Administrador</td>
-          <td> - </td>
-        </tr>
-        <tr>
-          <td>usuario1</td>
-          <td>Usuario</td>
-          <td>Fulanito</td>
-          <td>fulanito@correo.ugr.es</td>
-          <td>Administrador</td>
-          <td> - </td>
-        </tr>
-        <tr>
-          <td>usuario1</td>
-          <td>Usuario</td>
-          <td>Fulanito</td>
-          <td>fulanito@correo.ugr.es</td>
-          <td>Administrador</td>
-          <td> - </td>
-        </tr>
-        <tr>
-          <td>pepito123</td>
-          <td>Pepito</td>
-          <td>Perez Garcia</td>
-          <td>pepitoperez@correo.ugr.es</td>
-          <td>Alumno</td>
-          <td> - </td>
-        </tr>
-        <tr>
-          <td>pepito123</td>
-          <td>Pepito</td>
-          <td>Perez Garcia</td>
-          <td>pepitoperez@correo.ugr.es</td>
-          <td>Alumno</td>
-          <td> - </td>
-        </tr>
-        <tr>
-          <td>pepito123</td>
-          <td>Pepito</td>
-          <td>Perez Garcia</td>
-          <td>pepitoperez@correo.ugr.es</td>
-          <td>Alumno</td>
-          <td> - </td>
-        </tr>
-        <tr>
-          <td>pepito123</td>
-          <td>Pepito</td>
-          <td>Perez Garcia</td>
-          <td>pepitoperez@correo.ugr.es</td>
-          <td>Alumno</td>
-          <td> - </td>
-        </tr>
-        <tr>
-          <td>usuario2</td>
-          <td>User</td>
-          <td>Menganito Garcia</td>
-          <td>menganito@correo.ugr.es</td>
-          <td>Profesor</td>
-          <td> - </td>
-        </tr>
-        <tr>
-          <td>usuario2</td>
-          <td>User</td>
-          <td>Menganito Garcia</td>
-          <td>menganito@correo.ugr.es</td>
-          <td>Profesor</td>
-          <td> - </td>
-        </tr>
-        <tr>
-          <td>usuario2</td>
-          <td>User</td>
-          <td>Menganito Garcia</td>
-          <td>menganito@correo.ugr.es</td>
-          <td>Administrador</td>
-          <td> - </td>
-        </tr>
-        <tr>
-          <td>usuario2</td>
-          <td>User</td>
-          <td>Menganito Garcia</td>
-          <td>menganito@correo.ugr.es</td>
-          <td>Profesor</td>
-          <td> - </td>
-        </tr>
-      </tbody>
+
       <tfoot>
         <tr>
           <th>Usuario</th>
@@ -129,7 +23,6 @@
           <th>Apellidos</th>
           <th>Email</th>
           <th>Rol</th>
-          <th>Acciones</th>
         </tr>
       </tfoot>
     </table>
@@ -184,7 +77,15 @@
             {
                 extend: 'alert',
                 text: 'My button 2'
-            },
+            }
+        ],
+        ajax: "/api/v1/usuarios/",
+        columns: [
+          {"data" : "dni"},
+          {"data" : "first_name"},
+          {"data" : "last_name"},
+          {"data" : "email"},
+          {"data" : "is_admin"}
         ]
       });
 
