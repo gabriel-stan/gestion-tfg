@@ -94,8 +94,14 @@ class AuthenticationServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
+        # Me logueo con un admin
+        res = self.client.post('/api/v1/auth/login/', {'dni': self.data_admin['dni'],
+                                                       'password': self.data_admin['password']})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['dni'], self.data_admin['dni'])
+
         # obtengo todos los alumnos por que soy un profesor
-        res = self.client.get('/api/v1/alumnos/')
+        res = self.client.get('/api/v1/usuarios/')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
@@ -158,3 +164,4 @@ class AuthenticationServicesTests(TestCase):
         res = self.client.get('/api/v1/auth/permisos/')
         resul = json.loads(res.content)
         self.assertEqual(resul['permissions']['evento'][0], 'change')
+

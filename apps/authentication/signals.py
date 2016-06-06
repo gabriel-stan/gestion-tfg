@@ -6,6 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 PERMISOS_PROFESORES={'tfgs': {'tfg': ['create', 'select', 'change', 'delete']},
                      'eventos': {'evento': ['create', 'select', 'change', 'delete']}}
 
+PERMISOS_USUARIOS={'tfgs': {'tfg'}}
 
 @receiver(post_migrate)
 def create_groups(sender, **kwargs):

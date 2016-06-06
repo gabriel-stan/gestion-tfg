@@ -6,6 +6,7 @@ from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import Group
 import signals
 
+
 class AccountManager(BaseUserManager):
 
     def create_user(self, password=None, **kwargs):
@@ -109,7 +110,6 @@ class AlumnoManager(BaseUserManager):
 
 class Alumno(Usuario):
     objects = AlumnoManager()
-
 
 
 class ProfesorManager(BaseUserManager):

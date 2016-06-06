@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth import authenticate, login, logout
 from authentication.models import Alumno, Profesor, Grupos, Usuario
-from authentication.serializers import AlumnoSerializer, ProfesorSerializer, UsuarioSerializer
+from authentication.serializers import AlumnoSerializer, ProfesorSerializer, UsuarioSerializer, UsuarioAllSerializer
 from rest_framework import permissions, viewsets, status, views
 from rest_framework.response import Response
 from django.contrib.auth.models import Permission
@@ -36,7 +36,7 @@ class UsuariosViewSet(viewsets.ModelViewSet):
                         resul = self.serializer_class(usuario).data
                     else:
                         usuario = Usuario.objects.all()
-                        resul = self.serializer_class(usuario, many=True).data
+                        resul = UsuarioAllSerializer(usuario, many=True).data
                         if len(resul) == 0:
                             raise NameError("No hay usuarios almacenados")
                     return Response(dict(status=True, data=resul))
@@ -45,7 +45,7 @@ class UsuariosViewSet(viewsets.ModelViewSet):
                 except Usuario.DoesNotExist:
                     return Response(dict(status=False, message="El usuario indicado no existe"))
             else:
-                resul = dict(message="Sin privilegios")
+                resul = dict(status=False, message="Sin privilegios")
                 resul_status = status.HTTP_405_METHOD_NOT_ALLOWED
             return Response(resul, status=resul_status)
         except Exception as e:
