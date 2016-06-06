@@ -32,6 +32,8 @@
       controller: 'NewEventController',
       controllerAs: 'vm',
       templateUrl: '/static/templates/layout/dashboard/events/add-event.html'
+    }).when('/dashboard/tfg/upload', {
+      templateUrl: '/static/templates/layout/dashboard/tfg/upload-tfgs.html'
     }).when('/', {
       controller: 'IndexController',
       controllerAs: 'indexCtrl',
