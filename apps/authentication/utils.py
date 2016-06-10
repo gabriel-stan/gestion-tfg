@@ -3,8 +3,8 @@ import simplejson as json
 from django.db.models.fields.related import ManyToManyField
 from django.contrib.auth.models import Permission
 
-def get_params(req):
 
+def get_params(req):
     datos = {}
     if req.method == 'GET':
         for key, value in req.query_params.items():
@@ -98,3 +98,37 @@ def permisos(usuario):
         else:
             list_permissions[model] = [codename]
     return list_permissions
+
+
+def procesar_datos_usuario(user, data):
+    # Importo aqui para evitar el cruce de imports
+    from models import Alumno, Profesor, Usuario
+    resultado = []
+    if not user.is_admin:
+        for s_data in data:
+            resul = {}
+            if user.is_admin:
+                resul['dni'] = s_data['dni']
+            resul['email'] = s_data['email']
+            resul['first_name'] = s_data['first_name']
+            resul['last_name'] = s_data['last_name']
+            resul['created_at'] = s_data['created_at']
+            resul['updated_at'] = s_data['updated_at']
+            if Alumno.objects.filter(dni=s_data['dni']).count() != 0:
+                resul['clase'] = 'Alumno'
+            elif Profesor.objects.filter(dni=s_data['dni']).count() != 0:
+                resul['clase'] = 'Profesor'
+            elif Usuario.objects.get(dni=s_data['dni']).is_admin:
+                resul['clase'] = 'Administrador'
+            else:
+                resul['clase'] = 'Usuario'
+            resul['grupos'] = obtener_grupos(s_data)
+            resultado.append(resul)
+    return resultado
+
+
+def obtener_grupos(data):
+    grupos = []
+    for grupo in data.get('groups') or []:
+        grupos.append(grupo.get('name'))
+    return grupos

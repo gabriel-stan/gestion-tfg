@@ -1,26 +1,10 @@
 import re
 import utils
+from django.db import models
 from django.contrib.auth import update_session_auth_hash
 from rest_framework import serializers
-from authentication.models import Alumno, Profesor, Usuario
+from authentication.models import Alumno, Profesor, Usuario, Departamento
 from django.contrib.auth.models import Group
-
-
-class UsuarioSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, required=False)
-    confirm_password = serializers.CharField(write_only=True, required=False)
-    created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
-    updated_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
-
-    class Meta:
-        model = Usuario
-        fields = ('id', 'email', 'dni', 'created_at', 'updated_at',
-                  'first_name', 'last_name', 'password',
-                  'confirm_password', 'is_admin')
-        read_only_fields = ('created_at', 'updated_at', 'is_admin')
-
-    def create(self, validated_data):
-        return Usuario.objects.create_user(**validated_data)
 
 
 class GroupSerializer(serializers.ModelSerializer):
@@ -29,8 +13,8 @@ class GroupSerializer(serializers.ModelSerializer):
         fields = ['name']
 
 
-class UsuarioAllSerializer(serializers.ModelSerializer):
-    groups = GroupSerializer(many=True)
+class UsuarioSerializer(serializers.ModelSerializer):
+    groups = GroupSerializer(many=True, required=False)
     password = serializers.CharField(write_only=True, required=False)
     confirm_password = serializers.CharField(write_only=True, required=False)
     created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
@@ -42,6 +26,16 @@ class UsuarioAllSerializer(serializers.ModelSerializer):
                   'first_name', 'last_name', 'password',
                   'confirm_password', 'is_admin', 'groups')
         read_only_fields = ('created_at', 'updated_at', 'is_admin')
+
+    def create(self, validated_data):
+        return Usuario.objects.create_user(**validated_data)
+
+
+class DepartamentoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Usuario
+        fields = ('id', 'codigo', 'nombre',)
 
 
 class AlumnoSerializer(serializers.ModelSerializer):
@@ -127,6 +121,7 @@ class AlumnoSerializer(serializers.ModelSerializer):
 
 
 class ProfesorSerializer(serializers.ModelSerializer):
+    departamento = models.ForeignKey(Departamento)
     password = serializers.CharField(write_only=True, required=False)
     confirm_password = serializers.CharField(write_only=True, required=False)
     created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)

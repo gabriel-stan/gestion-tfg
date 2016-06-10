@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.test import TestCase
 from rest_framework.test import APIClient
-from authentication.models import Usuario
+from authentication.models import Usuario, Departamento
 from django.contrib.auth.models import Group
 import simplejson as json
+import os
 
 
 class AuthenticationServicesTests(TestCase):
@@ -26,8 +27,10 @@ class AuthenticationServicesTests(TestCase):
         self.data_alum_error = dict(email='ejemplo2', first_name='alumno 2',
                                     last_name='apellido 12 apellido 122', password='0000')
 
+        dep = Departamento.objects.create(nombre='departamento1', codigo=1)
+
         self.data_prof1 = dict(dni='87654321S', first_name='profesor 2',
-                                    last_name='apellido 12 apellido 122', departamento='departamento1', password='0000')
+                                    last_name='apellido 12 apellido 122', departamento=dep, password='0000')
 
     def test_ws_alumnos_get(self):
         # Sin alumnos
@@ -95,15 +98,23 @@ class AuthenticationServicesTests(TestCase):
         self.assertEqual(resul['status'], True)
 
         # Me logueo con un admin
+        res = self.client.post('/api/v1/auth/login/', {'dni': self.data_prof1['dni'],
+                                                       'password': self.data_prof1['password']})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['dni'], self.data_prof1['dni'])
+
+        # obtengo todos los usuarios pero sin dni por que soy un profesor
+        res = self.client.get('/api/v1/usuarios/')
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+        self.assertEqual(resul['data'][0].get('dni'), None)
+        self.assertEqual(resul['data'][0].get('clase'), 'Alumno')
+
+        # Me logueo con un admin
         res = self.client.post('/api/v1/auth/login/', {'dni': self.data_admin['dni'],
                                                        'password': self.data_admin['password']})
         resul = json.loads(res.content)
         self.assertEqual(resul['data']['dni'], self.data_admin['dni'])
-
-        # obtengo todos los alumnos por que soy un profesor
-        res = self.client.get('/api/v1/usuarios/')
-        resul = json.loads(res.content)
-        self.assertEqual(resul['status'], True)
 
     def test_ws_usuarios_get(self):
         # Me logueo con un admin
@@ -164,4 +175,17 @@ class AuthenticationServicesTests(TestCase):
         res = self.client.get('/api/v1/auth/permisos/')
         resul = json.loads(res.content)
         self.assertEqual(resul['permissions']['evento'][0], 'change')
+
+    def test_load_data(self):
+        # Me logueo con un admin
+        res = self.client.post('/api/v1/auth/login/', {'dni': self.data_admin['dni'],
+                                                       'password': self.data_admin['password']})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['dni'], self.data_admin['dni'])
+
+        location = os.path.join(os.path.dirname(__file__), 'test_load_data', 'LoadDepartamentos.csv')
+        data = {'file': ('LoadDepartamentos.csv', open(location, 'rb')), 'model': 'departamento'}
+        res = self.client.post('/api/v1/auth/load_data/', data, format='multipart')
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
 

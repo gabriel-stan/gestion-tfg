@@ -3,15 +3,25 @@ from django.dispatch import receiver
 from django.contrib.auth.models import User, Group, Permission
 from django.contrib.contenttypes.models import ContentType
 
-PERMISOS_PROFESORES={'tfgs': {'tfg': ['create', 'select', 'change', 'delete']},
-                     'eventos': {'evento': ['create', 'select', 'change', 'delete']}}
 
-PERMISOS_USUARIOS={'tfgs': {'tfg'}}
+PERMISOS_JEFE_DEPARTAMENTO={'tfgs': {'tfg': ['create', 'select', 'change', 'delete']},
+                             'eventos': {'evento': ['create', 'select', 'change', 'delete']},
+                             'authentication': {'usuario': ['select']}}
+
+PERMISOS_PROFESORES={'tfgs': {'tfg': ['create', 'select', 'change', 'delete']},
+                     'eventos': {'evento': ['create', 'select', 'change', 'delete']},
+                     'authentication': {'usuario': ['select']}}
+
+PERMISOS_ALUMNOS={'tfgs': {'tfg': ['select']}}
+
+PERMISOS_USUARIOS={'tfgs': {'tfg': ['select']}}
+
+
 
 @receiver(post_migrate)
 def create_groups(sender, **kwargs):
     from authentication.models import Grupos
-    group, created = Grupos.objects.get_or_create(name='Admins', code=10)
+    group, created = Grupos.objects.get_or_create(name='Administrador', code=10)
     if created:
         print "Group %s created successfully\n" % group.name
     else:
@@ -25,6 +35,14 @@ def create_groups(sender, **kwargs):
         print "Group %s already exists\n" % group.name
 
     group, created = Grupos.objects.get_or_create(name='Alumnos', code=30)
+    load_permission(group, PERMISOS_ALUMNOS)
+    if created:
+        print "Group %s created successfully\n" % group.name
+    else:
+        print "Group %s already exists\n" % group.name
+
+    group, created = Grupos.objects.get_or_create(name='Jefe de Departamento', code=40)
+    load_permission(group, PERMISOS_JEFE_DEPARTAMENTO)
     if created:
         print "Group %s created successfully\n" % group.name
     else:
@@ -42,4 +60,5 @@ def load_permission(group, permissions):
                 codename = "%s.%s" % (model, i)
                 new_perm, created = Permission.objects.get_or_create(content_type=content, codename=codename,
                                                                      name=codename)
-                group.permissions.add(new_perm)
+                if not created:
+                    group.permissions.add(new_perm)
