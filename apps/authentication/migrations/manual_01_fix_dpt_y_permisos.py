@@ -7,10 +7,6 @@ from django.conf import settings
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('authentication', '0007_auto_20160605_1421'),
-    ]
-
     operations = [
         migrations.RemoveField(
             model_name='profesor',

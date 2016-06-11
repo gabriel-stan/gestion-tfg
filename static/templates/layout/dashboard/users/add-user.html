@@ -1,0 +1,86 @@
+ <!-- Content Header (Page header) -->
+ <section class="content-header">
+   <h1>
+     Usuarios
+     <small>Añadir un usuario</small>
+   </h1>
+   <ol class="breadcrumb">
+     <li><a href="/dashboard"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+     <li><a href="/dashboard/usuarios">Usuarios</a></li>
+     <li class="active">Nuevo</li>
+   </ol>
+ </section>
+
+ <!-- Main content -->
+ <section class="content">
+
+   <div class="row">
+      <div class="col-md-offset-3 col-md-6">
+
+        <div class="box">
+
+          <form role="form" class="form-horizontal" ng-submit="vm.submit()">
+
+            <div class="box-body pad">
+
+              <div class="form-group">
+                <label class="col-sm-3 control-label">Tipo</label>
+                <div class="col-sm-9">
+                  <select class="form-control" ng-model="vm.user.tipo">
+                    <option value="alumnos">Alumno</option>
+                    <option value="profesores">Profesor</option>
+                    <option value="usuarios">Usuario</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-3 control-label">Nombre</label>
+                <div class="col-sm-9">
+                  <input class="form-control" type="text" placeholder="Nombre" ng-model="vm.user.first_name">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-3 control-label">Apellidos</label>
+                <div class="col-sm-9">
+                  <input class="form-control" type="text" placeholder="Apellidos" ng-model="vm.user.last_name">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-3 control-label">Email</label>
+                <div class="col-sm-9">
+                  <input class="form-control" type="text" placeholder="Email" ng-model="vm.user.email">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-3 control-label">Admin</label>
+                <div class="col-sm-9">
+                  <input type="checkbox" ng-model="vm.user.is_admin">
+                </div>
+              </div>
+
+            </div>
+
+            <div class="box-footer">
+              <button type="submit" class="btn btn-primary pull-right">Añadir</button>
+            </div>
+
+          </form>
+
+        </div>
+
+      </div><!-- /.col-->
+    </div><!-- ./row -->
+
+ </section><!-- /.content -->
+
+
+  <script>
+    $(function () {
+      //bootstrap WYSIHTML5 - text editor
+      $(".textarea").wysihtml5();
+    });
+  </script>
