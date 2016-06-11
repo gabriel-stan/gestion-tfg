@@ -13,6 +13,7 @@
           <th>Apellidos</th>
           <th>Email</th>
           <th>Rol</th>
+          <th>Admin</th>
         </tr>
       </thead>
 
@@ -23,6 +24,7 @@
           <th>Apellidos</th>
           <th>Email</th>
           <th>Rol</th>
+          <th>Admin</th>
         </tr>
       </tfoot>
     </table>
@@ -45,15 +47,16 @@
 
 <script>
   $(document).ready(function () {
-    $.fn.dataTable.ext.buttons.alert = {
-    className: 'buttons-alert',
+    $.fn.dataTable.ext.buttons.edit = {
+    className: 'buttons-edit',
 
     action: function ( e, dt, node, config ) {
-            alert( this.text() );
-        }
+            alert( 'editando ' + JSON.stringify( dt.row( { selected: true } ).data() ) );
+        },
+        enabled: false
     };
 
-    $("#tabla-users").DataTable({
+    var table = $("#tabla-users").DataTable({
         //sDom: '<Bf>rt<"col-md-6"i><"col-md-6"p><"col-md-12"l>',
         sDom: '<Bf>rt<pi><"clear"l>',
         language: {
@@ -70,13 +73,12 @@
                     dt.ajax.reload();
                 }
             },
-            'copyHtml5',
-            'excelHtml5',
-            'csvHtml5',
-            'pdfHtml5',
+            'selectAll',
+            'selectNone',
             {
-                extend: 'alert',
-                text: 'My button 2'
+                extend: 'edit',
+                name: 'edit',
+                text: 'Editar'
             }
         ],
         ajax: "/api/v1/usuarios/",
@@ -85,8 +87,35 @@
           {"data" : "first_name"},
           {"data" : "last_name"},
           {"data" : "email"},
+          {"data" : "clase"},
           {"data" : "is_admin"}
         ]
+      });
+
+      table.on( 'select', function () {
+          var selectedRows = table.rows( { selected: true } ).count();
+
+          table.button( 'edit:name' ).enable( selectedRows === 1 );
+      } );
+
+      table.on( 'deselect', function () {
+          var selectedRows = table.rows( { selected: true } ).count();
+
+          table.button( 'edit:name' ).enable( selectedRows === 1 );
+      } );
+
+      new $.fn.dataTable.Buttons( table, {
+          buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+            'pdfHtml5'
+          ]
+      } );
+
+      table.on( 'init.dt', function () {
+        var container = $(table.table().container());
+        container.append(table.buttons(1).container()[1]);
       });
 
     // $('#example2').DataTable({
