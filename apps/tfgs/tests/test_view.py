@@ -1,7 +1,7 @@
 __author__ = 'tonima'
 from django.test import TestCase
 from rest_framework.test import APIClient
-from authentication.models import Usuario
+from authentication.models import Usuario, Departamento
 import simplejson as json
 
 
@@ -12,11 +12,13 @@ class TfgServicesTests(TestCase):
                                last_name='apellido 1 apellido 12', password='0000', is_admin=True)
         Usuario.objects.create_superuser(**self.data_admin)
 
+        dep = Departamento.objects.create(nombre='departamento1', codigo=1)
+
         self.data_prof1 = dict(email='prof_ejemplo@ugr.es', first_name='profesor 1',
-                               last_name='apellido 1 apellido 12', departamento='el mas mejor', password='75169052')
+                               last_name='apellido 1 apellido 12', departamento=dep, password='75169052')
 
         self.data_prof2 = dict(email='prof_ejemplo2@ugr.es', first_name='profesor 2',
-                               last_name='apellido 12 apellido 122', departamento='el mas mejor', password='75169052')
+                               last_name='apellido 12 apellido 122', departamento=dep, password='75169052')
 
         self.data_tfg1 = dict(tipo='tipo1', titulo='titulo1',
                               n_alumnos=2, descripcion='descripcion',

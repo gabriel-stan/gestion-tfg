@@ -6,8 +6,7 @@ import simplejson as json
 from django.contrib.auth.models import Group
 from django.test import TestCase
 from rest_framework.test import APIClient
-
-from authentication.models import Profesor, Usuario
+from authentication.models import Profesor, Usuario, Departamento
 
 
 class TfgServicesTests(TestCase):
@@ -20,24 +19,26 @@ class TfgServicesTests(TestCase):
                                last_name='apellido 1 apellido 12', password='0000', is_admin=True)
         Usuario.objects.create_superuser(**self.data_admin)
 
+        dep = Departamento.objects.create(nombre='departamento1', codigo=1)
+
         self.prof1 = dict(email='jorgecasillas@ugr.es', first_name='profesor 1',
-                               last_name='apellido 1 apellido 12', departamento='el mas mejor', password='75169052')
+                               last_name='apellido 1 apellido 12', departamento=dep, password='75169052')
         Profesor.objects.create_user(**self.prof1)
 
         self.prof2 = dict(email='juanmanuelfernandez@ugr.es', first_name='profesor 2',
-                               last_name='apellido 12 apellido 122', departamento='el mas mejor', password='75169052')
+                               last_name='apellido 12 apellido 122', departamento=dep, password='75169052')
         Profesor.objects.create_user(**self.prof2)
 
         self.prof3 = dict(email='eugenioaguirre@ugr.es', first_name='profesor 2',
-                               last_name='apellido 12 apellido 122', departamento='el mas mejor', password='75169052')
+                               last_name='apellido 12 apellido 122', departamento=dep, password='75169052')
         Profesor.objects.create_user(**self.prof3)
 
         self.prof4 = dict(email='miguelgarcia@ugr.es', first_name='profesor 2',
-                               last_name='apellido 12 apellido 122', departamento='el mas mejor', password='75169052')
+                               last_name='apellido 12 apellido 122', departamento=dep, password='75169052')
         Profesor.objects.create_user(**self.prof4)
 
         self.prof5 = dict(email='franciscoherrera@ugr.es', first_name='profesor 2',
-                               last_name='apellido 12 apellido 122', departamento='el mas mejor', password='75169052')
+                               last_name='apellido 12 apellido 122', departamento=dep, password='75169052')
         Profesor.objects.create_user(**self.prof5)
 
         self.data_tfg1 = dict(tipo='tipo1', titulo='titulo1',

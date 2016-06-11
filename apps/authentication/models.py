@@ -6,6 +6,7 @@ from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import Group
 import signals
 
+
 class AccountManager(BaseUserManager):
 
     def create_user(self, password=None, **kwargs):
@@ -111,6 +112,16 @@ class Alumno(Usuario):
     objects = AlumnoManager()
 
 
+class Departamento(models.Model):
+    nombre = models.CharField(default=None, unique=True, null=True, max_length=50)
+    codigo = models.IntegerField()
+
+    USERNAME_FIELD = 'nombre'
+    REQUIRED_FIELD = USERNAME_FIELD
+
+    def __unicode__(self):
+        return self.nombre
+
 
 class ProfesorManager(BaseUserManager):
     def create_user(self, password=None, **kwargs):
@@ -132,7 +143,7 @@ class ProfesorManager(BaseUserManager):
             if not kwargs.get('last_name') or not utils.is_string(kwargs.get('last_name')):
                 raise NameError("Error en los apellidos del profesor")
 
-            if not kwargs.get('departamento') or not utils.is_string(kwargs.get('departamento')):
+            if not kwargs.get('departamento') or not isinstance(kwargs.get('departamento'), Departamento):
                 raise NameError("Error en el departamento")
 
             usuario = self.model.objects.create(email=kwargs.get('email'), dni=kwargs.get('dni'),
@@ -151,7 +162,8 @@ class ProfesorManager(BaseUserManager):
 
 
 class Profesor(Usuario):
-    departamento = models.CharField(max_length=100)
+
+    departamento = models.ForeignKey(Departamento, related_name='departamento', default=None, null=True)
     objects = ProfesorManager()
 
     def get_departamento(self):
