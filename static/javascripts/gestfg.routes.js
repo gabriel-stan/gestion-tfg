@@ -26,6 +26,10 @@
       templateUrl: '/static/templates/layout/dashboard.html'
     }).when('/dashboard/usuarios', {
       templateUrl: '/static/templates/layout/dashboard/users/users.html'
+    }).when('/dashboard/tfg', {
+      templateUrl: '/static/templates/layout/dashboard/tfg/tfgs.html'
+    }).when('/dashboard/departamentos', {
+      templateUrl: '/static/templates/layout/dashboard/departamentos/departamentos.html'
     }).when('/dashboard/eventos', {
       templateUrl: '/static/templates/layout/dashboard/events/events.html'
     }).when('/dashboard/eventos/add', {
