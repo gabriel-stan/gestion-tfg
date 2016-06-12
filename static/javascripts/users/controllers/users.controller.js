@@ -25,7 +25,7 @@
     * @memberOf gestfg.users.controllers.UsersController
     */
     function loadUsers(){
-      // alert("Load users controlador");      
+      // alert("Load users controlador");
     }
 
     // $scope.loadUsers = function() {

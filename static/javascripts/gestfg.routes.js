@@ -31,6 +31,8 @@
     })
 
     .when('/dashboard/usuarios', {
+      controller: 'UsersController',
+      controllerAs: 'usersCtrl',
       templateUrl: '/static/templates/layout/dashboard/users/users.html'
     })
     .when('/dashboard/usuarios/add', {

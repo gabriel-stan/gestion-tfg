@@ -32,6 +32,7 @@
         clase: newUserCtrl.user.clase,
         is_admin: newUserCtrl.user.is_admin,
         email: newUserCtrl.user.email,
+        departamento: newUserCtrl.user.departamento,
         created_at: newUserCtrl.created_at
       });
 
