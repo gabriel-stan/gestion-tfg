@@ -140,7 +140,7 @@ class AlumnosViewSet(viewsets.ModelViewSet):
         """
         try:
             params = utils.get_params(request)
-            serializer = self.serializer_class(data=params)
+            serializer = self.serializer_class(data=params.get('content'))
             if serializer.is_valid():
                 resul = Alumno.objects.create_user(**serializer.validated_data)
                 if resul['status']:
