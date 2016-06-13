@@ -325,9 +325,9 @@ class ProfesoresViewSet(viewsets.ModelViewSet):
             return Response(resul)
 
         except Profesor.DoesNotExist:
-            return Response(dict(status=False, message="El profesor indicado no existe"))
+            return Response(dict(status=False, message="El profesor indicado no existe"), status=status.HTTP_400_BAD_REQUEST)
         except Exception:
-            return Response(dict(status=False, message="Error en la llamada"))
+            return Response(dict(status=False, message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginView(views.APIView):
@@ -376,9 +376,9 @@ class LoginView(views.APIView):
                 resul_status = status.HTTP_401_UNAUTHORIZED
             return Response(resul, status=resul_status)
         except NameError as e:
-                return Response(dict(status=False, message=e.message))
+                return Response(dict(status=False, message=e.message), status=status.HTTP_400_BAD_REQUEST)
         except Exception:
-            return Response(dict(status=False, message="Error en la llamada"))
+            return Response(dict(status=False, message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)
 
 
 class LogoutView(views.APIView):
