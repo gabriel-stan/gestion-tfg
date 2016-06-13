@@ -163,11 +163,11 @@ class ProfesorManager(BaseUserManager):
 
 class Profesor(Usuario):
 
-    #departamento = models.ForeignKey(Departamento, related_name='departamento', default=None, null=True)
+    departamento = models.ForeignKey(Departamento, related_name='departamento', default=None, null=True)
     objects = ProfesorManager()
 
-    # def get_departamento(self):
-    #     return self.departamento
+    def get_departamento(self):
+        return self.departamento
 
 
 class Grupos(Group):
