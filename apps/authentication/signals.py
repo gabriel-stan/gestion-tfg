@@ -4,23 +4,45 @@ from django.contrib.auth.models import User, Group, Permission
 from django.contrib.contenttypes.models import ContentType
 
 
+PERMISOS_JEFE_DEPARTAMENTO={'tfgs': {'tfg': ['create', 'select', 'change', 'delete']},
+                             'eventos': {'evento': ['create', 'select', 'change', 'delete']},
+                             'authentication': {'usuario': ['select']}}
+
+PERMISOS_PROFESORES={'tfgs': {'tfg': ['create', 'select', 'change', 'delete']},
+                     'eventos': {'evento': ['create', 'select', 'change', 'delete']},
+                     'authentication': {'usuario': ['select']}}
+
+PERMISOS_ALUMNOS={'tfgs': {'tfg': ['select']}}
+
+PERMISOS_USUARIOS={'tfgs': {'tfg': ['select']}}
+
+
+
 @receiver(post_migrate)
 def create_groups(sender, **kwargs):
     from authentication.models import Grupos
-    group, created = Grupos.objects.get_or_create(name='Admins', code=10)
+    group, created = Grupos.objects.get_or_create(name='Administrador', code=10)
     if created:
         print "Group %s created successfully\n" % group.name
     else:
         print "Group %s already exists\n" % group.name
 
     group, created = Grupos.objects.get_or_create(name='Profesores', code=20)
-    load_permission_profesores(group)
+    load_permission(group, PERMISOS_PROFESORES)
     if created:
         print "Group %s created successfully\n" % group.name
     else:
         print "Group %s already exists\n" % group.name
 
     group, created = Grupos.objects.get_or_create(name='Alumnos', code=30)
+    load_permission(group, PERMISOS_ALUMNOS)
+    if created:
+        print "Group %s created successfully\n" % group.name
+    else:
+        print "Group %s already exists\n" % group.name
+
+    group, created = Grupos.objects.get_or_create(name='Jefe de Departamento', code=40)
+    load_permission(group, PERMISOS_JEFE_DEPARTAMENTO)
     if created:
         print "Group %s created successfully\n" % group.name
     else:
@@ -30,13 +52,13 @@ def create_groups(sender, **kwargs):
 post_migrate.connect(create_groups)
 
 
-def load_permission_profesores(group):
-    content, created = ContentType.objects.get_or_create(app_label='tfgs', model='tfg')
-    can_create_tfgs, created = Permission.objects.get_or_create(content_type=content, codename='tfg.create',
-                                                                name='Puede crear tfgs')
-    group.permissions.add(can_create_tfgs)
-
-    content, created = ContentType.objects.get_or_create(app_label='eventos', model='evento')
-    can_create_events, created = Permission.objects.get_or_create(content_type=content, codename='evento.create',
-                                                                name='Puede crear eventos')
-    group.permissions.add(can_create_events)
+def load_permission(group, permissions):
+    for app, dict_permission in permissions.items():
+        for model, perms in dict_permission.items():
+            for i in perms:
+                content, created = ContentType.objects.get_or_create(app_label=app, model=model)
+                codename = "%s.%s" % (model, i)
+                new_perm, created = Permission.objects.get_or_create(content_type=content, codename=codename,
+                                                                     name=codename)
+                if not created:
+                    group.permissions.add(new_perm)

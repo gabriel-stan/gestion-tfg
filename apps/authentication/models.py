@@ -6,17 +6,21 @@ from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import Group
 import signals
 
+
 class AccountManager(BaseUserManager):
 
-    def create_user(self, email, password=None, **kwargs):
-        if not email:
-            raise ValueError('Users must have a valid email address.')
+    def create_user(self, password=None, **kwargs):
+        email = kwargs.get('email')
+        dni = kwargs.get('dni')
+        if not email and not dni:
+            raise ValueError('Los usuarios deben tener un DNI o un email valido.')
 
-        # if not kwargs.get('username'):
-        #     raise ValueError('Users must have a valid username.')
+        if email:
+            email = self.normalize_email(email)
 
         account = self.model(
-            email=self.normalize_email(email)
+            email=email,
+            dni=dni
         )
 
         account.set_password(password)
@@ -24,8 +28,8 @@ class AccountManager(BaseUserManager):
 
         return dict(status=True, data=account)
 
-    def create_superuser(self, email, password, **kwargs):
-        account = self.create_user(email, password, **kwargs)
+    def create_superuser(self, password, **kwargs):
+        account = self.create_user(password, **kwargs)
 
         account['data'].is_admin = True
         account['data'].save()
@@ -35,10 +39,11 @@ class AccountManager(BaseUserManager):
 
 class Usuario(AbstractBaseUser, PermissionsMixin):
 
-    email = models.EmailField(unique=True)
+    dni = models.CharField(default=None, unique=True, null=True, max_length=9)
+    email = models.EmailField(default=None, unique=True, null=True)
     # username = models.CharField(max_length=40, unique=True)
-    first_name = models.CharField(max_length=40, blank=True)
-    last_name = models.CharField(max_length=40, blank=True)
+    first_name = models.CharField(max_length=40, blank=True, null=True)
+    last_name = models.CharField(max_length=40, blank=True, null=True)
     # tagline = models.CharField(max_length=140, blank=True)
 
     is_admin = models.BooleanField(default=False)
@@ -48,7 +53,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 
     objects = AccountManager()
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = 'id'
     REQUIRED_FIELD = USERNAME_FIELD
 
     def __unicode__(self):
@@ -69,27 +74,29 @@ class Administrador(Usuario):
 
 
 class AlumnoManager(BaseUserManager):
-    def create_user(self, email, password=None, **kwargs):
+    def create_user(self, password=None, **kwargs):
         try:
-            if not email:
-                raise NameError("Error en el email del alumno")
-            else:
-                res = Alumno.objects.filter(email=email)
+            if kwargs.get('email'):
+                # exp reg para saber si el nick corresponde al correo de la ugr (@correo.ugr.es)
+                if not re.match(r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$', kwargs.get('email')):
+                    raise NameError("El email no es correcto o no pertenece a la UGR")
+
+                res = Alumno.objects.filter(email=kwargs.get('email'))
                 if res.count() != 0:
                     raise NameError("El alumno ya existe")
+            if kwargs.get('dni'):
+                # exp reg para saber si el nick corresponde al correo de la ugr (@correo.ugr.es)
+                if not re.match(r'(\d{8})([-]?)([A-Z]{1})', kwargs.get('dni')):
+                    raise NameError("Error en el DNI del alumno")
 
-            if not kwargs.get('first_name') or not utils.is_string(kwargs.get('last_name')):
+            if kwargs.get('first_name') and not utils.is_string(kwargs.get('first_name')):
                 raise NameError("Nombre incorrecto")
 
-            if not kwargs.get('last_name') or not utils.is_string(kwargs.get('last_name')):
+            if kwargs.get('last_name') and not utils.is_string(kwargs.get('last_name')):
                 raise NameError("Apellidos incorrectos")
 
-            # exp reg para saber si el nick corresponde al correo de la ugr (@correo.ugr.es)
-            if not re.match(r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$', email):
-                raise NameError("El email no es correcto o no pertenece a la UGR")
-
-            usuario = self.model.objects.create(email=email, first_name=kwargs.get('first_name'),
-                                last_name=kwargs.get('last_name'))
+            usuario = self.model.objects.create(email=kwargs.get('email'), dni=kwargs.get('dni'),
+                                                first_name=kwargs.get('first_name'), last_name=kwargs.get('last_name'))
 
             grupo_alumnos = Grupos.objects.get(name='Alumnos')
             usuario.set_password(password)
@@ -105,15 +112,30 @@ class Alumno(Usuario):
     objects = AlumnoManager()
 
 
+class Departamento(models.Model):
+    nombre = models.CharField(default=None, unique=True, null=True, max_length=50)
+    codigo = models.IntegerField()
+
+    USERNAME_FIELD = 'nombre'
+    REQUIRED_FIELD = USERNAME_FIELD
+
+    def __unicode__(self):
+        return self.nombre
+
+
 class ProfesorManager(BaseUserManager):
-    def create_user(self, email, password=None, **kwargs):
+    def create_user(self, password=None, **kwargs):
         try:
-            if not email or not (re.match(r'^[a-z][_a-z0-9]+(@ugr\.es)$', email)):
-                raise NameError("El correo no es correcto")
-            else:
-                res = Profesor.objects.filter(email=email)
+            if kwargs.get('email'):
+                if not (kwargs.get('email') or not (re.match(r'^[a-z][_a-z0-9]+(@ugr\.es)$', kwargs.get('email')))):
+                    raise NameError("El correo no es correcto")
+                res = Profesor.objects.filter(email=kwargs.get('email'))
                 if res.count() != 0:
                     raise NameError("El profesor ya existe")
+            if kwargs.get('dni'):
+                # exp reg para saber si el nick corresponde al correo de la ugr (@correo.ugr.es)
+                if not re.match(r'(\d{8})([-]?)([A-Z]{1})', kwargs.get('dni')):
+                    raise NameError("Error en el DNI del profesor")
 
             if not kwargs.get('first_name') or not utils.is_string(kwargs.get('first_name')):
                 raise NameError("Error en el nombre del profesor")
@@ -121,11 +143,12 @@ class ProfesorManager(BaseUserManager):
             if not kwargs.get('last_name') or not utils.is_string(kwargs.get('last_name')):
                 raise NameError("Error en los apellidos del profesor")
 
-            if not kwargs.get('departamento') or not utils.is_string(kwargs.get('departamento')):
+            if not kwargs.get('departamento') or not isinstance(kwargs.get('departamento'), Departamento):
                 raise NameError("Error en el departamento")
 
-            usuario = self.model.objects.create(email=email, first_name=kwargs.get('first_name'),
-                                last_name=kwargs.get('last_name'), departamento=kwargs.get('departamento'))
+            usuario = self.model.objects.create(email=kwargs.get('email'), dni=kwargs.get('dni'),
+                                                first_name=kwargs.get('first_name'), last_name=kwargs.get('last_name'),
+                                                departamento=kwargs.get('departamento'))
 
             grupo_profesores = Grupos.objects.get(name='Profesores')
             usuario.set_password(password)
@@ -139,7 +162,8 @@ class ProfesorManager(BaseUserManager):
 
 
 class Profesor(Usuario):
-    departamento = models.CharField(max_length=100)
+
+    departamento = models.ForeignKey(Departamento, related_name='departamento', default=None, null=True)
     objects = ProfesorManager()
 
     def get_departamento(self):

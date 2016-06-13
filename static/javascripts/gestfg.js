@@ -8,6 +8,7 @@
         'gestfg.authentication',
         'gestfg.layout',
         'gestfg.events',
+        'gestfg.users',
         'gestfg.utils'
       ]);
 

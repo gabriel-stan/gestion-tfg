@@ -1,0 +1,165 @@
+<!-- Aqui se muestran los usuarios -->
+
+  <div class="box">
+    <div class="box-header">
+      <!-- <h3 class="box-title">Data Table With Full Features</h3> -->
+    </div><!-- /.box-header -->
+    <div class="box-body">
+      <table id="tabla-users" class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>Usuario</th>
+            <th>Nombre</th>
+            <th>Apellidos</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Admin</th>
+          </tr>
+        </thead>
+
+        <tfoot>
+          <tr>
+            <th>Usuario</th>
+            <th>Nombre</th>
+            <th>Apellidos</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Admin</th>
+          </tr>
+        </tfoot>
+      </table>
+    </div><!-- /.box-body -->
+  </div><!-- /.box -->
+
+  <div class="example-modal">
+    <div class="modal fade" id="modal-edit">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Modal Default</h4>
+          </div>
+          <div class="modal-body">
+            <new-user-modal></new-user-modal>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+  </div><!-- /.example-modal -->
+
+  <style>
+    div.dataTables_filter{
+      float: right;
+    }
+
+    div.dataTables_paginate{
+      float: right;
+    }
+
+    div.clear{
+      clear: both;
+    }
+  </style>
+
+  <script>
+    $(document).ready(function () {
+      $.fn.dataTable.ext.buttons.edit = {
+          className: 'buttons-edit',
+
+          // action: function ( e, dt, node, config ) {
+          //     alert( 'editando ' + JSON.stringify( dt.row( { selected: true } ).data() ) );
+          //     editUser(dt.row( { selected: true } ).data() );
+          //     // ngDialog.open({
+          //     //   template: '/static/templates/layout/dashboard/users/add-user.html',
+          //     //   controller: 'NewUserController',
+          //     //   controllerAs: 'vm',
+          //     //   scope: $scope
+          //     // });
+          // },
+          enabled: false
+      };
+
+      var table = $("#tabla-users").DataTable({
+          //sDom: '<Bf>rt<"col-md-6"i><"col-md-6"p><"col-md-12"l>',
+          sDom: '<Bf>rt<pi><"clear"l>',
+          language: {
+              "url": "/static/plugins/datatables/language/Spanish.json"
+          },
+          select: {
+              style: 'multi'
+          },
+          responsive: true,
+          buttons: [
+              {
+                  text: 'Reload',
+                  action: function ( e, dt, node, config ) {
+                      dt.ajax.reload();
+                  }
+              },
+              'selectAll',
+              'selectNone',
+              {
+                  extend: 'edit',
+                  name: 'edit',
+                  text: 'Editar'
+              }
+          ],
+          ajax: "/api/v1/usuarios/",
+          columns: [
+            {"data" : "dni"},
+            {"data" : "first_name"},
+            {"data" : "last_name"},
+            {"data" : "email"},
+            {"data" : "clase"},
+            {"data" : "is_admin"}
+          ]
+        });
+
+        table.on( 'select', function () {
+            var selectedRows = table.rows( { selected: true } ).count();
+
+            table.button( 'edit:name' ).enable( selectedRows === 1 );
+        } );
+
+        table.on( 'deselect', function () {
+            var selectedRows = table.rows( { selected: true } ).count();
+
+            table.button( 'edit:name' ).enable( selectedRows === 1 );
+        } );
+
+        new $.fn.dataTable.Buttons( table, {
+            buttons: [
+              'copyHtml5',
+              'excelHtml5',
+              'csvHtml5',
+              'pdfHtml5'
+            ]
+        } );
+
+        table.on( 'preInit.dt', function (e, settings) {
+          // var container = $(table.table().container());
+          var container = $(table.buttons(1).container()[0]);
+          container.prepend(table.buttons(1).container()[1]);
+
+          // table.button( 'edit:name' ).attr('ng-dialog','/static/templates/layout/dashboard/users/add-user.html');
+          // table.button( 'edit:name' ).attr('ng-dialog-controller','NewUserController as vm');
+
+          $('a.buttons-edit').attr('data-toggle','modal');
+          $('a.buttons-edit').attr('data-target','#modal-edit');
+
+        });
+
+
+      // $('#example2').DataTable({
+      //   "paging": true,
+      //   "lengthChange": false,
+      //   "searching": false,
+      //   "ordering": true,
+      //   "info": true,
+      //   "autoWidth": false,
+      //   "language": {
+      //       "url": "/static/plugins/datatables/language/Spanish.json"
+      //   }
+      // });
+    });
+  </script>

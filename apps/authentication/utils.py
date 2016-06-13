@@ -1,10 +1,10 @@
-from django.db.models.fields.related import ManyToManyField
+import re
 import simplejson as json
+from django.db.models.fields.related import ManyToManyField
 from django.contrib.auth.models import Permission
 
 
 def get_params(req):
-
     datos = {}
     if req.method == 'GET':
         for key, value in req.query_params.items():
@@ -41,6 +41,26 @@ def is_int(s):
         return False
 
 
+def is_email(param):
+    try:
+        if not re.match(r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$', param):
+            return False
+        else:
+            return True
+    except Exception:
+            return False
+
+
+def is_dni(param):
+    try:
+        if not re.match(r'(\d{8})([-]?)([A-Z]{1})', param):
+            return False
+        else:
+            return True
+    except Exception:
+            return False
+
+
 def to_dict(resul):
     instance = resul['data']
     opts = instance._meta
@@ -59,8 +79,8 @@ def to_dict(resul):
 
 
 # Comprueba que un usuario va a modificar los datos de si mismo
-def check_usuario(user, email=None):
-    if user.email == email:
+def check_usuario(user, credential=None):
+    if credential in [user.email, user.dni]:
         return True
     elif user.is_admin:
         return True
@@ -70,8 +90,45 @@ def check_usuario(user, email=None):
 
 def permisos(usuario):
     permissions = Permission.objects.filter(group=usuario.groups.all()).values('codename')
-    list_permissions = []
+    list_permissions = {}
     for permission in permissions:
         model, codename = permission['codename'].split('.')
-        list_permissions.append({model: codename})
+        if list_permissions.get(model):
+            list_permissions[model].append(codename)
+        else:
+            list_permissions[model] = [codename]
     return list_permissions
+
+
+def procesar_datos_usuario(user, data):
+    # Importo aqui para evitar el cruce de imports
+    from models import Alumno, Profesor, Usuario
+    resultado = []
+    for s_data in data:
+        resul = {}
+        if user.is_admin:
+            resul['dni'] = s_data['dni']
+        resul['email'] = s_data['email']
+        resul['first_name'] = s_data['first_name']
+        resul['last_name'] = s_data['last_name']
+        resul['created_at'] = s_data['created_at']
+        resul['updated_at'] = s_data['updated_at']
+        if Alumno.objects.filter(dni=s_data['dni']).count() != 0:
+            resul['clase'] = 'Alumno'
+        elif Profesor.objects.filter(dni=s_data['dni']).count() != 0:
+            resul['clase'] = 'Profesor'
+        elif Usuario.objects.get(dni=s_data['dni']).is_admin:
+            resul['clase'] = 'Administrador'
+        else:
+            resul['clase'] = 'Usuario'
+        resul['grupos'] = obtener_grupos(s_data)
+        resul['is_admin'] = s_data['is_admin']
+        resultado.append(resul)
+    return resultado
+
+
+def obtener_grupos(data):
+    grupos = []
+    for grupo in data.get('groups') or []:
+        grupos.append(grupo.get('name'))
+    return grupos

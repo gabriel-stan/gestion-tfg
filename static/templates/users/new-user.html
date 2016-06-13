@@ -1,0 +1,82 @@
+<div class="box">
+
+  <form role="form" class="form-horizontal" ng-submit="vm.submit()">
+
+    <div class="box-body pad">
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Tipo</label>
+        <div class="col-sm-9">
+          <select id="user-tipo" class="form-control" ng-model="vm.user.tipo">
+            <option value="alumnos">Alumno</option>
+            <option value="profesores">Profesor</option>
+            <option value="usuarios">Usuario</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Nombre</label>
+        <div class="col-sm-9">
+          <input class="form-control" type="text" placeholder="Nombre" ng-model="vm.user.first_name">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Apellidos</label>
+        <div class="col-sm-9">
+          <input class="form-control" type="text" placeholder="Apellidos" ng-model="vm.user.last_name">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Email</label>
+        <div class="col-sm-9">
+          <input class="form-control" type="text" placeholder="Email" ng-model="vm.user.email">
+        </div>
+      </div>
+
+      <div id="user-dpt" class="form-group hidden">
+        <label class="col-sm-3 control-label">Departamento</label>
+        <div class="col-sm-9">
+          <select class="form-control" ng-model="vm.user.departamento">
+            <option value="111">DECSAI</option>
+            <option value="222">LSI</option>
+            <option value="333">Fisica</option>
+            <option value="444">Matematicas</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Admin</label>
+        <div class="col-sm-9">
+          <input type="checkbox" ng-model="vm.user.is_admin">
+        </div>
+      </div>
+
+    </div>
+
+    <div class="box-footer">
+      <button type="submit" class="btn btn-primary pull-right">Añadir</button>
+    </div>
+
+  </form>
+
+</div>
+
+
+
+  <script>
+    $(document).ready(function(){
+      $('#user-tipo').on('change',function(){
+        var selection = $(this).val();
+        if( selection==="profesores"){
+          $("#user-dpt").removeClass("hidden");
+        }
+        else{
+          $("#user-dpt").addClass("hidden");
+        }
+      });
+    });
+  </script>

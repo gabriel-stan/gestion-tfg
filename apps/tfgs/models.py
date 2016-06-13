@@ -34,14 +34,20 @@ class TfgManager(BaseUserManager):
             if kwargs.get('tutor') is None:
                 raise NameError("Tutor necesario")
             else:
-                tutor = Profesor.objects.get(email=kwargs.get('tutor'))
+                try:
+                    tutor = Profesor.objects.get(email=kwargs.get('tutor'))
+                except Profesor.DoesNotExist:
+                    return dict(status=False, message='El tutor no existe')
                 if not tutor.groups.filter(name='Profesores').exists():
                     raise NameError("Tutor ha de ser un profesor")
 
             # comprobando cotutor
             cotutor = None
             if not kwargs.get('cotutor') is None:
-                cotutor = Profesor.objects.get(email=kwargs.get('cotutor'))
+                try:
+                    cotutor = Profesor.objects.get(email=kwargs.get('cotutor'))
+                except Profesor.DoesNotExist:
+                    return dict(status=False, message='El cotutor no existe')
                 if not cotutor.groups.filter(name='Profesores').exists():
                     raise NameError("Cotutor ha de ser un profesor")
 
@@ -65,8 +71,10 @@ class Tfg(models.Model):
     descripcion = models.TextField()
     conocimientos_previos = models.CharField(max_length=100, null=True)
     hard_soft = models.CharField(max_length=100, null=True)
-    tutor = models.ForeignKey(Profesor, related_name='tutor',default=None)
+    tutor = models.ForeignKey(Profesor, related_name='tutor', default=None)
     cotutor = models.ForeignKey(Profesor, related_name='cotutor', default=None, null=True)
+    publicado = models.BooleanField(default=False)
+    validado = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

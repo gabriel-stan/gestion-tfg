@@ -32,7 +32,7 @@ class TfgViewSet(viewsets.ModelViewSet):
                 resul = self.serializer_class(tfg, many=True).data
                 if len(resul) == 0:
                     raise NameError("No hay tfgs almacenados")
-            return Response(dict(data=resul), status.HTTP_200_OK)
+            return Response(dict(data=resul), status=status.HTTP_200_OK)
         except NameError as e:
             return Response(dict(message=e.message), status.HTTP_400_BAD_REQUEST)
         except Tfg.DoesNotExist:
@@ -50,20 +50,31 @@ class TfgViewSet(viewsets.ModelViewSet):
         """
         try:
             if request.user.has_perm('tfgs.tfg.create') or request.user.is_admin:
-                request.data['tutor'] = Profesor.objects.get(email=request.data['tutor'])
-                if 'cotutor' in request.data:
-                    request.data['cotutor'] = Profesor.objects.get(email=request.data['tutor'])
-                serializer = self.serializer_class(data=request.data)
-                if serializer.is_valid():
-                    resul = Tfg.objects.create_tfg(**serializer.validated_data)
-                    if resul['status']:
-                        resul = utils.to_dict(resul)
-                        resul_status = status.HTTP_200_OK
-                    else:
-                        resul = dict(message=resul['message'])
-                        resul_status = status.HTTP_400_BAD_REQUEST
+                # request.data['tutor'] = Profesor.objects.get(email=request.data['tutor'])
+                # if 'cotutor' in request.data:
+                #     request.data['cotutor'] = Profesor.objects.get(email=request.data['tutor'])
+                # serializer = self.serializer_class(data=request.data)
+                # if serializer.is_valid():
+                #     resul = serializer.create(serializer.validated_data)
+                #     if resul['status']:
+                #         resul = utils.to_dict(resul)
+                #         resul_status = status.HTTP_200_OK
+                #     else:
+                #         resul = dict(message=resul['message'])
+                #         resul_status = status.HTTP_400_BAD_REQUEST
+                # else:
+                #     resul = dict(message=serializer.errors)
+                #     resul_status = status.HTTP_400_BAD_REQUEST
+                params = utils.get_params(request)
+                resul = Tfg.objects.create_tfg(conocimientos_previos=params.get('conocimientos_previos'),
+                                               cotutor=params.get('cotutor'), descripcion=params.get('descripcion'),
+                                               tutor=params.get('tutor'), hard_soft=params.get('hard_soft'),
+                                               titulo=params.get('titulo'), tipo=params.get('tipo'), n_alumnos=params.get('n_alumnos'))
+                if resul['status']:
+                    resul = utils.to_dict(resul)
+                    resul_status = status.HTTP_200_OK
                 else:
-                    resul = dict(message=serializer.errors)
+                    resul = dict(message=resul['message'])
                     resul_status = status.HTTP_400_BAD_REQUEST
             else:
                 resul = dict(message="Sin privilegios")

@@ -88,6 +88,8 @@ def comprueba_profesor(usuario):
 
     if isinstance(usuario, Profesor) and usuario.groups.filter(name='Profesores').exists():
         return True
+    elif is_string(usuario) and Profesor.objects.get(email=usuario):
+        return True
     else:
         return False
 
