@@ -88,6 +88,9 @@ install_fabric:
 update_sources:
 	$(SCRIPTS)/update_sources.sh
 
-update_app:
+update_system_and_app:
 	make install_system_packages
+	$(SCRIPTS)/update_app.sh $(REQUIREMENTS_BACK) $(REQUIREMENTS_FRONT) $(INSTALL_ENV)
+
+update_app:
 	$(SCRIPTS)/update_app.sh $(REQUIREMENTS_BACK) $(REQUIREMENTS_FRONT) $(INSTALL_ENV)
