@@ -41,8 +41,13 @@
       templateUrl: '/static/templates/layout/dashboard/users/add-user.html'
     })
 
-    .when('/dashboard/tfg', {
-      templateUrl: '/static/templates/layout/dashboard/tfg/tfgs.html'
+    .when('/dashboard/tfgs', {
+      templateUrl: '/static/templates/layout/dashboard/tfgs/tfgs.html'
+    })
+    .when('/dashboard/tfgs/add', {
+      controller: 'NewTfgController',
+      controllerAs: 'vm',
+      templateUrl: '/static/templates/layout/dashboard/tfgs/add-tfg.html'
     })
 
     .when('/dashboard/departamentos', {
@@ -63,8 +68,8 @@
       templateUrl: '/static/templates/layout/dashboard/events/add-event.html'
     })
 
-    .when('/dashboard/tfg/upload', {
-      templateUrl: '/static/templates/layout/dashboard/tfg/upload-tfgs.html'
+    .when('/dashboard/tfgs/upload', {
+      templateUrl: '/static/templates/layout/dashboard/tfgs/upload-tfgs.html'
     })
 
     .when('/dashboard/upload', {
