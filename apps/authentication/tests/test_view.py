@@ -32,6 +32,8 @@ class AuthenticationServicesTests(TestCase):
         self.data_prof1 = dict(dni='87654321S', first_name='profesor 2',
                                     last_name='apellido 12 apellido 122', departamento=dep, password='0000')
 
+        self.data_departamento = dict(codigo='BBB', nombre='departamento2')
+
     def test_ws_alumnos_get(self):
         # Sin alumnos
         res = self.client.get('/api/v1/alumnos/', self.data_alum1)
@@ -189,3 +191,20 @@ class AuthenticationServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
+    def test_departamento(self):
+        # Me logueo con un admin
+        res = self.client.post('/api/v1/auth/login/', {'dni': self.data_admin['dni'],
+                                                       'password': self.data_admin['password']})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['dni'], self.data_admin['dni'])
+
+        res = self.client.post('/api/v1/auth/departamentos/', {'codigo': self.data_departamento['codigo'],
+                                                               'nombre': self.data_departamento['nombre']})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        res = self.client.put('/api/v1/auth/departamentos/', {'codigo': self.data_departamento['codigo'],
+                                                              'data': json.dumps(
+                                                                  {'nombre': 'departamento chulo'})})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['nombre'], 'departamento chulo')
