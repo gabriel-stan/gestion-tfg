@@ -58,7 +58,7 @@
      * @memberOf gestfg.users.services.Users
      */
     function get(email) {
-      return $http.get('/api/v1/usuarios/' + username);
+      return $http.get('/api/v1/usuarios/' + email);
     }
   }
 })();
