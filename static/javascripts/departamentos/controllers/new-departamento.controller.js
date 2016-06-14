@@ -27,13 +27,8 @@
     function submit() {
 
       $rootScope.$broadcast('departamento.created', {
-        first_name: newDepartamentoCtrl.departamento.first_name,
-        last_name: newDepartamentoCtrl.departamento.last_name,
-        clase: newDepartamentoCtrl.departamento.clase,
-        is_admin: newDepartamentoCtrl.departamento.is_admin,
-        email: newDepartamentoCtrl.departamento.email,
-        departamento: newDepartamentoCtrl.departamento.departamento,
-        created_at: newDepartamentoCtrl.created_at
+        id: newDepartamentoCtrl.departamento.id,
+        nombre: newDepartamentoCtrl.departamento.nombre
       });
 
       // $scope.closeThisDialog();

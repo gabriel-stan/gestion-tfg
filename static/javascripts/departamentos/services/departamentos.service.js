@@ -53,7 +53,7 @@
     /**
      * @name get
      * @desc Get a Departamento
-     * @param {string} email The email of the Departamento
+     * @param {string} email The id of the Departamento
      * @returns {Promise}
      * @memberOf gestfg.departamentos.services.Departamentos
      */
