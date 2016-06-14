@@ -34,7 +34,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
 class DepartamentoSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Usuario
+        model = Departamento
         fields = ('id', 'codigo', 'nombre',)
 
     def update(self, departamento, validated_data):

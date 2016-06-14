@@ -470,8 +470,8 @@ class DepartamentosViewSet(viewsets.ModelViewSet):
         """
         try:
             # eventos = Evento.objects.filter(autor=request.user.id)
-            eventos = Departamento.objects.all()
-            resul = self.serializer_class(eventos, many=True).data
+            departamentos = Departamento.objects.all()
+            resul = self.serializer_class(departamentos, many=True).data
             return Response(dict(data=resul), status=status.HTTP_200_OK)
         except NameError as e:
             return Response(dict(message=e.message), status=status.HTTP_400_BAD_REQUEST)

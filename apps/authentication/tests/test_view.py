@@ -208,3 +208,8 @@ class AuthenticationServicesTests(TestCase):
                                                                   {'nombre': 'departamento chulo'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['data']['nombre'], 'departamento chulo')
+
+        res = self.client.get('/api/v1/auth/departamentos/')
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data'][1]['nombre'], 'departamento chulo')
+
