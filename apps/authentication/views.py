@@ -140,7 +140,7 @@ class AlumnosViewSet(viewsets.ModelViewSet):
         """
         try:
             params = utils.get_params(request)
-            serializer = self.serializer_class(data=params.get('content'))
+            serializer = self.serializer_class(data=params)
             if serializer.is_valid():
                 resul = Alumno.objects.create_user(**serializer.validated_data)
                 if resul['status']:
@@ -259,7 +259,7 @@ class ProfesoresViewSet(viewsets.ModelViewSet):
         """
         try:
             params = utils.get_params(request)
-            params['departamento'] = Departamento.objects.get(nombre=params['departamento']).id
+            params['departamento'] = Departamento.objects.get(codigo=params['departamento']).id
             #resul = Profesor.objects.create_user(**params)
             serializer = self.serializer_class(data=params)
             if serializer.is_valid():
