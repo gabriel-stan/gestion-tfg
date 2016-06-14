@@ -48,6 +48,11 @@
     .when('/dashboard/departamentos', {
       templateUrl: '/static/templates/layout/dashboard/departamentos/departamentos.html'
     })
+    .when('/dashboard/departamentos/add', {
+      controller: 'NewDepartamentoController',
+      controllerAs: 'vm',
+      templateUrl: '/static/templates/layout/dashboard/departamentos/add-departamento.html'
+    })
 
     .when('/dashboard/eventos', {
       templateUrl: '/static/templates/layout/dashboard/events/events.html'
