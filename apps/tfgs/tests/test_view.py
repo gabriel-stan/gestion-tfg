@@ -12,7 +12,7 @@ class TfgServicesTests(TestCase):
                                last_name='apellido 1 apellido 12', password='0000', is_admin=True)
         Usuario.objects.create_superuser(**self.data_admin)
 
-        dep = Departamento.objects.create(nombre='departamento1', codigo=1)
+        dep = Departamento.objects.create(nombre='departamento1', codigo='AAA')
 
         self.data_prof1 = dict(email='prof_ejemplo@ugr.es', first_name='profesor 1',
                                last_name='apellido 1 apellido 12', departamento=dep, password='75169052')

@@ -27,7 +27,7 @@ class AuthenticationServicesTests(TestCase):
         self.data_alum_error = dict(email='ejemplo2', first_name='alumno 2',
                                     last_name='apellido 12 apellido 122', password='0000')
 
-        dep = Departamento.objects.create(nombre='departamento1', codigo=1)
+        dep = Departamento.objects.create(nombre='departamento1', codigo='AAA')
 
         self.data_prof1 = dict(dni='87654321S', first_name='profesor 2',
                                     last_name='apellido 12 apellido 122', departamento=dep, password='0000')
