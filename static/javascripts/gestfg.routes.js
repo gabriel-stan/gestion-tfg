@@ -62,6 +62,10 @@
       templateUrl: '/static/templates/layout/dashboard/tfg/upload-tfgs.html'
     })
 
+    .when('/dashboard/upload', {
+      templateUrl: '/static/templates/layout/dashboard/upload.html'
+    })
+
     .when('/', {
       controller: 'IndexController',
       controllerAs: 'indexCtrl',
