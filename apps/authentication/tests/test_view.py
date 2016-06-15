@@ -191,6 +191,12 @@ class AuthenticationServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
+        location = os.path.join(os.path.dirname(__file__), 'test_load_data', 'LoadProfesores.csv')
+        data = {'file': ('LoadProfesores.csv', open(location, 'rb')), 'model': 'profesor'}
+        res = self.client.post('/api/v1/auth/load_data/', data, format='multipart')
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
     def test_departamento(self):
         # Me logueo con un admin
         res = self.client.post('/api/v1/auth/login/', {'dni': self.data_admin['dni'],

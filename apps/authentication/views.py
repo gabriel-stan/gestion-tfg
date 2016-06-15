@@ -443,10 +443,10 @@ class LoadDataView(views.APIView):
     def load_data(self, model, file):
         errores = []
         continuar = True
-        columnas = file.readline().rstrip().split(';', 1)
+        columnas = file.readline().rstrip().split(';')
         file = file.readlines()
         for linea in file:
-            linea = linea.rstrip().split(';', 1)
+            linea = linea.rstrip().split(';')
             datos = {}
             for key, value in enumerate(columnas):
                 datos[value] = linea[key]
