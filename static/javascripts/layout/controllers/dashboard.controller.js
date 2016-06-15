@@ -77,7 +77,16 @@
       fd.append('file', f);
       fd.append('model', dashCtrl.up.model);
 
-      Dashboard.upload(fd);
+      Dashboard.upload(fd).then(uploadSuccessFn, uploadErrorFn);
+
+
+      function uploadSuccessFn(data, status, headers, config) {
+        Snackbar.success("Subida realizada correctamente");
+      }
+
+      function uploadErrorFn(data, status, headers, config) {
+        Snackbar.error(data.data.message);
+      }
 
       // var r = new FileReader();
       // r.onloadend = function(e){
