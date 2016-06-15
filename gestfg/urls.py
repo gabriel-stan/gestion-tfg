@@ -30,7 +30,7 @@ router.register(r'profesores', ProfesoresViewSet)
 router.register(r'usuarios', UsuariosViewSet)
 router.register(r'tfgs', TfgViewSet)
 router.register(r'events', EventosViewSet)
-router.register(r'auth/departamentos', DepartamentosViewSet)
+router.register(r'departamentos', DepartamentosViewSet)
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),

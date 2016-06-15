@@ -198,18 +198,18 @@ class AuthenticationServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['data']['dni'], self.data_admin['dni'])
 
-        res = self.client.post('/api/v1/auth/departamentos/', {'codigo': self.data_departamento['codigo'],
+        res = self.client.post('/api/v1/departamentos/', {'codigo': self.data_departamento['codigo'],
                                                                'nombre': self.data_departamento['nombre']})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
-        res = self.client.put('/api/v1/auth/departamentos/', {'codigo': self.data_departamento['codigo'],
+        res = self.client.put('/api/v1/departamentos/', {'codigo': self.data_departamento['codigo'],
                                                               'data': json.dumps(
                                                                   {'nombre': 'departamento chulo'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['data']['nombre'], 'departamento chulo')
 
-        res = self.client.get('/api/v1/auth/departamentos/')
+        res = self.client.get('/api/v1/departamentos/')
         resul = json.loads(res.content)
         self.assertEqual(resul['data'][1]['nombre'], 'departamento chulo')
 

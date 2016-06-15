@@ -113,8 +113,8 @@ class Alumno(Usuario):
 
 
 class Departamento(models.Model):
-    nombre = models.CharField(default=None, unique=True, null=True, max_length=50)
-    codigo = models.CharField(default=None, unique=True, null=True, max_length=10)
+    nombre = models.CharField(default=None, unique=True, null=True, max_length=100)
+    codigo = models.CharField(default=None, unique=True, null=True, max_length=20)
 
     USERNAME_FIELD = 'codigo'
     REQUIRED_FIELD = USERNAME_FIELD

@@ -73,6 +73,8 @@
     })
 
     .when('/dashboard/upload', {
+      controller: 'DashboardController',
+      controllerAs: 'dashCtrl',
       templateUrl: '/static/templates/layout/dashboard/upload.html'
     })
 
