@@ -450,7 +450,7 @@ class LoadDataView(views.APIView):
             datos = {}
             for key, value in enumerate(columnas):
                 datos[value] = linea[key]
-            model.objects.create(**datos)
+            model.objects.create_file(**datos)
         return dict(status=True, data=errores)
 
 
