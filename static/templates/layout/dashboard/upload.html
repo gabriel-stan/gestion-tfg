@@ -22,22 +22,27 @@
         <h3 class="box-title">Elige la configuracion adecuada</h3>
       </div><!-- /.box-header -->
       <!-- form start -->
-      <form id="upload-tfgs-form" class="form-horizontal" action="#" method="post">
+      <form id="upload-form" class="form-horizontal" ng-submit="dashCtrl.upload()">
         <div class="box-body">
 
-            <div class="form-group">
-              <label class="col-sm-3 control-label">API</label>
-              <div class="col-sm-9">
-                <input class="form-control" type="text" placeholder="/api/v1/...">
-              </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label">Modelo</label>
+            <div class="col-sm-9">
+              <select id="user-tipo" class="form-control" ng-model="dashCtrl.up.model">
+                <option value="departamento">Departamentos</option>
+                <option value="profesor">Profesores</option>
+              </select>
             </div>
+          </div>
 
-            <div class="form-group">
-              <label class="col-sm-3 control-label">Fichero Excel</label>
-              <div class="col-sm-9">
-                <input id="upload-file" type="file">
-              </div>
+          <div class="form-group">
+            <label class="col-sm-3 control-label">Fichero Excel</label>
+            <div class="col-sm-9">
+              <!-- <input id="upload-file" type="file" file-model="dashCtrl.up.file"> -->
+              <!-- <input id="upload-file" type="file" ng-change="dashCtrl.loadFile(this)" fileread="dashCtrl.up.file"> -->
+              <input id="upload-file" type="file">
             </div>
+          </div>
 
         </div><!-- /.box-body -->
 
@@ -52,3 +57,17 @@
   </div>
 
 </section><!-- /.content -->
+
+  <script>
+    // $(document).ready(function(){
+    //   $('#upload-file').change(function() {
+        // var f = $('#upload-file').files[0],
+        // var r = new FileReader();
+        // r.onloadend = function(e){
+        //   var data = e.target.result;
+        //   //send you binary data via $http or $resource or do anything else with it
+        // }
+        //$('#upload-form').attr('action',$('#upload-api').val());
+    //   })
+    // });
+  </script>
