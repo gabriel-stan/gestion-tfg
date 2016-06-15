@@ -34,9 +34,42 @@ class UsuarioSerializer(serializers.ModelSerializer):
 class DepartamentoSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Usuario
+        model = Departamento
         fields = ('id', 'codigo', 'nombre',)
 
+    def update(self, departamento, validated_data):
+        try:
+            # comprobando codigo
+            if 'codigo' in validated_data.keys():
+                new_codigo = validated_data.get('codigo')
+                res = Departamento.objects.filter(codigo=new_codigo)
+                if res.count() != 0:
+                    raise NameError("El departamento ya existe")
+                elif not isinstance(new_codigo, basestring):
+                    raise NameError("El codigo del departamento no tiene formato correcto")
+                else:
+                    departamento.codigo = new_codigo
+
+            # comprobando nombre
+            if 'nombre' in validated_data.keys():
+                new_nombre = validated_data.get('nombre')
+                if not isinstance(new_nombre, basestring):
+                    raise NameError("El nombre del departamento no tiene formato correcto")
+                else:
+                    departamento.nombre = new_nombre
+
+            departamento.save()
+
+            return dict(status=True, data=departamento)
+
+        except NameError as e:
+            return dict(status=False, message=e.message)
+        except:
+            return dict(status=False, message="Error en los parametros")
+
+    def delete(self, departamento):
+        departamento.delete()
+        return dict(status=True)
 
 class AlumnoSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=False)
@@ -150,8 +183,6 @@ class ProfesorSerializer(serializers.ModelSerializer):
                         raise NameError("El email no es correcto")
                     else:
                         profesor.email = new_email
-                else:
-                    raise NameError("No existe el profesor")
 
             # comprobando dni
             if 'dni' in validated_data.keys():

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth import authenticate, login, logout
 from authentication.models import Alumno, Profesor, Grupos, Usuario, Departamento
-from authentication.serializers import AlumnoSerializer, ProfesorSerializer, UsuarioSerializer
+from authentication.serializers import AlumnoSerializer, ProfesorSerializer, UsuarioSerializer, DepartamentoSerializer
 from rest_framework import permissions, viewsets, status, views
 from rest_framework.response import Response
 from django.contrib.auth.models import Permission
@@ -259,7 +259,7 @@ class ProfesoresViewSet(viewsets.ModelViewSet):
         """
         try:
             params = utils.get_params(request)
-            params['departamento'] = Departamento.objects.get(nombre=params['departamento']).id
+            params['departamento'] = Departamento.objects.get(codigo=params['departamento']).id
             #resul = Profesor.objects.create_user(**params)
             serializer = self.serializer_class(data=params)
             if serializer.is_valid():
@@ -452,3 +452,110 @@ class LoadDataView(views.APIView):
                 datos[value] = linea[key]
             model.objects.create(**datos)
         return dict(status=True, data=errores)
+
+
+class DepartamentosViewSet(viewsets.ModelViewSet):
+    lookup_field = 'codigo'
+    queryset = Departamento.objects.order_by('-created_at')
+    serializer_class = DepartamentoSerializer
+
+    def list(self, request):
+        """
+        GET
+        Obtener los datos de los departamentos
+        :param request:
+        :return :
+        {status: True/False, data:{serializer de los departamentos}
+
+        """
+        try:
+            # eventos = Evento.objects.filter(autor=request.user.id)
+            departamentos = Departamento.objects.all()
+            resul = self.serializer_class(departamentos, many=True).data
+            return Response(dict(data=resul), status=status.HTTP_200_OK)
+        except NameError as e:
+            return Response(dict(message=e.message), status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response(dict(message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)
+
+    def create(self, request):
+        """
+        POST
+        Insertar un departamento nuevo
+        :param request:
+        :return :
+        {status: True/False, data:{datos del departamento}
+        """
+        try:
+            codigo = request.data['codigo']
+            nombre = request.data['nombre']
+            # serializer = self.serializer_class(data={'contenido': content, 'tipo': tipo, 'autor': request.user.id})
+            # if serializer.is_valid():
+            #     resul = serializer.create_evento(serializer.validated_data)
+            #     if resul['status']:
+            #         return Response(utils.to_dict(resul))
+            #     else:
+            #         return Response(resul)
+            # else:
+            #     return Response(dict(status=False, message=serializer.errors), status=status.HTTP_400_BAD_REQUEST)
+            resul = Departamento.objects.create(codigo=codigo, nombre=nombre)
+            # resul = Evento.objects.create_evento(contenido=content['contenido'], titulo=content['titulo'], tipo=tipo, autor=Usuario.objects.get(id=request.user.id))
+            if resul.id:
+                resul = utils.to_dict(dict(status=True, data=resul))
+                resul_status = status.HTTP_200_OK
+            else:
+                resul = dict(message=resul['message'])
+                resul_status = status.HTTP_400_BAD_REQUEST
+            return Response(resul, status=resul_status)
+        except Exception as e:
+            return Response(dict(message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request):
+        """
+        PUT
+        Cambia los datos de un departamento
+        :param request:
+        :return :
+        {status: True/False, data:{datos del departamento cambiado}
+
+        :param request:
+        :return:
+        """
+        try:
+            params = utils.get_params(request)
+            if request.user.has_perm('authentication.departemento.change') or request.user.is_admin:
+                departamento = Departamento.objects.get(codigo=params['codigo'])
+                params = json.loads(params['data'])
+                serializer = DepartamentoSerializer(departamento)
+                resul = serializer.update(departamento, params)
+                if resul['status']:
+                    return Response(utils.to_dict(resul))
+                else:
+                    return Response(resul)
+            else:
+                return Response(dict(status=False, message="Sin privilegios"),
+                                status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        except Exception as e:
+            return Response(dict(status=False, message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request):
+        """
+        Eliminar un profesor
+        :param request:
+        :return :
+        """
+        try:
+            params = utils.get_params(request)
+            if request.user.is_admin:
+                departamento = Departamento.objects.get(codigo=params.get('codigo'))
+                serializer = self.serializer_class(departamento)
+                resul = serializer.delete(departamento)
+            else:
+                resul = dict(status=False, message="Parametros incorrectos")
+
+            return Response(resul)
+
+        except Profesor.DoesNotExist:
+            return Response(dict(status=False, message="El profesor indicado no existe"), status=status.HTTP_400_BAD_REQUEST)
+        except Exception:
+            return Response(dict(status=False, message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)

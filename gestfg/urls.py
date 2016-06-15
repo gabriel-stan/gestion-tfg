@@ -19,7 +19,7 @@ from rest_framework_nested import routers
 
 from gestfg.views import IndexView, DashboardView
 from authentication.views import AlumnosViewSet, LoginView, LogoutView, ProfesoresViewSet, PermissionsView, \
-    UsuariosViewSet, LoadDataView
+    UsuariosViewSet, LoadDataView, DepartamentosViewSet
 from tfgs.views import Tfg_asigView, TfgViewSet
 from eventos.views import EventosViewSet
 from upload_files.views import Upload_fileView
@@ -30,6 +30,7 @@ router.register(r'profesores', ProfesoresViewSet)
 router.register(r'usuarios', UsuariosViewSet)
 router.register(r'tfgs', TfgViewSet)
 router.register(r'events', EventosViewSet)
+router.register(r'departamentos', DepartamentosViewSet)
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
