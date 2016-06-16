@@ -36,6 +36,9 @@ class AccountManager(BaseUserManager):
 
         return account
 
+    def create_file(self, **kwargs):
+        return self.model.objects.create(**kwargs)
+
 
 class Usuario(AbstractBaseUser, PermissionsMixin):
 
@@ -107,14 +110,22 @@ class AlumnoManager(BaseUserManager):
         except NameError as e:
             return dict(status=False, message=e.message)
 
+    def create_file(self, **kwargs):
+        return self.model.objects.create(**kwargs)
 
 class Alumno(Usuario):
     objects = AlumnoManager()
 
 
+class DepartamentoManager(BaseUserManager):
+    def create_file(self, **kwargs):
+        return self.model.objects.create(**kwargs)
+
+
 class Departamento(models.Model):
     nombre = models.CharField(default=None, unique=True, null=True, max_length=100)
     codigo = models.CharField(default=None, unique=True, null=True, max_length=20)
+    objects = DepartamentoManager()
 
     USERNAME_FIELD = 'codigo'
     REQUIRED_FIELD = USERNAME_FIELD
@@ -152,6 +163,25 @@ class ProfesorManager(BaseUserManager):
 
             grupo_profesores = Grupos.objects.get(name='Profesores')
             usuario.set_password(password)
+            usuario.save()
+            grupo_profesores.user_set.add(usuario)
+
+            return dict(status=True, data=Profesor.objects.get(email=usuario.email))
+
+        except NameError as e:
+            return dict(status=False, message=e.message)
+
+    def create_file(self, **kwargs):
+        try:
+            departamento = Departamento.objects.get(codigo=kwargs.get('departamento'))
+
+            usuario = self.model.objects.create(email=kwargs.get('email'), dni=kwargs.get('dni'),
+                                                first_name=kwargs.get('first_name'), last_name=kwargs.get('last_name'),
+                                                departamento=departamento)
+
+            grupo_profesores = Grupos.objects.get(name='Profesores')
+            if kwargs.get('password'):
+                usuario.set_password(kwargs.get('password'))
             usuario.save()
             grupo_profesores.user_set.add(usuario)
 

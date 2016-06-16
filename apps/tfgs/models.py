@@ -63,6 +63,22 @@ class TfgManager(BaseUserManager):
         except NameError as e:
             return dict(status=False, message=e.message)
 
+    def create_file(self, **kwargs):
+        try:
+            tutor = Profesor.objects.get(email=kwargs.get('tutor'))
+            cotutor = Profesor.objects.get(email=kwargs.get('cotutor'))
+
+            tfg = self.model(tipo=kwargs.get('tipo'), titulo=kwargs.get('titulo'),
+                        n_alumnos=kwargs.get('n_alumnos'), descripcion=kwargs.get('descripcion'),
+                        conocimientos_previos=kwargs.get('conocimientos_previos'),
+                        hard_soft=kwargs.get('hard_soft'), tutor=tutor,
+                        cotutor=cotutor)
+            tfg.save()
+            return dict(status=True, data=Tfg.objects.get(titulo=tfg.titulo))
+
+        except NameError as e:
+            return dict(status=False, message=e.message)
+
 
 class Tfg(models.Model):
     tipo = models.CharField(max_length=100)
@@ -153,6 +169,20 @@ class Tfg_AsigManager(BaseUserManager):
 
         except NameError as e:
             return dict(status=False, message=e.message)
+        
+    # def create_file(self, **kwargs):
+    #     try:
+    #         tfg = Profesor.objects.get(titulo=kwargs.get('titulo'))
+    #         if
+    #         alumno_1 = Profesor.objects.get(email=kwargs.get('cotutor'))
+    #         cotutor = Profesor.objects.get(email=kwargs.get('cotutor'))
+    #
+    #         tfg_asig = Tfg_Asig.objects.create(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2, alumno_3=alumno_3)
+    #         tfg.save()
+    #         return dict(status=True, data=Tfg.objects.get(titulo=tfg.titulo))
+    #
+    #     except NameError as e:
+    #         return dict(status=False, message=e.message)
 
 
 class Tfg_Asig(models.Model):
