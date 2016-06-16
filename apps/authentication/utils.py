@@ -113,14 +113,30 @@ def procesar_datos_usuario(user, data):
         resul['last_name'] = s_data['last_name']
         resul['created_at'] = s_data['created_at']
         resul['updated_at'] = s_data['updated_at']
-        if Alumno.objects.filter(dni=s_data['dni']).count() != 0:
-            resul['clase'] = 'Alumno'
-        elif Profesor.objects.filter(dni=s_data['dni']).count() != 0:
-            resul['clase'] = 'Profesor'
-        elif Usuario.objects.get(dni=s_data['dni']).is_admin:
-            resul['clase'] = 'Administrador'
+
+        if s_data['dni'] is not None:
+            if Alumno.objects.filter(dni=s_data['dni']).count() != 0:
+                resul['clase'] = 'Alumno'
+            elif Profesor.objects.filter(dni=s_data['dni']).count() != 0:
+                resul['clase'] = 'Profesor'
+            elif Usuario.objects.get(dni=s_data['dni']).is_admin:
+                resul['clase'] = 'Administrador'
+            else:
+                resul['clase'] = 'Usuario'
+
+        elif s_data['email'] is not None:
+            if Alumno.objects.filter(email=s_data['email']).count() != 0:
+                resul['clase'] = 'Alumno'
+            elif Profesor.objects.filter(email=s_data['email']).count() != 0:
+                resul['clase'] = 'Profesor'
+            elif Usuario.objects.get(email=s_data['email']).is_admin:
+                resul['clase'] = 'Administrador'
+            else:
+                resul['clase'] = 'Usuario'
+
         else:
-            resul['clase'] = 'Usuario'
+            resul['clase'] = ''
+
         resul['grupos'] = obtener_grupos(s_data)
         resul['is_admin'] = s_data['is_admin']
         resultado.append(resul)
