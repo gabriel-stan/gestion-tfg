@@ -30,7 +30,7 @@
             <tr>
               <th>Código</th>
               <th>Nombre</th>
-              <th>Encargado</th>
+              <!-- <th>Encargado</th> -->
             </tr>
           </thead>
 
@@ -38,7 +38,7 @@
             <tr>
               <th>Código</th>
               <th>Nombre</th>
-              <th>Encargado</th>
+              <!-- <th>Encargado</th> -->
             </tr>
           </tfoot>
         </table>
@@ -61,13 +61,6 @@
 
     <script>
       $(document).ready(function () {
-        $.fn.dataTable.ext.buttons.alert = {
-        className: 'buttons-alert',
-
-        action: function ( e, dt, node, config ) {
-                alert( this.text() );
-            }
-        };
 
         var table = $("#tabla-dpts").DataTable({
             //sDom: '<Bf>rt<"col-md-6"i><"col-md-6"p><"col-md-12"l>',
@@ -75,31 +68,17 @@
             language: {
                 "url": "/static/plugins/datatables/language/Spanish.json"
             },
-            select: {
-                style: 'multi'
-            },
             responsive: true,
             buttons: [
-                {
-                    text: 'Reload',
-                    action: function ( e, dt, node, config ) {
-                        dt.ajax.reload();
-                    }
-                },
                 'copyHtml5',
                 'excelHtml5',
                 'csvHtml5',
-                'pdfHtml5',
-                {
-                    extend: 'alert',
-                    text: 'My button 2'
-                }
+                'pdfHtml5'
             ],
-            ajax: "/static/dpts.json",
+            ajax: "/api/v1/departamentos",
             columns: [
               {"data" : "codigo"},
-              {"data" : "nombre"},
-              {"data" : "encargado"}
+              {"data" : "nombre"}
             ]
           });
 
