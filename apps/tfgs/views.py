@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from tfgs.models import Tfg, Tfg_Asig
-from tfgs.serializers import TfgSerializer, Tfg_AsigSerializer
+from tfgs.models import Tfg, Tfg_Asig, Titulacion
+from tfgs.serializers import TfgSerializer, Tfg_AsigSerializer, TitulacionSerializer
 from authentication.models import Alumno, Profesor
 from rest_framework import viewsets, status, views
 from rest_framework.response import Response
@@ -69,7 +69,8 @@ class TfgViewSet(viewsets.ModelViewSet):
                 resul = Tfg.objects.create_tfg(conocimientos_previos=params.get('conocimientos_previos'),
                                                cotutor=params.get('cotutor'), descripcion=params.get('descripcion'),
                                                tutor=params.get('tutor'), hard_soft=params.get('hard_soft'),
-                                               titulo=params.get('titulo'), tipo=params.get('tipo'), n_alumnos=params.get('n_alumnos'))
+                                               titulo=params.get('titulo'), tipo=params.get('tipo'),
+                                               n_alumnos=params.get('n_alumnos'), titulacion=params.get('titulacion'))
                 if resul['status']:
                     resul = utils.to_dict(resul)
                     resul_status = status.HTTP_200_OK

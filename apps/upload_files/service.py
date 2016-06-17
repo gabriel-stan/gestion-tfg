@@ -1,6 +1,7 @@
 __author__ = 'tonima'
 from openpyxl import load_workbook
 from authentication.models import Profesor
+from tfgs.models import Titulacion
 from tfgs.models import Tfg
 
 
@@ -15,7 +16,8 @@ def upload_file_tfg(fichero, filas, p_fila, cabeceras):
                          n_alumnos=ws[cabeceras['n_alumnos'] + str(i)].value,
                          descripcion=ws[cabeceras['descripcion'] + str(i)].value,
                          conocimientos_previos=ws[cabeceras['conocimientos_previos'] + str(i)].value,
-                         hard_soft=ws[cabeceras['hard_soft'] + str(i)].value)
+                         hard_soft=ws[cabeceras['hard_soft'] + str(i)].value,
+                         titulacion=ws[cabeceras['titulacion'] + str(i)].value)
             if not datos['titulo']:
                 errores.append(dict(fila=i, message='El TFG no tiene titulo'))
                 continue
@@ -23,17 +25,20 @@ def upload_file_tfg(fichero, filas, p_fila, cabeceras):
             if ws[cabeceras['cotutor'] + str(i)].value:
                 datos['cotutor'] = Profesor.objects.get(emailyes=str(ws[cabeceras['cotutor'] + str(i)].value))
                 tfg = dict(tipo=datos['tipo'], titulo=datos['titulo'], n_alumnos=datos['n_alumnos'],
-                          descripcion=datos['descripcion'], conocimientos_previos=datos['conocimientos_previos'],
-                          hard_soft=datos['hard_soft'],
-                          tutor=datos['tutor'], cotutor=datos['cotutor'])
+                           descripcion=datos['descripcion'], conocimientos_previos=datos['conocimientos_previos'],
+                           hard_soft=datos['hard_soft'],
+                           tutor=datos['tutor'], cotutor=datos['cotutor'], titulacion=datos['titulacion'])
             else:
                 tfg = dict(tipo=datos['tipo'], titulo=datos['titulo'], n_alumnos=datos['n_alumnos'],
-                          descripcion=datos['descripcion'], conocimientos_previos=datos['conocimientos_previos'],
-                          hard_soft=datos['hard_soft'],
-                          tutor=datos['tutor'])
+                           descripcion=datos['descripcion'], conocimientos_previos=datos['conocimientos_previos'],
+                           hard_soft=datos['hard_soft'],
+                           tutor=datos['tutor'], titulacion=datos['titulacion'])
             Tfg.objects.create_tfg(**tfg)
         except Profesor.DoesNotExist:
             errores.append(dict(fila=i, message='El profesor no existe'))
+            continue
+        except Titulacion.DoesNotExist:
+            errores.append(dict(fila=i, message='La titulacion no existe'))
             continue
         except Exception as e:
             errores.append(dict(fila=i, message=e.message))
@@ -52,7 +57,8 @@ def upload_file_tfg_preasig(fichero, filas, p_fila, cabeceras):
                          n_alumnos=ws[cabeceras['n_alumnos'] + str(i)].value,
                          descripcion=ws[cabeceras['descripcion'] + str(i)].value,
                          conocimientos_previos=ws[cabeceras['conocimientos_previos'] + str(i)].value,
-                         hard_soft=ws[cabeceras['hard_soft'] + str(i)].value)
+                         hard_soft=ws[cabeceras['hard_soft'] + str(i)].value,
+                         titulacion=ws[cabeceras['titulacion'] + str(i)].value)
             if not datos['titulo']:
                 errores.append(dict(fila=i, message='El TFG no tiene titulo'))
                 continue
@@ -60,17 +66,19 @@ def upload_file_tfg_preasig(fichero, filas, p_fila, cabeceras):
             if ws[cabeceras['cotutor'] + str(i)].value:
                 datos['cotutor'] = Profesor.objects.get(emailyes=str(ws[cabeceras['cotutor'] + str(i)].value))
                 tfg = dict(tipo=datos['tipo'], titulo=datos['titulo'], n_alumnos=datos['n_alumnos'],
-                          descripcion=datos['descripcion'], conocimientos_previos=datos['conocimientos_previos'],
-                          hard_soft=datos['hard_soft'],
-                          tutor=datos['tutor'], cotutor=datos['cotutor'])
+                           descripcion=datos['descripcion'], conocimientos_previos=datos['conocimientos_previos'],
+                           hard_soft=datos['hard_soft'], tutor=datos['tutor'], cotutor=datos['cotutor'],
+                           titulacion=datos['titulacion'])
             else:
                 tfg = dict(tipo=datos['tipo'], titulo=datos['titulo'], n_alumnos=datos['n_alumnos'],
-                          descripcion=datos['descripcion'], conocimientos_previos=datos['conocimientos_previos'],
-                          hard_soft=datos['hard_soft'],
-                          tutor=datos['tutor'])
+                           descripcion=datos['descripcion'], conocimientos_previos=datos['conocimientos_previos'],
+                           hard_soft=datos['hard_soft'], tutor=datos['tutor'], titulacion=datos['titulacion'])
             Tfg.objects.create_tfg(**tfg)
         except Profesor.DoesNotExist:
             errores.append(dict(fila=i, message='El profesor no existe'))
+            continue
+        except Titulacion.DoesNotExist:
+            errores.append(dict(fila=i, message='La titulacion no existe'))
             continue
         except Exception as e:
             errores.append(dict(fila=i, message=e.message))

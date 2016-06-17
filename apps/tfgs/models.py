@@ -5,6 +5,23 @@ from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import Group
 
 
+class TitulacionManager(BaseUserManager):
+    def create_file(self, **kwargs):
+        return self.model.objects.create(**kwargs)
+
+
+class Titulacion(models.Model):
+    nombre = models.CharField(default=None, unique=True, null=True, max_length=100)
+    codigo = models.CharField(default=None, unique=True, null=True, max_length=20)
+    objects = TitulacionManager()
+
+    USERNAME_FIELD = 'codigo'
+    REQUIRED_FIELD = USERNAME_FIELD
+
+    def __unicode__(self):
+        return self.codigo
+
+
 class TfgManager(BaseUserManager):
 
     def create_tfg(self, titulo, **kwargs):
@@ -51,11 +68,20 @@ class TfgManager(BaseUserManager):
                 if not cotutor.groups.filter(name='Profesores').exists():
                     raise NameError("Cotutor ha de ser un profesor")
 
+            # comprobando titulacion
+            if kwargs.get('titulacion') is None:
+                raise NameError("Titulacion necesaria")
+            else:
+                try:
+                    titulacion = Titulacion.objects.get(codigo=kwargs.get('titulacion'))
+                except Titulacion.DoesNotExist:
+                    return dict(status=False, message='la titulacion no existe')
+
             tfg = self.model(tipo=kwargs.get('tipo'), titulo=titulo,
                         n_alumnos=kwargs.get('n_alumnos'), descripcion=kwargs.get('descripcion'),
                         conocimientos_previos=kwargs.get('conocimientos_previos'),
                         hard_soft=kwargs.get('hard_soft'), tutor=tutor,
-                        cotutor=cotutor)
+                        cotutor=cotutor, titulacion=titulacion)
 
             tfg.save()
             return dict(status=True, data=Tfg.objects.get(titulo=tfg.titulo))
@@ -91,6 +117,7 @@ class Tfg(models.Model):
     cotutor = models.ForeignKey(Profesor, related_name='cotutor', default=None, null=True)
     publicado = models.BooleanField(default=False)
     validado = models.BooleanField(default=False)
+    titulacion = models.ForeignKey(Titulacion, related_name='titulacion', default=None)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
