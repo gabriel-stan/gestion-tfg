@@ -19,7 +19,8 @@
     var Users = {
       all: all,
       create: create,
-      get: get
+      get: get,
+      update: update
     };
 
     return Users;
@@ -59,6 +60,10 @@
      */
     function get(email) {
       return $http.get('/api/v1/usuarios/' + email);
+    }
+
+    function update(content) {
+      return $http.put('/api/v1/' + content.llamada + '/', content);
     }
   }
 })();

@@ -43,7 +43,7 @@ def is_int(s):
 
 def is_email(param):
     try:
-        if not re.match(r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$', param):
+        if not re.match(r'^[a-z][_a-z0-9]+(@(correo\.)?ugr\.es)$', param):
             return False
         else:
             return True
