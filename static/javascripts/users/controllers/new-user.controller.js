@@ -84,14 +84,17 @@
       } else {
         content.usuario = newUserCtrl.user.email;
       }
+
+      if(newUserCtrl.user.tipo === 'Profesor'){
+        content.llamada = 'profesores'
+      } else if(newUserCtrl.user.tipo === 'Alumno'){
+        content.llamada = 'alumnos'
+      } else if(newUserCtrl.user.tipo === 'Usuario'){
+        content.llamada = 'usuarios'
+      }
+
       if(newUserCtrl.user.departamento){
-        if(newUserCtrl.user.tipo === 'Profesor'){
-          content.llamada = 'profesores'
-        } else if(newUserCtrl.user.tipo === 'Alumno'){
-          content.llamada = 'alumnos'
-        } else if(newUserCtrl.user.tipo === 'Usuario'){
-          content.llamada = 'usuarios'
-        }
+        delete newUserCtrl.user['departamento'];
       }
 
       content.datos = JSON.stringify(newUserCtrl.user);
