@@ -8,6 +8,7 @@ from django.contrib.auth.models import Permission
 import json
 import utils
 import django.apps
+import logging
 
 
 class UsuariosViewSet(viewsets.ModelViewSet):
@@ -333,6 +334,7 @@ class ProfesoresViewSet(viewsets.ModelViewSet):
 class LoginView(views.APIView):
     lookup_field = 'email'
     queryset = Usuario.objects.all()
+    logger = logging.getLogger(__name__)
 
     def post(self, request, format=None):
 
@@ -340,6 +342,7 @@ class LoginView(views.APIView):
             # params = utils.get_params(request)
             params = request.data
 
+            self.logger.info('INICIO WS - LOGIN VIEW con parametros: %s' % params)
             email = params.get('email', None)
             dni = params.get('dni', None)
             password = params.get('password', None)
