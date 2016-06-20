@@ -1,15 +1,15 @@
 
-  <form role="form" class="form-horizontal" ng-controller"NewUserController as vm" ng-submit="vm.update()">
+  <form role="form" class="form-horizontal" ng-submit="vm.submit()">
 
     <div class="box-body pad">
 
       <div class="form-group">
         <label class="col-sm-3 control-label">Tipo</label>
         <div class="col-sm-9">
-          <select id="user-tipo" class="form-control" ng-model="user.tipo">
-            <option value="alumnos">Alumno</option>
-            <option value="profesores">Profesor</option>
-            <option value="usuarios">Usuario</option>
+          <select id="user-tipo" class="form-control" ng-model="user.tipo" disabled>
+            <option value="Alumno">Alumno</option>
+            <option value="Profesor">Profesor</option>
+            <option value="Usuario">Usuario</option>
           </select>
         </div>
       </div>
@@ -35,7 +35,7 @@
         </div>
       </div>
 
-      <div id="user-dpt" class="form-group hidden">
+      <div id="user-dpt" class="form-group" ng-show="user.tipo == 'Profesor'">
         <label class="col-sm-3 control-label">Departamento</label>
         <div class="col-sm-9">
           <select class="form-control" ng-model="user.departamento">
@@ -67,13 +67,13 @@
   <script>
     $(document).ready(function(){
       $('#user-tipo').on('change',function(){
-        var selection = $(this).val();
-        if( selection==="profesores"){
-          $("#user-dpt").removeClass("hidden");
-        }
-        else{
-          $("#user-dpt").addClass("hidden");
-        }
+        // var selection = $(this).val();
+        // if( selection==="profesores"){
+        //   $("#user-dpt").removeClass("hidden");
+        // }
+        // else{
+        //   $("#user-dpt").addClass("hidden");
+        // }
       });
     });
   </script>
