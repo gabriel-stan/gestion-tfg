@@ -16,6 +16,8 @@ def get_params(req):
         for key, value in req.data.items():
             if key == 'campos':
                 datos[key] = json.loads(value)
+            elif 'list' in key:
+                datos[key] = json.loads(value)
             else:
                 datos[key] = value
     return datos
@@ -98,3 +100,11 @@ def comprueba_alumno(usuario):
         return True
     else:
         return False
+
+
+def get_model(model):
+    import django.apps
+    models = django.apps.apps.get_models()
+    for i in models:
+        if i._meta.model_name == str(model):
+            return i
