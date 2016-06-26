@@ -9,15 +9,16 @@
     .module('gestfg.layout.controllers')
     .controller('DashboardController', DashboardController);
 
-  DashboardController.$inject = ['$scope', 'Authentication', 'Events', 'Snackbar'];
+  DashboardController.$inject = ['$scope', 'Authentication', 'Events', 'Snackbar', 'Dashboard'];
 
   /**
   * @namespace DashboardController
   */
-  function DashboardController($scope, Authentication, Events, Snackbar) {
+  function DashboardController($scope, Authentication, Events, Snackbar, Dashboard) {
     var dashCtrl = this;
 
     dashCtrl.events = [];
+    dashCtrl.upload = upload;
 
     activate();
 
@@ -65,6 +66,35 @@
       function eventsErrorFn(data, status, headers, config) {
         Snackbar.error(data.error);
       }
+    }
+
+
+    function upload(){
+      var fd = new FormData();
+
+      var f = document.getElementById('upload-file').files[0];
+
+      fd.append('file', f);
+      fd.append('model', dashCtrl.up.model);
+
+      Dashboard.upload(fd).then(uploadSuccessFn, uploadErrorFn);
+
+
+      function uploadSuccessFn(data, status, headers, config) {
+        Snackbar.success("Subida realizada correctamente");
+      }
+
+      function uploadErrorFn(data, status, headers, config) {
+        Snackbar.error(data.data.message);
+      }
+
+      // var r = new FileReader();
+      // r.onloadend = function(e){
+      //   var data = e.target.result;
+      //   dashCtrl.up.file = data;
+      //   send you binary data via $http or $resource or do anything else with it
+      // }
+      // r.readAsBinaryString(f);
     }
   }
 })();

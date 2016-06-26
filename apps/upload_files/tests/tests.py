@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 __author__ = 'tonima'
 import os
-
 import simplejson as json
 from django.contrib.auth.models import Group
 from django.test import TestCase
 from rest_framework.test import APIClient
 from authentication.models import Profesor, Usuario, Departamento
+from tfgs.models import Titulacion
 
 
 class TfgServicesTests(TestCase):
@@ -21,43 +21,45 @@ class TfgServicesTests(TestCase):
 
         dep = Departamento.objects.create(nombre='departamento1', codigo=1)
 
-        self.prof1 = dict(email='jorgecasillas@ugr.es', first_name='profesor 1',
-                               last_name='apellido 1 apellido 12', departamento=dep, password='75169052')
+        titulacion = Titulacion.objects.create(nombre='Ingenieria Informatica', codigo='IF')
+
+        self.prof1 = dict(email='jorgecasillas@ugr.es', first_name='profesor 1', last_name='apellido 1 apellido 12',
+                          departamento=dep, password='75169052')
         Profesor.objects.create_user(**self.prof1)
 
         self.prof2 = dict(email='juanmanuelfernandez@ugr.es', first_name='profesor 2',
-                               last_name='apellido 12 apellido 122', departamento=dep, password='75169052')
+                          last_name='apellido 12 apellido 122', departamento=dep, password='75169052')
         Profesor.objects.create_user(**self.prof2)
 
-        self.prof3 = dict(email='eugenioaguirre@ugr.es', first_name='profesor 2',
-                               last_name='apellido 12 apellido 122', departamento=dep, password='75169052')
+        self.prof3 = dict(email='eugenioaguirre@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122',
+                          departamento=dep, password='75169052')
         Profesor.objects.create_user(**self.prof3)
 
-        self.prof4 = dict(email='miguelgarcia@ugr.es', first_name='profesor 2',
-                               last_name='apellido 12 apellido 122', departamento=dep, password='75169052')
+        self.prof4 = dict(email='miguelgarcia@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122',
+                          departamento=dep, password='75169052')
         Profesor.objects.create_user(**self.prof4)
 
-        self.prof5 = dict(email='franciscoherrera@ugr.es', first_name='profesor 2',
-                               last_name='apellido 12 apellido 122', departamento=dep, password='75169052')
+        self.prof5 = dict(email='franciscoherrera@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122'
+                          , departamento=dep, password='75169052')
         Profesor.objects.create_user(**self.prof5)
 
         self.data_tfg1 = dict(tipo='tipo1', titulo='titulo1',
                               n_alumnos=2, descripcion='descripcion',
                               conocimientos_previos='conocimientos previos',
                               hard_soft='hard_soft', tutor=self.prof1,
-                              cotutor=self.prof2)
+                              cotutor=self.prof2, titulacion=titulacion.codigo)
 
         self.data_tfg2 = dict(tipo='tipo1', titulo='titulo1',
                               n_alumnos=2, descripcion='descripcion',
                               conocimientos_previos='conocimientos previos',
                               hard_soft='hard_soft', tutor=self.prof1,
-                              cotutor=self.prof2)
+                              cotutor=self.prof2, titulacion=titulacion.codigo)
 
         self.data_tfg_error = dict(titulo='titulo1',
                                    n_alumnos=2, descripcion='descripcion',
                                    conocimientos_previos='conocimientos previos',
                                    hard_soft='conocimientos previos', tutor=self.prof1,
-                                   cotutor=self.prof2)
+                                   cotutor=self.prof2, titulacion=titulacion.codigo)
 
         # TODO: Hacer que carge desde el fichero cases sin que pete el test,
         self.TFG1 = {'tipo': 'T2',
@@ -95,22 +97,25 @@ class TfgServicesTests(TestCase):
         # Envio el fichero y carga TFGs
         location = os.path.join(os.path.dirname(__file__), 'test_upload_file_tfgs', 'ListaTFGs.xlsx')
         data = {'file': ('ListaTFGs.xlsx', open(location, 'rb')), 'filas': 5, 'p_fila': 5,
-                'cabeceras': json.dumps(dict(tipo='D', titulo='E',
-                                  n_alumnos='F', descripcion='G',
-                                  conocimientos_previos='H',
-                                  hard_soft='I', tutor='B',
-                                  cotutor='C'))}
+                'cabeceras': json.dumps(dict(tipo='D', titulo='E', n_alumnos='F', descripcion='G',
+                                             conocimientos_previos='H', hard_soft='I', tutor='B', cotutor='C',
+                                             titulacion='J')), 'tipe_file': 'tfg'}
         res = self.client.post('/api/v1/upload_file_tfgs/', data, format='multipart')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
-        self.assertEqual(resul['data'][1]['fila'], 8)
-        self.assertEqual(resul['data'][1]['message'], 'El TFG no tiene titulo')
-        self.assertEqual(resul['data'][0]['fila'], 6)
-        self.assertEqual(resul['data'][0]['message'], 'El profesor no existe')
+        self.assertEqual(resul['errores'][1]['fila'], 8)
+        self.assertEqual(resul['errores'][1]['message'], 'El TFG no tiene titulo')
+        self.assertEqual(resul['errores'][0]['fila'], 6)
+        self.assertEqual(resul['errores'][0]['message'], 'El profesor no existe')
+        res = self.client.post('/api/v1/upload_file_tfgs_confirm/', data={'list_tfg': json.dumps(resul['exitos']),
+                                                                          'model': 'tfg'})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+        self.assertEqual(resul['errores'], [])
         res = self.client.post('/api/v1/auth/login/', {'email':'jorgecasillas@ugr.es', 'password':'75169052'})
         resul = json.loads(res.content)
         self.assertEqual(resul['data']['email'], 'jorgecasillas@ugr.es')
-        res = self.client.get('/api/v1/tfgs/', {'titulo': self.TFG1['titulo']})
-        resul = json.loads(res.content)
-        self.assertEqual(resul['data']['tutor']['email'], 'jorgecasillas@ugr.es')
+        # res = self.client.get('/api/v1/tfgs/', {'titulo': self.TFG1['titulo']})
+        # resul = json.loads(res.content)
+        # self.assertEqual(resul['data']['tutor']['email'], 'jorgecasillas@ugr.es')
 

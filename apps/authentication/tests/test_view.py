@@ -27,10 +27,12 @@ class AuthenticationServicesTests(TestCase):
         self.data_alum_error = dict(email='ejemplo2', first_name='alumno 2',
                                     last_name='apellido 12 apellido 122', password='0000')
 
-        dep = Departamento.objects.create(nombre='departamento1', codigo=1)
+        dep = Departamento.objects.create(nombre='departamento1', codigo='AAA')
 
         self.data_prof1 = dict(dni='87654321S', first_name='profesor 2',
                                     last_name='apellido 12 apellido 122', departamento=dep, password='0000')
+
+        self.data_departamento = dict(codigo='BBB', nombre='departamento2')
 
     def test_ws_alumnos_get(self):
         # Sin alumnos
@@ -188,4 +190,32 @@ class AuthenticationServicesTests(TestCase):
         res = self.client.post('/api/v1/auth/load_data/', data, format='multipart')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
+
+        location = os.path.join(os.path.dirname(__file__), 'test_load_data', 'LoadProfesores.csv')
+        data = {'file': ('LoadProfesores.csv', open(location, 'rb')), 'model': 'profesor'}
+        res = self.client.post('/api/v1/auth/load_data/', data, format='multipart')
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+    def test_departamento(self):
+        # Me logueo con un admin
+        res = self.client.post('/api/v1/auth/login/', {'dni': self.data_admin['dni'],
+                                                       'password': self.data_admin['password']})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['dni'], self.data_admin['dni'])
+
+        res = self.client.post('/api/v1/departamentos/', {'codigo': self.data_departamento['codigo'],
+                                                               'nombre': self.data_departamento['nombre']})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        res = self.client.put('/api/v1/departamentos/', {'codigo': self.data_departamento['codigo'],
+                                                              'data': json.dumps(
+                                                                  {'nombre': 'departamento chulo'})})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['nombre'], 'departamento chulo')
+
+        res = self.client.get('/api/v1/departamentos/')
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data'][1]['nombre'], 'departamento chulo')
 

@@ -5,9 +5,26 @@ from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import Group
 
 
+class TitulacionManager(BaseUserManager):
+    def create_file(self, **kwargs):
+        return self.model.objects.create(**kwargs)
+
+
+class Titulacion(models.Model):
+    nombre = models.CharField(default=None, unique=True, null=True, max_length=100)
+    codigo = models.CharField(default=None, unique=True, null=True, max_length=20)
+    objects = TitulacionManager()
+
+    USERNAME_FIELD = 'codigo'
+    REQUIRED_FIELD = USERNAME_FIELD
+
+    def __unicode__(self):
+        return self.codigo
+
+
 class TfgManager(BaseUserManager):
 
-    def create_tfg(self, titulo, **kwargs):
+    def create(self, titulo, **kwargs):
         try:
             # comprobando titulo vacio o Tfg con el mismo titulo
             if not titulo:
@@ -51,12 +68,98 @@ class TfgManager(BaseUserManager):
                 if not cotutor.groups.filter(name='Profesores').exists():
                     raise NameError("Cotutor ha de ser un profesor")
 
+            # comprobando titulacion
+            if kwargs.get('titulacion') is None:
+                raise NameError("Titulacion necesaria")
+            else:
+                try:
+                    titulacion = Titulacion.objects.get(codigo=kwargs.get('titulacion'))
+                except Titulacion.DoesNotExist:
+                    return dict(status=False, message='la titulacion no existe')
+
             tfg = self.model(tipo=kwargs.get('tipo'), titulo=titulo,
                         n_alumnos=kwargs.get('n_alumnos'), descripcion=kwargs.get('descripcion'),
                         conocimientos_previos=kwargs.get('conocimientos_previos'),
                         hard_soft=kwargs.get('hard_soft'), tutor=tutor,
-                        cotutor=cotutor)
+                        cotutor=cotutor, titulacion=titulacion)
 
+            tfg.save()
+            return dict(status=True, data=Tfg.objects.get(titulo=tfg.titulo))
+
+        except NameError as e:
+            return dict(status=False, message=e.message)
+
+    def simular_create_tfg(self, titulo, **kwargs):
+        try:
+            # comprobando titulo vacio o Tfg con el mismo titulo
+            if not titulo:
+                raise NameError("Titulo necesario")
+            else:
+                res = Tfg.objects.filter(titulo=titulo)
+                if res.count() != 0:
+                    raise NameError("El TFG ya existe")
+
+            # comprobando tipo no vacio
+            if not kwargs.get('tipo'):
+                raise NameError("Tipo de TFG necesario")
+
+            # comprobando numero de alumnos
+            if kwargs.get('n_alumnos') is None or not utils.is_int(kwargs.get('n_alumnos')) or int(kwargs.get('n_alumnos')) <= 0 \
+                    or int(kwargs.get('n_alumnos')) > 3:
+                raise NameError("Numero de alumnos incorrecto")
+
+            # comprobando descripcion
+            if not kwargs.get('descripcion'):
+                raise NameError("Descripcion necesaria")
+
+            # comprobando tutor
+            if kwargs.get('tutor') is None:
+                raise NameError("Tutor necesario")
+            else:
+                try:
+                    tutor = Profesor.objects.get(email=kwargs.get('tutor'))
+                except Profesor.DoesNotExist:
+                    return dict(status=False, message='El tutor no existe')
+                if not tutor.groups.filter(name='Profesores').exists():
+                    raise NameError("Tutor ha de ser un profesor")
+
+            # comprobando cotutor
+            cotutor = None
+            if not kwargs.get('cotutor') is None:
+                try:
+                    cotutor = Profesor.objects.get(email=kwargs.get('cotutor'))
+                except Profesor.DoesNotExist:
+                    return dict(status=False, message='El cotutor no existe')
+                if not cotutor.groups.filter(name='Profesores').exists():
+                    raise NameError("Cotutor ha de ser un profesor")
+
+            # comprobando titulacion
+            if kwargs.get('titulacion') is None:
+                raise NameError("Titulacion necesaria")
+            else:
+                try:
+                    titulacion = Titulacion.objects.get(codigo=kwargs.get('titulacion'))
+                except Titulacion.DoesNotExist:
+                    return dict(status=False, message='la titulacion no existe')
+
+            self.model(tipo=kwargs.get('tipo'), titulo=titulo, n_alumnos=kwargs.get('n_alumnos'),
+                       descripcion=kwargs.get('descripcion'), conocimientos_previos=kwargs.get('conocimientos_previos'),
+                       hard_soft=kwargs.get('hard_soft'), tutor=tutor, cotutor=cotutor, titulacion=titulacion)
+
+            return True
+        except NameError:
+            return False
+
+    def create_file(self, **kwargs):
+        try:
+            tutor = Profesor.objects.get(email=kwargs.get('tutor'))
+            cotutor = Profesor.objects.get(email=kwargs.get('cotutor'))
+
+            tfg = self.model(tipo=kwargs.get('tipo'), titulo=kwargs.get('titulo'),
+                        n_alumnos=kwargs.get('n_alumnos'), descripcion=kwargs.get('descripcion'),
+                        conocimientos_previos=kwargs.get('conocimientos_previos'),
+                        hard_soft=kwargs.get('hard_soft'), tutor=tutor,
+                        cotutor=cotutor)
             tfg.save()
             return dict(status=True, data=Tfg.objects.get(titulo=tfg.titulo))
 
@@ -75,6 +178,7 @@ class Tfg(models.Model):
     cotutor = models.ForeignKey(Profesor, related_name='cotutor', default=None, null=True)
     publicado = models.BooleanField(default=False)
     validado = models.BooleanField(default=False)
+    titulacion = models.ForeignKey(Titulacion, related_name='titulacion', default=None)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -153,6 +257,20 @@ class Tfg_AsigManager(BaseUserManager):
 
         except NameError as e:
             return dict(status=False, message=e.message)
+        
+    # def create_file(self, **kwargs):
+    #     try:
+    #         tfg = Profesor.objects.get(titulo=kwargs.get('titulo'))
+    #         if
+    #         alumno_1 = Profesor.objects.get(email=kwargs.get('cotutor'))
+    #         cotutor = Profesor.objects.get(email=kwargs.get('cotutor'))
+    #
+    #         tfg_asig = Tfg_Asig.objects.create(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2, alumno_3=alumno_3)
+    #         tfg.save()
+    #         return dict(status=True, data=Tfg.objects.get(titulo=tfg.titulo))
+    #
+    #     except NameError as e:
+    #         return dict(status=False, message=e.message)
 
 
 class Tfg_Asig(models.Model):

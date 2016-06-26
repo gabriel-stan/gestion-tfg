@@ -9,6 +9,8 @@
         'gestfg.layout',
         'gestfg.events',
         'gestfg.users',
+        'gestfg.tfgs',
+        'gestfg.departamentos',
         'gestfg.utils'
       ]);
 
