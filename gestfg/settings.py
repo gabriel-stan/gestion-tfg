@@ -182,7 +182,7 @@ LOGGING = {
         'logfile': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/home/tonima/Proyectos/gestion-tfg/log/gestfg.log',
+            'filename': os.path.join(BASE_DIR, 'log', 'gestfg.log'),
             'maxBytes': 50000,
             'backupCount': 2,
             'formatter': 'standard',
