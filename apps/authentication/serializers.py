@@ -168,9 +168,7 @@ class ProfesorSerializer(serializers.ModelSerializer):
         read_only_fields = ('created_at', 'updated_at',)
 
     def create(self, validated_data):
-        if validated_data.get('email') or validated_data.get('dni'):
-            return Profesor.objects.create_user(**validated_data)
-        return dict(status=False, message='Error en parametros')
+        return Profesor.objects.create_user(**validated_data)
 
     def update(self, profesor, validated_data):
         try:
