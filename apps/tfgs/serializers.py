@@ -60,7 +60,7 @@ class TfgSerializer(serializers.ModelSerializer):
         read_only_fields = ('created_at', 'updated_at',)
 
     def create(self, validated_data):
-        return Tfg.objects.create_tfg(**validated_data)
+        return Tfg.objects.create(**validated_data)
 
     def update(self, tfg, validated_data):
         try:

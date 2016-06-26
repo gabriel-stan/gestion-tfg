@@ -167,23 +167,61 @@ DAB_FIELD_RENDERER = 'django_admin_bootstrapped.renderers.BootstrapFieldRenderer
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'standard': {
+            'format': '[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s',
+            'datefmt': '%d/%b/%Y %H:%M:%S'
+        },
+    },
     'handlers': {
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
+        'null': {
+            'level': 'DEBUG',
+            'class': 'django.utils.log.NullHandler',
+        },
+        'logfile': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
             'filename': '/home/tonima/Proyectos/gestion-tfg/log/gestfg.log',
+            'maxBytes': 50000,
+            'backupCount': 2,
+            'formatter': 'standard',
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard'
         },
     },
     'loggers': {
         'django': {
-            'handlers': ['file'],
-            'level': 'INFO',
+            'handlers': ['console'],
             'propagate': True,
+            'level': 'WARN',
         },
-    },
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'authentication': {
+            'handlers': ['console', 'logfile'],
+            'level': 'INFO',
+        },
+        'eventos': {
+            'handlers': ['console', 'logfile'],
+            'level': 'INFO',
+        },
+        'tfgs': {
+            'handlers': ['console', 'logfile'],
+            'level': 'INFO',
+        },
+        'upload_files': {
+            'handlers': ['console', 'logfile'],
+            'level': 'INFO',
+        },
+    }
 }
-
 
 # Heroku postgresql
 

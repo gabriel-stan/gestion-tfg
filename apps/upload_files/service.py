@@ -9,6 +9,7 @@ def upload_file_tfg(fichero, filas, p_fila, cabeceras):
     wb = load_workbook(fichero)
     ws = wb.active
     errores = []
+    exitos = []
     for i in range(p_fila, 5+filas):
         try:
             datos = dict(tipo=ws[cabeceras['tipo'] + str(i)].value,
@@ -27,13 +28,14 @@ def upload_file_tfg(fichero, filas, p_fila, cabeceras):
                 tfg = dict(tipo=datos['tipo'], titulo=datos['titulo'], n_alumnos=datos['n_alumnos'],
                            descripcion=datos['descripcion'], conocimientos_previos=datos['conocimientos_previos'],
                            hard_soft=datos['hard_soft'],
-                           tutor=datos['tutor'], cotutor=datos['cotutor'], titulacion=datos['titulacion'])
+                           tutor=datos['tutor'].email, cotutor=datos['cotutor'].email, titulacion=datos['titulacion'])
             else:
                 tfg = dict(tipo=datos['tipo'], titulo=datos['titulo'], n_alumnos=datos['n_alumnos'],
                            descripcion=datos['descripcion'], conocimientos_previos=datos['conocimientos_previos'],
                            hard_soft=datos['hard_soft'],
-                           tutor=datos['tutor'], titulacion=datos['titulacion'])
-            Tfg.objects.create_tfg(**tfg)
+                           tutor=datos['tutor'].email, titulacion=datos['titulacion'])
+            if Tfg.objects.simular_create_tfg(**tfg):
+                exitos.append(dict(fila=i, tfg=tfg))
         except Profesor.DoesNotExist:
             errores.append(dict(fila=i, message='El profesor no existe'))
             continue
@@ -43,7 +45,21 @@ def upload_file_tfg(fichero, filas, p_fila, cabeceras):
         except Exception as e:
             errores.append(dict(fila=i, message=e.message))
             continue
-    return dict(status=True, data=errores)
+    return dict(status=True, exitos=exitos, errores=errores)
+
+
+def upload_file_confirm(tfgs, model):
+    errores = []
+    for index, data_tfg in enumerate(tfgs):
+        try:
+            tfg = data_tfg.get('tfg')
+            res = model.objects.create(**tfg)
+            if not res.get('status'):
+                errores.append(dict(fila=index, tfg=tfg))
+        except Exception as e:
+            errores.append(dict(fila=index, message=e.message))
+            continue
+    return dict(status=True, errores=errores)
 
 
 def upload_file_tfg_preasig(fichero, filas, p_fila, cabeceras):
