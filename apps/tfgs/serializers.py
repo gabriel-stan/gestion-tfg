@@ -1,25 +1,66 @@
-import re
 import utils
-from django.contrib.auth import update_session_auth_hash
+from django.db import models
 from rest_framework import serializers
-from tfgs.models import Tfg, Tfg_Asig
-from authentication.models import Profesor, Alumno
+from tfgs.models import Tfg, Tfg_Asig, Titulacion
+from authentication.models import Profesor
 from authentication.serializers import ProfesorSerializer
+
+
+class TitulacionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Titulacion
+        fields = ('id', 'codigo', 'nombre',)
+
+    def update(self, titulacion, validated_data):
+        try:
+            # comprobando codigo
+            if 'codigo' in validated_data.keys():
+                new_codigo = validated_data.get('codigo')
+                res = Titulacion.objects.filter(codigo=new_codigo)
+                if res.count() != 0:
+                    raise NameError("El departamento ya existe")
+                elif not isinstance(new_codigo, basestring):
+                    raise NameError("El codigo de la titulacion no tiene formato correcto")
+                else:
+                    titulacion.codigo = new_codigo
+
+            # comprobando nombre
+            if 'nombre' in validated_data.keys():
+                new_nombre = validated_data.get('nombre')
+                if not isinstance(new_nombre, basestring):
+                    raise NameError("El nombre de la titulacion no tiene formato correcto")
+                else:
+                    titulacion.nombre = new_nombre
+
+            titulacion.save()
+
+            return dict(status=True, data=titulacion)
+
+        except NameError as e:
+            return dict(status=False, message=e.message)
+        except:
+            return dict(status=False, message="Error en los parametros")
+
+    def delete(self, titulacion):
+        titulacion.delete()
+        return dict(status=True)
 
 
 class TfgSerializer(serializers.ModelSerializer):
     tutor = ProfesorSerializer()
     cotutor = ProfesorSerializer()
+    titulacion = TitulacionSerializer()
     created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
 
     class Meta:
         model = Tfg
         fields = ('id', 'tipo', 'titulo', 'updated_at', 'n_alumnos', 'descripcion', 'conocimientos_previos',
-                  'hard_soft', 'tutor', 'cotutor', 'created_at', 'updated_at',)
+                  'hard_soft', 'tutor', 'cotutor', 'created_at', 'updated_at', 'titulacion',)
         read_only_fields = ('created_at', 'updated_at',)
 
     def create(self, validated_data):
-        return Tfg.objects.create_tfg(**validated_data)
+        return Tfg.objects.create(**validated_data)
 
     def update(self, tfg, validated_data):
         try:
@@ -80,7 +121,15 @@ class TfgSerializer(serializers.ModelSerializer):
                 if not isinstance(cotutor, Profesor) or not cotutor.groups.filter(name='Profesores').exists():
                     raise NameError("CoTutor incorrecto")
                 else:
-                    tfg.tutor = cotutor
+                    tfg.cotutor = cotutor
+
+            # comprobando titulacion
+            if 'titulacion' in validated_data.keys():
+                titulacion = Titulacion.objects.get(codigo=validated_data.get('titulacion'))
+                if not isinstance(titulacion, Titulacion):
+                    raise NameError("Titulacion incorrecta")
+                else:
+                    tfg.titulacion = titulacion
 
             tfg.save()
 

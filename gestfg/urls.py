@@ -22,7 +22,7 @@ from authentication.views import AlumnosViewSet, LoginView, LogoutView, Profesor
     UsuariosViewSet, LoadDataView, DepartamentosViewSet
 from tfgs.views import Tfg_asigView, TfgViewSet
 from eventos.views import EventosViewSet
-from upload_files.views import Upload_fileView
+from upload_files.views import Upload_fileView, Upload_file_confirmView
 
 router = routers.SimpleRouter()
 router.register(r'alumnos', AlumnosViewSet)
@@ -41,6 +41,7 @@ urlpatterns = [
     url(r'^api/v1/auth/load_data/$', LoadDataView.as_view(), name='load_data'),
     url(r'^api/v1/tfgs_asig/$', Tfg_asigView.as_view(), name='tfg_asig'),
     url(r'^api/v1/upload_file_tfgs/$', Upload_fileView.as_view(), name='upload_file_tfgs'),
+    url(r'^api/v1/upload_file_tfgs_confirm/$', Upload_file_confirmView.as_view(), name='upload_file_tfgs_confirm'),
     # url(r'^alumnos/$', authentication_views.AlumnosViewSet.alumnos, name='alumnos'),
     # url(r'^logueo/$', login.login, name='login'),
     # url(r'^alumnos/update_alumno/$', alumnos.update_alumno, name='update_alumno'),

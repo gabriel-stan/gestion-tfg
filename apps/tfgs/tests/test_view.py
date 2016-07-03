@@ -2,6 +2,7 @@ __author__ = 'tonima'
 from django.test import TestCase
 from rest_framework.test import APIClient
 from authentication.models import Usuario, Departamento
+from tfgs.models import Titulacion
 import simplejson as json
 
 
@@ -14,29 +15,32 @@ class TfgServicesTests(TestCase):
 
         dep = Departamento.objects.create(nombre='departamento1', codigo='AAA')
 
+        titulacion = Titulacion.objects.create(nombre='Ingenieria Informatica', codigo='IF')
+
         self.data_prof1 = dict(email='prof_ejemplo@ugr.es', first_name='profesor 1',
-                               last_name='apellido 1 apellido 12', departamento=dep, password='75169052')
+                               last_name='apellido 1 apellido 12', departamento=dep.codigo, password='75169052')
 
         self.data_prof2 = dict(email='prof_ejemplo2@ugr.es', first_name='profesor 2',
-                               last_name='apellido 12 apellido 122', departamento=dep, password='75169052')
+                               last_name='apellido 12 apellido 122', departamento=dep.codigo, password='75169052')
 
         self.data_tfg1 = dict(tipo='tipo1', titulo='titulo1',
                               n_alumnos=2, descripcion='descripcion',
                               conocimientos_previos='conocimientos previos',
                               hard_soft='hard_soft', tutor=self.data_prof1['email'],
-                              cotutor=self.data_prof2['email'])
+                              cotutor=self.data_prof2['email'], titulacion=titulacion.codigo)
 
         self.data_tfg2 = dict(tipo='tipo1', titulo='titulo1',
                               n_alumnos=2, descripcion='descripcion',
                               conocimientos_previos='conocimientos previos',
                               hard_soft='hard_soft', tutor=self.data_prof2['email'],
-                              cotutor=self.data_prof2['email'])
+                              cotutor=self.data_prof2['email'], titulacion=titulacion.codigo)
 
         self.data_tfg_error = dict(titulo='titulo1',
                                    n_alumnos=2, descripcion='descripcion',
                                    conocimientos_previos='conocimientos previos',
                                    hard_soft='conocimientos previos', tutor='prof_ejemplo@ugr.es',
-                                   cotutor='prof_ejemplo2@ugr.es')
+                                   cotutor='prof_ejemplo2@ugr.es', titulacion=titulacion.codigo)
+
         self.data_alum1 = dict(email='alumno1@correo.ugr.es', first_name='profesor 2',
                                last_name='apellido 12 apellido 122', password='75169052')
 
