@@ -4,7 +4,7 @@ from django.contrib.auth.models import User, Group, Permission
 from django.contrib.contenttypes.models import ContentType
 
 
-PERMISOS_JEFE_DEPARTAMENTO={'tfgs': {'tfg': ['create', 'select', 'change', 'delete']},
+PERMISOS_JEFE_DEPARTAMENTO={'tfgs': {'tfg': ['create', 'select', 'change', 'delete', 'masivos']},
                              'eventos': {'evento': ['create', 'select', 'change', 'delete']},
                              'authentication': {'usuario': ['select']}}
 
