@@ -25,7 +25,7 @@ class Upload_fileView(views.APIView):
         """
         try:
             self.logger.info('INICIO WS - UPLOADFILEVIEW POST del usuario: %s con parametros: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, request.FILES['file']))
-            if request.user.has_perm('tfgs.tfg.create') or request.user.is_admin:
+            if request.user.has_perm('tfgs.tfg.masivos') or request.user.is_admin:
                 file = request.FILES['file']
                 filas = int(request.POST['filas'])
                 p_fila = int(request.POST['p_fila'])
@@ -62,7 +62,7 @@ class Upload_file_confirmView(views.APIView):
         try:
             params = utils.get_params(request)
             self.logger.info('INICIO WS - UPLOADFILECONFIRMVIEW POST del usuario: %s con parametros: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
-            if request.user.has_perm('tfgs.tfg.create') or request.user.is_admin:
+            if request.user.has_perm('tfgs.tfg.masivos') or request.user.is_admin:
                 model = get_model(params.get('model'))
                 resul = upload_file_confirm(params['list_tfg'], model)
                 if resul['status']:

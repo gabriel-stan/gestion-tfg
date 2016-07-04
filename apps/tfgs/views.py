@@ -36,7 +36,7 @@ class TfgViewSet(viewsets.ModelViewSet):
                 if len(resul) == 0:
                     raise NameError("No hay tfgs almacenados")
             self.logger.info('FIN WS - TFGVIEW LIST del usuario: %s con resultado: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
-            return Response(dict(data=resul), status=status.HTTP_200_OK)
+            return Response(dict(status=True, data=resul), status=status.HTTP_200_OK)
         except NameError as e:
             resul = dict(message=e.message)
             self.logger.error('TFGVIEW LIST del usuario: %s con resultado: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
@@ -83,7 +83,7 @@ class TfgViewSet(viewsets.ModelViewSet):
                                                titulo=params.get('titulo'), tipo=params.get('tipo'),
                                                n_alumnos=params.get('n_alumnos'), titulacion=params.get('titulacion'))
                 if resul['status']:
-                    resul = utils.to_dict(resul)
+                    resul['data'] = self.serializer_class(resul['data']).data
                     resul_status = status.HTTP_200_OK
                 else:
                     resul = dict(message=resul['message'])
@@ -108,8 +108,8 @@ class TfgViewSet(viewsets.ModelViewSet):
         try:
             params = json.loads(request.data['datos'])
             self.logger.info('INICIO WS - TFGVIEW PUT del usuario: %s con parametros: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
-            if request.user.has_perm('tfgs.tfg.create') or request.user.is_admin:
-                tfg = Tfg.objects.get(titulo=request.data['titulo'])
+            if request.user.has_perm('tfgs.tfg.change') or request.user.is_admin:
+                tfg = Tfg.objects.get(titulo=params.get('titulo'))
                 serializer = self.serializer_class(tfg)
                 resul = serializer.update(tfg, params)
                 if resul['status']:
@@ -130,7 +130,7 @@ class TfgViewSet(viewsets.ModelViewSet):
 
     def delete(self, request):
         """
-        Eliminar un usuario
+        Eliminar un tfg
         :param request:
         :return :
         """
@@ -139,7 +139,7 @@ class TfgViewSet(viewsets.ModelViewSet):
             params = utils.get_params(request)
             self.logger.info('INICIO WS - TFGVIEW DELETE del usuario: %s con parametros: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if 'titulo' in params:
-                tfg = Tfg.objects.get(titulo=params['titulo'])
+                tfg = Tfg.objects.get(titulo=params.get('titulo'))
                 serializer = self.serializer_class(tfg)
                 resul = serializer.delete_tfg(tfg)
                 if resul['status']:
@@ -183,12 +183,12 @@ class Tfg_asigView(views.APIView):
             self.logger.info('INICIO WS - TFGASIGVIEW POST del usuario: %s con parametros: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             alumno_2 = None
             alumno_3 = None
-            tfg = Tfg.objects.get(titulo=params['tfg'])
-            alumno_1 = Alumno.objects.get(email=params['alumno1'])
+            tfg = Tfg.objects.get(titulo=params.get('tfg'))
+            alumno_1 = Alumno.objects.get(email=params.get('alumno1'))
             if 'alumno_2' in params:
-                alumno_2 = Alumno.objects.get(email=params['alumno_2'])['id']
+                alumno_2 = Alumno.objects.get(email=params.get('alumno_2'))['id']
             if 'alumno_3' in params:
-                alumno_3 = Alumno.objects.get(email=params['alumno_3'])['id']
+                alumno_3 = Alumno.objects.get(email=params.get('alumno_3'))['id']
             serializer = self.serializer_class(data=dict(tfg=tfg.id, alumno_1=alumno_1.id, alumno_2=alumno_2,
                                                          alumno_3=alumno_3))
             if serializer.is_valid():
@@ -222,7 +222,7 @@ class Tfg_asigView(views.APIView):
             params = utils.get_params(request)
             self.logger.info('INICIO WS - TFGASIGVIEW DELETE del usuario: %s con parametros: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if 'titulo' in params:
-                tfg = Tfg.objects.get(titulo=params['titulo'])
+                tfg = Tfg.objects.get(titulo=params.get('titulo'))
                 tfg_asig = Tfg_Asig.objects.get(tfg=tfg)
                 serializer = self.serializer_class(tfg_asig)
                 resul = serializer.delete_tfg(tfg_asig)

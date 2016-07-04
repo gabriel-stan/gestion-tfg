@@ -28,7 +28,7 @@ class AccountManager(BaseUserManager):
 
         return dict(status=True, data=account)
 
-    def create_superuser(self, password, **kwargs):
+    def create_superuser(self, password=None, **kwargs):
         account = self.create_user(password, **kwargs)
 
         account['data'].is_admin = True
