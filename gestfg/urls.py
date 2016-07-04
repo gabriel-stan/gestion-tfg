@@ -23,6 +23,7 @@ from authentication.views import AlumnosViewSet, LoginView, LogoutView, Profesor
 from tfgs.views import Tfg_asigView, TfgViewSet
 from eventos.views import EventosViewSet
 from upload_files.views import Upload_fileView, Upload_file_confirmView
+from comisiones_evaluacion.views import ComisionEvaluacionViewSet
 
 router = routers.SimpleRouter()
 router.register(r'alumnos', AlumnosViewSet)
@@ -31,6 +32,7 @@ router.register(r'usuarios', UsuariosViewSet)
 router.register(r'tfgs', TfgViewSet)
 router.register(r'events', EventosViewSet)
 router.register(r'departamentos', DepartamentosViewSet)
+router.register(r'comisiones', ComisionEvaluacionViewSet)
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),

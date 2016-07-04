@@ -76,7 +76,7 @@ class UsuariosViewSet(viewsets.ModelViewSet):
             params = utils.get_params(request)
             self.logger.info('INICIO WS - USUARIOSVIEW CREATE del usuario: %s con parametros: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if request.user.is_admin:
-                is_admin = str(params.get('is_admin', None))
+                is_admin = str(params.get('is_admin'))
                 serializer = self.serializer_class(data=params)
                 if serializer.is_valid():
                     if is_admin and is_admin == 'True':
@@ -411,9 +411,9 @@ class LoginView(views.APIView):
             # params = utils.get_params(request)
             params = request.data
 
-            email = params.get('email', None)
-            dni = params.get('dni', None)
-            password = params.get('password', None)
+            email = params.get('email')
+            dni = params.get('dni')
+            password = params.get('password')
 
             if email:
                 self.logger.info('INICIO WS - LOGINVIEW del usuario: %s' % params.get('email'))
@@ -590,7 +590,6 @@ class DepartamentosViewSet(viewsets.ModelViewSet):
             params = utils.get_params(request)
             self.logger.info('INICIO WS - DEPARTAMENTOSVIEW CREATE del usuario: %s con params: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             resul = Departamento.objects.create(codigo=params.get('codigo'), nombre=params.get('nombre'))
-            # resul = Evento.objects.create_evento(contenido=content['contenido'], titulo=content['titulo'], tipo=tipo, autor=Usuario.objects.get(id=request.user.id))
             if resul.id:
                 resul = utils.to_dict(dict(status=True, data=resul))
                 resul_status = status.HTTP_200_OK

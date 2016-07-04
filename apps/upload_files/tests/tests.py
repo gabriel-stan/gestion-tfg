@@ -13,7 +13,7 @@ class TfgServicesTests(TestCase):
     def setUp(self):
         self.client = APIClient()
 
-        self.grupo_profesores = Group.objects.get(name='Profesores')
+        self.grupo_jefe_departamento = Group.objects.get(name='Jefe de Departamento')
 
         self.data_admin = dict(email='admin@admin.es', first_name='admin 1',
                                last_name='apellido 1 apellido 12', password='0000', is_admin=True)
@@ -26,6 +26,7 @@ class TfgServicesTests(TestCase):
         self.prof1 = dict(email='jorgecasillas@ugr.es', first_name='profesor 1', last_name='apellido 1 apellido 12',
                           departamento=dep, password='75169052')
         Profesor.objects.create_user(**self.prof1)
+        self.grupo_jefe_departamento.user_set.add(Profesor.objects.get(email='jorgecasillas@ugr.es'))
 
         self.prof2 = dict(email='juanmanuelfernandez@ugr.es', first_name='profesor 2',
                           last_name='apellido 12 apellido 122', departamento=dep, password='75169052')
