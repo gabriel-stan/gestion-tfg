@@ -8,13 +8,17 @@ def get_params(req):
     datos = {}
     if req.method == 'GET':
         for key, value in req.query_params.items():
-            if key == 'campos':
+            if key == 'content':
+                return value
+            elif key == 'campos':
                 datos[key] = json.loads(value)
             else:
                 datos[key] = value
     else:
         for key, value in req.data.items():
-            if key == 'campos':
+            if key == 'content':
+                return value
+            elif key == 'campos':
                 datos[key] = json.loads(value)
             else:
                 datos[key] = value

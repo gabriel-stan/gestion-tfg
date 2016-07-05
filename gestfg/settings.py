@@ -55,7 +55,8 @@ INSTALLED_APPS = (
     'compressor',
     'authentication',
     'tfgs',
-    'eventos'
+    'eventos',
+    'comisiones_evaluacion'
 )
 
 MIDDLEWARE_CLASSES = (
