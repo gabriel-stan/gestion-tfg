@@ -20,7 +20,8 @@
       all: all,
       create: create,
       get: get,
-      update: update
+      update: update,
+      remove: remove
     };
 
     return Users;
@@ -64,6 +65,10 @@
 
     function update(content) {
       return $http.put('/api/v1/' + content.llamada + '/', content);
+    }
+
+    function remove(tipo, email) {
+      return $http.delete('/api/v1/' + tipo + '/' + email);
     }
   }
 })();

@@ -19,6 +19,7 @@
 
     newUserCtrl.submit = submit;
     newUserCtrl.update = update;
+    newUserCtrl.remove = remove;
 
     /**
     * @name submit
@@ -81,8 +82,10 @@
       var content = new Object();
       if(newUserCtrl.user.dni){
         content.usuario = newUserCtrl.user.dni;
+        delete newUserCtrl.user['dni'];
       } else {
         content.usuario = newUserCtrl.user.email;
+        delete newUserCtrl.user['email'];
       }
 
       if(newUserCtrl.user.tipo === 'Profesor'){
@@ -117,6 +120,49 @@
       */
       function updateUserErrorFn(data, status, headers, config) {
         $rootScope.$broadcast('user.created.error');
+        Snackbar.error(data.message);
+      }
+    }
+
+    function remove() {
+
+      newUserCtrl.user = $scope.user;
+
+      var content = new Object();
+      if(newUserCtrl.user.dni){
+        content.usuario = newUserCtrl.user.dni;
+      } else {
+        content.usuario = newUserCtrl.user.email;
+      }
+
+      if(newUserCtrl.user.tipo === 'Profesor'){
+        content.llamada = 'profesores';
+      } else if(newUserCtrl.user.tipo === 'Alumno'){
+        content.llamada = 'alumnos';
+      } else if(newUserCtrl.user.tipo === 'Usuario'){
+        content.llamada = 'usuarios';
+      }
+
+      content.datos = JSON.stringify(newUserCtrl.user);
+
+      Users.remove(content.llamada,content.usuario).then(deleteUserSuccessFn, deleteUserErrorFn);
+
+
+      /**
+      * @name createUserSuccessFn
+      * @desc Show snackbar with success message
+      */
+      function deleteUserSuccessFn(data, status, headers, config) {
+        Snackbar.success('El usuario se ha borrado con éxito.');
+      }
+
+
+      /**
+      * @name createUserErrorFn
+      * @desc Propagate error event and show snackbar with error message
+      */
+      function deleteUserErrorFn(data, status, headers, config) {
+        $rootScope.$broadcast('user.deleted.error');
         Snackbar.error(data.message);
       }
     }
