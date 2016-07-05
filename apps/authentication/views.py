@@ -102,6 +102,43 @@ class UsuariosViewSet(viewsets.ModelViewSet):
             return Response(resul, status=status.HTTP_400_BAD_REQUEST)
 
 
+    def put(self, request):
+        """
+        PUT
+        Modificar los datos de un alumno
+        :param request:
+        :return :
+        {status: True/False, data:{datos del alumno}
+
+        :param request:
+        :return:
+        """
+        try:
+            params = utils.get_params(request)
+            self.logger.info('INICIO WS - USUARIOSSVIEW PUT del usuario: %s con parametros: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
+            if utils.check_usuario(request.user, params['usuario']):
+                if utils.is_email(params['usuario']):
+                    usuario = Usuario.objects.get(email=params['usuario'])
+                elif utils.is_dni(params['usuario']):
+                    usuario = Usuario.objects.get(dni=params['usuario'])
+                params = json.loads(request.data['datos'])
+                serializer = self.serializer_class(usuario)
+                resul = serializer.update(usuario, params)
+                if resul['status']:
+                    resul = utils.to_dict(resul)
+                    resul_status = status.HTTP_200_OK
+                else:
+                    resul_status = status.HTTP_400_BAD_REQUEST
+            else:
+                resul = dict(status=False, message="Sin privilegios")
+                resul_status = status.HTTP_405_METHOD_NOT_ALLOWED
+            self.logger.info('FIN WS - USUARIOSSVIEW PUT del usuario: %s con resultado: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            return Response(resul, status=resul_status)
+        except Exception as e:
+            resul = dict(status=False, message="Error en la llamada")
+            self.logger.critical('USUARIOSSVIEW PUT: %s' % resul)
+            return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+
 class AlumnosViewSet(viewsets.ModelViewSet):
     lookup_field = 'email'
     queryset = Alumno.objects.all()

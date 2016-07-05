@@ -30,6 +30,65 @@ class UsuarioSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return Usuario.objects.create_user(**validated_data)
 
+    def update(self, usuario, validated_data):
+        try:
+            # comprobando email
+            if 'email' in validated_data.keys():
+                new_email = validated_data.get('email')
+                res = Usuario.objects.filter(email=new_email)
+                if res.count() == 0:
+                    if not utils.is_string(new_email) or not \
+                            re.match(r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$', new_email):
+                        raise NameError("El email no es correcto")
+                    else:
+                        usuario.email = new_email
+                else:
+                    raise NameError("El usuario indicado ya existe")
+
+            # comprobando dni
+            if 'dni' in validated_data.keys():
+                new_dni = validated_data.get('dni')
+                res = Usuario.objects.filter(dni=new_dni)
+                if res.count() == 0:
+                    if not utils.is_string(new_dni) or not \
+                            re.match(r'(\d{8})([-]?)([A-Z]{1})', new_dni):
+                        raise NameError("El dni no es correcto")
+                    else:
+                        usuario.email = new_dni
+                else:
+                    raise NameError("El usuario indicado ya existe")
+
+            # comprobando nombre
+            if 'first_name' in validated_data.keys():
+                new_first_name = validated_data.get('first_name')
+                if new_first_name == '' or not utils.is_string(new_first_name):
+                    raise NameError("Nombre incorrecto")
+                else:
+                    usuario.first_name = new_first_name
+
+            # comprobando apellidos
+            if 'last_name' in validated_data.keys():
+                new_last_name = validated_data.get('last_name')
+                if new_last_name == '' or not utils.is_string(new_last_name):
+                    raise NameError("Nombre incorrecto")
+                else:
+                    usuario.new_last_name = new_last_name
+
+            # if 'password' in validated_data.keys() and 'confirm_password' in validated_data.keys():
+            #     password = validated_data.get('password')
+            #     confirm_password = validated_data.get('confirm_password')
+            #     if password and confirm_password and password == confirm_password:
+            #         alumno.set_password(password)
+
+            usuario.save()
+
+            return dict(status=True, data=usuario)
+
+        except NameError as e:
+            return dict(status=False, message=e.message)
+        except:
+            return dict(status=False, message="Error en los parametros")
+
 
 class DepartamentoSerializer(serializers.ModelSerializer):
 
@@ -182,6 +241,8 @@ class ProfesorSerializer(serializers.ModelSerializer):
                         raise NameError("El email no es correcto")
                     else:
                         profesor.email = new_email
+                else:
+                    raise NameError("El profesor indicado ya existe")
 
             # comprobando dni
             if 'dni' in validated_data.keys():
