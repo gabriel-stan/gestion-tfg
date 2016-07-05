@@ -45,12 +45,18 @@ def is_int(s):
         return False
 
 
-def is_email(param):
+def is_email(param, usuario=False):
     try:
-        if not re.match(r'^[a-z][_a-z0-9]+(@(correo\.)?ugr\.es)$', param):
-            return False
+        if not usuario:
+            if not re.match(r'^[a-z][_a-z0-9]+(@(correo\.)?ugr\.es)$', param):
+                return False
+            else:
+                return True
         else:
-            return True
+            if not re.match(r'^[a-z][_a-z0-9]+(@[a-z][_a-z0-9]+\.[a-z][_a-z0-9]+)$', param):
+                return False
+            else:
+                return True
     except Exception:
             return False
 
