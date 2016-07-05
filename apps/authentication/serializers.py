@@ -276,10 +276,11 @@ class ProfesorSerializer(serializers.ModelSerializer):
             # comprobando departamento
             if 'departamento' in validated_data.keys():
                 new_departamento = validated_data.get('departamento')
-                if new_departamento == '' or not utils.is_string(new_departamento):
-                    raise NameError("Error en el departamento")
+                departamento = Departamento.objects.filter(codigo=new_departamento)
+                if not isinstance(departamento, Departamento):
+                    raise NameError("Departamento incorrecto")
                 else:
-                    profesor.departamento = new_departamento
+                    profesor.departamento = departamento
 
             profesor.save()
 
