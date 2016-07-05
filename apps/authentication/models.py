@@ -12,6 +12,8 @@ class AccountManager(BaseUserManager):
     def create_user(self, password=None, **kwargs):
         email = kwargs.get('email')
         dni = kwargs.get('dni')
+        first_name = kwargs.get('first_name')
+        last_name = kwargs.get('last_name')
         if not email and not dni:
             raise ValueError('Los usuarios deben tener un DNI o un email valido.')
 
@@ -20,7 +22,9 @@ class AccountManager(BaseUserManager):
 
         account = self.model(
             email=email,
-            dni=dni
+            dni=dni,
+            first_name=first_name,
+            last_name=last_name
         )
 
         account.set_password(password)

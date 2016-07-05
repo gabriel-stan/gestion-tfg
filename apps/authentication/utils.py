@@ -29,7 +29,7 @@ def is_string(s):
     try:
         if isinstance(s, int) or isinstance(s, float):
             raise ValueError
-        str(s)
+        unicode(s)
         return True
     except ValueError:
         return False

@@ -6,7 +6,7 @@ python:
 sudo: true
 
 # command to install dependencies
-install: make install_requirements_no_vnenv
+install: mkdir log && touch log/gestfg.log && make install_requirements_no_vnenv
 
 # command to run tests
 script: make test_no_venv

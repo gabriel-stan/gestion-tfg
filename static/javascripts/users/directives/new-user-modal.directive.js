@@ -22,6 +22,9 @@
       controller: 'NewUserController',
       controllerAs: 'vm',
       restrict: 'E',
+      scope: {
+        user: '='
+      },
       templateUrl: '/static/templates/users/new-user-modal.html'
     };
 

@@ -52,3 +52,5 @@ python manage.py migrate
 
 # quit virtualenv
 deactivate
+
+touch log/gestfg.log
