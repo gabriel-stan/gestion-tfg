@@ -58,3 +58,5 @@ echo "from django.contrib.auth import get_user_model; User = get_user_model(); U
 
 # quit virtualenv
 deactivate
+
+touch log/gestfg.log

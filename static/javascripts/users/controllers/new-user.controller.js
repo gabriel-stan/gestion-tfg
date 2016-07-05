@@ -97,7 +97,7 @@
       }
 
       if(newUserCtrl.user.departamento){
-        delete newUserCtrl.user['departamento'];
+        // delete newUserCtrl.user['departamento'];
       }
 
       content.datos = JSON.stringify(newUserCtrl.user);
