@@ -44,6 +44,8 @@ fi
 source $ENV_VARS
 export $(cut -d= -f1 "$ENV_VARS")
 
+touch log/gestfg.log
+
 # prepare migrations
 python manage.py makemigrations
 
@@ -52,5 +54,3 @@ python manage.py migrate
 
 # quit virtualenv
 deactivate
-
-touch log/gestfg.log
