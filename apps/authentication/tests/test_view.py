@@ -198,8 +198,8 @@ class AuthenticationServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
-        location = os.path.join(os.path.dirname(__file__), 'test_load_data', 'LoadProfesores.csv')
-        data = {'file': ('LoadTitulaciones.csv', open(location, 'rb')), 'model': 'profesor'}
+        location = os.path.join(os.path.dirname(__file__), 'test_load_data', 'LoadTitulaciones.csv')
+        data = {'file': ('LoadTitulaciones.csv', open(location, 'rb')), 'model': 'titulacion'}
         res = self.client.post('/api/v1/auth/load_data/', data, format='multipart')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)

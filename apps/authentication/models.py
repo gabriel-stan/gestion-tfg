@@ -202,6 +202,7 @@ class ProfesorManager(BaseUserManager):
 
 class Profesor(Usuario):
     departamento = models.ForeignKey(Departamento, related_name='departamento', default=None, null=True)
+    jefe_departamento = models.BooleanField(default=False)
     objects = ProfesorManager()
 
     def get_departamento(self):
