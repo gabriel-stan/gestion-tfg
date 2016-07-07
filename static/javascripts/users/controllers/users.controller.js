@@ -32,6 +32,18 @@
     //   alert("Cargando usuarios scope");
     // }
 
+    $scope.loadSelectedUser = function() {
+      var user = $("#tabla-users").DataTable().row( { selected: true } ).data();
+      $scope.selectedUser.first_name = user.first_name;
+      $scope.selectedUser.last_name = user.last_name;
+      $scope.selectedUser.email = user.email;
+      $scope.selectedUser.departamento = user.departamento;
+      $scope.selectedUser.tipo = user.clase;
+      $scope.selectedUser.is_admin = user.is_admin;
+    }
+
+    $scope.selectedUser = new Object();
+
 
   }
 })();

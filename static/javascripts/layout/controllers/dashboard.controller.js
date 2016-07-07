@@ -9,15 +9,16 @@
     .module('gestfg.layout.controllers')
     .controller('DashboardController', DashboardController);
 
-  DashboardController.$inject = ['$scope', 'Authentication', 'Events', 'Snackbar', 'Dashboard'];
+  DashboardController.$inject = ['$scope', 'Authentication', 'Events', 'Snackbar', 'Dashboard', 'Departamentos'];
 
   /**
   * @namespace DashboardController
   */
-  function DashboardController($scope, Authentication, Events, Snackbar, Dashboard) {
+  function DashboardController($scope, Authentication, Events, Snackbar, Dashboard, Departamentos) {
     var dashCtrl = this;
 
     dashCtrl.events = [];
+    dashCtrl.departamentos = [];
     dashCtrl.upload = upload;
 
     activate();
@@ -38,6 +39,24 @@
         console.log(e);
       }
 
+      //Departamentos.all().then(dptSuccessFn, dptErrorFn);
+
+      /**
+      * @name eventsSuccessFn
+      * @desc Update events array on view
+      */
+      function dptSuccessFn(data, status, headers, config) {
+        dashCtrl.departamentos = data.data.data;
+      }
+
+
+      /**
+      * @name eventsErrorFn
+      * @desc Show snackbar with error
+      */
+      function dptErrorFn(data, status, headers, config) {
+        Snackbar.error(data.error);
+      }
 
       Events.all().then(eventsSuccessFn, eventsErrorFn);
       //
