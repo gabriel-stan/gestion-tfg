@@ -3,7 +3,7 @@ import utils
 from django.db import models
 from django.contrib.auth import update_session_auth_hash
 from rest_framework import serializers
-from authentication.models import Alumno, Profesor, Usuario, Departamento
+from authentication.models import Alumno, Profesor, Usuario, Departamento, Grupos
 from django.contrib.auth.models import Group
 
 
@@ -217,6 +217,7 @@ class ProfesorSerializer(serializers.ModelSerializer):
     departamento = models.ForeignKey(Departamento)
     password = serializers.CharField(write_only=True, required=False)
     confirm_password = serializers.CharField(write_only=True, required=False)
+    jefe_departamento = serializers.BooleanField(required=False)
     created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
     updated_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
 
@@ -224,7 +225,7 @@ class ProfesorSerializer(serializers.ModelSerializer):
         model = Profesor
         fields = ('id', 'email', 'dni', 'created_at', 'updated_at',
                   'first_name', 'last_name', 'password',
-                  'confirm_password', 'departamento')
+                  'confirm_password', 'departamento', 'jefe_departamento')
         read_only_fields = ('created_at', 'updated_at',)
 
     def create(self, validated_data):
@@ -276,11 +277,19 @@ class ProfesorSerializer(serializers.ModelSerializer):
             # comprobando departamento
             if 'departamento' in validated_data.keys():
                 new_departamento = validated_data.get('departamento')
-                departamento = Departamento.objects.filter(codigo=new_departamento)
+                departamento = Departamento.objects.get(codigo=new_departamento)
                 if not isinstance(departamento, Departamento):
                     raise NameError("Departamento incorrecto")
                 else:
                     profesor.departamento = departamento
+
+            # comprobando si es Jefe de departamento
+            if 'jefe_departamento' in validated_data.keys():
+                grupo_jefe_departamento = Grupos.objects.get(name='Jefe de Departamento')
+                if validated_data.get('jefe_departamento') == True:
+                    grupo_jefe_departamento.user_set.add(profesor)
+                else:
+                    grupo_jefe_departamento.user_set.remove(profesor)
 
             profesor.save()
 

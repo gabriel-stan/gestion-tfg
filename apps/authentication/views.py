@@ -512,9 +512,10 @@ class PermissionsView(views.APIView):
 
     def get(self, request, format=None):
         self.logger.info('INICIO WS - PERMISSIONSVIEW GET del usuario: %s' % request.user.email if hasattr(request.user, 'email') else request.user.username)
-        grupo = Grupos.objects.get(user=request.user)
+        grupos = Grupos.objects.filter(user=request.user)
         list_permissions = utils.permisos(request.user)
-        resul = dict(grupo=grupo.name, code=grupo.code, permissions=list_permissions)
+        list_grupos = utils.grupos(grupos)
+        resul = dict(grupos=list_grupos, permissions=list_permissions)
         self.logger.info('FIN WS - PERMISSIONSVIEW GET del usuario: %s, con resultado: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
         return Response(resul, status=status.HTTP_200_OK)
 
@@ -602,6 +603,7 @@ class DepartamentosViewSet(viewsets.ModelViewSet):
         try:
             self.logger.info('INICIO WS - DEPARTAMENTOSVIEW LIST del usuario: %s' % request.user.email if hasattr(request.user, 'email') else request.user.username)
             departamentos = Departamento.objects.all()
+            utils.procesar_datos_departamento(departamentos)
             resul = self.serializer_class(departamentos, many=True).data
             self.logger.info('FIN WS - DEPARTAMENTOSVIEW LIST del usuario: %s con params: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(dict(data=resul), status=status.HTTP_200_OK)

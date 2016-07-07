@@ -106,7 +106,7 @@ class TfgViewSet(viewsets.ModelViewSet):
         """
 
         try:
-            params = json.loads(request.data['datos'])
+            params = utils.get_params(request)
             self.logger.info('INICIO WS - TFGVIEW PUT del usuario: %s con parametros: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if request.user.has_perm('tfgs.tfg.change') or request.user.is_admin:
                 tfg = Tfg.objects.get(titulo=params.get('titulo'))

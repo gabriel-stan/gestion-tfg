@@ -91,7 +91,7 @@ class ComisionEvaluacionViewSet(viewsets.ModelViewSet):
         """
 
         try:
-            params = json.loads(request.data['datos'])
+            params = utils.get_params(request)
             self.logger.info('INICIO WS - COMISIONEVALUACIONVIEW PUT del usuario: %s con parametros: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if request.user.has_perm('comisiones_evaluacion.comision.change') or request.user.is_admin:
                 comision = Comision_Evaluacion.objects.get(presidente=params.get('presidente'))

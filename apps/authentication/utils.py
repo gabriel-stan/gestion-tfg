@@ -20,6 +20,8 @@ def get_params(req):
                 return value
             elif key == 'campos':
                 datos[key] = json.loads(value)
+            elif 'list' in key:
+                datos[key] = json.loads(value)
             else:
                 datos[key] = value
     return datos
@@ -29,7 +31,7 @@ def is_string(s):
     try:
         if isinstance(s, int) or isinstance(s, float):
             raise ValueError
-        str(s)
+        unicode(s)
         return True
     except ValueError:
         return False
@@ -45,18 +47,12 @@ def is_int(s):
         return False
 
 
-def is_email(param, usuario=False):
+def is_email(param):
     try:
-        if not usuario:
-            if not re.match(r'^[a-z][_a-z0-9]+(@(correo\.)?ugr\.es)$', param):
-                return False
-            else:
-                return True
+        if not re.match(r'^[a-z][_a-z0-9]+(@(correo\.)?ugr\.es)$', param):
+            return False
         else:
-            if not re.match(r'^[a-z][_a-z0-9]+(@[a-z][_a-z0-9]+\.[a-z][_a-z0-9]+)$', param):
-                return False
-            else:
-                return True
+            return True
     except Exception:
             return False
 
@@ -110,6 +106,13 @@ def permisos(usuario):
     return list_permissions
 
 
+def grupos(grupos):
+    list_grupos=[]
+    for s_grupos in grupos:
+        list_grupos.append({'codigo': s_grupos.code, 'nombre': s_grupos.name})
+    return list_grupos
+
+
 def procesar_datos_usuario(user, data):
     # Importo aqui para evitar el cruce de imports
     from models import Alumno, Profesor, Usuario
@@ -159,6 +162,24 @@ def procesar_datos_usuario(user, data):
         resul['grupos'] = obtener_grupos(s_data)
         resul['is_admin'] = s_data['is_admin']
         resultado.append(resul)
+    return resultado
+
+
+def procesar_datos_departamento(data):
+    # Importo aqui para evitar el cruce de imports
+    from models import Profesor, Grupos
+    group = Grupos.objects.get(name='Jefe de Departamento')
+    users = group.user_set.all()
+    resultado = []
+    for s_data in data:
+        departamento = {}
+        departamento['codigo'] = s_data.codigo
+        departamento['id'] = s_data.id
+        departamento['nombre'] = s_data.nombre
+        for s_users in users:
+            if s_users.departamento.codigo == s_data.codigo:
+                departamento['jefe_departamento'] = s_users
+        resultado.append(departamento)
     return resultado
 
 
