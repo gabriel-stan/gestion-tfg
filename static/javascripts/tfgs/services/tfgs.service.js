@@ -46,7 +46,16 @@
     */
     function create(content) {
       return $http.post('/api/v1/tfgs/', {
-        content: content
+        //content: content
+        titulacion: content.titulacion,
+        tipo: content.tipo,
+        titulo: content.titulo,
+        descripcion: content.descripcion,
+        n_alumnos: content.alumnos,
+        conocimientos_previos: content.previos,
+        hard_soft: content.hwsw,
+        tutor: content.tutor,
+        cotutor: content.cotutor
       });
     }
 
