@@ -239,19 +239,17 @@ class Tfg_AsigManager(BaseUserManager):
                     if not alumno2_ok:
                         raise NameError("Error en el segundo alumno")
                     else:
-                        tfg_asig = Tfg_Asig.objects.create(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2)
-                        tfg_asig.save()
+                        tfg_asig = self.model(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2)
                 # Si tiene 3 alumnos
                 elif alumno_2 and alumno_3:
                     if not alumno2_ok or not alumno3_ok:
                         raise NameError("Error en el tercer alumno")
                     else:
-                        tfg_asig = Tfg_Asig.objects.create(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2, alumno_3=alumno_3)
-                        tfg_asig.save()
+                        tfg_asig = self.model(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2, alumno_3=alumno_3)
                 # Si tiene 1 alumno
                 else:
-                    tfg_asig = Tfg_Asig.objects.create(tfg=tfg, alumno_1=alumno_1)
-                    tfg_asig.save()
+                    tfg_asig = self.model(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2, alumno_3=alumno_3)
+                tfg_asig.save()
 
                 return dict(status=True, data=Tfg_Asig.objects.get(tfg=tfg))
 
@@ -282,21 +280,18 @@ class Tfg_AsigManager(BaseUserManager):
                     if not alumno2_ok:
                         raise
                     else:
-                        tfg_asig = Tfg_Asig.objects.create(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2)
-                        tfg_asig.save()
+                        tfg_asig = self.model(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2)
                 # Si tiene 3 alumnos
                 elif alumno_2 and alumno_3:
                     if not alumno2_ok or not alumno3_ok:
                         raise
                     else:
-                        tfg_asig = Tfg_Asig.objects.create(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2, alumno_3=alumno_3)
-                        tfg_asig.save()
+                        tfg_asig = self.model(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2, alumno_3=alumno_3)
                 # Si tiene 1 alumno
                 else:
-                    tfg_asig = Tfg_Asig.objects.create(tfg=tfg, alumno_1=alumno_1)
-                    tfg_asig.save()
+                    tfg_asig = self.model(tfg=tfg, alumno_1=alumno_1)
                 return True
-        except:
+        except Exception as e:
             return False
 
     # def create_file(self, **kwargs):

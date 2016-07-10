@@ -145,6 +145,8 @@ class TfgServicesTests(TestCase):
         res = self.client.post('/api/v1/upload_file_tfgs/', data, format='multipart')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
+        self.assertEqual(resul['exitos'][0]['fila'], 5)
+        self.assertEqual(resul['exitos'][0]['tfg']['alumno_1'], 'tonima@correo.ugr.es')
         # res = self.client.post('/api/v1/upload_file_tfgs_confirm/', data={'list_tfg': json.dumps(resul['exitos']),
         #                                                                   'model': 'tfg'})
         # resul = json.loads(res.content)
