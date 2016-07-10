@@ -27,11 +27,11 @@ class Upload_fileView(views.APIView):
             self.logger.info('INICIO WS - UPLOADFILEVIEW POST del usuario: %s con parametros: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, request.FILES['file']))
             if request.user.has_perm('tfgs.tfg.masivos') or request.user.is_admin:
                 file = request.FILES['file']
-                filas = int(request.POST['filas'])
+                u_fila = int(request.POST['u_fila'])
                 p_fila = int(request.POST['p_fila'])
                 cabeceras = json.loads(request.POST['cabeceras'])
                 tipe_file = str(request.POST['tipe_file'])
-                resul = SUBIDAS.get(tipe_file)(file, filas, p_fila, cabeceras)
+                resul = SUBIDAS.get(tipe_file)(file, u_fila, p_fila, cabeceras)
                 if resul['status']:
                     resul_status = status.HTTP_200_OK
                 else:

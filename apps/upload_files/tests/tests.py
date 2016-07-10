@@ -5,7 +5,7 @@ import simplejson as json
 from django.contrib.auth.models import Group
 from django.test import TestCase
 from rest_framework.test import APIClient
-from authentication.models import Profesor, Usuario, Departamento
+from authentication.models import Profesor, Usuario, Departamento, Alumno
 from tfgs.models import Titulacion
 
 
@@ -43,6 +43,15 @@ class TfgServicesTests(TestCase):
         self.prof5 = dict(email='franciscoherrera@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122'
                           , departamento=dep, password='75169052')
         Profesor.objects.create_user(**self.prof5)
+
+        self.alumno1 = dict(email='tonima@correo.ugr.es', first_name='alumno 1', last_name='apellido 12 apellido 2')
+        Alumno.objects.create_user(**self.alumno1)
+
+        self.alumno2 = dict(email='ton3ima@correo.ugr.es', first_name='alumno 2', last_name='apellido 12 apellido 2')
+        Alumno.objects.create_user(**self.alumno2)
+
+        self.alumno3 = dict(email='fewugb@correo.ugr.es', first_name='alumno 3', last_name='apellido 12 apellido 2')
+        Alumno.objects.create_user(**self.alumno3)
 
         self.data_tfg1 = dict(tipo='tipo1', titulo='titulo1',
                               n_alumnos=2, descripcion='descripcion',
@@ -97,7 +106,7 @@ class TfgServicesTests(TestCase):
 
         # Envio el fichero y carga TFGs
         location = os.path.join(os.path.dirname(__file__), 'test_upload_file_tfgs', 'ListaTFGs.xlsx')
-        data = {'file': ('ListaTFGs.xlsx', open(location, 'rb')), 'filas': 5, 'p_fila': 5,
+        data = {'file': ('ListaTFGs.xlsx', open(location, 'rb')), 'u_fila': 9, 'p_fila': 5,
                 'cabeceras': json.dumps(dict(tipo='D', titulo='E', n_alumnos='F', descripcion='G',
                                              conocimientos_previos='H', hard_soft='I', tutor='B', cotutor='C',
                                              titulacion='J')), 'tipe_file': 'tfg'}
@@ -120,3 +129,30 @@ class TfgServicesTests(TestCase):
         # resul = json.loads(res.content)
         # self.assertEqual(resul['data']['tutor']['email'], 'jorgecasillas@ugr.es')
 
+    def test_ws_upload_file_tfgs_preasignados(self):
+        # Me logueo con un admin
+        res = self.client.post('/api/v1/auth/login/', {'email': self.data_admin['email'],
+                                                       'password': self.data_admin['password']})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['email'], self.data_admin['email'])
+
+        # Envio el fichero y carga TFGs
+        location = os.path.join(os.path.dirname(__file__), 'test_upload_file_tfgs', 'ListaTFGs_preasignados.xlsx')
+        data = {'file': ('ListaTFGs_preasignados.xlsx', open(location, 'rb')), 'u_fila': 9, 'p_fila': 5,
+                'cabeceras': json.dumps(dict(tipo='D', titulo='E', n_alumnos='F', alumno_1='G', alumno_2='H',
+                                             descripcion='I', conocimientos_previos='J', hard_soft='K', tutor='B',
+                                             cotutor='C', titulacion='L')), 'tipe_file': 'tfg_asig'}
+        res = self.client.post('/api/v1/upload_file_tfgs/', data, format='multipart')
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+        # res = self.client.post('/api/v1/upload_file_tfgs_confirm/', data={'list_tfg': json.dumps(resul['exitos']),
+        #                                                                   'model': 'tfg'})
+        # resul = json.loads(res.content)
+        # self.assertEqual(resul['status'], True)
+        # self.assertEqual(resul['errores'], [])
+        # res = self.client.post('/api/v1/auth/login/', {'email':'jorgecasillas@ugr.es', 'password':'75169052'})
+        # resul = json.loads(res.content)
+        # self.assertEqual(resul['data']['email'], 'jorgecasillas@ugr.es')
+        # res = self.client.get('/api/v1/tfgs/', {'titulo': self.TFG1['titulo']})
+        # resul = json.loads(res.content)
+        # self.assertEqual(resul['data']['tutor']['email'], 'jorgecasillas@ugr.es')
