@@ -239,25 +239,61 @@ class Tfg_AsigManager(BaseUserManager):
                     if not alumno2_ok:
                         raise NameError("Error en el segundo alumno")
                     else:
-                        tfg_asig = Tfg_Asig.objects.create(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2)
-                        tfg_asig.save()
+                        tfg_asig = self.model(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2)
                 # Si tiene 3 alumnos
                 elif alumno_2 and alumno_3:
                     if not alumno2_ok or not alumno3_ok:
                         raise NameError("Error en el tercer alumno")
                     else:
-                        tfg_asig = Tfg_Asig.objects.create(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2, alumno_3=alumno_3)
-                        tfg_asig.save()
+                        tfg_asig = self.model(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2, alumno_3=alumno_3)
                 # Si tiene 1 alumno
                 else:
-                    tfg_asig = Tfg_Asig.objects.create(tfg=tfg, alumno_1=alumno_1)
-                    tfg_asig.save()
+                    tfg_asig = self.model(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2, alumno_3=alumno_3)
+                tfg_asig.save()
 
                 return dict(status=True, data=Tfg_Asig.objects.get(tfg=tfg))
 
         except NameError as e:
             return dict(status=False, message=e.message)
-        
+
+    def simular_create_tfg_asig(self, tfg, alumno_1, alumno_2=None, alumno_3=None):
+        alumno2_ok = False
+        alumno3_ok = False
+        try:
+            # Compruebo lo minimo para asignar el tfg
+            if not isinstance(tfg, Tfg) or not isinstance(alumno_1, Alumno) or not alumno_1.groups.filter(
+                    name='Alumnos').exists() or utils.existe_tfg_asig(alumno_1):
+                raise
+
+            # Compruebo que no este ya asignado
+            try:
+                Tfg_Asig.objects.get(tfg=tfg)
+                raise
+            except Tfg_Asig.DoesNotExist:
+                if utils.comprueba_alumno(alumno_2) and not utils.existe_tfg_asig(alumno_2):
+                    alumno2_ok = True
+                if utils.comprueba_alumno(alumno_3) and not utils.existe_tfg_asig(alumno_3):
+                    alumno3_ok = True
+
+                # Si tiene 2 alumnos
+                if alumno_2 and not alumno_3:
+                    if not alumno2_ok:
+                        raise
+                    else:
+                        tfg_asig = self.model(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2)
+                # Si tiene 3 alumnos
+                elif alumno_2 and alumno_3:
+                    if not alumno2_ok or not alumno3_ok:
+                        raise
+                    else:
+                        tfg_asig = self.model(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2, alumno_3=alumno_3)
+                # Si tiene 1 alumno
+                else:
+                    tfg_asig = self.model(tfg=tfg, alumno_1=alumno_1)
+                return True
+        except Exception as e:
+            return False
+
     # def create_file(self, **kwargs):
     #     try:
     #         tfg = Profesor.objects.get(titulo=kwargs.get('titulo'))

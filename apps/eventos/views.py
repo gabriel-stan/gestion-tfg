@@ -49,30 +49,19 @@ class EventosViewSet(viewsets.ModelViewSet):
         {status: True/False, data:{datos del evento}
         """
         try:
-            content = request.data['content']
-            titulo = content['titulo']
-            tipo = content['tipo']
-            contenido = content['contenido']
-            self.logger.info('INICIO WS - EVENTOSVIEW CREATE del usuario: %s con parametros: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, content))
-            # serializer = self.serializer_class(data={'contenido': content, 'tipo': tipo, 'autor': request.user.id})
-            # if serializer.is_valid():
-            #     resul = serializer.create_evento(serializer.validated_data)
-            #     if resul['status']:
-            #         return Response(utils.to_dict(resul))
-            #     else:
-            #         return Response(resul)
-            # else:
-            #     return Response(dict(status=False, message=serializer.errors), status=status.HTTP_400_BAD_REQUEST)
-            resul = Evento.objects.create_evento(contenido=contenido, tipo=tipo, titulo=titulo,
-                                                 autor=Usuario.objects.get(id=request.user.id))
-            # resul = Evento.objects.create_evento(contenido=content['contenido'], titulo=content['titulo'], tipo=tipo, autor=Usuario.objects.get(id=request.user.id))
+            params = utils.get_params(request)
+            self.logger.info('INICIO WS - EVENTOSVIEW CREATE del usuario: %s con parametros: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
+            resul = Evento.objects.create_evento(contenido=params.get('contenido'), tipo=params.get('tipo'),
+                                                 titulo=params.get('titulo'), desde=params.get('desde'),
+                                                 hasta=params.get('hasta'), autor=Usuario.objects.get(id=request.user.id))
             if resul['status']:
                 resul = utils.to_dict(resul)
                 resul_status = status.HTTP_200_OK
             else:
                 resul = dict(message=resul['message'])
+                resul_status = status.HTTP_400_BAD_REQUEST
             self.logger.info('FIN WS - EVENTOSVIEW CREATE del usuario: %s con resultado: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
-            return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+            return Response(resul, status=resul_status)
         except Exception as e:
             resul = dict(status=False, message="Error en la llamada")
             self.logger.critical('EVENTOSVIEW CREATE: %s %s' % (resul, e))
