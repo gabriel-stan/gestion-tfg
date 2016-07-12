@@ -11,7 +11,8 @@
         'gestfg.users',
         'gestfg.tfgs',
         'gestfg.departamentos',
-        'gestfg.utils'
+        'gestfg.utils',
+        'ngSanitize'
       ]);
 
     angular

@@ -61,7 +61,7 @@ class Tfgs_masivos(object):
                        descripcion=tfg['descripcion'], conocimientos_previos=tfg['conocimientos_previos'],
                        hard_soft=tfg['hard_soft'],
                        tutor=tfg['tutor'].email, titulacion=tfg['titulacion'].codigo)
-            return tfg
+        return tfg
 
 
 class Tfgs_asig_masivos(Tfgs_masivos):

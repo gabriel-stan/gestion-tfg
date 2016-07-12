@@ -29,6 +29,7 @@
           <thead>
             <tr>
               <th>Titulación</th>
+              <th>Tipo</th>
               <th>Título</th>
               <th>Alumnos</th>
               <th>Descripcion</th>
@@ -42,6 +43,7 @@
           <tfoot>
             <tr>
               <th>Titulación</th>
+              <th>Tipo</th>
               <th>Título</th>
               <th>Alumnos</th>
               <th>Descripcion</th>
@@ -105,16 +107,21 @@
                     text: 'My button 2'
                 }
             ],
-            ajax: "/static/tfgs2.json",
+            ajax: "/api/v1/tfgs/",
+            sDefaultContent: "hello",
             columns: [
-              {"data" : "titulacion"},
+              {"data" : "titulacion.codigo"},
+              {"data" : "tipo"},
               {"data" : "titulo"},
               {"data" : "n_alumnos"},
               {"data" : "descripcion"},
-              {"data" : "conocimientos_prev"},
-              {"data" : "conocimientos_hw_sw"},
-              {"data" : "tutor"},
-              {"data" : "cotutor"}
+              {"data" : "conocimientos_previos"},
+              {"data" : "hard_soft"},
+              {"data" : "tutor.email"},
+              {
+                "data" : "cotutor.email",
+                "defaultContent": "<i>N/D</i>"
+              }
             ]
           });
 
