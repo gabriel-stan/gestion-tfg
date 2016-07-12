@@ -46,7 +46,7 @@
       * @desc Show snackbar with success message
       */
       function createTfgSuccessFn(data, status, headers, config) {
-        Snackbar.success('El usuario se ha creado con éxito.');
+        Snackbar.success('El TFG se ha creado con éxito.');
       }
 
 
@@ -56,7 +56,7 @@
       */
       function createTfgErrorFn(data, status, headers, config) {
         $rootScope.$broadcast('tfg.created.error');
-        Snackbar.error(data.message);
+        Snackbar.error(data.data.message);
       }
     }
   }

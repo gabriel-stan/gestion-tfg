@@ -16,7 +16,7 @@ class AuthenticationServicesTests(TestCase):
         Usuario.objects.create_superuser(**self.data_admin)
 
         self.data_admin2 = dict(email='admin2@admin.es', first_name='admin 2',
-                               last_name='apellido 1 apellido 12', password='0000', is_admin=True)
+                                last_name='apellido 1 apellido 12', password='0000', is_admin=True)
 
         self.data_alum1 = dict(dni='12345678H', first_name='alumno 1',
                                last_name='apellido 1 apellido 12', password='0000')
@@ -30,7 +30,8 @@ class AuthenticationServicesTests(TestCase):
         dep = Departamento.objects.create(nombre='departamento1', codigo='AAA')
 
         self.data_prof1 = dict(dni='87654321S', first_name='profesor 2',
-                                    last_name='apellido 12 apellido 122', departamento=dep, password='0000')
+                               last_name='apellido 12 apellido 122', departamento=dep, password='0000',
+                               jefe_departamento=True)
 
         self.data_departamento = dict(codigo='BBB', nombre='departamento2')
 
@@ -193,6 +194,12 @@ class AuthenticationServicesTests(TestCase):
 
         location = os.path.join(os.path.dirname(__file__), 'test_load_data', 'LoadProfesores.csv')
         data = {'file': ('LoadProfesores.csv', open(location, 'rb')), 'model': 'profesor'}
+        res = self.client.post('/api/v1/auth/load_data/', data, format='multipart')
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        location = os.path.join(os.path.dirname(__file__), 'test_load_data', 'LoadTitulaciones.csv')
+        data = {'file': ('LoadTitulaciones.csv', open(location, 'rb')), 'model': 'titulacion'}
         res = self.client.post('/api/v1/auth/load_data/', data, format='multipart')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)

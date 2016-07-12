@@ -165,6 +165,11 @@ class ProfesorManager(BaseUserManager):
                                                 first_name=kwargs.get('first_name'), last_name=kwargs.get('last_name'),
                                                 departamento=kwargs.get('departamento'))
 
+            # comprobando si es Jefe de departamento
+            if kwargs.get('jefe_departamento'):
+                grupo_jefe_departamento = Grupos.objects.get(name='Jefe de Departamento')
+                grupo_jefe_departamento.user_set.add(usuario)
+
             grupo_profesores = Grupos.objects.get(name='Profesores')
             usuario.set_password(password)
             usuario.save()
@@ -196,8 +201,8 @@ class ProfesorManager(BaseUserManager):
 
 
 class Profesor(Usuario):
-
     departamento = models.ForeignKey(Departamento, related_name='departamento', default=None, null=True)
+    jefe_departamento = models.BooleanField(default=False)
     objects = ProfesorManager()
 
     def get_departamento(self):

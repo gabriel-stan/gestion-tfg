@@ -1,5 +1,7 @@
 from django.db import models
 from authentication.models import Usuario
+from eventtools.models import BaseEvent, BaseOccurrence
+from datetime import datetime
 
 
 class EventoManager(models.Manager):
@@ -14,13 +16,20 @@ class EventoManager(models.Manager):
                                            tipo=kwargs.get('tipo'), titulo=kwargs.get('titulo'))
             evento.save()
 
+            if kwargs.get('tipo') == 'convocatoria':
+                convocatoria = Periodo.objects.create(
+                    event=evento,
+                    start=datetime.strftime(kwargs.get('desde')),
+                    end=datetime.strftime(kwargs.get('hasta')))
+                convocatoria.save()
+
             return dict(status=True, data=evento)
 
         except NameError as e:
             return dict(status=False, message=e.message)
 
 
-class Evento(models.Model):
+class Evento(BaseEvent):
     autor = models.ForeignKey(Usuario)
     titulo = models.CharField(max_length=50, blank=True)
     #autor = models.ForeignKey(Usuario, related_name='eventos')
@@ -45,3 +54,7 @@ class Evento(models.Model):
 
     def get_titulo(self):
         return self.titulo
+
+
+class Periodo(BaseOccurrence):
+    evento = models.ForeignKey(Evento)
