@@ -19,7 +19,8 @@
     var Tfgs = {
       all: all,
       create: create,
-      get: get
+      get: get,
+      upload: upload
     };
 
     return Tfgs;
@@ -68,6 +69,20 @@
      */
     function get(id) {
       return $http.get('/api/v1/tfgs/' + id);
+    }
+
+    /**
+     * @name upload
+     * @desc Upload a lot of TFGs
+     * @param content
+     * @returns {Promise}
+     * @memberOf gestfg.tfgs.services.Tfgs
+     */
+    function upload(content) {
+      return $http.post('/api/v1/upload_file_tfgs/', content, {
+        transformRequest: angular.identity,
+        headers: {'Content-Type': undefined}
+      });
     }
   }
 })();
