@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from rest_framework import status, views
 from rest_framework.response import Response
-from service import Tfgs_masivos, Tfgs_asig_masivos, upload_file_confirm
+from service import Tfgs_masivos, Tfgs_asig_masivos
 from django.apps import apps
 from utils import get_model
 import django.apps
@@ -65,7 +65,8 @@ class Upload_file_confirmView(views.APIView):
             self.logger.info('INICIO WS - UPLOADFILECONFIRMVIEW POST del usuario: %s con parametros: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if request.user.has_perm('tfgs.tfg.masivos') or request.user.is_admin:
                 model = get_model(params.get('model'))
-                resul = upload_file_confirm(params['list_tfg'], model)
+                load_tfgs = SUBIDAS.get(params.get('model'))()
+                resul = load_tfgs.upload_file_confirm(params['list_tfg'])
                 if resul['status']:
                     resul_status = status.HTTP_200_OK
                 else:
