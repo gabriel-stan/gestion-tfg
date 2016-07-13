@@ -215,7 +215,7 @@ class Tfg(models.Model):
 
 class Tfg_AsigManager(BaseUserManager):
 
-    def create_tfg_asig(self, tfg, alumno_1, alumno_2=None, alumno_3=None):
+    def create(self, tfg, alumno_1, alumno_2=None, alumno_3=None):
         alumno2_ok = False
         alumno3_ok = False
         try:
@@ -261,8 +261,7 @@ class Tfg_AsigManager(BaseUserManager):
         alumno3_ok = False
         try:
             # Compruebo lo minimo para asignar el tfg
-            if not isinstance(tfg, Tfg) or not isinstance(alumno_1, Alumno) or not alumno_1.groups.filter(
-                    name='Alumnos').exists() or utils.existe_tfg_asig(alumno_1):
+            if not isinstance(tfg, Tfg):
                 raise
 
             # Compruebo que no este ya asignado
@@ -270,9 +269,9 @@ class Tfg_AsigManager(BaseUserManager):
                 Tfg_Asig.objects.get(tfg=tfg)
                 raise
             except Tfg_Asig.DoesNotExist:
-                if utils.comprueba_alumno(alumno_2) and not utils.existe_tfg_asig(alumno_2):
+                if not utils.existe_tfg_asig(alumno_2):
                     alumno2_ok = True
-                if utils.comprueba_alumno(alumno_3) and not utils.existe_tfg_asig(alumno_3):
+                if not utils.existe_tfg_asig(alumno_3):
                     alumno3_ok = True
 
                 # Si tiene 2 alumnos

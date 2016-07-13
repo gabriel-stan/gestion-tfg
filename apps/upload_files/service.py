@@ -6,9 +6,10 @@ from tfgs.models import Titulacion, Tfg_Asig, Tfg
 
 class Tfgs_masivos(object):
 
-    def __init__(self, fichero):
-        self.wb = load_workbook(fichero)
-        self.ws = self.wb.active
+    def __init__(self, fichero=None):
+        if fichero:
+            self.wb = load_workbook(fichero)
+            self.ws = self.wb.active
         self.errores = []
         self.exitos = []
 
@@ -17,7 +18,7 @@ class Tfgs_masivos(object):
             try:
                 data_tfg = self.read_data(cabeceras, i)
                 tfg = self.check_tfg(data_tfg, i)
-                if tfg != False and Tfg.objects.simular_create_tfg(**tfg):
+                if tfg is not False and Tfg.objects.simular_create_tfg(**tfg):
                     self.exitos.append(dict(fila=i, tfg=tfg))
             except Profesor.DoesNotExist:
                 self.errores.append(dict(fila=i, message='El profesor no existe'))
@@ -63,10 +64,23 @@ class Tfgs_masivos(object):
                        tutor=tfg['tutor'].email, titulacion=tfg['titulacion'].codigo)
             return tfg
 
+    def upload_file_confirm(self, tfgs):
+        errores = []
+        for index, data_tfg in enumerate(tfgs):
+            try:
+                tfg = data_tfg.get('tfg')
+                res = Tfg.objects.create(**tfg)
+                if not res.get('status'):
+                    errores.append(dict(fila=index, tfg=tfg))
+            except Exception as e:
+                errores.append(dict(fila=index, message=e.message))
+                continue
+        return dict(status=True, errores=errores)
+
 
 class Tfgs_asig_masivos(Tfgs_masivos):
 
-    def __init__(self, fichero):
+    def __init__(self, fichero=None):
         super(Tfgs_asig_masivos, self).__init__(fichero)
 
     def upload_file_tfg(self, u_fila, p_fila, cabeceras):
@@ -96,27 +110,35 @@ class Tfgs_asig_masivos(Tfgs_masivos):
         return dict(status=True, exitos=self.exitos, errores=self.errores)
 
     def check_tfg_asig(self, data_tfg, cabeceras, i):
-        data_tfg['alumno_1'] = Alumno.objects.get(email=unicode(self.ws[cabeceras['alumno_1'] + str(i)].value if cabeceras.get('alumno_1') else None))
+        data_tfg['alumno_1'] = Alumno(email=unicode(self.ws[cabeceras['alumno_1'] + str(i)].value if cabeceras.get('alumno_1') else None))
         self.tfg['alumno_1'] = data_tfg.get('alumno_1').email if data_tfg.get('alumno_1') else None
 
-        data_tfg['alumno_2'] = Alumno.objects.get(email=unicode(self.ws[cabeceras['alumno_2'] + str(i)].value)) if (
+        data_tfg['alumno_2'] = Alumno(email=unicode(self.ws[cabeceras['alumno_2'] + str(i)].value)) if (
             cabeceras.get('alumno_2') and self.ws[cabeceras['alumno_2'] + str(i)].value) else None
         self.tfg['alumno_2'] = data_tfg.get('alumno_2').email if data_tfg.get('alumno_2') else None
 
-        data_tfg['alumno_3'] = Alumno.objects.get(email=unicode(self.ws[cabeceras['alumno_3'] + str(i)].value)) if (
+        data_tfg['alumno_3'] = Alumno(email=unicode(self.ws[cabeceras['alumno_3'] + str(i)].value)) if (
             cabeceras.get('alumno_3') and self.ws[cabeceras['alumno_3'] + str(i)].value) else None
         self.tfg['alumno_3'] = data_tfg.get('alumno_3').email if data_tfg.get('alumno_3') else None
 
+    def upload_file_confirm(self, tfgs):
+        errores = []
+        for index, data_tfg in enumerate(tfgs):
+            try:
+                self.alumno_1 = self.get_or_create_alumno(email=data_tfg['tfg'].get('alumno_1')) if data_tfg['tfg'].get('alumno_1') else None
+                self.alumno_2 = self.get_or_create_alumno(email=data_tfg['tfg'].get('alumno_2')) if data_tfg['tfg'].get('alumno_2') else None
+                self.alumno_3 = self.get_or_create_alumno(email=data_tfg['tfg'].get('alumno_3')) if data_tfg['tfg'].get('alumno_3') else None
+                self.tfg = Tfg.objects.create(**data_tfg['tfg'])
+                res = Tfg_Asig.objects.create(tfg=self.tfg.get('data'), alumno_1=self.alumno_1, alumno_2=self.alumno_2,
+                                           alumno_3=self.alumno_3)
+                if not res.get('status'):
+                    errores.append(dict(fila=index, tfg=data_tfg))
+            except Exception as e:
+                errores.append(dict(fila=index, message=e.message))
+                continue
+        return dict(status=True, errores=errores)
 
-def upload_file_confirm(tfgs, model):
-    errores = []
-    for index, data_tfg in enumerate(tfgs):
-        try:
-            tfg = data_tfg.get('tfg')
-            res = model.objects.create(**tfg)
-            if not res.get('status'):
-                errores.append(dict(fila=index, tfg=tfg))
-        except Exception as e:
-            errores.append(dict(fila=index, message=e.message))
-            continue
-    return dict(status=True, errores=errores)
+    def get_or_create_alumno(self, email):
+        if not Alumno.objects.filter(email=email if email else None).exists():
+            Alumno.objects.create_user(email)
+        return Alumno.objects.get(email=email)

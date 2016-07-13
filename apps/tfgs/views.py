@@ -192,7 +192,7 @@ class Tfg_asigView(views.APIView):
             serializer = self.serializer_class(data=dict(tfg=tfg.id, alumno_1=alumno_1.id, alumno_2=alumno_2,
                                                          alumno_3=alumno_3))
             if serializer.is_valid():
-                resul = serializer.create_tfg_asig(serializer.validated_data)
+                resul = serializer.create(serializer.validated_data)
                 if resul['status']:
                     resul = utils.to_dict(resul)
                     resul_status = status.HTTP_200_OK
