@@ -117,6 +117,9 @@ def procesar_datos_usuario(user, data):
     # Importo aqui para evitar el cruce de imports
     from models import Alumno, Profesor, Usuario
     resultado = []
+    if isinstance(data, dict):
+        data = [data]
+
     for s_data in data:
         resul = {}
         if user.is_admin:

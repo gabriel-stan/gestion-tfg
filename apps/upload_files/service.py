@@ -110,7 +110,8 @@ class Tfgs_asig_masivos(Tfgs_masivos):
         return dict(status=True, exitos=self.exitos, errores=self.errores)
 
     def check_tfg_asig(self, data_tfg, cabeceras, i):
-        data_tfg['alumno_1'] = Alumno(email=unicode(self.ws[cabeceras['alumno_1'] + str(i)].value if cabeceras.get('alumno_1') else None))
+        data_tfg['alumno_1'] = Alumno(email=unicode(self.ws[cabeceras['alumno_1'] + str(i)].value if
+                                                    cabeceras.get('alumno_1') else None))
         self.tfg['alumno_1'] = data_tfg.get('alumno_1').email if data_tfg.get('alumno_1') else None
 
         data_tfg['alumno_2'] = Alumno(email=unicode(self.ws[cabeceras['alumno_2'] + str(i)].value)) if (
@@ -125,9 +126,12 @@ class Tfgs_asig_masivos(Tfgs_masivos):
         errores = []
         for index, data_tfg in enumerate(tfgs):
             try:
-                self.alumno_1 = self.get_or_create_alumno(email=data_tfg['tfg'].get('alumno_1')) if data_tfg['tfg'].get('alumno_1') else None
-                self.alumno_2 = self.get_or_create_alumno(email=data_tfg['tfg'].get('alumno_2')) if data_tfg['tfg'].get('alumno_2') else None
-                self.alumno_3 = self.get_or_create_alumno(email=data_tfg['tfg'].get('alumno_3')) if data_tfg['tfg'].get('alumno_3') else None
+                self.alumno_1 = self.get_or_create_alumno(email=data_tfg['tfg'].get('alumno_1')) if data_tfg['tfg']\
+                    .get('alumno_1') else None
+                self.alumno_2 = self.get_or_create_alumno(email=data_tfg['tfg'].get('alumno_2')) if data_tfg['tfg']\
+                    .get('alumno_2') else None
+                self.alumno_3 = self.get_or_create_alumno(email=data_tfg['tfg'].get('alumno_3')) if data_tfg['tfg']\
+                    .get('alumno_3') else None
                 self.tfg = Tfg.objects.create(**data_tfg['tfg'])
                 res = Tfg_Asig.objects.create(tfg=self.tfg.get('data'), alumno_1=self.alumno_1, alumno_2=self.alumno_2,
                                            alumno_3=self.alumno_3)
@@ -140,5 +144,8 @@ class Tfgs_asig_masivos(Tfgs_masivos):
 
     def get_or_create_alumno(self, email):
         if not Alumno.objects.filter(email=email if email else None).exists():
-            Alumno.objects.create_user(email)
-        return Alumno.objects.get(email=email)
+            Alumno.objects.create_user(email=email)
+        try:
+            return Alumno.objects.get(email=email)
+        except Alumno.DoesNotExist:
+            raise NameError("Error en el alumno %s" % email)
