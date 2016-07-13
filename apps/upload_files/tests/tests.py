@@ -44,15 +44,6 @@ class TfgServicesTests(TestCase):
                           , departamento=dep, password='75169052')
         Profesor.objects.create_user(**self.prof5)
 
-        self.alumno1 = dict(email='tonima@correo.ugr.es', first_name='alumno 1', last_name='apellido 12 apellido 2')
-        Alumno.objects.create_user(**self.alumno1)
-
-        self.alumno2 = dict(email='ton3ima@correo.ugr.es', first_name='alumno 2', last_name='apellido 12 apellido 2')
-        Alumno.objects.create_user(**self.alumno2)
-
-        self.alumno3 = dict(email='fewugb@correo.ugr.es', first_name='alumno 3', last_name='apellido 12 apellido 2')
-        Alumno.objects.create_user(**self.alumno3)
-
         self.data_tfg1 = dict(tipo='tipo1', titulo='titulo1',
                               n_alumnos=2, descripcion='descripcion',
                               conocimientos_previos='conocimientos previos',
@@ -147,14 +138,14 @@ class TfgServicesTests(TestCase):
         self.assertEqual(resul['status'], True)
         self.assertEqual(resul['exitos'][0]['fila'], 5)
         self.assertEqual(resul['exitos'][0]['tfg']['alumno_1'], 'tonima@correo.ugr.es')
-        # res = self.client.post('/api/v1/upload_file_tfgs_confirm/', data={'list_tfg': json.dumps(resul['exitos']),
-        #                                                                   'model': 'tfg'})
-        # resul = json.loads(res.content)
-        # self.assertEqual(resul['status'], True)
-        # self.assertEqual(resul['errores'], [])
-        # res = self.client.post('/api/v1/auth/login/', {'email':'jorgecasillas@ugr.es', 'password':'75169052'})
-        # resul = json.loads(res.content)
-        # self.assertEqual(resul['data']['email'], 'jorgecasillas@ugr.es')
-        # res = self.client.get('/api/v1/tfgs/', {'titulo': self.TFG1['titulo']})
-        # resul = json.loads(res.content)
-        # self.assertEqual(resul['data']['tutor']['email'], 'jorgecasillas@ugr.es')
+        res = self.client.post('/api/v1/upload_file_tfgs_confirm/', data={'list_tfg': json.dumps(resul['exitos']),
+                                                                          'model': 'tfg_asig'})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+        self.assertEqual(len(resul['errores']), 2)
+        res = self.client.post('/api/v1/auth/login/', {'email':'admin@admin.es', 'password':'0000'})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['email'], 'admin@admin.es')
+        res = self.client.get('/api/v1/usuarios/', {'email': 'tonima@correo.ugr.es'})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data'][0]['email'], 'tonima@correo.ugr.es')

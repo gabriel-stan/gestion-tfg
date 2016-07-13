@@ -26,7 +26,8 @@ class TfgViewSet(viewsets.ModelViewSet):
         """
         try:
             params = utils.get_params(request)
-            self.logger.info('INICIO WS - TFGVIEW LIST del usuario: %s con parametros: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
+            self.logger.info('INICIO WS - TFGVIEW LIST del usuario: %s con parametros: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if 'titulo' in params:
                 tfg = Tfg.objects.get(titulo=params['titulo'])
                 resul = self.serializer_class(tfg).data
@@ -35,15 +36,18 @@ class TfgViewSet(viewsets.ModelViewSet):
                 resul = self.serializer_class(tfg, many=True).data
                 if len(resul) == 0:
                     raise NameError("No hay tfgs almacenados")
-            self.logger.info('FIN WS - TFGVIEW LIST del usuario: %s con resultado: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            self.logger.info('FIN WS - TFGVIEW LIST del usuario: %s con resultado: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(dict(status=True, data=resul), status=status.HTTP_200_OK)
         except NameError as e:
             resul = dict(message=e.message)
-            self.logger.error('TFGVIEW LIST del usuario: %s con resultado: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            self.logger.error('TFGVIEW LIST del usuario: %s con resultado: %s' %
+                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(resul, status=status.HTTP_400_BAD_REQUEST)
         except Tfg.DoesNotExist:
             resul = dict(message="El tfg indicado no existe")
-            self.logger.error('TFGVIEW LIST del usuario: %s con resultado: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            self.logger.error('TFGVIEW LIST del usuario: %s con resultado: %s' %
+                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(resul, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             resul = dict(status=False, message="Error en la llamada")
@@ -60,7 +64,8 @@ class TfgViewSet(viewsets.ModelViewSet):
         """
         try:
             params = utils.get_params(request)
-            self.logger.info('INICIO WS - TFGVIEW CREATE del usuario: %s con parametros: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
+            self.logger.info('INICIO WS - TFGVIEW CREATE del usuario: %s con parametros: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if request.user.has_perm('tfgs.tfg.create') or request.user.is_admin:
                 # request.data['tutor'] = Profesor.objects.get(email=request.data['tutor'])
                 # if 'cotutor' in request.data:
@@ -78,10 +83,10 @@ class TfgViewSet(viewsets.ModelViewSet):
                 #     resul = dict(message=serializer.errors)
                 #     resul_status = status.HTTP_400_BAD_REQUEST
                 resul = Tfg.objects.create(conocimientos_previos=params.get('conocimientos_previos'),
-                                               cotutor=params.get('cotutor'), descripcion=params.get('descripcion'),
-                                               tutor=params.get('tutor'), hard_soft=params.get('hard_soft'),
-                                               titulo=params.get('titulo'), tipo=params.get('tipo'),
-                                               n_alumnos=params.get('n_alumnos'), titulacion=params.get('titulacion'))
+                                           cotutor=params.get('cotutor'), descripcion=params.get('descripcion'),
+                                           tutor=params.get('tutor'), hard_soft=params.get('hard_soft'),
+                                           titulo=params.get('titulo'), tipo=params.get('tipo'),
+                                           n_alumnos=params.get('n_alumnos'), titulacion=params.get('titulacion'))
                 if resul['status']:
                     resul['data'] = self.serializer_class(resul['data']).data
                     resul_status = status.HTTP_200_OK
@@ -91,7 +96,8 @@ class TfgViewSet(viewsets.ModelViewSet):
             else:
                 resul = dict(message="Sin privilegios")
                 resul_status = status.HTTP_405_METHOD_NOT_ALLOWED
-            self.logger.info('FIN WS - TFGVIEW CREATE del usuario: %s con resultado: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            self.logger.info('FIN WS - TFGVIEW CREATE del usuario: %s con resultado: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(resul, status=resul_status)
         except Exception as e:
             resul = dict(status=False, message="Error en la llamada")
@@ -107,7 +113,8 @@ class TfgViewSet(viewsets.ModelViewSet):
 
         try:
             params = utils.get_params(request)
-            self.logger.info('INICIO WS - TFGVIEW PUT del usuario: %s con parametros: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
+            self.logger.info('INICIO WS - TFGVIEW PUT del usuario: %s con parametros: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if request.user.has_perm('tfgs.tfg.change') or request.user.is_admin:
                 tfg = Tfg.objects.get(titulo=params.get('titulo'))
                 serializer = self.serializer_class(tfg)
@@ -121,7 +128,8 @@ class TfgViewSet(viewsets.ModelViewSet):
             else:
                 resul = dict(message="Parametros incorrectos")
                 resul_status = status.HTTP_400_BAD_REQUEST
-            self.logger.info('FIN WS - TFGVIEW PUT del usuario: %s con resultado: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            self.logger.info('FIN WS - TFGVIEW PUT del usuario: %s con resultado: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(resul, status=resul_status)
         except Exception as e:
             resul = dict(status=False, message="Error en la llamada")
@@ -137,7 +145,8 @@ class TfgViewSet(viewsets.ModelViewSet):
 
         try:
             params = utils.get_params(request)
-            self.logger.info('INICIO WS - TFGVIEW DELETE del usuario: %s con parametros: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
+            self.logger.info('INICIO WS - TFGVIEW DELETE del usuario: %s con parametros: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if 'titulo' in params:
                 tfg = Tfg.objects.get(titulo=params.get('titulo'))
                 serializer = self.serializer_class(tfg)
@@ -151,11 +160,13 @@ class TfgViewSet(viewsets.ModelViewSet):
             else:
                 resul = dict(message="Parametros incorrectos")
                 resul_status = status.HTTP_400_BAD_REQUEST
-            self.logger.info('FIN WS - TFGVIEW DELETE del usuario: %s con resultado: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            self.logger.info('FIN WS - TFGVIEW DELETE del usuario: %s con resultado: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(resul, status=resul_status)
         except Tfg.DoesNotExist:
             resul = dict(message="El tfg indicado no existe")
-            self.logger.error('TFGVIEW DELETE del usuario: %s con resultado: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            self.logger.error('TFGVIEW DELETE del usuario: %s con resultado: %s' %
+                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(resul, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             resul = dict(status=False, message="Error en la llamada")
@@ -180,7 +191,8 @@ class Tfg_asigView(views.APIView):
 
         try:
             params = utils.get_params(request)
-            self.logger.info('INICIO WS - TFGASIGVIEW POST del usuario: %s con parametros: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
+            self.logger.info('INICIO WS - TFGASIGVIEW POST del usuario: %s con parametros: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             alumno_2 = None
             alumno_3 = None
             tfg = Tfg.objects.get(titulo=params.get('tfg'))
@@ -192,7 +204,7 @@ class Tfg_asigView(views.APIView):
             serializer = self.serializer_class(data=dict(tfg=tfg.id, alumno_1=alumno_1.id, alumno_2=alumno_2,
                                                          alumno_3=alumno_3))
             if serializer.is_valid():
-                resul = serializer.create_tfg_asig(serializer.validated_data)
+                resul = serializer.create(serializer.validated_data)
                 if resul['status']:
                     resul = utils.to_dict(resul)
                     resul_status = status.HTTP_200_OK
@@ -202,7 +214,8 @@ class Tfg_asigView(views.APIView):
             else:
                 resul = dict(message=serializer.errors)
                 resul_status = status.HTTP_400_BAD_REQUEST
-            self.logger.info('FIN WS - TFGASIGVIEW POST del usuario: %s con resultado: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            self.logger.info('FIN WS - TFGASIGVIEW POST del usuario: %s con resultado: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(resul, status=resul_status)
         except Exception as e:
             resul = dict(status=False, message="Error en la llamada")
@@ -220,7 +233,8 @@ class Tfg_asigView(views.APIView):
 
         try:
             params = utils.get_params(request)
-            self.logger.info('INICIO WS - TFGASIGVIEW DELETE del usuario: %s con parametros: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
+            self.logger.info('INICIO WS - TFGASIGVIEW DELETE del usuario: %s con parametros: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if 'titulo' in params:
                 tfg = Tfg.objects.get(titulo=params.get('titulo'))
                 tfg_asig = Tfg_Asig.objects.get(tfg=tfg)
@@ -235,11 +249,13 @@ class Tfg_asigView(views.APIView):
             else:
                 resul = dict(message="Parametros incorrectos")
                 resul_status = status.HTTP_400_BAD_REQUEST
-            self.logger.info('FIN WS - TFGASIGVIEW DELETE del usuario: %s con resultado: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            self.logger.info('FIN WS - TFGASIGVIEW DELETE del usuario: %s con resultado: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(resul, status=resul_status)
         except Tfg.DoesNotExist:
             resul = dict(message="El tfg indicado no existe")
-            self.logger.error('TFGASIGVIEW DELETE del usuario: %s con resultado: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            self.logger.error('TFGASIGVIEW DELETE del usuario: %s con resultado: %s' %
+                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(resul, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             resul = dict(status=False, message="Error en la llamada")
