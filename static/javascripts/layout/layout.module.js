@@ -5,8 +5,7 @@
     .module('gestfg.layout', [
       'gestfg.layout.controllers',
       'gestfg.layout.directives',
-      'gestfg.layout.services',
-      'ngSanitize'
+      'gestfg.layout.services'
     ]);
 
   angular
