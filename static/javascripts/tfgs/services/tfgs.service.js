@@ -20,7 +20,8 @@
       all: all,
       create: create,
       get: get,
-      upload: upload
+      upload: upload,
+      insert_validated: insert_validated
     };
 
     return Tfgs;
@@ -82,6 +83,20 @@
       return $http.post('/api/v1/upload_file_tfgs/', content, {
         transformRequest: angular.identity,
         headers: {'Content-Type': undefined}
+      });
+    }
+
+    /**
+     * @name insert_validated
+     * @desc Insert a lot of TFGs
+     * @param content
+     * @returns {Promise}
+     * @memberOf gestfg.tfgs.services.Tfgs
+     */
+    function insert_validated(model, tfgs) {
+      return $http.post('/api/v1/upload_file_tfgs_confirm/', {
+        model: model,
+        list_tfg: tfgs
       });
     }
   }

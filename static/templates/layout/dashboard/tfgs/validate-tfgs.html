@@ -25,6 +25,12 @@
         <!-- <h3 class="box-title">Data Table With Full Features</h3> -->
       </div><!-- /.box-header -->
       <div class="box-body">
+
+        <div class="callout callout-danger" ng-repeat="error in tfgs_validados.errores">
+          <h4>Fila {{error.fila}}</h4>
+          <p>{{error.message}}</p>
+        </div>
+
         <table id="tabla-tfgs" class="table table-bordered table-striped" ng-init="load_validated()">
           <thead>
             <tr>
@@ -118,9 +124,10 @@
                     text: 'My button 2'
                 },
                 {
-                    text: 'Descartar Cambios',
+                    text: 'Insertar',
                     action: function ( e, dt, node, config ) {
-                        angular.element($("#tabla-tfgs")).scope().load_validated();
+                        // angular.element($("#tabla-tfgs")).scope().load_validated();
+                        angular.element($("#tabla-tfgs")).scope().insert_validated();
                     }
                 }
             ],
