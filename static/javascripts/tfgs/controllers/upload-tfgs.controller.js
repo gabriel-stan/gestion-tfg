@@ -51,6 +51,34 @@
 
     };
 
+    $scope.insert_validated = function() {
+
+      if($rootScope.tfgs_validados){
+        Tfgs.insert_validated('tfg', JSON.stringify($rootScope.tfgs_validados.exitos)).then(insertTfgsSuccessFn, insertTfgsErrorFn);
+      } else {
+        alert('no hay TFGs validados');
+      }
+
+      /**
+      * @name insertTfgsSuccessFn
+      * @desc Show snackbar with success message
+      */
+      function insertTfgsSuccessFn(data, status, headers, config) {
+        Snackbar.success('Los TFGs se han insertado con exito.');
+      }
+
+
+      /**
+      * @name insertTfgsErrorFn
+      * @desc Propagate error event and show snackbar with error message
+      */
+      function insertTfgsErrorFn(data, status, headers, config) {
+        $rootScope.$broadcast('tfg.insert.error');
+        Snackbar.error(data.data.message);
+      }
+
+    }
+
     /**
     * @name submit
     * @desc Upload a lot of Projects
