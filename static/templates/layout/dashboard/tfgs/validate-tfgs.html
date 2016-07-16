@@ -3,12 +3,12 @@
  <section class="content-header">
    <h1>
      TFGs
-     <small>Todos los TFGs</small>
+     <small>Validar los TFGs</small>
    </h1>
    <ol class="breadcrumb">
      <li><a href="/dashboard"><i class="fa fa-user"></i> Dashboard</a></li>
      <li><a href="/dashboard/tfgs">TFGs</a></li>
-     <li class="active">Todos</li>
+     <li class="active">Validar</li>
    </ol>
  </section>
 
@@ -25,7 +25,13 @@
         <!-- <h3 class="box-title">Data Table With Full Features</h3> -->
       </div><!-- /.box-header -->
       <div class="box-body">
-        <table id="tabla-tfgs" class="table table-bordered table-striped">
+
+        <div class="callout callout-danger" ng-repeat="error in tfgs_validados.errores">
+          <h4>Fila {{error.fila}}</h4>
+          <p>{{error.message}}</p>
+        </div>
+
+        <table id="tabla-tfgs" class="table table-bordered table-striped" ng-init="load_validated()">
           <thead>
             <tr>
               <th>Titulación</th>
@@ -33,7 +39,7 @@
               <th>Título</th>
               <th>Alumnos</th>
               <th>Descripcion</th>
-              <th>Conocimientos Previos</th>
+              <th>Conocimientos Prev.</th>
               <th>Conocimientos HW/SW</th>
               <th>Tutor</th>
               <th>Cotutor</th>
@@ -76,6 +82,10 @@
         text-overflow: ellipsis;
         white-space: nowrap;
       }
+
+      div.dt-buttons{
+        margin-right: 10px;
+      }
     </style>
 
     <script>
@@ -112,27 +122,34 @@
                 {
                     extend: 'alert',
                     text: 'My button 2'
+                },
+                {
+                    text: 'Insertar',
+                    action: function ( e, dt, node, config ) {
+                        // angular.element($("#tabla-tfgs")).scope().load_validated();
+                        angular.element($("#tabla-tfgs")).scope().insert_validated();
+                    }
                 }
             ],
-            ajax: "/api/v1/tfgs/",
+            // ajax: "/api/v1/tfgs/",
             sDefaultContent: "hello",
             "columnDefs": [
               { className: "text-overf", "targets": [ 2, 4, 5, 6 ] }
-            ],
-            columns: [
-              {"data" : "titulacion.codigo"},
-              {"data" : "tipo"},
-              {"data" : "titulo"},
-              {"data" : "n_alumnos"},
-              {"data" : "descripcion"},
-              {"data" : "conocimientos_previos"},
-              {"data" : "hard_soft"},
-              {"data" : "tutor.email"},
-              {
-                "data" : "cotutor.email",
-                "defaultContent": "<i>N/D</i>"
-              }
             ]
+            // columns: [
+            //   {"data" : "titulacion"},
+            //   {"data" : "tipo"},
+            //   {"data" : "titulo"},
+            //   {"data" : "n_alumnos"},
+            //   {"data" : "descripcion"},
+            //   {"data" : "conocimientos_previos"},
+            //   {"data" : "hard_soft"},
+            //   {"data" : "tutor"},
+            //   {
+            //     "data" : "cotutor",
+            //     "defaultContent": "<i>N/D</i>"
+            //   }
+            // ]
           });
 
         // $('#example2').DataTable({
