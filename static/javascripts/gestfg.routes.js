@@ -49,6 +49,11 @@
       controllerAs: 'vm',
       templateUrl: '/static/templates/layout/dashboard/tfgs/add-tfg.html'
     })
+    .when('/dashboard/tfgs/validate:datos', {
+      controller: 'UploadTfgsController',
+      controllerAs: 'vm',
+      templateUrl: '/static/templates/layout/dashboard/tfgs/validate-tfgs.html'
+    })
 
     .when('/dashboard/departamentos', {
       templateUrl: '/static/templates/layout/dashboard/departamentos/departamentos.html'

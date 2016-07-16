@@ -9,15 +9,47 @@
     .module('gestfg.tfgs.controllers')
     .controller('UploadTfgsController', UploadTfgsController);
 
-  UploadTfgsController.$inject = ['$rootScope', '$scope', 'Authentication', 'Snackbar', 'Tfgs'];
+  UploadTfgsController.$inject = ['$rootScope', '$scope', '$location', '$routeParams', 'Authentication', 'Snackbar', 'Tfgs'];
 
   /**
   * @namespace UploadTfgsController
   */
-  function UploadTfgsController($rootScope, $scope, Authentication, Snackbar, Tfgs) {
+  function UploadTfgsController($rootScope, $scope, $location, $routeParams, Authentication, Snackbar, Tfgs) {
     var uploadTfgsCtrl = this;
 
     uploadTfgsCtrl.submit = submit;
+
+    $scope.load_validated = function() {
+      $scope.validados = $routeParams.datos;
+      var validados = $rootScope.tfgs_validados;
+      var tabla = $('#tabla-tfgs').DataTable();
+      tabla.clear().draw();
+
+      function anadir( i, val ) {
+        tabla.row.add([
+          val.tfg.titulacion,
+          val.tfg.tipo,
+          val.tfg.titulo,
+          val.tfg.n_alumnos,
+          val.tfg.descripcion,
+          val.tfg.conocimientos_previos ? val.tfg.conocimientos_previos : '',
+          val.tfg.hard_soft ? val.tfg.hard_soft : '',
+          val.tfg.tutor,
+          val.tfg.cotutor ? val.tfg.cotutor : ''
+        ]).draw();
+      }
+
+      if(validados){
+        jQuery.each( validados.errores, function( i, val ) {
+
+        });
+
+        jQuery.each( validados.exitos, anadir);
+      }
+
+      tabla.draw();
+
+    };
 
     /**
     * @name submit
@@ -56,6 +88,8 @@
       */
       function uploadTfgsSuccessFn(data, status, headers, config) {
         Snackbar.success('Los TFGs se han procesado con exito. Compruebe los datos y confirmelos.');
+        $rootScope.tfgs_validados = data.data;
+        $location.path('/dashboard/tfgs/validate?datos=validados');
       }
 
 
