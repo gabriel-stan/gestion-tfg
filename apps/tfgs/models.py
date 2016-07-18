@@ -313,7 +313,7 @@ class Tfg_Asig(models.Model):
     alumno_1 = models.ForeignKey(Alumno, related_name='alumno_1', default=None)
     alumno_2 = models.ForeignKey(Alumno, related_name='alumno_2', default=None, null=True)
     alumno_3 = models.ForeignKey(Alumno, related_name='alumno_3', default=None, null=True)
-    convocatoria = models.CharField(max_length=100, null=True)
+    convocatoria = models.IntegerField(null=True)
     fecha_conv = models.DateTimeField(null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
