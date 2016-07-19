@@ -1,0 +1,122 @@
+  <table id="tabla-tfgs" class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>Titulación</th>
+        <th>Tipo</th>
+        <th>Título</th>
+        <th>Alumnos</th>
+        <th>Descripcion</th>
+        <th>Conocimientos Previos</th>
+        <th>Conocimientos HW/SW</th>
+        <th>Tutor</th>
+        <th>Cotutor</th>
+      </tr>
+    </thead>
+
+    <tfoot>
+      <tr>
+        <th>Titulación</th>
+        <th>Tipo</th>
+        <th>Título</th>
+        <th>Alumnos</th>
+        <th>Descripcion</th>
+        <th>Conocimientos Previos</th>
+        <th>Conocimientos HW/SW</th>
+        <th>Tutor</th>
+        <th>Cotutor</th>
+      </tr>
+    </tfoot>
+  </table>
+
+  <style>
+    div.dataTables_filter{
+      float: right;
+    }
+
+    div.dataTables_paginate{
+      float: right;
+    }
+
+    div.clear{
+      clear: both;
+    }
+
+    td.text-overf {
+      max-width: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  </style>
+
+
+  <script>
+    $(document).ready(function () {
+      $.fn.dataTable.ext.buttons.alert = {
+      className: 'buttons-alert',
+
+      action: function ( e, dt, node, config ) {
+              alert( this.text() );
+          }
+      };
+
+      $("#tabla-tfgs").DataTable({
+          //sDom: '<Bf>rt<"col-md-6"i><"col-md-6"p><"col-md-12"l>',
+          sDom: '<Bf>rt<pi><"clear"l>',
+          language: {
+              "url": "/static/plugins/datatables/language/Spanish.json"
+          },
+          select: {
+              style: 'multi'
+          },
+          responsive: true,
+          buttons: [
+              {
+                  text: 'Reload',
+                  action: function ( e, dt, node, config ) {
+                      dt.ajax.reload();
+                  }
+              },
+              'copyHtml5',
+              'excelHtml5',
+              'csvHtml5',
+              'pdfHtml5',
+              {
+                  extend: 'alert',
+                  text: 'My button 2'
+              }
+          ],
+          ajax: "/api/v1/tfgs/",
+          sDefaultContent: "hello",
+          "columnDefs": [
+            { className: "text-overf", "targets": [ 2, 4, 5, 6 ] }
+          ],
+          columns: [
+            {"data" : "titulacion.codigo"},
+            {"data" : "tipo"},
+            {"data" : "titulo"},
+            {"data" : "n_alumnos"},
+            {"data" : "descripcion"},
+            {"data" : "conocimientos_previos"},
+            {"data" : "hard_soft"},
+            {"data" : "tutor.email"},
+            {
+              "data" : "cotutor.email",
+              "defaultContent": "<i>N/D</i>"
+            }
+          ]
+        });
+
+      // $('#example2').DataTable({
+      //   "paging": true,
+      //   "lengthChange": false,
+      //   "searching": false,
+      //   "ordering": true,
+      //   "info": true,
+      //   "autoWidth": false,
+      //   "language": {
+      //       "url": "/static/plugins/datatables/language/Spanish.json"
+      //   }
+      // });
+    });
+  </script>
