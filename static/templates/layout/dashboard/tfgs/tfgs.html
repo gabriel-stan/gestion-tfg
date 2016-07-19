@@ -21,15 +21,33 @@
 
     <!-- Aqui se muestran los TFGs -->
 
-    <div class="box">
-      <div class="box-header">
-        <!-- <h3 class="box-title">Data Table With Full Features</h3> -->
-      </div><!-- /.box-header -->
-      <div class="box-body">
+    <!-- START CUSTOM TABS -->
+    <div class="row">
+      <div class="col-md-12">
+        <!-- Custom Tabs -->
+        <div class="nav-tabs-custom">
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab_tabla" data-toggle="tab">Tabla</a></li>
+            <li><a href="#tab_lista" data-toggle="tab">Lista</a></li>
+          </ul>
 
-        <tfgs-tabla></tfgs-tabla>
+          <div class="tab-content">
+            <div class="tab-pane active" id="tab_tabla">
 
-      </div><!-- /.box-body -->
-    </div><!-- /.box -->
+              <tfgs-tabla></tfgs-tabla>
+
+            </div><!-- /.tab-pane -->
+
+            <div class="tab-pane" id="tab_lista">
+
+              <tfgs></tfgs>
+
+            </div><!-- /.tab-pane -->
+          </div><!-- /.tab-content -->
+        </div><!-- nav-tabs-custom -->
+      </div><!-- /.col -->
+
+    </div> <!-- /.row -->
+    <!-- END CUSTOM TABS -->
 
   </section><!-- /.content -->

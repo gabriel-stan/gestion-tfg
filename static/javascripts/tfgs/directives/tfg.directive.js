@@ -1,5 +1,5 @@
 /**
-* tfgs
+* Tfg
 * @namespace gestfg.tfgs.directives
 */
 (function () {
@@ -7,22 +7,23 @@
 
   angular
     .module('gestfg.tfgs.directives')
-    .directive('tfgs', tfgs);
+    .directive('tfg', tfg);
 
   /**
-  * @namespace tfgs
+  * @namespace Tfg
   */
-  function tfgs() {
+  function tfg() {
     /**
     * @name directive
     * @desc The directive to be returned
-    * @memberOf gestfg.tfgs.directives.tfgs
+    * @memberOf gestfg.tfgs.directives.Tfg
     */
     var directive = {
-      controller: 'TfgsController',
-      controllerAs: 'vm',
       restrict: 'E',
-      templateUrl: '/static/templates/tfgs/tfgs.html'
+      scope: {
+        tfg: '='
+      },
+      templateUrl: '/static/templates/tfgs/tfg.html'
     };
 
     return directive;
