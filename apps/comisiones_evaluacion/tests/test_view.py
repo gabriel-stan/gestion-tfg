@@ -13,7 +13,10 @@ class ComisionesEvaluacionServicesTests(TestCase):
                                last_name='apellido 1 apellido 12', password='0000', is_admin=True)
         Usuario.objects.create_superuser(**self.data_admin)
 
-        dep = Departamento.objects.create(nombre='departamento1', codigo='AAA')
+        dep = Departamento.objects.create(nombre='ATC', codigo='ATC')
+        dep1 = Departamento.objects.create(nombre='LSI', codigo='LSI')
+        dep2 = Departamento.objects.create(nombre='CCIA', codigo='CCIA')
+        dep3 = Departamento.objects.create(nombre='ESTADICTICA', codigo='ESTADICTICA')
 
         titulacion = Titulacion.objects.create(nombre='Ingenieria Informatica', codigo='IF')
 
@@ -21,13 +24,13 @@ class ComisionesEvaluacionServicesTests(TestCase):
                                last_name='apellido 1 apellido 12', departamento=dep.codigo, password='75169052')
 
         self.data_prof2 = dict(email='prof_ejemplo2@ugr.es', first_name='profesor 2',
-                               last_name='apellido 12 apellido 122', departamento=dep.codigo, password='75169052')
+                               last_name='apellido 12 apellido 122', departamento=dep1.codigo, password='75169052')
 
         self.data_prof3 = dict(email='prof_ejemplo3@ugr.es', first_name='profesor 3',
-                               last_name='apellido 12 apellido 122', departamento=dep.codigo, password='75169052')
+                               last_name='apellido 12 apellido 122', departamento=dep2.codigo, password='75169052')
 
         self.data_prof4 = dict(email='prof_ejemplo4@ugr.es', first_name='profesor 4',
-                               last_name='apellido 12 apellido 122', departamento=dep.codigo, password='75169052')
+                               last_name='apellido 12 apellido 122', departamento=dep3.codigo, password='75169052')
 
         self.data_tfg1 = dict(tipo='tipo1', titulo='titulo1',
                               n_alumnos=2, descripcion='descripcion',
@@ -87,4 +90,37 @@ class ComisionesEvaluacionServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
+    def test_formacion_comisiones(self):
+        # Login como administrador
+        res = self.client.post('/api/v1/auth/login/', dict(email=self.data_admin['email'],
+                                                           password=self.data_admin['password']))
+
+        # Inserto los profesores
+        res = self.client.post('/api/v1/profesores/', self.data_prof1)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['email'], self.data_prof1['email'])
+
+        res = self.client.post('/api/v1/profesores/', self.data_prof2)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['email'], self.data_prof2['email'])
+
+        res = self.client.post('/api/v1/tfgs/', self.data_tfg1)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        res = self.client.post('/api/v1/alumnos/', self.data_alum1)
+
+        # Asigno el TFG
+        res = self.client.post('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'], 'alumno1': self.data_alum1['email']})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        # Le asigno una convocatoria
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'], 'convocatoria': 0})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        from comisiones_evaluacion.services import Comision
+        res = Comision()
+        resul = res.tutores_comisiones(0)
 

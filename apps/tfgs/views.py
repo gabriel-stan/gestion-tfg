@@ -174,13 +174,53 @@ class TfgViewSet(viewsets.ModelViewSet):
             return Response(resul, status=status.HTTP_400_BAD_REQUEST)
 
 
-class Tfg_asigView(views.APIView):
+class Tfg_asigViewSet(viewsets.ModelViewSet):
     lookup_field = 'tfg'
     queryset = Tfg_Asig.objects.all()
     serializer_class = Tfg_AsigSerializer
     logger = logging.getLogger(__name__)
 
-    def post(self, request):
+    def list(self, request):
+        """
+        GET
+        Obtener los datos de todos o de algun tfg asignado
+        :param request:
+        :return :
+        {status: True/False, data:{serializer del tfg o tfgs}
+
+        """
+        try:
+            params = utils.get_params(request)
+            self.logger.info('INICIO WS - TFGASIGVIEW LIST del usuario: %s con parametros: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
+            if 'titulo' in params:
+                tfg = Tfg.objects.get(titulo=params['titulo'])
+                tfg_asig = Tfg_Asig.objects.get(tfg=tfg)
+                resul = self.serializer_class(tfg_asig).data
+            else:
+                tfg_asig = Tfg_Asig.objects.all()
+                resul = self.serializer_class(tfg_asig, many=True).data
+                if len(resul) == 0:
+                    raise NameError("No hay tfgs almacenados")
+            self.logger.info('FIN WS - TFGASIGVIEW LIST del usuario: %s con resultado: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            return Response(dict(status=True, data=resul), status=status.HTTP_200_OK)
+        except NameError as e:
+            resul = dict(message=e.message)
+            self.logger.error('TFGASIGVIEW LIST del usuario: %s con resultado: %s' %
+                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+        except Tfg.DoesNotExist:
+            resul = dict(message="El tfg indicado no existe")
+            self.logger.error('TFGASIGVIEW LIST del usuario: %s con resultado: %s' %
+                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            resul = dict(status=False, message="Error en la llamada")
+            self.logger.critical('TFGASIGVIEW LIST: %s %s' % (resul, e))
+            return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+
+    def create(self, request):
         """
         POST
         Asignar un TFG a uno o varios alumnos
@@ -220,6 +260,33 @@ class Tfg_asigView(views.APIView):
         except Exception as e:
             resul = dict(status=False, message="Error en la llamada")
             self.logger.critical('TFGASIGVIEW POST: %s %s' % (resul, e))
+            return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request):
+        try:
+            params = utils.get_params(request)
+            self.logger.info('INICIO WS - TFGASIGVIEWCONVOCATORIA PUT del usuario: %s con parametros: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
+            if request.user.has_perm('tfgs.tfg_asig.change') or request.user.is_admin:
+                tfg = Tfg.objects.get(titulo=params.get('tfg'))
+                tfg_asig = Tfg_Asig.objects.get(tfg=tfg)
+                serializer = self.serializer_class(tfg)
+                resul = serializer.update(tfg_asig, params)
+                if resul['status']:
+                    resul = utils.to_dict(resul)
+                    resul_status = status.HTTP_200_OK
+                else:
+                    resul = dict(message=resul['message'])
+                    resul_status = status.HTTP_400_BAD_REQUEST
+            else:
+                resul = dict(message="Parametros incorrectos")
+                resul_status = status.HTTP_400_BAD_REQUEST
+            self.logger.info('FIN WS - TFGASIGVIEWCONVOCATORIA PUT del usuario: %s con resultado: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            return Response(resul, status=resul_status)
+        except Exception as e:
+            resul = dict(status=False, message="Error en la llamada")
+            self.logger.critical('TFGASIGVIEWCONVOCATORIA PUT: %s %s' % (resul, e))
             return Response(resul, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request):

@@ -142,6 +142,9 @@ class TfgManager(BaseUserManager):
                 except Titulacion.DoesNotExist:
                     return dict(status=False, message='la titulacion no existe')
 
+            if Tfg.objects.filter(titulo=titulo).exists():
+                    raise NameError("El Tfg ya existe")
+
             self.model(tipo=kwargs.get('tipo'), titulo=titulo, n_alumnos=kwargs.get('n_alumnos'),
                        descripcion=kwargs.get('descripcion'), conocimientos_previos=kwargs.get('conocimientos_previos'),
                        hard_soft=kwargs.get('hard_soft'), tutor=tutor, cotutor=cotutor, titulacion=titulacion)
@@ -313,7 +316,7 @@ class Tfg_Asig(models.Model):
     alumno_1 = models.ForeignKey(Alumno, related_name='alumno_1', default=None)
     alumno_2 = models.ForeignKey(Alumno, related_name='alumno_2', default=None, null=True)
     alumno_3 = models.ForeignKey(Alumno, related_name='alumno_3', default=None, null=True)
-    convocatoria = models.CharField(max_length=100, null=True)
+    convocatoria = models.IntegerField(null=True)
     fecha_conv = models.DateTimeField(null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
