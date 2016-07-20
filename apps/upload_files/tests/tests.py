@@ -21,7 +21,7 @@ class TfgServicesTests(TestCase):
 
         dep = Departamento.objects.create(nombre='departamento1', codigo=1)
 
-        titulacion = Titulacion.objects.create(nombre='Ingenieria Informatica', codigo='IF')
+        titulacion = Titulacion.objects.create(nombre='Ingenieria Informatica', codigo='GII')
 
         self.prof1 = dict(email='jorgecasillas@ugr.es', first_name='profesor 1', last_name='apellido 1 apellido 12',
                           departamento=dep, password='75169052')
@@ -100,7 +100,7 @@ class TfgServicesTests(TestCase):
         data = {'file': ('ListaTFGs.xlsx', open(location, 'rb')), 'u_fila': 9, 'p_fila': 5,
                 'cabeceras': json.dumps(dict(tipo='D', titulo='E', n_alumnos='F', descripcion='G',
                                              conocimientos_previos='H', hard_soft='I', tutor='B', cotutor='C',
-                                             titulacion='J')), 'tipe_file': 'tfg'}
+                                             titulacion='J')), 'tipe_file': 'tfg', 'titulacion': 'GII'}
         res = self.client.post('/api/v1/upload_file_tfgs/', data, format='multipart')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
@@ -132,7 +132,8 @@ class TfgServicesTests(TestCase):
         data = {'file': ('ListaTFGs_preasignados.xlsx', open(location, 'rb')), 'u_fila': 9, 'p_fila': 5,
                 'cabeceras': json.dumps(dict(tipo='D', titulo='E', n_alumnos='F', alumno_1='G', alumno_2='H',
                                              descripcion='I', conocimientos_previos='J', hard_soft='K', tutor='B',
-                                             cotutor='C', titulacion='L')), 'tipe_file': 'tfg_asig'}
+                                             cotutor='C', titulacion='L')), 'tipe_file': 'tfg_asig',
+                'titulacion': 'GII'}
         res = self.client.post('/api/v1/upload_file_tfgs/', data, format='multipart')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)

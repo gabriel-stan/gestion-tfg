@@ -13,13 +13,13 @@ class Tfgs_masivos(object):
         self.errores = []
         self.exitos = []
 
-    def upload_file_tfg(self, u_fila, p_fila, cabeceras):
+    def upload_file_tfg(self, u_fila, p_fila, cabeceras, titulacion):
         for i in range(p_fila, u_fila+1):
             try:
                 data_tfg = self.read_data(cabeceras, i)
-                tfg = self.check_tfg(data_tfg, i)
-                if tfg is not False and Tfg.objects.simular_create_tfg(**tfg):
-                    self.exitos.append(dict(fila=i, tfg=tfg))
+                self.tfg = self.check_tfg(data_tfg, i,titulacion)
+                if self.tfg is not False and Tfg.objects.simular_create_tfg(**self.tfg):
+                    self.exitos.append(dict(fila=i, tfg=self.tfg))
             except Profesor.DoesNotExist:
                 self.errores.append(dict(fila=i, message='El profesor no existe'))
                 continue
@@ -45,12 +45,12 @@ class Tfgs_masivos(object):
 
         return resul
 
-    def check_tfg(self, tfg, i):
+    def check_tfg(self, tfg, i, titulacion):
         if not tfg.get('titulo'):
             self.errores.append(dict(fila=i, message='El TFG no tiene titulo'))
             return False
         tfg['tutor'] = Profesor.objects.get(email=tfg.get('tutor'))
-        tfg['titulacion'] = Titulacion.objects.get(codigo=tfg.get('titulacion'))
+        tfg['titulacion'] = Titulacion.objects.get(codigo=titulacion)
         if tfg.get('cotutor'):
             tfg['cotutor'] = Profesor.objects.get(email=str(tfg.get('cotutor')))
             tfg = dict(tipo=tfg['tipo'], titulo=tfg['titulo'], n_alumnos=tfg['n_alumnos'],
@@ -83,11 +83,11 @@ class Tfgs_asig_masivos(Tfgs_masivos):
     def __init__(self, fichero=None):
         super(Tfgs_asig_masivos, self).__init__(fichero)
 
-    def upload_file_tfg(self, u_fila, p_fila, cabeceras):
+    def upload_file_tfg(self, u_fila, p_fila, cabeceras, titulacion):
         for i in range(p_fila, u_fila+1):
             try:
                 data_tfg = self.read_data(cabeceras, i)
-                self.tfg = self.check_tfg(data_tfg, i)
+                self.tfg = self.check_tfg(data_tfg, i, titulacion)
                 if self.tfg != False and Tfg.objects.simular_create_tfg(**self.tfg):
                     model_tfg = Tfg(**data_tfg)
                     self.check_tfg_asig(data_tfg, cabeceras, i)
