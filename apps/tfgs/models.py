@@ -169,11 +169,11 @@ class TfgManager(BaseUserManager):
 
 class Tfg(models.Model):
     tipo = models.CharField(max_length=100)
-    titulo = models.CharField(max_length=100)
+    titulo = models.TextField(max_length=250)
     n_alumnos = models.IntegerField()
     descripcion = models.TextField()
-    conocimientos_previos = models.CharField(max_length=100, null=True)
-    hard_soft = models.CharField(max_length=100, null=True)
+    conocimientos_previos = models.TextField(null=True)
+    hard_soft = models.TextField(null=True)
     tutor = models.ForeignKey(Profesor, related_name='tutor', default=None)
     cotutor = models.ForeignKey(Profesor, related_name='cotutor', default=None, null=True)
     publicado = models.BooleanField(default=False)
