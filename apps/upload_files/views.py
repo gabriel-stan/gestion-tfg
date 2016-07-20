@@ -32,7 +32,8 @@ class Upload_fileView(views.APIView):
                 cabeceras = json.loads(request.POST['cabeceras'])
                 tipe_file = str(request.POST['tipe_file'])
                 load_tfgs = SUBIDAS.get(tipe_file)(file)
-                resul = load_tfgs.upload_file_tfg(u_fila, p_fila, cabeceras)
+                titulacion = str(request.POST['titulacion'])
+                resul = load_tfgs.upload_file_tfg(u_fila, p_fila, cabeceras, titulacion)
                 if resul['status']:
                     resul_status = status.HTTP_200_OK
                 else:

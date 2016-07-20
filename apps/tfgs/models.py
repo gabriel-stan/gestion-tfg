@@ -142,6 +142,9 @@ class TfgManager(BaseUserManager):
                 except Titulacion.DoesNotExist:
                     return dict(status=False, message='la titulacion no existe')
 
+            if Tfg.objects.filter(titulo=titulo).exists():
+                    raise NameError("El Tfg ya existe")
+
             self.model(tipo=kwargs.get('tipo'), titulo=titulo, n_alumnos=kwargs.get('n_alumnos'),
                        descripcion=kwargs.get('descripcion'), conocimientos_previos=kwargs.get('conocimientos_previos'),
                        hard_soft=kwargs.get('hard_soft'), tutor=tutor, cotutor=cotutor, titulacion=titulacion)
