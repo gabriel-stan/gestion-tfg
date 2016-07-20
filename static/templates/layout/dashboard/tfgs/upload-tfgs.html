@@ -39,6 +39,14 @@
               </div>
             </div>
 
+
+            <div class="form-group">
+              <label class="col-sm-4 control-label">Preasignados</label>
+              <div class="col-sm-8">
+                <input id="preasignados" type="checkbox" ng-model="uploadCtrl.preasignados">
+              </div>
+            </div>
+
             <div class="form-group">
               <label class="col-sm-4 control-label">Fila Inicio</label>
               <div class="col-sm-8">
@@ -68,6 +76,10 @@
                   <option>I</option>
                   <option>J</option>
                   <option>K</option>
+                  <option>L</option>
+                  <option>M</option>
+                  <option>N</option>
+                  <option>O</option>
                 </select>
               </div>
             </div>
@@ -87,6 +99,10 @@
                   <option>I</option>
                   <option>J</option>
                   <option>K</option>
+                  <option>L</option>
+                  <option>M</option>
+                  <option>N</option>
+                  <option>O</option>
                 </select>
               </div>
             </div>
@@ -106,6 +122,10 @@
                   <option>I</option>
                   <option>J</option>
                   <option>K</option>
+                  <option>L</option>
+                  <option>M</option>
+                  <option>N</option>
+                  <option>O</option>
                 </select>
               </div>
             </div>
@@ -125,6 +145,10 @@
                   <option>I</option>
                   <option>J</option>
                   <option>K</option>
+                  <option>L</option>
+                  <option>M</option>
+                  <option>N</option>
+                  <option>O</option>
                 </select>
               </div>
             </div>
@@ -144,6 +168,10 @@
                   <option ng-selected="false">I</option>
                   <option>J</option>
                   <option>K</option>
+                  <option>L</option>
+                  <option>M</option>
+                  <option>N</option>
+                  <option>O</option>
                 </select>
               </div>
             </div>
@@ -163,6 +191,10 @@
                   <option>I</option>
                   <option ng-selected="false">J</option>
                   <option>K</option>
+                  <option>L</option>
+                  <option>M</option>
+                  <option>N</option>
+                  <option>O</option>
                 </select>
               </div>
             </div>
@@ -182,6 +214,10 @@
                   <option>I</option>
                   <option>J</option>
                   <option>K</option>
+                  <option>L</option>
+                  <option>M</option>
+                  <option>N</option>
+                  <option>O</option>
                 </select>
               </div>
             </div>
@@ -190,6 +226,29 @@
               <label class="col-sm-4 control-label">Email Cotutor</label>
               <div class="col-sm-8">
                 <select id="upload-cotutor" class="form-control" ng-model="uploadCtrl.cotutor">
+                  <option>A</option>
+                  <option ng-selected="false">B</option>
+                  <option>C</option>
+                  <option>D</option>
+                  <option>E</option>
+                  <option>F</option>
+                  <option>G</option>
+                  <option>H</option>
+                  <option>I</option>
+                  <option>J</option>
+                  <option>K</option>
+                  <option>L</option>
+                  <option>M</option>
+                  <option>N</option>
+                  <option>O</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group" ng-show="uploadCtrl.preasignados">
+              <label class="col-sm-4 control-label">Email Alumno 1</label>
+              <div class="col-sm-8">
+                <select id="upload-alumno1" class="form-control" ng-model="uploadCtrl.alumno1">
                   <option>A</option>
                   <option>B</option>
                   <option ng-selected="false">C</option>
@@ -201,6 +260,56 @@
                   <option>I</option>
                   <option>J</option>
                   <option>K</option>
+                  <option>L</option>
+                  <option>M</option>
+                  <option>N</option>
+                  <option>O</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group" ng-show="uploadCtrl.preasignados">
+              <label class="col-sm-4 control-label">Email Alumno 2</label>
+              <div class="col-sm-8">
+                <select id="upload-alumno2" class="form-control" ng-model="uploadCtrl.alumno2">
+                  <option>A</option>
+                  <option>B</option>
+                  <option ng-selected="false">C</option>
+                  <option>D</option>
+                  <option>E</option>
+                  <option>F</option>
+                  <option>G</option>
+                  <option>H</option>
+                  <option>I</option>
+                  <option>J</option>
+                  <option>K</option>
+                  <option>L</option>
+                  <option>M</option>
+                  <option>N</option>
+                  <option>O</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group" ng-show="uploadCtrl.preasignados">
+              <label class="col-sm-4 control-label">Email Alumno 3</label>
+              <div class="col-sm-8">
+                <select id="upload-alumno3" class="form-control" ng-model="uploadCtrl.alumno3">
+                  <option>A</option>
+                  <option>B</option>
+                  <option ng-selected="false">C</option>
+                  <option>D</option>
+                  <option>E</option>
+                  <option>F</option>
+                  <option>G</option>
+                  <option>H</option>
+                  <option>I</option>
+                  <option>J</option>
+                  <option>K</option>
+                  <option>L</option>
+                  <option>M</option>
+                  <option>N</option>
+                  <option>O</option>
                 </select>
               </div>
             </div>
@@ -220,6 +329,10 @@
                   <option>I</option>
                   <option>J</option>
                   <option>K</option>
+                  <option>L</option>
+                  <option>M</option>
+                  <option>N</option>
+                  <option>O</option>
                 </select>
               </div>
             </div>

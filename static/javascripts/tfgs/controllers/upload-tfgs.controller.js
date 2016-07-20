@@ -97,6 +97,12 @@
       cabeceras.cotutor = uploadTfgsCtrl.cotutor;
       cabeceras.titulacion = uploadTfgsCtrl.titulacion2;
 
+      if(uploadTfgsCtrl.preasignados){
+        cabeceras.alumno_1 = uploadTfgsCtrl.alumno1;
+        cabeceras.alumno_2 = uploadTfgsCtrl.alumno2;
+        cabeceras.alumno_3 = uploadTfgsCtrl.alumno3;
+      }
+
       var fd = new FormData();
 
       var f = document.getElementById('upload-file').files[0];
@@ -106,9 +112,14 @@
       fd.append('u_fila', uploadTfgsCtrl.u_fila);
       fd.append('p_fila', uploadTfgsCtrl.p_fila);
       fd.append('titulacion', uploadTfgsCtrl.titulacion);
-      fd.append('tipe_file', 'tfg');
 
-      Tfgs.upload(fd).then(uploadTfgsSuccessFn, uploadTfgsErrorFn);
+      if(uploadTfgsCtrl.preasignados){
+        fd.append('tipe_file', 'tfg_asig');
+        Tfgs.upload('/api/v1/upload_file_tfgs/', fd).then(uploadTfgsSuccessFn, uploadTfgsErrorFn);
+      } else {
+        fd.append('tipe_file', 'tfg');
+        Tfgs.upload('/api/v1/upload_file_tfgs/', fd).then(uploadTfgsSuccessFn, uploadTfgsErrorFn);
+      }
 
       /**
       * @name uploadTfgsSuccessFn
