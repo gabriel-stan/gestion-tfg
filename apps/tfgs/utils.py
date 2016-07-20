@@ -74,19 +74,21 @@ def check_usuario(user, email):
 
 def existe_tfg_asig(alumno):
 
-    if not isinstance(alumno, Alumno):
-        return False
-    else:
+    if alumno:
+        if not isinstance(alumno, Alumno):
+            alumno = Alumno.objects.get(email=alumno)
         from tfgs.models import Tfg_Asig
         alumno1 = Tfg_Asig.objects.filter(alumno_1=alumno)
         alumno2 = Tfg_Asig.objects.filter(alumno_2=alumno)
         alumno3 = Tfg_Asig.objects.filter(alumno_3=alumno)
 
         if alumno1.count() > 0 or alumno2.count() > 0 or alumno3.count() > 0:
-            return True
+            resul = True
         else:
-            return False
-
+            resul = False
+    else:
+        resul = False
+    return resul
 
 def comprueba_profesor(usuario):
 

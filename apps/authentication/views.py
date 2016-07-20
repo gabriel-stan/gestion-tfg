@@ -2,6 +2,7 @@
 from django.contrib.auth import authenticate, login, logout
 from authentication.models import Alumno, Profesor, Grupos, Usuario, Departamento
 from authentication.serializers import AlumnoSerializer, ProfesorSerializer, UsuarioSerializer, DepartamentoSerializer
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from rest_framework import permissions, viewsets, status, views
 from rest_framework.response import Response
 from django.contrib.auth.models import Permission
@@ -34,16 +35,28 @@ class UsuariosViewSet(viewsets.ModelViewSet):
                 try:
                     if 'email' in params:
                         usuario = Usuario.objects.get(email=params['email'])
-                        datas = self.serializer_class(usuario).data
+                        datas = utils.procesar_datos_usuario(request.user, self.serializer_class(usuario).data)
                     elif 'dni' in params:
                         usuario = Usuario.objects.get(dni=params['dni'])
-                        datas = self.serializer_class(usuario).data
+                        datas = utils.procesar_datos_usuario(request.user, self.serializer_class(usuario).data)
                     else:
-                        usuario = Usuario.objects.all()
-                        datas = self.serializer_class(usuario, many=True).data
+                        usuarios = Usuario.objects.all()
+                        paginador = Paginator(usuarios, 2)
+                        pagina = params.get('pagina')
+                        try:
+                            usuarios = paginador.page(pagina)
+                        except PageNotAnInteger:
+                            pagina = 1
+                            usuarios = paginador.page(pagina)
+                        except EmptyPage:
+                            pagina = paginador.num_pages
+                            usuarios = paginador.page(pagina)
+                        datas = {'resul': utils.procesar_datos_usuario(request.user, self.serializer_class(usuarios, many=True).data),
+                                                    'pagina': pagina, 'num_paginas': paginador.num_pages}
                         if len(datas) == 0:
                             raise NameError("No hay usuarios almacenados")
-                    resul = dict(status=True, data=utils.procesar_datos_usuario(request.user, datas))
+                        
+                    resul = dict(status=True, data=datas)
                     resul_status = status.HTTP_200_OK
                 except NameError as e:
                     resul = dict(status=False, message=e.message)
@@ -657,8 +670,8 @@ class DepartamentosViewSet(viewsets.ModelViewSet):
             params = utils.get_params(request)
             self.logger.info('INICIO WS - DEPARTAMENTOSVIEW PUT del usuario: %s con params: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if request.user.has_perm('authentication.departemento.change') or request.user.is_admin:
-                departamento = Departamento.objects.get(codigo=params['codigo'])
-                params = json.loads(params['data'])
+                departamento = Departamento.objects.get(codigo=params.get('codigo'))
+                params = json.loads(params.get('data'))
                 serializer = DepartamentoSerializer(departamento)
                 resul = serializer.update(departamento, params)
                 if resul['status']:
@@ -676,7 +689,7 @@ class DepartamentosViewSet(viewsets.ModelViewSet):
 
     def delete(self, request):
         """
-        Eliminar un profesor
+        Eliminar un departamento
         :param request:
         :return :
         """
@@ -693,7 +706,7 @@ class DepartamentosViewSet(viewsets.ModelViewSet):
             return Response(resul)
 
         except Profesor.DoesNotExist:
-            resul = dict(status=False, message="El profesor indicado no existe")
+            resul = dict(status=False, message="El departamento indicado no existe")
             self.logger.error('INICIO WS - DEPARTAMENTOSVIEW DELETE del usuario: %s con resultado: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(resul, status=status.HTTP_400_BAD_REQUEST)
         except Exception:

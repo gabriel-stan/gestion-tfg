@@ -328,3 +328,4 @@ class Tfg_asigViewSet(viewsets.ModelViewSet):
             resul = dict(status=False, message="Error en la llamada")
             self.logger.critical('TFGASIGVIEW DELETE: %s %s' % (resul, e))
             return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+

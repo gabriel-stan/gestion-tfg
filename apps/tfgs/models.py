@@ -142,16 +142,13 @@ class TfgManager(BaseUserManager):
                 except Titulacion.DoesNotExist:
                     return dict(status=False, message='la titulacion no existe')
 
-            if Tfg.objects.filter(titulo=titulo).exists():
-                    raise NameError("El Tfg ya existe")
-
             self.model(tipo=kwargs.get('tipo'), titulo=titulo, n_alumnos=kwargs.get('n_alumnos'),
                        descripcion=kwargs.get('descripcion'), conocimientos_previos=kwargs.get('conocimientos_previos'),
                        hard_soft=kwargs.get('hard_soft'), tutor=tutor, cotutor=cotutor, titulacion=titulacion)
 
             return True
-        except NameError:
-            return False
+        except NameError as e:
+            return e.message
 
     def create_file(self, **kwargs):
         try:
@@ -265,12 +262,13 @@ class Tfg_AsigManager(BaseUserManager):
         try:
             # Compruebo lo minimo para asignar el tfg
             if not isinstance(tfg, Tfg):
-                raise
-
+                raise NameError("Error en los parametros de entrada")
+            if utils.existe_tfg_asig(alumno_1):
+                raise NameError("el alumno %s ya tiene un tfg asignado" % alumno_1)
             # Compruebo que no este ya asignado
             try:
                 Tfg_Asig.objects.get(tfg=tfg)
-                raise
+                raise NameError("Tfg ya asignado")
             except Tfg_Asig.DoesNotExist:
                 if not utils.existe_tfg_asig(alumno_2):
                     alumno2_ok = True
@@ -280,21 +278,21 @@ class Tfg_AsigManager(BaseUserManager):
                 # Si tiene 2 alumnos
                 if alumno_2 and not alumno_3:
                     if not alumno2_ok:
-                        raise
+                        raise NameError("Error en el segundo alumno")
                     else:
-                        tfg_asig = self.model(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2)
+                        self.model(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2)
                 # Si tiene 3 alumnos
                 elif alumno_2 and alumno_3:
                     if not alumno2_ok or not alumno3_ok:
-                        raise
+                        raise NameError("Error en el tercer alumno")
                     else:
-                        tfg_asig = self.model(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2, alumno_3=alumno_3)
+                        self.model(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2, alumno_3=alumno_3)
                 # Si tiene 1 alumno
                 else:
-                    tfg_asig = self.model(tfg=tfg, alumno_1=alumno_1)
+                    self.model(tfg=tfg, alumno_1=alumno_1)
                 return True
-        except Exception as e:
-            return False
+        except NameError as e:
+            return e.message
 
     # def create_file(self, **kwargs):
     #     try:
