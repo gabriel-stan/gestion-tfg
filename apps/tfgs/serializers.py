@@ -153,3 +153,18 @@ class Tfg_AsigSerializer(serializers.ModelSerializer):
 
     def create_tfg_asig(self, validated_data):
         return Tfg_Asig.objects.create_tfg_asig(**validated_data)
+
+    def update(self, tfg_asig, validated_data):
+        try:
+            # comprobando convocatoria
+            if 'convocatoria' in validated_data.keys():
+                if validated_data.get('convocatoria') == '' or not utils.is_int(validated_data.get('convocatoria')):
+                    raise NameError("Convocatoria incorrecta")
+                else:
+                    tfg_asig.convocatoria = validated_data.get('convocatoria')
+
+            tfg_asig.save()
+
+            return dict(status=True, data=Tfg_Asig.objects.get(tfg=tfg_asig.tfg))
+        except NameError as e:
+            return dict(status=False, message=e.message)

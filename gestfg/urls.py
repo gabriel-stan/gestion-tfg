@@ -20,7 +20,7 @@ from rest_framework_nested import routers
 from gestfg.views import IndexView, DashboardView
 from authentication.views import AlumnosViewSet, LoginView, LogoutView, ProfesoresViewSet, PermissionsView, \
     UsuariosViewSet, LoadDataView, DepartamentosViewSet
-from tfgs.views import Tfg_asigView, TfgViewSet
+from tfgs.views import Tfg_asigViewSet, TfgViewSet
 from eventos.views import EventosViewSet
 from upload_files.views import Upload_fileView, Upload_file_confirmView
 from comisiones_evaluacion.views import ComisionEvaluacionViewSet
@@ -30,6 +30,7 @@ router.register(r'alumnos', AlumnosViewSet)
 router.register(r'profesores', ProfesoresViewSet)
 router.register(r'usuarios', UsuariosViewSet)
 router.register(r'tfgs', TfgViewSet)
+router.register(r'tfgs_asig', Tfg_asigViewSet)
 router.register(r'events', EventosViewSet)
 router.register(r'departamentos', DepartamentosViewSet)
 router.register(r'comisiones', ComisionEvaluacionViewSet)
@@ -41,7 +42,6 @@ urlpatterns = [
     url(r'^api/v1/auth/logout/$', LogoutView.as_view(), name='logout'),
     url(r'^api/v1/auth/permisos/$', PermissionsView.as_view(), name='permisos'),
     url(r'^api/v1/auth/load_data/$', LoadDataView.as_view(), name='load_data'),
-    url(r'^api/v1/tfgs_asig/$', Tfg_asigView.as_view(), name='tfg_asig'),
     url(r'^api/v1/upload_file_tfgs/$', Upload_fileView.as_view(), name='upload_file_tfgs'),
     url(r'^api/v1/upload_file_tfgs_confirm/$', Upload_file_confirmView.as_view(), name='upload_file_tfgs_confirm'),
     # url(r'^alumnos/$', authentication_views.AlumnosViewSet.alumnos, name='alumnos'),
