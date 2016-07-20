@@ -17,9 +17,12 @@ class Tfgs_masivos(object):
         for i in range(p_fila, u_fila+1):
             try:
                 data_tfg = self.read_data(cabeceras, i)
-                self.tfg = self.check_tfg(data_tfg, i,titulacion)
-                if self.tfg is not False and Tfg.objects.simular_create_tfg(**self.tfg):
+                self.tfg = self.check_tfg(data_tfg, i, titulacion)
+                resul = Tfg.objects.simular_create_tfg(**self.tfg)
+                if self.tfg is not False and resul is True:
                     self.exitos.append(dict(fila=i, tfg=self.tfg))
+                else:
+                    self.errores.append(dict(fila=i, message=resul))
             except Profesor.DoesNotExist:
                 self.errores.append(dict(fila=i, message='El profesor no existe'))
                 continue
@@ -88,13 +91,19 @@ class Tfgs_asig_masivos(Tfgs_masivos):
             try:
                 data_tfg = self.read_data(cabeceras, i)
                 self.tfg = self.check_tfg(data_tfg, i, titulacion)
-                if self.tfg != False and Tfg.objects.simular_create_tfg(**self.tfg):
+                resul = Tfg.objects.simular_create_tfg(**self.tfg)
+                if self.tfg is not False and resul is True:
                     model_tfg = Tfg(**data_tfg)
                     self.check_tfg_asig(data_tfg, cabeceras, i)
                     tfg_asig = dict(tfg=model_tfg, alumno_1=data_tfg['alumno_1'], alumno_2=data_tfg['alumno_2'],
                                     alumno_3=data_tfg['alumno_3'])
-                    if Tfg_Asig.objects.simular_create_tfg_asig(**tfg_asig):
+                    resul = Tfg_Asig.objects.simular_create_tfg_asig(**tfg_asig)
+                    if resul is True:
                         self.exitos.append(dict(fila=i, tfg=self.tfg))
+                    else:
+                        self.errores.append(dict(fila=i, message=resul))
+                else:
+                    self.errores.append(dict(fila=i, message=resul))
             except Profesor.DoesNotExist:
                 self.errores.append(dict(fila=i, message='El profesor no existe'))
                 continue
