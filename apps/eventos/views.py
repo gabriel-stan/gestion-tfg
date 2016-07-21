@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from eventos.models import Evento, Tipo_Evento
+from eventos.models import Evento, Tipo_Evento, Periodo
 from eventos.serializers import EventoSerializer
 from authentication.models import Usuario
 from rest_framework import viewsets, status
@@ -55,10 +55,14 @@ class EventosViewSet(viewsets.ModelViewSet):
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             resul = Evento.objects.create_evento(contenido=params.get('contenido'),
                                                  tipo=Tipo_Evento.objects.get(codigo=params.get('tipo')),
-                                                 titulo=params.get('titulo'), desde=params.get('desde'),
-                                                 hasta=params.get('hasta'),
+                                                 titulo=params.get('titulo'),
                                                  autor=Usuario.objects.get(id=request.user.id))
-            if resul['status']:
+            if resul.get('status'):
+                resul = Periodo.objects.create_periodo(evento=resul.get('data'),
+                                                       start=params.get('desde'),
+                                                       end=params.get('hasta'))
+
+            if resul.get('status'):
                 resul = utils.to_dict(resul)
                 resul_status = status.HTTP_200_OK
             else:
@@ -85,7 +89,7 @@ class EventosViewSet(viewsets.ModelViewSet):
         """
         try:
             params = utils.get_params(request)
-            self.logger.info('INICIO WS - DEPARTAMENTOSVIEW PUT del usuario: %s con params: %s' %
+            self.logger.info('INICIO WS - EVENTOSVIEW PUT del usuario: %s con params: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if request.user.has_perm('eventos.evento.change') or request.user.is_admin:
                 evento = Evento.objects.get(contenido=params.get('contenido'))
@@ -98,13 +102,13 @@ class EventosViewSet(viewsets.ModelViewSet):
                     return Response(resul)
             else:
                 resul = dict(status=False, message="Sin privilegios")
-                self.logger.info('FIN WS - DEPARTAMENTOSVIEW PUT del usuario: %s con resultado: %s' %
+                self.logger.info('FIN WS - EVENTOSVIEW PUT del usuario: %s con resultado: %s' %
                                  (request.user.email if hasattr(request.user, 'email') else request.user.username,
                                   resul))
                 return Response(resul, status=status.HTTP_405_METHOD_NOT_ALLOWED)
         except Exception as e:
             resul = dict(status=False, message="Error en la llamada")
-            self.logger.critical('FIN WS - DEPARTAMENTOSVIEW PUT del usuario: %s con resultado: %s' %
+            self.logger.critical('FIN WS - EVENTOSVIEW PUT del usuario: %s con resultado: %s' %
                                  (request.user.email if hasattr(request.user, 'email') else request.user.username,
                                   resul))
             return Response(resul, status=status.HTTP_400_BAD_REQUEST)
@@ -117,7 +121,7 @@ class EventosViewSet(viewsets.ModelViewSet):
         """
         try:
             params = utils.get_params(request)
-            self.logger.info('INICIO WS - DEPARTAMENTOSVIEW DELETE del usuario: %s con params: %s' %
+            self.logger.info('INICIO WS - EVENTOSVIEW DELETE del usuario: %s con params: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if request.user.is_admin:
                 evento = Evento.objects.get(contenido=params.get('contenido'))
@@ -125,19 +129,19 @@ class EventosViewSet(viewsets.ModelViewSet):
                 resul = serializer.delete(evento)
             else:
                 resul = dict(status=False, message="Parametros incorrectos")
-            self.logger.critical('FIN WS - DEPARTAMENTOSVIEW DELETE del usuario: %s con resultado: %s' %
+            self.logger.critical('FIN WS - EVENTOSVIEW DELETE del usuario: %s con resultado: %s' %
                                  (request.user.email if hasattr(request.user, 'email') else request.user.username,
                                   resul))
             return Response(resul)
 
         except Evento.DoesNotExist:
             resul = dict(status=False, message="El evento indicado no existe")
-            self.logger.error('INICIO WS - DEPARTAMENTOSVIEW DELETE del usuario: %s con resultado: %s' %
+            self.logger.error('INICIO WS - EVENTOSVIEW DELETE del usuario: %s con resultado: %s' %
                               (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(resul, status=status.HTTP_400_BAD_REQUEST)
         except Exception:
             resul = dict(status=False, message="Error en la llamada")
-            self.logger.critical('INICIO WS - DEPARTAMENTOSVIEW DELETE del usuario: %s con resultado: %s' %
+            self.logger.critical('INICIO WS - EVENTOSVIEW DELETE del usuario: %s con resultado: %s' %
                                  (request.user.email if hasattr(request.user, 'email') else request.user.username,
                                   resul))
             return Response(resul, status=status.HTTP_400_BAD_REQUEST)

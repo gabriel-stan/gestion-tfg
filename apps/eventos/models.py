@@ -6,7 +6,7 @@ from datetime import datetime
 
 
 class Tipo_EventoManager(BaseUserManager):
-    def create_file(self, **kwargs):
+    def create_tipo_evento(self, **kwargs):
         return self.model.objects.create(**kwargs)
 
 
@@ -29,6 +29,13 @@ class EventoManager(models.Manager):
             # Compruebo si tiene autor
             if not isinstance(kwargs.get('autor'), Usuario):
                 raise NameError("Autor no valido")
+
+            if not kwargs.get('tipo'):
+                raise NameError("Tipo necesario")
+            else:
+                res = Tipo_Evento.objects.filter(codigo=kwargs.get('tipo'))
+                if res.count() != 0:
+                    raise NameError("El Tipo ya existe")
 
             evento = Evento.objects.create(contenido=contenido, autor=kwargs.get('autor'),
                                            tipo=kwargs.get('tipo'), titulo=kwargs.get('titulo'))
