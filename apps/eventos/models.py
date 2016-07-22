@@ -1,7 +1,25 @@
+from django.contrib.auth.models import BaseUserManager
 from django.db import models
 from authentication.models import Usuario
 from eventtools.models import BaseEvent, BaseOccurrence
 from datetime import datetime
+
+
+class Tipo_EventoManager(BaseUserManager):
+    def create_file(self, **kwargs):
+        return self.model.objects.create(**kwargs)
+
+
+class Tipo_Evento(models.Model):
+    nombre = models.CharField(default=None, unique=True, null=True, max_length=100)
+    codigo = models.CharField(default=None, unique=True, null=True, max_length=20)
+    objects = Tipo_EventoManager()
+
+    USERNAME_FIELD = 'codigo'
+    REQUIRED_FIELD = USERNAME_FIELD
+
+    def __unicode__(self):
+        return self.codigo
 
 
 class EventoManager(models.Manager):
@@ -32,9 +50,8 @@ class EventoManager(models.Manager):
 class Evento(BaseEvent):
     autor = models.ForeignKey(Usuario)
     titulo = models.CharField(max_length=50, blank=True)
-    #autor = models.ForeignKey(Usuario, related_name='eventos')
     contenido = models.TextField()
-    tipo = models.CharField(max_length=100, blank=True)
+    tipo = models.ForeignKey(Tipo_Evento, related_name='tipo_evento', default=None, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -110,7 +110,7 @@ class AuthenticationServicesTests(TestCase):
         res = self.client.get('/api/v1/usuarios/')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
-        self.assertEqual(resul['data'][0].get('dni'), None)
+        self.assertEqual(resul['data']['resul'][0].get('dni'), None)
         #self.assertEqual(resul['data'][0].get('clase'), 'Alumno')
 
         # Me logueo con un admin
