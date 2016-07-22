@@ -26,11 +26,25 @@
       tabla.clear().draw();
 
       function anadir( i, val ) {
+
+        var alumnos;
+        if($rootScope.preasignados){
+          alumnos = val.tfg.alumno_1;
+          if(val.tfg.alumno_2){
+            alumnos += ', ' + val.tfg.alumno_2;
+          }
+          if(val.tfg.alumno_3){
+            alumnos += ', ' + val.tfg.alumno_3;
+          }
+        } else {
+          alumnos = val.tfg.n_alumnos;
+        }
+
         tabla.row.add([
           val.tfg.titulacion,
           val.tfg.tipo,
           val.tfg.titulo,
-          val.tfg.n_alumnos,
+          alumnos,
           val.tfg.descripcion,
           val.tfg.conocimientos_previos ? val.tfg.conocimientos_previos : '',
           val.tfg.hard_soft ? val.tfg.hard_soft : '',
@@ -54,7 +68,11 @@
     $scope.insert_validated = function() {
 
       if($rootScope.tfgs_validados){
-        Tfgs.insert_validated('tfg', JSON.stringify($rootScope.tfgs_validados.exitos)).then(insertTfgsSuccessFn, insertTfgsErrorFn);
+        if($rootScope.preasignados){
+          Tfgs.insert_validated('tfg_asig', JSON.stringify($rootScope.tfgs_validados.exitos)).then(insertTfgsSuccessFn, insertTfgsErrorFn);
+        } else {
+          Tfgs.insert_validated('tfg', JSON.stringify($rootScope.tfgs_validados.exitos)).then(insertTfgsSuccessFn, insertTfgsErrorFn);
+        }
       } else {
         alert('no hay TFGs validados');
       }
@@ -115,11 +133,11 @@
 
       if(uploadTfgsCtrl.preasignados){
         fd.append('tipe_file', 'tfg_asig');
-        Tfgs.upload('/api/v1/upload_file_tfgs/', fd).then(uploadTfgsSuccessFn, uploadTfgsErrorFn);
       } else {
         fd.append('tipe_file', 'tfg');
-        Tfgs.upload('/api/v1/upload_file_tfgs/', fd).then(uploadTfgsSuccessFn, uploadTfgsErrorFn);
       }
+
+      Tfgs.upload('/api/v1/upload_file_tfgs/', fd).then(uploadTfgsSuccessFn, uploadTfgsErrorFn);
 
       /**
       * @name uploadTfgsSuccessFn
@@ -128,6 +146,7 @@
       function uploadTfgsSuccessFn(data, status, headers, config) {
         Snackbar.success('Los TFGs se han procesado con exito. Compruebe los datos y confirmelos.');
         $rootScope.tfgs_validados = data.data;
+        $rootScope.preasignados = uploadTfgsCtrl.preasignados;
         $location.path('/dashboard/tfgs/validate?datos=validados');
       }
 
