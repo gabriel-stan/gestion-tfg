@@ -56,11 +56,8 @@ class EventosViewSet(viewsets.ModelViewSet):
             resul = Evento.objects.create_evento(contenido=params.get('contenido'),
                                                  tipo=Tipo_Evento.objects.get(codigo=params.get('tipo')),
                                                  titulo=params.get('titulo'),
-                                                 autor=Usuario.objects.get(id=request.user.id))
-            if resul.get('status'):
-                resul = Periodo.objects.create_periodo(evento=resul.get('data'),
-                                                       start=params.get('desde'),
-                                                       end=params.get('hasta'))
+                                                 autor=Usuario.objects.get(id=request.user.id),
+                                                 desde=params.get('desde'), hasta=params.get('hasta'))
 
             if resul.get('status'):
                 resul = utils.to_dict(resul)

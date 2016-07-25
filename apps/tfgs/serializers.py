@@ -4,6 +4,7 @@ from rest_framework import serializers
 from tfgs.models import Tfg, Tfg_Asig, Titulacion
 from authentication.models import Profesor
 from authentication.serializers import ProfesorSerializer
+from eventos.models import Tipo_Evento
 
 
 class TitulacionSerializer(serializers.ModelSerializer):
@@ -17,7 +18,10 @@ class TitulacionSerializer(serializers.ModelSerializer):
             # comprobando codigo
             if 'codigo' in validated_data.keys():
                 new_codigo = validated_data.get('codigo')
-                res = Titulacion.objects.filter(codigo=new_codigo)
+                try:
+                    res = Titulacion.objects.filter(codigo=new_codigo)
+                except:
+                    raise NameError('La Titulacion no existe')
                 if res.count() != 0:
                     raise NameError("El departamento ya existe")
                 elif not isinstance(new_codigo, basestring):
@@ -109,7 +113,10 @@ class TfgSerializer(serializers.ModelSerializer):
 
             # comprobando tutor
             if 'tutor' in validated_data.keys():
-                tutor = Profesor.objects.get(email=validated_data.get('tutor'))
+                try:
+                    tutor = Profesor.objects.get(email=validated_data.get('tutor'))
+                except:
+                    raise NameError('El tutor no existe')
                 if not isinstance(tutor, Profesor) or tutor.groups.filter(name='Profesores').exists():
                     raise NameError("Tutor incorrecto")
                 else:
@@ -117,15 +124,21 @@ class TfgSerializer(serializers.ModelSerializer):
 
             # comprobando cotutor
             if 'cotutor' in validated_data.keys():
-                cotutor = Profesor.objects.get(email=validated_data.get('cotutor'))
+                try:
+                    cotutor = Profesor.objects.get(email=validated_data.get('cotutor'))
+                except:
+                    raise NameError("El Cotutor no existe")
                 if not isinstance(cotutor, Profesor) or not cotutor.groups.filter(name='Profesores').exists():
-                    raise NameError("CoTutor incorrecto")
+                    raise NameError("Cotutor incorrecto")
                 else:
                     tfg.cotutor = cotutor
 
             # comprobando titulacion
             if 'titulacion' in validated_data.keys():
-                titulacion = Titulacion.objects.get(codigo=validated_data.get('titulacion'))
+                try:
+                    titulacion = Titulacion.objects.get(codigo=validated_data.get('titulacion'))
+                except:
+                    raise NameError('La Titulacion no existe')
                 if not isinstance(titulacion, Titulacion):
                     raise NameError("Titulacion incorrecta")
                 else:
@@ -158,10 +171,14 @@ class Tfg_AsigSerializer(serializers.ModelSerializer):
         try:
             # comprobando convocatoria
             if 'convocatoria' in validated_data.keys():
-                if validated_data.get('convocatoria') == '' or not utils.is_int(validated_data.get('convocatoria')):
-                    raise NameError("Convocatoria incorrecta")
+                try:
+                    res = Tipo_Evento.objects.get(codigo=validated_data.get('convocatoria'))
+                except:
+                    raise NameError("La convocatoria no existe")
+                if not utils.check_convocatoria(res):
+                    raise NameError("Fuera de plazo")
                 else:
-                    tfg_asig.convocatoria = validated_data.get('convocatoria')
+                    tfg_asig.convocatoria = res
 
             tfg_asig.save()
 

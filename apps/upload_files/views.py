@@ -30,7 +30,7 @@ class Upload_fileView(views.APIView):
                 u_fila = int(request.POST['u_fila'])
                 p_fila = int(request.POST['p_fila'])
                 cabeceras = json.loads(request.POST['cabeceras'])
-                tipe_file = str(request.POST['tipe_file'])
+                tipe_file = str(request.POST['type_file'])
                 load_tfgs = SUBIDAS.get(tipe_file)(file)
                 titulacion = str(request.POST['titulacion'])
                 resul = load_tfgs.upload_file_tfg(u_fila, p_fila, cabeceras, titulacion)

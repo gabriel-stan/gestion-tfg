@@ -3,6 +3,7 @@ from django.db import models
 from authentication.models import Profesor, Alumno
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import Group
+from eventos.models import Tipo_Evento
 
 
 class TitulacionManager(BaseUserManager):
@@ -229,6 +230,9 @@ class Tfg_AsigManager(BaseUserManager):
                 Tfg_Asig.objects.get(tfg=tfg)
                 raise NameError("Tfg ya asignado")
             except Tfg_Asig.DoesNotExist:
+                if not utils.comprueba_alumno(alumno_1) or utils.existe_tfg_asig(alumno_1):
+                    raise NameError("Error en el primer alumno")
+
                 if utils.comprueba_alumno(alumno_2) and not utils.existe_tfg_asig(alumno_2):
                     alumno2_ok = True
                 if utils.comprueba_alumno(alumno_3) and not utils.existe_tfg_asig(alumno_3):
@@ -263,6 +267,26 @@ class Tfg_AsigManager(BaseUserManager):
             # Compruebo lo minimo para asignar el tfg
             if not isinstance(tfg, Tfg):
                 raise NameError("Error en los parametros de entrada")
+            try:
+                alumno_1 = Alumno.objects.get(email=alumno_1)
+            except:
+                if not utils.is_email_alumno(alumno_1):
+                    raise NameError("Error en el primer alumno")
+
+            if alumno_2:
+                try:
+                    alumno_2 = Alumno.objects.get(email=alumno_2)
+                except:
+                    if not utils.is_email_alumno(alumno_1):
+                        raise NameError("Error en el segundo alumno")
+
+            if alumno_3:
+                try:
+                    alumno_3 = Alumno.objects.get(email=alumno_3)
+                except:
+                    if not utils.is_email_alumno(alumno_1):
+                        raise NameError("Error en el tercer alumno")
+
             if utils.existe_tfg_asig(alumno_1):
                 raise NameError("el alumno %s ya tiene un tfg asignado" % alumno_1)
             # Compruebo que no este ya asignado
@@ -314,7 +338,7 @@ class Tfg_Asig(models.Model):
     alumno_1 = models.ForeignKey(Alumno, related_name='alumno_1', default=None)
     alumno_2 = models.ForeignKey(Alumno, related_name='alumno_2', default=None, null=True)
     alumno_3 = models.ForeignKey(Alumno, related_name='alumno_3', default=None, null=True)
-    convocatoria = models.IntegerField(null=True)
+    convocatoria = models.ForeignKey(Tipo_Evento, related_name='convocatoria', default=None, null=True)
     fecha_conv = models.DateTimeField(null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)

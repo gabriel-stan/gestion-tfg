@@ -4,6 +4,11 @@ from authentication.models import Usuario
 from eventtools.models import BaseEvent, BaseOccurrence
 from datetime import datetime
 
+try:
+    from gestfg.settings import CONVOCATORIAS
+except:
+    CONVOCATORIAS = ['CONV_JUN', 'CONV_SEPT', 'CONV_DIC']
+
 
 class Tipo_EventoManager(BaseUserManager):
     def create_tipo_evento(self, **kwargs):
@@ -11,7 +16,7 @@ class Tipo_EventoManager(BaseUserManager):
 
 
 class Tipo_Evento(models.Model):
-    nombre = models.CharField(default=None, unique=True, null=True, max_length=100)
+    nombre = models.CharField(default=None, null=True, max_length=100)
     codigo = models.CharField(default=None, unique=True, null=True, max_length=20)
     objects = Tipo_EventoManager()
 
@@ -34,18 +39,17 @@ class EventoManager(models.Manager):
                 raise NameError("Tipo necesario")
             else:
                 res = Tipo_Evento.objects.filter(codigo=kwargs.get('tipo'))
-                if res.count() != 0:
-                    raise NameError("El Tipo ya existe")
+                if res.count() == 0:
+                    raise NameError("El Tipo no existe")
 
             evento = Evento.objects.create(contenido=contenido, autor=kwargs.get('autor'),
                                            tipo=kwargs.get('tipo'), titulo=kwargs.get('titulo'))
             evento.save()
-
-            if kwargs.get('tipo') == 'convocatoria':
+            if kwargs.get('tipo').codigo in CONVOCATORIAS:
                 convocatoria = Periodo.objects.create(
-                    event=evento,
-                    start=datetime.strftime(kwargs.get('desde')),
-                    end=datetime.strftime(kwargs.get('hasta')))
+                    evento=evento,
+                    start=datetime.strptime(kwargs.get('desde'), '%d/%m/%Y') if kwargs.get('desde') else None,
+                    end=datetime.strptime(kwargs.get('hasta'), '%d/%m/%Y') if kwargs.get('desde') else None)
                 convocatoria.save()
 
             return dict(status=True, data=evento)

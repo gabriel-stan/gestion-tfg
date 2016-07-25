@@ -17,6 +17,9 @@ class TfgServicesTests(TestCase):
 
         titulacion = Titulacion.objects.create(nombre='Ingenieria Informatica', codigo='IF')
 
+        self.data_evento1 = dict(content=dict(contenido='admin2@admin.es', tipo='CONV_JUN',
+                               titulo='titulo 1', desde='01/07/2016', hasta='25/07/2016'))
+
         self.data_prof1 = dict(email='prof_ejemplo@ugr.es', first_name='profesor 1',
                                last_name='apellido 1 apellido 12', departamento=dep.codigo, password='75169052')
 
@@ -96,11 +99,17 @@ class TfgServicesTests(TestCase):
         self.assertEqual(resul['status'], True)
 
         # Asigno el TFG
-        res = self.client.post('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'], 'alumno1': self.data_alum1['email']})
+        res = self.client.post('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'],
+                                                      'alumno1': self.data_alum1['email']})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
+        # Creo la convocatoria de Junio
+        res = self.client.post('/api/v1/events/',  self.data_evento1, format='json')
+        self.assertEqual(resul['status'], True)
+
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'], 'convocatoria': 0})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'], 'convocatoria': 'CONV_JUN'})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
+
