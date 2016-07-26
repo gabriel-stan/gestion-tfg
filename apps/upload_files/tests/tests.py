@@ -100,7 +100,7 @@ class TfgServicesTests(TestCase):
         data = {'file': ('ListaTFGs.xlsx', open(location, 'rb')), 'u_fila': 9, 'p_fila': 5,
                 'cabeceras': json.dumps(dict(tipo='D', titulo='E', n_alumnos='F', descripcion='G',
                                              conocimientos_previos='H', hard_soft='I', tutor='B', cotutor='C',
-                                             titulacion='J')), 'tipe_file': 'tfg', 'titulacion': 'GII'}
+                                             titulacion='J')), 'type_file': 'tfg', 'titulacion': 'GII'}
         res = self.client.post('/api/v1/upload_file_tfgs/', data, format='multipart')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
@@ -132,7 +132,7 @@ class TfgServicesTests(TestCase):
         data = {'file': ('ListaTFGs_preasignados.xlsx', open(location, 'rb')), 'u_fila': 9, 'p_fila': 5,
                 'cabeceras': json.dumps(dict(tipo='D', titulo='E', n_alumnos='F', alumno_1='G', alumno_2='H',
                                              descripcion='I', conocimientos_previos='J', hard_soft='K', tutor='B',
-                                             cotutor='C', titulacion='L')), 'tipe_file': 'tfg_asig',
+                                             cotutor='C', titulacion='L')), 'type_file': 'tfg_asig',
                 'titulacion': 'GII'}
         res = self.client.post('/api/v1/upload_file_tfgs/', data, format='multipart')
         resul = json.loads(res.content)
@@ -143,7 +143,6 @@ class TfgServicesTests(TestCase):
                                                                           'model': 'tfg_asig'})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
-        self.assertEqual(len(resul['errores']), 2)
         res = self.client.post('/api/v1/auth/login/', {'email':'admin@admin.es', 'password':'0000'})
         resul = json.loads(res.content)
         self.assertEqual(resul['data']['email'], 'admin@admin.es')

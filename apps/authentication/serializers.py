@@ -277,7 +277,10 @@ class ProfesorSerializer(serializers.ModelSerializer):
             # comprobando departamento
             if 'departamento' in validated_data.keys():
                 new_departamento = validated_data.get('departamento')
-                departamento = Departamento.objects.get(codigo=new_departamento)
+                try:
+                    departamento = Departamento.objects.get(codigo=new_departamento)
+                except:
+                    raise NameError('El departamento no existe')
                 if not isinstance(departamento, Departamento):
                     raise NameError("Departamento incorrecto")
                 else:
@@ -285,7 +288,10 @@ class ProfesorSerializer(serializers.ModelSerializer):
 
             # comprobando si es Jefe de departamento
             if 'jefe_departamento' in validated_data.keys():
-                grupo_jefe_departamento = Grupos.objects.get(name='Jefe de Departamento')
+                try:
+                    grupo_jefe_departamento = Grupos.objects.get(name='Jefe de Departamento')
+                except:
+                    raise NameError('El grupo Jefe de departamento no existe')
                 if validated_data.get('jefe_departamento') == True:
                     grupo_jefe_departamento.user_set.add(profesor)
                 else:

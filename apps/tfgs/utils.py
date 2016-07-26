@@ -1,6 +1,8 @@
 from django.db.models.fields.related import ManyToManyField
 from authentication.models import Alumno, Profesor
+from eventos.models import Periodo, Evento, Tipo_Evento
 import simplejson as json
+import re
 
 
 def get_params(req):
@@ -90,6 +92,7 @@ def existe_tfg_asig(alumno):
         resul = False
     return resul
 
+
 def comprueba_profesor(usuario):
 
     if isinstance(usuario, Profesor) and usuario.groups.filter(name='Profesores').exists():
@@ -106,3 +109,23 @@ def comprueba_alumno(usuario):
         return True
     else:
         return False
+
+
+def check_convocatoria(convocatoria):
+    periodos = Periodo.objects.for_period()
+    for periodo in periodos:
+        if periodo.evento.tipo == convocatoria:
+            return True
+    return False
+
+
+def is_email_alumno(alumno):
+    try:
+        if isinstance(alumno, Alumno):
+            alumno = alumno.email
+        if not re.match(r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$', alumno):
+            return False
+        else:
+            return True
+    except Exception:
+            return False

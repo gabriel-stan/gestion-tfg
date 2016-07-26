@@ -50,8 +50,7 @@ class Tfgs_masivos(object):
 
     def check_tfg(self, tfg, i, titulacion):
         if not tfg.get('titulo'):
-            self.errores.append(dict(fila=i, message='El TFG no tiene titulo'))
-            return False
+            raise Exception('El TFG no tiene titulo')
         tfg['tutor'] = Profesor.objects.get(email=tfg.get('tutor'))
         tfg['titulacion'] = Titulacion.objects.get(codigo=titulacion)
         if tfg.get('cotutor'):
@@ -135,15 +134,15 @@ class Tfgs_asig_masivos(Tfgs_masivos):
         errores = []
         for index, data_tfg in enumerate(tfgs):
             try:
-                self.alumno_1 = self.get_or_create_alumno(email=data_tfg['tfg'].get('alumno_1')) if data_tfg['tfg']\
+                self.alumno_1 = self.get_or_create_alumno(email=data_tfg['tfg'].get('alumno_1')) if data_tfg['tfg'] \
                     .get('alumno_1') else None
-                self.alumno_2 = self.get_or_create_alumno(email=data_tfg['tfg'].get('alumno_2')) if data_tfg['tfg']\
+                self.alumno_2 = self.get_or_create_alumno(email=data_tfg['tfg'].get('alumno_2')) if data_tfg['tfg'] \
                     .get('alumno_2') else None
-                self.alumno_3 = self.get_or_create_alumno(email=data_tfg['tfg'].get('alumno_3')) if data_tfg['tfg']\
+                self.alumno_3 = self.get_or_create_alumno(email=data_tfg['tfg'].get('alumno_3')) if data_tfg['tfg'] \
                     .get('alumno_3') else None
                 self.tfg = Tfg.objects.create(**data_tfg['tfg'])
                 res = Tfg_Asig.objects.create(tfg=self.tfg.get('data'), alumno_1=self.alumno_1, alumno_2=self.alumno_2,
-                                           alumno_3=self.alumno_3)
+                                              alumno_3=self.alumno_3)
                 if not res.get('status'):
                     errores.append(dict(fila=index, tfg=data_tfg))
             except Exception as e:
@@ -157,4 +156,4 @@ class Tfgs_asig_masivos(Tfgs_masivos):
         try:
             return Alumno.objects.get(email=email)
         except Alumno.DoesNotExist:
-            raise NameError("Error en el alumno %s" % email)
+            raise NameError('Error en el alumno %s' % email)
