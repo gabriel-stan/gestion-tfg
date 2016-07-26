@@ -27,6 +27,24 @@ class Tipo_Evento(models.Model):
         return self.codigo
 
 
+class SubTipo_EventoManager(BaseUserManager):
+    def create_tipo_evento(self, **kwargs):
+        return self.model.objects.create(**kwargs)
+
+
+class SubTipo_Evento(models.Model):
+    nombre = models.CharField(default=None, null=True, max_length=100)
+    codigo = models.CharField(default=None, null=True, max_length=20)
+    convocatoria = models.ForeignKey(Tipo_Evento)
+    objects = Tipo_EventoManager()
+
+    USERNAME_FIELD = 'codigo'
+    REQUIRED_FIELD = USERNAME_FIELD
+
+    def __unicode__(self):
+        return self.codigo
+
+
 class EventoManager(models.Manager):
 
     def create_evento(self, contenido, **kwargs):
@@ -62,7 +80,7 @@ class Evento(BaseEvent):
     autor = models.ForeignKey(Usuario)
     titulo = models.CharField(max_length=50, blank=True)
     contenido = models.TextField()
-    tipo = models.ForeignKey(Tipo_Evento, related_name='tipo_evento', default=None, null=True)
+    tipo = models.ForeignKey(SubTipo_Evento, related_name='tipo_evento', default=None, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

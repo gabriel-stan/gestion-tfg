@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.db.models.signals import post_migrate, post_syncdb
 from django.dispatch import receiver
 from django.contrib.auth.models import User, Group, Permission
@@ -49,19 +50,69 @@ def create_groups(sender, **kwargs):
         print "Group %s already exists\n" % group.name
 
     from eventos.models import Tipo_Evento
-    tipo, created = Tipo_Evento.objects.get_or_create(nombre='Convocatoria de Junio', codigo='CONV_JUN')
+    tipo, created = Tipo_Evento.objects.get_or_create(nombre=u'Convocatoria de Junio', codigo='CONV_JUN')
     if created:
         print "Tipo de evento %s created successfully\n" % tipo.nombre
     else:
         print "Tipo de evento %s already exists\n" % tipo.nombre
 
-    tipo, created = Tipo_Evento.objects.get_or_create(nombre='Convocatoria de Septiembre', codigo='CONV_SEPT')
+    tipo, created = Tipo_Evento.objects.get_or_create(nombre=u'Convocatoria de Septiembre', codigo='CONV_SEPT')
     if created:
         print "Tipo de evento %s created successfully\n" % tipo.nombre
     else:
         print "Tipo de evento %s already exists\n" % tipo.nombre
 
-    tipo, created = Tipo_Evento.objects.get_or_create(nombre='Convocatoria de Diciembre', codigo='CONV_DIC')
+    tipo, created = Tipo_Evento.objects.get_or_create(nombre=u'Convocatoria de Diciembre', codigo='CONV_DIC')
+    if created:
+        print "Tipo de evento %s created successfully\n" % tipo.nombre
+    else:
+        print "Tipo de evento %s already exists\n" % tipo.nombre
+
+    from eventos.models import SubTipo_Evento
+    for i in Tipo_Evento.objects.filter():
+        tipo, created = SubTipo_Evento.objects.get_or_create(nombre=u'Notificación Solicitud de Evaluación',
+                                                             codigo='SOL_EVAL', convocatoria=i)
+        if created:
+            print "Tipo de evento %s created successfully\n" % tipo.nombre
+        else:
+            print "Tipo de evento %s already exists\n" % tipo.nombre
+
+        tipo, created = SubTipo_Evento.objects.get_or_create(nombre=u'Establecimiento de las Comisiones de Evaluación',
+                                                             codigo='COM_EVAL', convocatoria=i)
+        if created:
+            print "Tipo de evento %s created successfully\n" % tipo.nombre
+        else:
+            print "Tipo de evento %s already exists\n" % tipo.nombre
+
+        tipo, created = SubTipo_Evento.objects.get_or_create(nombre=u'Entrega de material', codigo='ENT_MAT',
+                                                             convocatoria=i)
+        if created:
+            print "Tipo de evento %s created successfully\n" % tipo.nombre
+        else:
+            print "Tipo de evento %s already exists\n" % tipo.nombre
+
+        tipo, created = SubTipo_Evento.objects.get_or_create(nombre=u'Entrega del Informe del Tutor',
+                                                             codigo='ENT_INF_TUTOR', convocatoria=i)
+        if created:
+            print "Tipo de evento %s created successfully\n" % tipo.nombre
+        else:
+            print "Tipo de evento %s already exists\n" % tipo.nombre
+
+        tipo, created = SubTipo_Evento.objects.get_or_create(nombre=u'Defensa del TFG', codigo='DEF_TFG',
+                                                             convocatoria=i)
+        if created:
+            print "Tipo de evento %s created successfully\n" % tipo.nombre
+        else:
+            print "Tipo de evento %s already exists\n" % tipo.nombre
+
+        tipo, created = SubTipo_Evento.objects.get_or_create(nombre=u'Evaluación del TFG y Notificación al Centro',
+                                                             codigo='EVAL_TFG', convocatoria=i)
+        if created:
+            print "Tipo de evento %s created successfully\n" % tipo.nombre
+        else:
+            print "Tipo de evento %s already exists\n" % tipo.nombre
+
+    tipo, created = Tipo_Evento.objects.get_or_create(nombre=u'Informativo', codigo='INFOR')
     if created:
         print "Tipo de evento %s created successfully\n" % tipo.nombre
     else:

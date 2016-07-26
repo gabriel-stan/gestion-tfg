@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from eventos.models import Evento, Tipo_Evento, Periodo
-from eventos.serializers import EventoSerializer
+from eventos.models import Evento, Tipo_Evento, Periodo, SubTipo_Evento
+from eventos.serializers import EventoSerializer, Tipo_EventoSerializer
 from authentication.models import Usuario
 from rest_framework import viewsets, status
 from rest_framework.response import Response
@@ -31,7 +31,7 @@ class EventosViewSet(viewsets.ModelViewSet):
             resul = self.serializer_class(eventos, many=True).data
             self.logger.info('FIN WS - EVENTOSVIEW LIST del usuario: %s con resultado: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
-            return Response(dict(data=resul), status=status.HTTP_200_OK)
+            return Response(dict(status=True, data=resul), status=status.HTTP_200_OK)
         except NameError as e:
             resul = dict(message=e.message)
             self.logger.error('EVENTOSVIEW LIST: %s %s' % (resul, e))
@@ -141,4 +141,70 @@ class EventosViewSet(viewsets.ModelViewSet):
             self.logger.critical('INICIO WS - EVENTOSVIEW DELETE del usuario: %s con resultado: %s' %
                                  (request.user.email if hasattr(request.user, 'email') else request.user.username,
                                   resul))
+            return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+
+
+class Tipo_EventosViewSet(viewsets.ModelViewSet):
+    lookup_field = 'codigo'
+    queryset = Tipo_Evento.objects.order_by('-created_at')
+    serializer_class = Tipo_EventoSerializer
+    logger = logging.getLogger(__name__)
+
+    def list(self, request):
+        """
+        GET
+        Obtener los datos de los Tipos de eventos (convocatorias)
+        :param request:
+        :return :
+        {status: True/False, data:{serializer de los tipos de eventos}
+
+        """
+        try:
+            self.logger.info('INICIO WS - TIPO_EVENTOSVIEW LIST del usuario: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username))
+            tipo_eventos = Tipo_Evento.objects.all()
+            resul = self.serializer_class(tipo_eventos, many=True).data
+            self.logger.info('FIN WS - TIPO_EVENTOSVIEW LIST del usuario: %s con resultado: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            return Response(dict(status=True, data=resul), status=status.HTTP_200_OK)
+        except NameError as e:
+            resul = dict(message=e.message)
+            self.logger.error('TIPO_EVENTOSVIEW LIST: %s %s' % (resul, e))
+            return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            resul = dict(status=False, message="Error en la llamada")
+            self.logger.critical('TIPO_EVENTOSVIEW LIST: %s %s' % (resul, e))
+            return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SubTipo_EventosViewSet(viewsets.ModelViewSet):
+    lookup_field = 'codigo'
+    queryset = Evento.objects.order_by('-created_at')
+    serializer_class = EventoSerializer
+    logger = logging.getLogger(__name__)
+
+    def list(self, request):
+        """
+        GET
+        Obtener los datos de los eventos
+        :param request:
+        :return :
+        {status: True/False, data:{serializer de los eventos}
+
+        """
+        try:
+            self.logger.info('INICIO WS - EVENTOSVIEW LIST del usuario: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username))
+            eventos = Evento.objects.all()
+            resul = self.serializer_class(eventos, many=True).data
+            self.logger.info('FIN WS - EVENTOSVIEW LIST del usuario: %s con resultado: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            return Response(dict(status=True, data=resul), status=status.HTTP_200_OK)
+        except NameError as e:
+            resul = dict(message=e.message)
+            self.logger.error('EVENTOSVIEW LIST: %s %s' % (resul, e))
+            return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            resul = dict(status=False, message="Error en la llamada")
+            self.logger.critical('EVENTOSVIEW LIST: %s %s' % (resul, e))
             return Response(resul, status=status.HTTP_400_BAD_REQUEST)

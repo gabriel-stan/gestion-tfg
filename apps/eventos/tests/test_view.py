@@ -30,3 +30,15 @@ class EventosServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
         self.assertEqual(resul['data']['contenido'], self.data_evento1['content']['contenido'])
+
+    def test_ws_tipos_eventos_post(self):
+        # Me logueo con un admin
+        res = self.client.post('/api/v1/auth/login/', {'email': self.data_admin['email'],
+                                                       'password': self.data_admin['password']})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['email'], self.data_admin['email'])
+        # Obtengo los tipos de eventos
+        res = self.client.get('/api/v1/type_events/')
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+        self.assertEqual(resul['data'][0]['codigo'], 'CONV_JUN')
