@@ -3,6 +3,7 @@ from django.db import models
 from authentication.models import Profesor, Alumno
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import Group
+from eventos.models import Tipo_Evento
 
 
 class TitulacionManager(BaseUserManager):
@@ -147,8 +148,8 @@ class TfgManager(BaseUserManager):
                        hard_soft=kwargs.get('hard_soft'), tutor=tutor, cotutor=cotutor, titulacion=titulacion)
 
             return True
-        except NameError:
-            return False
+        except NameError as e:
+            return e.message
 
     def create_file(self, **kwargs):
         try:
@@ -169,11 +170,11 @@ class TfgManager(BaseUserManager):
 
 class Tfg(models.Model):
     tipo = models.CharField(max_length=100)
-    titulo = models.CharField(max_length=100)
+    titulo = models.TextField(max_length=250)
     n_alumnos = models.IntegerField()
     descripcion = models.TextField()
-    conocimientos_previos = models.CharField(max_length=100, null=True)
-    hard_soft = models.CharField(max_length=100, null=True)
+    conocimientos_previos = models.TextField(null=True)
+    hard_soft = models.TextField(null=True)
     tutor = models.ForeignKey(Profesor, related_name='tutor', default=None)
     cotutor = models.ForeignKey(Profesor, related_name='cotutor', default=None, null=True)
     publicado = models.BooleanField(default=False)
@@ -215,7 +216,7 @@ class Tfg(models.Model):
 
 class Tfg_AsigManager(BaseUserManager):
 
-    def create_tfg_asig(self, tfg, alumno_1, alumno_2=None, alumno_3=None):
+    def create(self, tfg, alumno_1, alumno_2=None, alumno_3=None):
         alumno2_ok = False
         alumno3_ok = False
         try:
@@ -229,6 +230,9 @@ class Tfg_AsigManager(BaseUserManager):
                 Tfg_Asig.objects.get(tfg=tfg)
                 raise NameError("Tfg ya asignado")
             except Tfg_Asig.DoesNotExist:
+                if not utils.comprueba_alumno(alumno_1) or utils.existe_tfg_asig(alumno_1):
+                    raise NameError("Error en el primer alumno")
+
                 if utils.comprueba_alumno(alumno_2) and not utils.existe_tfg_asig(alumno_2):
                     alumno2_ok = True
                 if utils.comprueba_alumno(alumno_3) and not utils.existe_tfg_asig(alumno_3):
@@ -239,25 +243,81 @@ class Tfg_AsigManager(BaseUserManager):
                     if not alumno2_ok:
                         raise NameError("Error en el segundo alumno")
                     else:
-                        tfg_asig = Tfg_Asig.objects.create(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2)
-                        tfg_asig.save()
+                        tfg_asig = self.model(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2)
                 # Si tiene 3 alumnos
                 elif alumno_2 and alumno_3:
                     if not alumno2_ok or not alumno3_ok:
                         raise NameError("Error en el tercer alumno")
                     else:
-                        tfg_asig = Tfg_Asig.objects.create(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2, alumno_3=alumno_3)
-                        tfg_asig.save()
+                        tfg_asig = self.model(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2, alumno_3=alumno_3)
                 # Si tiene 1 alumno
                 else:
-                    tfg_asig = Tfg_Asig.objects.create(tfg=tfg, alumno_1=alumno_1)
-                    tfg_asig.save()
+                    tfg_asig = self.model(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2, alumno_3=alumno_3)
+                tfg_asig.save()
 
                 return dict(status=True, data=Tfg_Asig.objects.get(tfg=tfg))
 
         except NameError as e:
             return dict(status=False, message=e.message)
-        
+
+    def simular_create_tfg_asig(self, tfg, alumno_1, alumno_2=None, alumno_3=None):
+        alumno2_ok = False
+        alumno3_ok = False
+        try:
+            # Compruebo lo minimo para asignar el tfg
+            if not isinstance(tfg, Tfg):
+                raise NameError("Error en los parametros de entrada")
+            try:
+                alumno_1 = Alumno.objects.get(email=alumno_1)
+            except:
+                if not utils.is_email_alumno(alumno_1):
+                    raise NameError("Error en el primer alumno")
+
+            if alumno_2:
+                try:
+                    alumno_2 = Alumno.objects.get(email=alumno_2)
+                except:
+                    if not utils.is_email_alumno(alumno_1):
+                        raise NameError("Error en el segundo alumno")
+
+            if alumno_3:
+                try:
+                    alumno_3 = Alumno.objects.get(email=alumno_3)
+                except:
+                    if not utils.is_email_alumno(alumno_1):
+                        raise NameError("Error en el tercer alumno")
+
+            if utils.existe_tfg_asig(alumno_1):
+                raise NameError("el alumno %s ya tiene un tfg asignado" % alumno_1)
+            # Compruebo que no este ya asignado
+            try:
+                Tfg_Asig.objects.get(tfg=tfg)
+                raise NameError("Tfg ya asignado")
+            except Tfg_Asig.DoesNotExist:
+                if not utils.existe_tfg_asig(alumno_2):
+                    alumno2_ok = True
+                if not utils.existe_tfg_asig(alumno_3):
+                    alumno3_ok = True
+
+                # Si tiene 2 alumnos
+                if alumno_2 and not alumno_3:
+                    if not alumno2_ok:
+                        raise NameError("Error en el segundo alumno")
+                    else:
+                        self.model(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2)
+                # Si tiene 3 alumnos
+                elif alumno_2 and alumno_3:
+                    if not alumno2_ok or not alumno3_ok:
+                        raise NameError("Error en el tercer alumno")
+                    else:
+                        self.model(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2, alumno_3=alumno_3)
+                # Si tiene 1 alumno
+                else:
+                    self.model(tfg=tfg, alumno_1=alumno_1)
+                return True
+        except NameError as e:
+            return e.message
+
     # def create_file(self, **kwargs):
     #     try:
     #         tfg = Profesor.objects.get(titulo=kwargs.get('titulo'))
@@ -278,7 +338,7 @@ class Tfg_Asig(models.Model):
     alumno_1 = models.ForeignKey(Alumno, related_name='alumno_1', default=None)
     alumno_2 = models.ForeignKey(Alumno, related_name='alumno_2', default=None, null=True)
     alumno_3 = models.ForeignKey(Alumno, related_name='alumno_3', default=None, null=True)
-    convocatoria = models.CharField(max_length=100, null=True)
+    convocatoria = models.ForeignKey(Tipo_Evento, related_name='convocatoria', default=None, null=True)
     fecha_conv = models.DateTimeField(null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)

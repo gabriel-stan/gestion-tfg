@@ -19,7 +19,9 @@
     var Users = {
       all: all,
       create: create,
-      get: get
+      get: get,
+      update: update,
+      remove: remove
     };
 
     return Users;
@@ -59,6 +61,14 @@
      */
     function get(email) {
       return $http.get('/api/v1/usuarios/' + email);
+    }
+
+    function update(content) {
+      return $http.put('/api/v1/' + content.llamada + '/', content);
+    }
+
+    function remove(tipo, email) {
+      return $http.delete('/api/v1/' + tipo + '/' + email);
     }
   }
 })();

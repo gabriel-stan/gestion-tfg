@@ -1,25 +1,31 @@
 from django.db.models.fields.related import ManyToManyField
 from authentication.models import Alumno, Profesor
+from eventos.models import Periodo, Evento, Tipo_Evento
 import simplejson as json
+import re
 
 
 def get_params(req):
-
     datos = {}
     if req.method == 'GET':
         for key, value in req.query_params.items():
-            if key == 'campos':
+            if key == 'content':
+                return value
+            elif key == 'campos':
                 datos[key] = json.loads(value)
             else:
                 datos[key] = value
     else:
         for key, value in req.data.items():
-            if key == 'campos':
+            if key == 'content':
+                return value
+            elif key == 'campos':
+                datos[key] = json.loads(value)
+            elif 'list' in key:
                 datos[key] = json.loads(value)
             else:
                 datos[key] = value
     return datos
-
 
 def is_string(s):
     try:
@@ -70,18 +76,21 @@ def check_usuario(user, email):
 
 def existe_tfg_asig(alumno):
 
-    if not isinstance(alumno, Alumno):
-        return False
-    else:
+    if alumno:
+        if not isinstance(alumno, Alumno):
+            alumno = Alumno.objects.get(email=alumno)
         from tfgs.models import Tfg_Asig
         alumno1 = Tfg_Asig.objects.filter(alumno_1=alumno)
         alumno2 = Tfg_Asig.objects.filter(alumno_2=alumno)
         alumno3 = Tfg_Asig.objects.filter(alumno_3=alumno)
 
         if alumno1.count() > 0 or alumno2.count() > 0 or alumno3.count() > 0:
-            return True
+            resul = True
         else:
-            return False
+            resul = False
+    else:
+        resul = False
+    return resul
 
 
 def comprueba_profesor(usuario):
@@ -100,3 +109,23 @@ def comprueba_alumno(usuario):
         return True
     else:
         return False
+
+
+def check_convocatoria(convocatoria):
+    periodos = Periodo.objects.for_period()
+    for periodo in periodos:
+        if periodo.evento.tipo == convocatoria:
+            return True
+    return False
+
+
+def is_email_alumno(alumno):
+    try:
+        if isinstance(alumno, Alumno):
+            alumno = alumno.email
+        if not re.match(r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$', alumno):
+            return False
+        else:
+            return True
+    except Exception:
+            return False

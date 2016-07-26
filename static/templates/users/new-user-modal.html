@@ -1,15 +1,15 @@
 
-  <form role="form" class="form-horizontal" ng-controller"NewUserController as vm" ng-submit="vm.update()">
+  <form role="form" class="form-horizontal" ng-submit="vm.update()">
 
     <div class="box-body pad">
 
       <div class="form-group">
         <label class="col-sm-3 control-label">Tipo</label>
         <div class="col-sm-9">
-          <select id="user-tipo" class="form-control" ng-model="user.tipo">
-            <option value="alumnos">Alumno</option>
-            <option value="profesores">Profesor</option>
-            <option value="usuarios">Usuario</option>
+          <select id="user-tipo" class="form-control" ng-model="user.tipo" disabled>
+            <option value="Alumno">Alumno</option>
+            <option value="Profesor">Profesor</option>
+            <option value="Usuario">Usuario</option>
           </select>
         </div>
       </div>
@@ -31,21 +31,43 @@
       <div class="form-group">
         <label class="col-sm-3 control-label">Email</label>
         <div class="col-sm-9">
-          <input class="form-control" type="text" placeholder="Email" ng-model="user.email">
+          <input class="form-control" type="text" placeholder="Email" ng-model="user.email" disabled>
         </div>
       </div>
 
-      <div id="user-dpt" class="form-group hidden">
+      <div id="user-dpt" class="form-group" ng-show="user.tipo == 'Profesor'">
         <label class="col-sm-3 control-label">Departamento</label>
         <div class="col-sm-9">
           <select class="form-control" ng-model="user.departamento">
-            <option value="111">DECSAI</option>
-            <option value="222">LSI</option>
-            <option value="333">Fisica</option>
-            <option value="444">Matematicas</option>
+            <option value="AL">AL</option>
+            <option value="AM">AM</option>
+            <option value="ATC">ATC</option>
+            <option value="DC">DC</option>
+            <option value="DECSAI">DECSAI</option>
+            <option value="EFICON">EFICON</option>
+            <option value="ELECTRONICA">ELECTRONICA</option>
+            <option value="EMPRESAS">EMPRESAS</option>
+            <option value="ERGODIC">ERGODIC</option>
+            <option value="ESTADISTICA">ESTADISTICA</option>
+            <option value="FILOSOFIA">FILOSOFIA</option>
+            <option value="FISICAAPLI">FISICAAPLI</option>
+            <option value="LSI">LSI</option>
+            <option value="MATEAPLI">MATEAPLI</option>
+            <option value="OPTICA">OPTICA</option>
+            <option value="TDTC">TDTC</option>
           </select>
         </div>
       </div>
+
+ <!--     <div id="user-dpt" class="form-group" ng-show="user.tipo == 'Profesor'" ng-controller="DashboardController">
+ <!--     <div id="user-dpt" class="form-group" ng-show="user.tipo == 'Profesor'" ng-controller="DashboardController">
+        <label class="col-sm-3 control-label">Departamento</label>
+        <div class="col-sm-9">
+          <select class="form-control" ng-model="user.departamento" ng-options="item as item.codigo for item in DashboardController.departamentos" disabled>
+          </select>
+        </div>
+      </div>
+      -->
 
       <div class="form-group">
         <label class="col-sm-3 control-label">Admin</label>
@@ -57,8 +79,9 @@
     </div>
 
     <div class="box-footer">
-      <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+      <button type="button" class="btn btn-danger pull-left" ng-click="vm.remove()">Borrar</button>
       <button type="submit" class="btn btn-primary pull-right">Guardar</button>
+      <button type="button" class="btn btn-default pull-right" data-dismiss="modal"style="margin-left:10px; margin-right:10px;">Cerrar</button>
     </div>
 
   </form>
@@ -67,13 +90,13 @@
   <script>
     $(document).ready(function(){
       $('#user-tipo').on('change',function(){
-        var selection = $(this).val();
-        if( selection==="profesores"){
-          $("#user-dpt").removeClass("hidden");
-        }
-        else{
-          $("#user-dpt").addClass("hidden");
-        }
+        // var selection = $(this).val();
+        // if( selection==="profesores"){
+        //   $("#user-dpt").removeClass("hidden");
+        // }
+        // else{
+        //   $("#user-dpt").addClass("hidden");
+        // }
       });
     });
   </script>

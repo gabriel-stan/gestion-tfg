@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from rest_framework import status, views
 from rest_framework.response import Response
-from service import upload_file_tfg, upload_file_confirm, upload_file_tfg_preasig
+from service import Tfgs_masivos, Tfgs_asig_masivos
 from django.apps import apps
 from utils import get_model
 import django.apps
@@ -9,7 +9,7 @@ import utils
 import json
 import logging
 
-SUBIDAS={'tfg': upload_file_tfg, 'tfg_asig': upload_file_tfg_preasig}
+SUBIDAS={'tfg': Tfgs_masivos, 'tfg_asig': Tfgs_asig_masivos}
 
 
 class Upload_fileView(views.APIView):
@@ -25,13 +25,15 @@ class Upload_fileView(views.APIView):
         """
         try:
             self.logger.info('INICIO WS - UPLOADFILEVIEW POST del usuario: %s con parametros: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, request.FILES['file']))
-            if request.user.has_perm('tfgs.tfg.create') or request.user.is_admin:
+            if request.user.has_perm('tfgs.tfg.masivos') or request.user.is_admin:
                 file = request.FILES['file']
-                filas = int(request.POST['filas'])
+                u_fila = int(request.POST['u_fila'])
                 p_fila = int(request.POST['p_fila'])
                 cabeceras = json.loads(request.POST['cabeceras'])
-                tipe_file = str(request.POST['tipe_file'])
-                resul = SUBIDAS.get(tipe_file)(file, filas, p_fila, cabeceras)
+                tipe_file = str(request.POST['type_file'])
+                load_tfgs = SUBIDAS.get(tipe_file)(file)
+                titulacion = str(request.POST['titulacion'])
+                resul = load_tfgs.upload_file_tfg(u_fila, p_fila, cabeceras, titulacion)
                 if resul['status']:
                     resul_status = status.HTTP_200_OK
                 else:
@@ -62,9 +64,10 @@ class Upload_file_confirmView(views.APIView):
         try:
             params = utils.get_params(request)
             self.logger.info('INICIO WS - UPLOADFILECONFIRMVIEW POST del usuario: %s con parametros: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
-            if request.user.has_perm('tfgs.tfg.create') or request.user.is_admin:
+            if request.user.has_perm('tfgs.tfg.masivos') or request.user.is_admin:
                 model = get_model(params.get('model'))
-                resul = upload_file_confirm(params['list_tfg'], model)
+                load_tfgs = SUBIDAS.get(params.get('model'))()
+                resul = load_tfgs.upload_file_confirm(params['list_tfg'])
                 if resul['status']:
                     resul_status = status.HTTP_200_OK
                 else:

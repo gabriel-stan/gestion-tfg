@@ -4,7 +4,7 @@ from django.contrib.auth.models import User, Group, Permission
 from django.contrib.contenttypes.models import ContentType
 
 
-PERMISOS_JEFE_DEPARTAMENTO={'tfgs': {'tfg': ['create', 'select', 'change', 'delete']},
+PERMISOS_JEFE_DEPARTAMENTO={'tfgs': {'tfg': ['create', 'select', 'change', 'delete', 'masivos']},
                              'eventos': {'evento': ['create', 'select', 'change', 'delete']},
                              'authentication': {'usuario': ['select']}}
 
@@ -48,7 +48,24 @@ def create_groups(sender, **kwargs):
     else:
         print "Group %s already exists\n" % group.name
 
+    from eventos.models import Tipo_Evento
+    tipo, created = Tipo_Evento.objects.get_or_create(nombre='Convocatoria de Junio', codigo='CONV_JUN')
+    if created:
+        print "Tipo de evento %s created successfully\n" % tipo.nombre
+    else:
+        print "Tipo de evento %s already exists\n" % tipo.nombre
 
+    tipo, created = Tipo_Evento.objects.get_or_create(nombre='Convocatoria de Septiembre', codigo='CONV_SEPT')
+    if created:
+        print "Tipo de evento %s created successfully\n" % tipo.nombre
+    else:
+        print "Tipo de evento %s already exists\n" % tipo.nombre
+
+    tipo, created = Tipo_Evento.objects.get_or_create(nombre='Convocatoria de Diciembre', codigo='CONV_DIC')
+    if created:
+        print "Tipo de evento %s created successfully\n" % tipo.nombre
+    else:
+        print "Tipo de evento %s already exists\n" % tipo.nombre
 post_migrate.connect(create_groups)
 
 

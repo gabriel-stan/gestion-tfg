@@ -12,6 +12,8 @@ class AccountManager(BaseUserManager):
     def create_user(self, password=None, **kwargs):
         email = kwargs.get('email')
         dni = kwargs.get('dni')
+        first_name = kwargs.get('first_name')
+        last_name = kwargs.get('last_name')
         if not email and not dni:
             raise ValueError('Los usuarios deben tener un DNI o un email valido.')
 
@@ -20,7 +22,9 @@ class AccountManager(BaseUserManager):
 
         account = self.model(
             email=email,
-            dni=dni
+            dni=dni,
+            first_name=first_name,
+            last_name=last_name
         )
 
         account.set_password(password)
@@ -28,7 +32,7 @@ class AccountManager(BaseUserManager):
 
         return dict(status=True, data=account)
 
-    def create_superuser(self, password, **kwargs):
+    def create_superuser(self, password=None, **kwargs):
         account = self.create_user(password, **kwargs)
 
         account['data'].is_admin = True
@@ -161,6 +165,11 @@ class ProfesorManager(BaseUserManager):
                                                 first_name=kwargs.get('first_name'), last_name=kwargs.get('last_name'),
                                                 departamento=kwargs.get('departamento'))
 
+            # comprobando si es Jefe de departamento
+            if kwargs.get('jefe_departamento'):
+                grupo_jefe_departamento = Grupos.objects.get(name='Jefe de Departamento')
+                grupo_jefe_departamento.user_set.add(usuario)
+
             grupo_profesores = Grupos.objects.get(name='Profesores')
             usuario.set_password(password)
             usuario.save()
@@ -192,8 +201,8 @@ class ProfesorManager(BaseUserManager):
 
 
 class Profesor(Usuario):
-
     departamento = models.ForeignKey(Departamento, related_name='departamento', default=None, null=True)
+    jefe_departamento = models.BooleanField(default=False)
     objects = ProfesorManager()
 
     def get_departamento(self):

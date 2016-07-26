@@ -1,0 +1,170 @@
+
+ <!-- Content Header (Page header) -->
+ <section class="content-header">
+   <h1>
+     TFGs
+     <small>Validar los TFGs</small>
+   </h1>
+   <ol class="breadcrumb">
+     <li><a href="/dashboard"><i class="fa fa-user"></i> Dashboard</a></li>
+     <li><a href="/dashboard/tfgs">TFGs</a></li>
+     <li class="active">Validar</li>
+   </ol>
+ </section>
+
+  <!-- Main content -->
+  <section class="content">
+  <!-- <section class="content" ng-controller="UsersController as usersCtrl"> -->
+
+    <!-- <users users="usersCtrl.users"></users> -->
+
+    <!-- Aqui se muestran los usuarios -->
+
+    <div class="box">
+      <div class="box-header">
+        <!-- <h3 class="box-title">Data Table With Full Features</h3> -->
+      </div><!-- /.box-header -->
+      <div class="box-body">
+
+        <div class="callout callout-danger" ng-repeat="error in tfgs_validados.errores">
+          <h4>Fila {{error.fila}}</h4>
+          <p>{{error.message}}</p>
+        </div>
+
+        <table id="tabla-tfgs" class="table table-bordered table-striped" ng-init="load_validated()">
+          <thead>
+            <tr>
+              <th>Titulación</th>
+              <th>Tipo</th>
+              <th>Título</th>
+              <th>Alumnos</th>
+              <th>Descripcion</th>
+              <th>Conocimientos Prev.</th>
+              <th>Conocimientos HW/SW</th>
+              <th>Tutor</th>
+              <th>Cotutor</th>
+            </tr>
+          </thead>
+
+          <tfoot>
+            <tr>
+              <th>Titulación</th>
+              <th>Tipo</th>
+              <th>Título</th>
+              <th>Alumnos</th>
+              <th>Descripcion</th>
+              <th>Conocimientos Previos</th>
+              <th>Conocimientos HW/SW</th>
+              <th>Tutor</th>
+              <th>Cotutor</th>
+            </tr>
+          </tfoot>
+        </table>
+      </div><!-- /.box-body -->
+    </div><!-- /.box -->
+
+    <style>
+      div.dataTables_filter{
+        float: right;
+      }
+
+      div.dataTables_paginate{
+        float: right;
+      }
+
+      div.clear{
+        clear: both;
+      }
+
+      td.text-overf {
+        max-width: 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      div.dt-buttons{
+        margin-right: 10px;
+      }
+    </style>
+
+    <script>
+      $(document).ready(function () {
+        $.fn.dataTable.ext.buttons.alert = {
+        className: 'buttons-alert',
+
+        action: function ( e, dt, node, config ) {
+                alert( this.text() );
+            }
+        };
+
+        $("#tabla-tfgs").DataTable({
+            //sDom: '<Bf>rt<"col-md-6"i><"col-md-6"p><"col-md-12"l>',
+            sDom: '<Bf>rt<pi><"clear"l>',
+            language: {
+                "url": "/static/plugins/datatables/language/Spanish.json"
+            },
+            select: {
+                style: 'multi'
+            },
+            responsive: true,
+            buttons: [
+                {
+                    text: 'Reload',
+                    action: function ( e, dt, node, config ) {
+                        dt.ajax.reload();
+                    }
+                },
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5',
+                {
+                    extend: 'alert',
+                    text: 'My button 2'
+                },
+                {
+                    text: 'Insertar',
+                    action: function ( e, dt, node, config ) {
+                        // angular.element($("#tabla-tfgs")).scope().load_validated();
+                        angular.element($("#tabla-tfgs")).scope().insert_validated();
+                    }
+                }
+            ],
+            // ajax: "/api/v1/tfgs/",
+            sDefaultContent: "hello",
+            "columnDefs": [
+              { className: "text-overf", "targets": [ 2, 4, 5, 6 ] }
+            ]
+            // columns: [
+            //   {"data" : "titulacion"},
+            //   {"data" : "tipo"},
+            //   {"data" : "titulo"},
+            //   {"data" : "n_alumnos"},
+            //   {"data" : "descripcion"},
+            //   {"data" : "conocimientos_previos"},
+            //   {"data" : "hard_soft"},
+            //   {"data" : "tutor"},
+            //   {
+            //     "data" : "cotutor",
+            //     "defaultContent": "<i>N/D</i>"
+            //   }
+            // ]
+          });
+
+        // $('#example2').DataTable({
+        //   "paging": true,
+        //   "lengthChange": false,
+        //   "searching": false,
+        //   "ordering": true,
+        //   "info": true,
+        //   "autoWidth": false,
+        //   "language": {
+        //       "url": "/static/plugins/datatables/language/Spanish.json"
+        //   }
+        // });
+      });
+    </script>
+
+
+  </section><!-- /.content -->

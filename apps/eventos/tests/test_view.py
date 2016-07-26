@@ -2,6 +2,7 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
 from authentication.models import Usuario
+from eventos.models import Tipo_Evento
 import simplejson as json
 
 
@@ -13,8 +14,10 @@ class EventosServicesTests(TestCase):
                                last_name='apellido 1 apellido 12', password='0000', is_admin=True)
         Usuario.objects.create_superuser(**self.data_admin)
 
-        self.data_evento1 = dict(content=dict(contenido='admin2@admin.es', tipo='admin 2',
-                               titulo='titulo 1'))
+        # tipo_event = Tipo_Evento.objects.create(nombre='Convocatoria', codigo='CONV')
+
+        self.data_evento1 = dict(content=dict(contenido='admin2@admin.es', tipo='CONV_JUN',
+                               titulo='titulo 1', desde='01/07/2016', hasta='20/07/2016'))
 
     def test_ws_eventos_post(self):
         # Me logueo con un admin

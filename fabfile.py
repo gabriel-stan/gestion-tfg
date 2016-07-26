@@ -23,3 +23,16 @@ def update_sources():
 def update_app():
     update_sources()
     run('cd gestion-tfg && make update_app')
+
+# start server
+def start_server():
+    run('cd gestion-tfg && make run_gunicorn')
+
+# restart server
+def stop_server():
+    run('cd gestion-tfg && make stop_gunicorn')
+
+# restart server
+def restart_server():
+    run('cd gestion-tfg && make stop_gunicorn')
+    run('cd gestion-tfg && make run_gunicorn')

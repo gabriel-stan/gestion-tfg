@@ -4,14 +4,34 @@
     <div class="box-header">
       <!-- <h3 class="box-title">Data Table With Full Features</h3> -->
     </div><!-- /.box-header -->
+
     <div class="box-body">
+
+      <a
+        id="boton-edit"
+        class="btn btn-default disabled"
+        data-toggle="modal"
+        data-target="#modal-edit"
+        ng-click="loadSelectedUser()"
+      >
+        Editar
+      </a>
+
+      <!--
+      href="javascript:void(0)"
+      ng-dialog="/static/templates/users/new-user.html"
+      ng-dialog-controller="NewUserController as newUserCtrl"
+      ng-action="vm.user=$("#tabla-users").DataTable().row( { selected: true } ).data() "
+      -->
+
       <table id="tabla-users" class="table table-bordered table-striped">
         <thead>
           <tr>
-            <th>Usuario</th>
             <th>Nombre</th>
             <th>Apellidos</th>
             <th>Email</th>
+            <th>DNI</th>
+            <th>Departamento</th>
             <th>Rol</th>
             <th>Admin</th>
           </tr>
@@ -19,10 +39,11 @@
 
         <tfoot>
           <tr>
-            <th>Usuario</th>
             <th>Nombre</th>
             <th>Apellidos</th>
             <th>Email</th>
+            <th>DNI</th>
+            <th>Departamento</th>
             <th>Rol</th>
             <th>Admin</th>
           </tr>
@@ -40,7 +61,7 @@
             <h4 class="modal-title">Modal Default</h4>
           </div>
           <div class="modal-body">
-            <new-user-modal></new-user-modal>
+            <new-user-modal user="selectedUser"></new-user-modal>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
@@ -59,6 +80,10 @@
     div.clear{
       clear: both;
     }
+
+    div.dt-buttons{
+      margin-right: 10px;
+    }
   </style>
 
   <script>
@@ -66,16 +91,19 @@
       $.fn.dataTable.ext.buttons.edit = {
           className: 'buttons-edit',
 
-          // action: function ( e, dt, node, config ) {
-          //     alert( 'editando ' + JSON.stringify( dt.row( { selected: true } ).data() ) );
-          //     editUser(dt.row( { selected: true } ).data() );
-          //     // ngDialog.open({
-          //     //   template: '/static/templates/layout/dashboard/users/add-user.html',
-          //     //   controller: 'NewUserController',
-          //     //   controllerAs: 'vm',
-          //     //   scope: $scope
-          //     // });
-          // },
+          action: function ( e, dt, node, config ) {
+              // alert( 'editando ' + JSON.stringify( dt.row( { selected: true } ).data() ) );
+              // angular.element(document.getElementById('users')).scope().loadSelectedUser();
+              // loadSelectedUser();
+              // editUser(dt.row( { selected: true } ).data() );
+              // ngDialog.open({
+              //   template: '/static/templates/layout/dashboard/users/add-user.html',
+              //   controller: 'NewUserController',
+              //   controllerAs: 'vm',
+              //   scope: $scope
+              // });
+              // esto();
+          },
           enabled: false
       };
 
@@ -97,19 +125,20 @@
                   }
               },
               'selectAll',
-              'selectNone',
-              {
-                  extend: 'edit',
-                  name: 'edit',
-                  text: 'Editar'
-              }
+              'selectNone'
+              // {
+              //     extend: 'edit',
+              //     name: 'edit',
+              //     text: 'Editar'
+              // }
           ],
           ajax: "/api/v1/usuarios/",
           columns: [
-            {"data" : "dni"},
             {"data" : "first_name"},
             {"data" : "last_name"},
             {"data" : "email"},
+            {"data" : "dni"},
+            {"data" : "departamento"},
             {"data" : "clase"},
             {"data" : "is_admin"}
           ]
@@ -119,12 +148,25 @@
             var selectedRows = table.rows( { selected: true } ).count();
 
             table.button( 'edit:name' ).enable( selectedRows === 1 );
+            if(selectedRows === 1){
+              // $("#boton-edit").attr("disabled",selectedRows === 1);
+              $("#boton-edit").removeClass("disabled");
+            } else {
+              $("#boton-edit").addClass("disabled");
+            }
         } );
 
         table.on( 'deselect', function () {
             var selectedRows = table.rows( { selected: true } ).count();
 
             table.button( 'edit:name' ).enable( selectedRows === 1 );
+            if(selectedRows === 1){
+              // $("#boton-edit").attr("disabled",selectedRows === 1);
+              $("#boton-edit").removeClass("disabled");
+              console.log("hay uno seleccionado")
+            } else {
+              $("#boton-edit").addClass("disabled");
+            }
         } );
 
         new $.fn.dataTable.Buttons( table, {
@@ -141,11 +183,17 @@
           var container = $(table.buttons(1).container()[0]);
           container.prepend(table.buttons(1).container()[1]);
 
+          container.append($('#boton-edit'));
+
           // table.button( 'edit:name' ).attr('ng-dialog','/static/templates/layout/dashboard/users/add-user.html');
           // table.button( 'edit:name' ).attr('ng-dialog-controller','NewUserController as vm');
 
-          $('a.buttons-edit').attr('data-toggle','modal');
-          $('a.buttons-edit').attr('data-target','#modal-edit');
+          // $('a.buttons-edit').attr('ng-dialog','/static/templates/users/new-user.html');
+          // $('a.buttons-edit').attr('ng-dialog-controller','NewUserController as vm');
+
+          // $('a.buttons-edit').attr('data-toggle','modal');
+          // $('a.buttons-edit').attr('data-target','#modal-edit');
+
 
         });
 

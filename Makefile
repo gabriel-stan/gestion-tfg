@@ -54,6 +54,7 @@ install_requirements_no_vnenv:
 	pip install -r utils/requirements_back.txt
 	pip install -r utils/requirements_front.txt
 	make install_postgres
+	touch log/gestfg.log
 
 # install system packages and basic app
 install_basic:

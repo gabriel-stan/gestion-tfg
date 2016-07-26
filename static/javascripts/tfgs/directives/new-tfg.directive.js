@@ -19,7 +19,7 @@
     * @memberOf gestfg.tfgs.directives.newTfg
     */
     var directive = {
-      controller: 'newTfgController',
+      controller: 'NewTfgController',
       controllerAs: 'vm',
       restrict: 'E',
       templateUrl: '/static/templates/tfgs/new-tfg.html'

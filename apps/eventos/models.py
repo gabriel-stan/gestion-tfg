@@ -1,5 +1,30 @@
+from django.contrib.auth.models import BaseUserManager
 from django.db import models
 from authentication.models import Usuario
+from eventtools.models import BaseEvent, BaseOccurrence
+from datetime import datetime
+
+try:
+    from gestfg.settings import CONVOCATORIAS
+except:
+    CONVOCATORIAS = ['CONV_JUN', 'CONV_SEPT', 'CONV_DIC']
+
+
+class Tipo_EventoManager(BaseUserManager):
+    def create_tipo_evento(self, **kwargs):
+        return self.model.objects.create(**kwargs)
+
+
+class Tipo_Evento(models.Model):
+    nombre = models.CharField(default=None, null=True, max_length=100)
+    codigo = models.CharField(default=None, unique=True, null=True, max_length=20)
+    objects = Tipo_EventoManager()
+
+    USERNAME_FIELD = 'codigo'
+    REQUIRED_FIELD = USERNAME_FIELD
+
+    def __unicode__(self):
+        return self.codigo
 
 
 class EventoManager(models.Manager):
@@ -10,9 +35,22 @@ class EventoManager(models.Manager):
             if not isinstance(kwargs.get('autor'), Usuario):
                 raise NameError("Autor no valido")
 
+            if not kwargs.get('tipo'):
+                raise NameError("Tipo necesario")
+            else:
+                res = Tipo_Evento.objects.filter(codigo=kwargs.get('tipo'))
+                if res.count() == 0:
+                    raise NameError("El Tipo no existe")
+
             evento = Evento.objects.create(contenido=contenido, autor=kwargs.get('autor'),
                                            tipo=kwargs.get('tipo'), titulo=kwargs.get('titulo'))
             evento.save()
+            if kwargs.get('tipo').codigo in CONVOCATORIAS:
+                convocatoria = Periodo.objects.create(
+                    evento=evento,
+                    start=datetime.strptime(kwargs.get('desde'), '%d/%m/%Y') if kwargs.get('desde') else None,
+                    end=datetime.strptime(kwargs.get('hasta'), '%d/%m/%Y') if kwargs.get('desde') else None)
+                convocatoria.save()
 
             return dict(status=True, data=evento)
 
@@ -20,12 +58,11 @@ class EventoManager(models.Manager):
             return dict(status=False, message=e.message)
 
 
-class Evento(models.Model):
+class Evento(BaseEvent):
     autor = models.ForeignKey(Usuario)
     titulo = models.CharField(max_length=50, blank=True)
-    #autor = models.ForeignKey(Usuario, related_name='eventos')
     contenido = models.TextField()
-    tipo = models.CharField(max_length=100, blank=True)
+    tipo = models.ForeignKey(Tipo_Evento, related_name='tipo_evento', default=None, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -45,3 +82,7 @@ class Evento(models.Model):
 
     def get_titulo(self):
         return self.titulo
+
+
+class Periodo(BaseOccurrence):
+    evento = models.ForeignKey(Evento)

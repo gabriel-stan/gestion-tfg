@@ -44,6 +44,9 @@ fi
 source $ENV_VARS
 export $(cut -d= -f1 "$ENV_VARS")
 
+mkdir log
+touch log/gestfg.log
+
 # prepare migrations
 python manage.py makemigrations
 
