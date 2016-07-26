@@ -30,7 +30,10 @@ class Comision_EvaluacionSerializer(serializers.ModelSerializer):
         try:
             # comprobando presidente
             if 'presidente' in validated_data.keys():
-                presidente = Profesor.objects.get(email=validated_data.get('presidente'))
+                try:
+                    presidente = Profesor.objects.get(email=validated_data.get('presidente'))
+                except:
+                    raise NameError('El presidente no existe')
                 if not isinstance(presidente, Profesor) or presidente.groups.filter(name='Profesores').exists():
                     raise NameError("Presidente incorrecto")
                 else:
@@ -38,7 +41,10 @@ class Comision_EvaluacionSerializer(serializers.ModelSerializer):
 
             # comprobando primer titular
             if 'titular_1' in validated_data.keys():
-                titular_1 = Profesor.objects.get(email=validated_data.get('titular_1'))
+                try:
+                    titular_1 = Profesor.objects.get(email=validated_data.get('titular_1'))
+                except:
+                    raise NameError('El primer vocal no existe')
                 if not isinstance(titular_1, Profesor) or titular_1.groups.filter(name='Profesores').exists():
                     raise NameError("Primer Titular incorrecto")
                 else:
@@ -46,7 +52,10 @@ class Comision_EvaluacionSerializer(serializers.ModelSerializer):
 
             # comprobando segundo titular
             if 'titular_2' in validated_data.keys():
-                titular_2 = Profesor.objects.get(email=validated_data.get('titular_2'))
+                try:
+                    titular_2 = Profesor.objects.get(email=validated_data.get('titular_2'))
+                except:
+                    raise NameError('El segundo vocal')
                 if not isinstance(titular_2, Profesor) or titular_2.groups.filter(name='Profesores').exists():
                     raise NameError("Segundo titular incorrecto")
                 else:
@@ -54,7 +63,10 @@ class Comision_EvaluacionSerializer(serializers.ModelSerializer):
 
             # comprobando suplente del presidente
             if 'sup_presidente' in validated_data.keys():
-                sup_presidente = Profesor.objects.get(email=validated_data.get('sup_presidente'))
+                try:
+                    sup_presidente = Profesor.objects.get(email=validated_data.get('sup_presidente'))
+                except:
+                    raise NameError('El suplente del presidente no existe')
                 if not isinstance(sup_presidente, Profesor) or sup_presidente.groups.filter(name='Profesores').exists():
                     raise NameError("Suplente del presidente incorrecto")
                 else:
@@ -62,7 +74,10 @@ class Comision_EvaluacionSerializer(serializers.ModelSerializer):
 
             # comprobando suplente del primer titular
             if 'sup_titular_1' in validated_data.keys():
-                sup_titular_1 = Profesor.objects.get(email=validated_data.get('sup_titular_1'))
+                try:
+                    sup_titular_1 = Profesor.objects.get(email=validated_data.get('sup_titular_1'))
+                except:
+                    raise ('El suplente del primer vocal no existe')
                 if not isinstance(sup_titular_1, Profesor) or sup_titular_1.groups.filter(name='Profesores').exists():
                     raise NameError("Suplente del primer titular incorrecto")
                 else:

@@ -1,6 +1,7 @@
 from django.db import models
 from authentication.models import Profesor
 from django.contrib.auth.models import BaseUserManager
+from services import Comision
 
 
 class Comision_EvaluacionManager(BaseUserManager):

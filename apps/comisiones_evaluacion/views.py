@@ -2,6 +2,7 @@ from comisiones_evaluacion.models import Comision_Evaluacion
 from comisiones_evaluacion.serializers import Comision_EvaluacionSerializer
 from rest_framework.response import Response
 from rest_framework import permissions, viewsets, status, views
+from services import Comision
 import json
 import utils
 import logging
@@ -24,7 +25,8 @@ class ComisionEvaluacionViewSet(viewsets.ModelViewSet):
         """
         try:
             params = utils.get_params(request)
-            self.logger.info('INICIO WS - COMISIONEVALUACIONVIEW LIST del usuario: %s con parametros: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
+            self.logger.info('INICIO WS - COMISIONEVALUACIONVIEW LIST del usuario: %s con parametros: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if 'id' in params:
                 comision = Comision_Evaluacion.objects.get(id=params['id'])
                 resul = self.serializer_class(comision).data
@@ -33,15 +35,18 @@ class ComisionEvaluacionViewSet(viewsets.ModelViewSet):
                 resul = self.serializer_class(comisiones, many=True).data
                 if len(resul) == 0:
                     raise NameError("No hay comisiones almacenadas")
-            self.logger.info('FIN WS - COMISIONEVALUACIONVIEW LIST del usuario: %s con resultado: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            self.logger.info('FIN WS - COMISIONEVALUACIONVIEW LIST del usuario: %s con resultado: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(dict(data=resul), status=status.HTTP_200_OK)
         except NameError as e:
             resul = dict(message=e.message)
-            self.logger.error('COMISIONEVALUACIONVIEW LIST del usuario: %s con resultado: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            self.logger.error('COMISIONEVALUACIONVIEW LIST del usuario: %s con resultado: %s' %
+                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(resul, status=status.HTTP_400_BAD_REQUEST)
         except Comision_Evaluacion.DoesNotExist:
             resul = dict(message="la comision indicada no existe")
-            self.logger.error('COMISIONEVALUACIONVIEW LIST del usuario: %s con resultado: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            self.logger.error('COMISIONEVALUACIONVIEW LIST del usuario: %s con resultado: %s' %
+                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(resul, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             resul = dict(status=False, message="Error en la llamada")
@@ -58,8 +63,10 @@ class ComisionEvaluacionViewSet(viewsets.ModelViewSet):
         """
         try:
             params = utils.get_params(request)
-            self.logger.info('INICIO WS - COMISIONEVALUACIONVIEW CREATE del usuario: %s con parametros: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
+            self.logger.info('INICIO WS - COMISIONEVALUACIONVIEW CREATE del usuario: %s con parametros: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if request.user.has_perm('comisiones_evaluacion.comision.create') or request.user.is_admin:
+                comision = Comision().tutores_comisiones(params.get('convocatoria'))
                 resul = Comision_Evaluacion.objects.create(presidente=params.get('presidente'),
                                                            titular_1=params.get('titular_1'),
                                                            titular_2=params.get('titular_2'),
@@ -68,7 +75,7 @@ class ComisionEvaluacionViewSet(viewsets.ModelViewSet):
                                                            sup_titular_2=params.get('sup_titular_2'))
                 if resul['status']:
                     resul['data'] = self.serializer_class(resul['data']).data
-                    #resul = utils.to_dict(resul)
+                    # resul = utils.to_dict(resul)
                     resul_status = status.HTTP_200_OK
                 else:
                     resul = dict(message=resul['message'])
@@ -76,7 +83,8 @@ class ComisionEvaluacionViewSet(viewsets.ModelViewSet):
             else:
                 resul = dict(message="Sin privilegios")
                 resul_status = status.HTTP_405_METHOD_NOT_ALLOWED
-            self.logger.info('FIN WS - COMISIONEVALUACIONVIEW CREATE del usuario: %s con resultado: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            self.logger.info('FIN WS - COMISIONEVALUACIONVIEW CREATE del usuario: %s con resultado: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(resul, status=resul_status)
         except Exception as e:
             resul = dict(status=False, message="Error en la llamada")
@@ -92,7 +100,8 @@ class ComisionEvaluacionViewSet(viewsets.ModelViewSet):
 
         try:
             params = utils.get_params(request)
-            self.logger.info('INICIO WS - COMISIONEVALUACIONVIEW PUT del usuario: %s con parametros: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
+            self.logger.info('INICIO WS - COMISIONEVALUACIONVIEW PUT del usuario: %s con parametros: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if request.user.has_perm('comisiones_evaluacion.comision.change') or request.user.is_admin:
                 comision = Comision_Evaluacion.objects.get(presidente=params.get('presidente'))
                 serializer = self.serializer_class(comision)
@@ -106,7 +115,8 @@ class ComisionEvaluacionViewSet(viewsets.ModelViewSet):
             else:
                 resul = dict(message="Parametros incorrectos")
                 resul_status = status.HTTP_400_BAD_REQUEST
-            self.logger.info('FIN WS - COMISIONEVALUACIONVIEW PUT del usuario: %s con resultado: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            self.logger.info('FIN WS - COMISIONEVALUACIONVIEW PUT del usuario: %s con resultado: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(resul, status=resul_status)
         except Exception as e:
             resul = dict(status=False, message="Error en la llamada")
@@ -122,7 +132,8 @@ class ComisionEvaluacionViewSet(viewsets.ModelViewSet):
 
         try:
             params = utils.get_params(request)
-            self.logger.info('INICIO WS - COMISIONEVALUACIONVIEW DELETE del usuario: %s con parametros: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
+            self.logger.info('INICIO WS - COMISIONEVALUACIONVIEW DELETE del usuario: %s con parametros: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if 'titulo' in params:
                 comision = Comision_Evaluacion.objects.get(presidente=params.get('presidente'))
                 serializer = self.serializer_class(comision)
@@ -136,11 +147,13 @@ class ComisionEvaluacionViewSet(viewsets.ModelViewSet):
             else:
                 resul = dict(message="Parametros incorrectos")
                 resul_status = status.HTTP_400_BAD_REQUEST
-            self.logger.info('FIN WS - COMISIONEVALUACIONVIEW DELETE del usuario: %s con resultado: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            self.logger.info('FIN WS - COMISIONEVALUACIONVIEW DELETE del usuario: %s con resultado: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(resul, status=resul_status)
         except Comision_Evaluacion.DoesNotExist:
             resul = dict(message="La comision indicada no existe")
-            self.logger.error('COMISIONEVALUACIONVIEW DELETE del usuario: %s con resultado: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            self.logger.error('COMISIONEVALUACIONVIEW DELETE del usuario: %s con resultado: %s' %
+                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(resul, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             resul = dict(status=False, message="Error en la llamada")

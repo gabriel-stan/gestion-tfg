@@ -77,6 +77,9 @@ class Tipo_EventoSerializer(serializers.ModelSerializer):
         model = Tipo_Evento
         fields = ('id', 'codigo', 'nombre',)
 
+    def create(self, validated_data):
+        return Tipo_Evento.objects.create_tipo_evento(**validated_data)
+
     def update(self, tipo_evento, validated_data):
         try:
             # comprobando codigo
