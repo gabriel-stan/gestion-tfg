@@ -1,0 +1,11 @@
+<!-- Aqui se muestran los eventos -->
+<div ng-repeat="tfg in vm.tfgs | orderBy: '-updated_at'">
+  <tfg tfg="tfg"></tfg>
+</div>
+
+<div id="tfgs-empty" ng-show="!vm.tfgs.length">
+  <div class="callout callout-info">
+    <h4>Info</h4>
+    <p>Todavía no hay Tfgs.</p>
+  </div>
+</div>

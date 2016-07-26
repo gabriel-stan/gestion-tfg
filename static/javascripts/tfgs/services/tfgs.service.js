@@ -79,8 +79,8 @@
      * @returns {Promise}
      * @memberOf gestfg.tfgs.services.Tfgs
      */
-    function upload(content) {
-      return $http.post('/api/v1/upload_file_tfgs/', content, {
+    function upload(llamada, content) {
+      return $http.post(llamada, content, {
         transformRequest: angular.identity,
         headers: {'Content-Type': undefined}
       });

@@ -12,142 +12,42 @@
    </ol>
  </section>
 
+
   <!-- Main content -->
   <section class="content">
   <!-- <section class="content" ng-controller="UsersController as usersCtrl"> -->
 
     <!-- <users users="usersCtrl.users"></users> -->
 
-    <!-- Aqui se muestran los usuarios -->
+    <!-- Aqui se muestran los TFGs -->
 
-    <div class="box">
-      <div class="box-header">
-        <!-- <h3 class="box-title">Data Table With Full Features</h3> -->
-      </div><!-- /.box-header -->
-      <div class="box-body">
-        <table id="tabla-tfgs" class="table table-bordered table-striped">
-          <thead>
-            <tr>
-              <th>Titulación</th>
-              <th>Tipo</th>
-              <th>Título</th>
-              <th>Alumnos</th>
-              <th>Descripcion</th>
-              <th>Conocimientos Previos</th>
-              <th>Conocimientos HW/SW</th>
-              <th>Tutor</th>
-              <th>Cotutor</th>
-            </tr>
-          </thead>
+    <!-- START CUSTOM TABS -->
+    <div class="row">
+      <div class="col-md-12">
+        <!-- Custom Tabs -->
+        <div class="nav-tabs-custom">
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#tabla" data-toggle="tab">Tabla</a></li>
+            <li><a href="#lista" data-toggle="tab">Lista</a></li>
+          </ul>
 
-          <tfoot>
-            <tr>
-              <th>Titulación</th>
-              <th>Tipo</th>
-              <th>Título</th>
-              <th>Alumnos</th>
-              <th>Descripcion</th>
-              <th>Conocimientos Previos</th>
-              <th>Conocimientos HW/SW</th>
-              <th>Tutor</th>
-              <th>Cotutor</th>
-            </tr>
-          </tfoot>
-        </table>
-      </div><!-- /.box-body -->
-    </div><!-- /.box -->
+          <div class="tab-content">
+            <div class="tab-pane active" id="tabla">
 
-    <style>
-      div.dataTables_filter{
-        float: right;
-      }
+              <tfgs-tabla></tfgs-tabla>
 
-      div.dataTables_paginate{
-        float: right;
-      }
+            </div><!-- /.tab-pane -->
 
-      div.clear{
-        clear: both;
-      }
+            <div class="tab-pane" id="lista">
 
-      td.text-overf {
-        max-width: 100px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-    </style>
+              <tfgs></tfgs>
 
-    <script>
-      $(document).ready(function () {
-        $.fn.dataTable.ext.buttons.alert = {
-        className: 'buttons-alert',
+            </div><!-- /.tab-pane -->
+          </div><!-- /.tab-content -->
+        </div><!-- nav-tabs-custom -->
+      </div><!-- /.col -->
 
-        action: function ( e, dt, node, config ) {
-                alert( this.text() );
-            }
-        };
-
-        $("#tabla-tfgs").DataTable({
-            //sDom: '<Bf>rt<"col-md-6"i><"col-md-6"p><"col-md-12"l>',
-            sDom: '<Bf>rt<pi><"clear"l>',
-            language: {
-                "url": "/static/plugins/datatables/language/Spanish.json"
-            },
-            select: {
-                style: 'multi'
-            },
-            responsive: true,
-            buttons: [
-                {
-                    text: 'Reload',
-                    action: function ( e, dt, node, config ) {
-                        dt.ajax.reload();
-                    }
-                },
-                'copyHtml5',
-                'excelHtml5',
-                'csvHtml5',
-                'pdfHtml5',
-                {
-                    extend: 'alert',
-                    text: 'My button 2'
-                }
-            ],
-            ajax: "/api/v1/tfgs/",
-            sDefaultContent: "hello",
-            "columnDefs": [
-              { className: "text-overf", "targets": [ 2, 4, 5, 6 ] }
-            ],
-            columns: [
-              {"data" : "titulacion.codigo"},
-              {"data" : "tipo"},
-              {"data" : "titulo"},
-              {"data" : "n_alumnos"},
-              {"data" : "descripcion"},
-              {"data" : "conocimientos_previos"},
-              {"data" : "hard_soft"},
-              {"data" : "tutor.email"},
-              {
-                "data" : "cotutor.email",
-                "defaultContent": "<i>N/D</i>"
-              }
-            ]
-          });
-
-        // $('#example2').DataTable({
-        //   "paging": true,
-        //   "lengthChange": false,
-        //   "searching": false,
-        //   "ordering": true,
-        //   "info": true,
-        //   "autoWidth": false,
-        //   "language": {
-        //       "url": "/static/plugins/datatables/language/Spanish.json"
-        //   }
-        // });
-      });
-    </script>
-
+    </div> <!-- /.row -->
+    <!-- END CUSTOM TABS -->
 
   </section><!-- /.content -->
