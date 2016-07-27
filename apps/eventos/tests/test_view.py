@@ -16,7 +16,7 @@ class EventosServicesTests(TestCase):
 
         # tipo_event = Tipo_Evento.objects.create(nombre='Convocatoria', codigo='CONV')
 
-        self.data_evento1 = dict(content=dict(contenido='admin2@admin.es', tipo='CONV_JUN',
+        self.data_evento1 = dict(content=dict(contenido='admin2@admin.es', tipo='CONV_JUN', sub_tipo='ASIG_TFG',
                                titulo='titulo 1', desde='01/07/2016', hasta='20/07/2016'))
 
     def test_ws_eventos_post(self):

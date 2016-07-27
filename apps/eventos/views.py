@@ -54,8 +54,9 @@ class EventosViewSet(viewsets.ModelViewSet):
             self.logger.info('INICIO WS - EVENTOSVIEW CREATE del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             resul = Evento.objects.create_evento(contenido=params.get('contenido'),
-                                                 tipo=Tipo_Evento.objects.get(codigo=params.get('tipo')),
+                                                 tipo=params.get('tipo'),
                                                  titulo=params.get('titulo'),
+                                                 sub_tipo=params.get('sub_tipo'),
                                                  autor=Usuario.objects.get(id=request.user.id),
                                                  desde=params.get('desde'), hasta=params.get('hasta'))
 

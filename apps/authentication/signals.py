@@ -70,6 +70,13 @@ def create_groups(sender, **kwargs):
 
     from eventos.models import SubTipo_Evento
     for i in Tipo_Evento.objects.filter():
+        tipo, created = SubTipo_Evento.objects.get_or_create(nombre=u'Asignación TFG',
+                                                             codigo='ASIG_TFG', convocatoria=i)
+        if created:
+            print "Tipo de evento %s created successfully\n" % tipo.nombre
+        else:
+            print "Tipo de evento %s already exists\n" % tipo.nombre
+
         tipo, created = SubTipo_Evento.objects.get_or_create(nombre=u'Notificación Solicitud de Evaluación',
                                                              codigo='SOL_EVAL', convocatoria=i)
         if created:

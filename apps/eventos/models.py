@@ -56,14 +56,21 @@ class EventoManager(models.Manager):
             if not kwargs.get('tipo'):
                 raise NameError("Tipo necesario")
             else:
-                res = Tipo_Evento.objects.filter(codigo=kwargs.get('tipo'))
-                if res.count() == 0:
+                res_tipo = Tipo_Evento.objects.filter(codigo=kwargs.get('tipo'))
+                if res_tipo.count() == 0:
                     raise NameError("El Tipo no existe")
 
+            if not kwargs.get('sub_tipo'):
+                raise NameError("Tipo necesario")
+            else:
+                res = SubTipo_Evento.objects.filter(codigo=kwargs.get('sub_tipo'), convocatoria=res_tipo)
+                if res.count() != 1:
+                    raise NameError("El SubTipo no existe")
+
             evento = Evento.objects.create(contenido=contenido, autor=kwargs.get('autor'),
-                                           tipo=kwargs.get('tipo'), titulo=kwargs.get('titulo'))
+                                           tipo=res[0], titulo=kwargs.get('titulo'))
             evento.save()
-            if kwargs.get('tipo').codigo in CONVOCATORIAS:
+            if kwargs.get('tipo') in CONVOCATORIAS:
                 convocatoria = Periodo.objects.create(
                     evento=evento,
                     start=datetime.strptime(kwargs.get('desde'), '%d/%m/%Y') if kwargs.get('desde') else None,
