@@ -129,3 +129,33 @@ def is_email_alumno(alumno):
             return True
     except Exception:
             return False
+
+
+def procesar_datos_tfgs_asig(user, data):
+    # Importo aqui para evitar el cruce de imports
+    from models import Tfg, Tfg_Asig
+    resultado = []
+    if isinstance(data, dict):
+        data = [data]
+
+    for s_data in data:
+        resul = {}
+
+        if s_data['alumno_1'] is not None:
+            resul['alumno_1'] = Alumno.objects.get(id=s_data['alumno_1']).to_dict()
+
+        if s_data['alumno_2'] is not None:
+            resul['alumno_2'] = Alumno.objects.get(id=s_data['alumno_2']).to_dict()
+        else:
+            resul['alumno_2'] = ''
+
+        if s_data['alumno_3'] is not None:
+            resul['alumno_3'] = Alumno.objects.get(id=s_data['alumno_3']).to_dict()
+        else:
+            resul['alumno_3'] = ''
+
+        if s_data['tfg'] is not None:
+            resul['tfg'] = Tfg.objects.get(id=s_data['tfg']).to_dict()
+
+        resultado.append(resul)
+    return resultado

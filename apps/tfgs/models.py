@@ -22,6 +22,9 @@ class Titulacion(models.Model):
     def __unicode__(self):
         return self.codigo
 
+    def to_dict(self):
+        return dict(nombre=self.nombre, codigo=self.codigo)
+
 
 class TfgManager(BaseUserManager):
 
@@ -213,6 +216,14 @@ class Tfg(models.Model):
     def get_cotutor(self):
         return self.cotutor
 
+    def to_dict(self):
+        return dict(titulo=self.titulo, tipo=self.tipo, n_alumnos=self.n_alumnos,
+                    descripcion=self.descripcion, conocimientos_previos=self.conocimientos_previos,
+                    hard_soft=self.hard_soft, tutor=self.tutor.to_dict(),
+                    cotutor=self.cotutor.to_dict() if self.cotutor else '', publicado=self.publicado,
+                    validado=self.validado, titulacion=self.titulacion.to_dict(), created_at=self.created_at,
+                    updated_at=self.updated_at)
+
 
 class Tfg_AsigManager(BaseUserManager):
 
@@ -318,20 +329,6 @@ class Tfg_AsigManager(BaseUserManager):
         except NameError as e:
             return e.message
 
-    # def create_file(self, **kwargs):
-    #     try:
-    #         tfg = Profesor.objects.get(titulo=kwargs.get('titulo'))
-    #         if
-    #         alumno_1 = Profesor.objects.get(email=kwargs.get('cotutor'))
-    #         cotutor = Profesor.objects.get(email=kwargs.get('cotutor'))
-    #
-    #         tfg_asig = Tfg_Asig.objects.create(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2, alumno_3=alumno_3)
-    #         tfg.save()
-    #         return dict(status=True, data=Tfg.objects.get(titulo=tfg.titulo))
-    #
-    #     except NameError as e:
-    #         return dict(status=False, message=e.message)
-
 
 class Tfg_Asig(models.Model):
     tfg = models.ForeignKey(Tfg, default=None)
@@ -360,3 +357,11 @@ class Tfg_Asig(models.Model):
 
     def get_alumno_3(self):
         return self.alumno_3
+
+    def to_dict(self):
+        return dict(tfg=self.tfg.to_dict(), alumno_1=self.alumno_1.to_dict(),
+                    alumno_2=self.alumno_2.to_dict() if self.alumno_2 else '',
+                    alumno_3=self.alumno_3.to_dict() if self.alumno_3 else '',
+                    convocatoria=self.convocatoria.to_dict()if self.convocatoria else '',
+                    fecha_conv=self.fecha_conv.to_dict() if self.fecha_conv else '',
+                    created_at=self.created_at.to_dict(), updated_at=self.updated_at.to_dict())

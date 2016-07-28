@@ -114,3 +114,6 @@ class TfgServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
+        res = self.client.get('/api/v1/tfgs_asig/')
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)

@@ -41,7 +41,7 @@ class Comision(object):
             self.num_tfg = self.tfgs_asig.count()
             self.num_tribunales = int(math.ceil(self.num_tutores * 0.1)) + 1
             for i in range(self.num_tribunales):
-                tribunal = {}
+                tribunal = {'tfgs': []}
                 indice = random.randint(0, 2)
                 departamento_1 = ORDEN_DEPARTAMENTOS[indice]
                 departamento_2 = ORDEN_DEPARTAMENTOS[(indice + 1) % 3]
@@ -56,6 +56,17 @@ class Comision(object):
                 tribunal['vocal_1'] = self.tutores_principales[departamento_2][vocal_1]
                 tribunal['vocal_2'] = self.tutores_principales[departamento_3][vocal_2]
                 self.tribunales.append(tribunal)
+            for i in self.tfgs_asig:
+                for key, tribunal in enumerate(self.tribunales):
+                    if self.check_tribunal(tribunal, i):
+                        self.tribunales[key]['tfgs'].append(i)
+                        break
             return True
         except Exception as e:
                 return dict(status=False, message=e)
+
+    def check_tribunal(self, tribunal, tfg_asig):
+        if tfg_asig.tfg.tutor.email in [tribunal.get('presidente'), tribunal.get('vocal_1'), tribunal.get('vocal_2')]:
+            return False
+        else:
+            return True

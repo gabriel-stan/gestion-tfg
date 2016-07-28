@@ -41,7 +41,7 @@ class UsuariosViewSet(viewsets.ModelViewSet):
                         datas = utils.procesar_datos_usuario(request.user, self.serializer_class(usuario).data)
                     else:
                         usuarios = Usuario.objects.all()
-                        paginador = Paginator(usuarios, 2)
+                        paginador = Paginator(usuarios, 20)
                         pagina = params.get('pagina')
                         try:
                             usuarios = paginador.page(pagina)
@@ -53,7 +53,7 @@ class UsuariosViewSet(viewsets.ModelViewSet):
                             usuarios = paginador.page(pagina)
                         datas = {'resul': utils.procesar_datos_usuario(request.user, self.serializer_class(usuarios, many=True).data),
                                                     'pagina': pagina, 'num_paginas': paginador.num_pages}
-                        if len(datas) == 0:
+                        if len(datas.get('resul')) == 0:
                             raise NameError("No hay usuarios almacenados")
                         
                     resul = dict(status=True, data=datas)
@@ -114,7 +114,6 @@ class UsuariosViewSet(viewsets.ModelViewSet):
             self.logger.critical('USUARIOSVIEW CREATE: %s' % resul)
             return Response(resul, status=status.HTTP_400_BAD_REQUEST)
 
-
     def put(self, request):
         """
         PUT
@@ -152,6 +151,7 @@ class UsuariosViewSet(viewsets.ModelViewSet):
             self.logger.critical('USUARIOSSVIEW PUT: %s' % resul)
             return Response(resul, status=status.HTTP_400_BAD_REQUEST)
 
+
 class AlumnosViewSet(viewsets.ModelViewSet):
     lookup_field = 'email'
     queryset = Alumno.objects.all()
@@ -174,16 +174,27 @@ class AlumnosViewSet(viewsets.ModelViewSet):
             try:
                 if 'email' in params:
                     alumno = Alumno.objects.get(email=params['email'])
-                    resul = self.serializer_class(alumno).data
+                    datas = self.serializer_class(alumno).data
                 elif 'dni' in params:
                     alumno = Alumno.objects.get(dni=params['dni'])
-                    resul = self.serializer_class(alumno).data
+                    datas = self.serializer_class(alumno).data
                 else:
-                    alumno = Alumno.objects.all()
-                    resul = self.serializer_class(alumno, many=True).data
-                    if len(resul) == 0:
+                    alumnos = Alumno.objects.all()
+                    paginador = Paginator(alumnos, 20)
+                    pagina = params.get('pagina')
+                    try:
+                        alumnos = paginador.page(pagina)
+                    except PageNotAnInteger:
+                        pagina = 1
+                        alumnos = paginador.page(pagina)
+                    except EmptyPage:
+                        pagina = paginador.num_pages
+                        alumnos = paginador.page(pagina)
+                    datas = {'resul': utils.procesar_datos_usuario(request.user, self.serializer_class(alumnos, many=True).data),
+                                                'pagina': pagina, 'num_paginas': paginador.num_pages}
+                    if len(datas.get('resul')) == 0:
                         raise NameError("No hay alumnos almacenados")
-                resul = dict(status=True, data=resul)
+                resul = dict(status=True, data=datas)
                 resul_status = status.HTTP_200_OK
                 self.logger.info('FIN WS - ALUMNOSVIEW LIST del usuario: %s con resultado: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
                 return Response(resul, status=resul_status)

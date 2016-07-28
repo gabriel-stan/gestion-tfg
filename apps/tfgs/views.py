@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from tfgs.models import Tfg, Tfg_Asig, Titulacion
 from tfgs.serializers import TfgSerializer, Tfg_AsigSerializer, TitulacionSerializer
 from authentication.models import Alumno, Profesor
@@ -196,15 +197,31 @@ class Tfg_asigViewSet(viewsets.ModelViewSet):
             if 'titulo' in params:
                 tfg = Tfg.objects.get(titulo=params['titulo'])
                 tfg_asig = Tfg_Asig.objects.get(tfg=tfg)
-                resul = self.serializer_class(tfg_asig).data
+                datas = self.serializer_class(tfg_asig).data
             else:
-                tfg_asig = Tfg_Asig.objects.all()
-                resul = self.serializer_class(tfg_asig, many=True).data
-                if len(resul) == 0:
-                    raise NameError("No hay tfgs almacenados")
+                # tfg_asig = Tfg_Asig.objects.all()
+                # resul = self.serializer_class(tfg_asig, many=True).data
+                # if len(resul) == 0:
+                #     raise NameError("No hay tfgs almacenados")
+                tfgs = Tfg_Asig.objects.all()
+                paginador = Paginator(tfgs, 20)
+                pagina = params.get('pagina')
+                try:
+                    tfgs = paginador.page(pagina)
+                except PageNotAnInteger:
+                    pagina = 1
+                    tfgs = paginador.page(pagina)
+                except EmptyPage:
+                    pagina = paginador.num_pages
+                    tfgs = paginador.page(pagina)
+                datas = {
+                    'resul': utils.procesar_datos_tfgs_asig(request.user, self.serializer_class(tfgs, many=True).data),
+                    'pagina': pagina, 'num_paginas': paginador.num_pages}
+                if len(datas) == 0:
+                    raise NameError("No hay usuarios almacenados")
             self.logger.info('FIN WS - TFGASIGVIEW LIST del usuario: %s con resultado: %s' %
-                             (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
-            return Response(dict(status=True, data=resul), status=status.HTTP_200_OK)
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, datas))
+            return Response(dict(status=True, data=datas), status=status.HTTP_200_OK)
         except NameError as e:
             resul = dict(message=e.message)
             self.logger.error('TFGASIGVIEW LIST del usuario: %s con resultado: %s' %
