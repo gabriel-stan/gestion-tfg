@@ -75,6 +75,11 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     def get_email(self):
         return self.email
 
+    def to_dict(self):
+        return dict(email=self.email, dni=self.dni, first_name=self.first_name,
+                    last_name=self.last_name, is_admin=self.is_admin, created_at=self.created_at,
+                    updated_at=self.updated_at)
+
 
 class Administrador(Usuario):
     pass
@@ -117,8 +122,14 @@ class AlumnoManager(BaseUserManager):
     def create_file(self, **kwargs):
         return self.model.objects.create(**kwargs)
 
+
 class Alumno(Usuario):
     objects = AlumnoManager()
+
+    def to_dict(self):
+        return dict(email=self.email, dni=self.dni, first_name=self.first_name,
+                    last_name=self.last_name, is_admin=self.is_admin, created_at=self.created_at,
+                    updated_at=self.updated_at)
 
 
 class DepartamentoManager(BaseUserManager):
@@ -136,6 +147,9 @@ class Departamento(models.Model):
 
     def __unicode__(self):
         return self.codigo
+
+    def to_dict(self):
+        return dict(nombre=self.nombre, codigo=self.codigo)
 
 
 class ProfesorManager(BaseUserManager):
@@ -207,6 +221,12 @@ class Profesor(Usuario):
 
     def get_departamento(self):
         return self.departamento
+
+    def to_dict(self):
+        return dict(email=self.email, dni=self.dni, first_name=self.first_name,
+                    last_name=self.last_name, departamento=self.departamento.to_dict(),
+                    jefe_departamento=self.jefe_departamento, is_admin=self.is_admin,
+                    created_at=self.created_at, updated_at=self.updated_at)
 
 
 class Grupos(Group):

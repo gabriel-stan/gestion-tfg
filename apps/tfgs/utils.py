@@ -111,10 +111,10 @@ def comprueba_alumno(usuario):
         return False
 
 
-def check_convocatoria(convocatoria):
+def check_convocatoria(convocatoria, tipo):
     periodos = Periodo.objects.for_period()
     for periodo in periodos:
-        if periodo.evento.tipo == convocatoria:
+        if periodo.evento.tipo.convocatoria == convocatoria and periodo.evento.tipo == tipo:
             return True
     return False
 
@@ -129,3 +129,63 @@ def is_email_alumno(alumno):
             return True
     except Exception:
             return False
+
+
+def procesar_datos_tfgs_asig(user, data):
+    # Importo aqui para evitar el cruce de imports
+    from models import Tfg, Tfg_Asig
+    resultado = []
+    if isinstance(data, dict):
+        data = [data]
+
+    for s_data in data:
+        resul = {}
+
+        if s_data['alumno_1'] is not None:
+            resul['alumno_1'] = Alumno.objects.get(id=s_data['alumno_1']).to_dict()
+
+        if s_data['alumno_2'] is not None:
+            resul['alumno_2'] = Alumno.objects.get(id=s_data['alumno_2']).to_dict()
+        else:
+            resul['alumno_2'] = ''
+
+        if s_data['alumno_3'] is not None:
+            resul['alumno_3'] = Alumno.objects.get(id=s_data['alumno_3']).to_dict()
+        else:
+            resul['alumno_3'] = ''
+
+        if s_data['tfg'] is not None:
+            resul['tfg'] = Tfg.objects.get(id=s_data['tfg']).to_dict()
+
+        resultado.append(resul)
+    return resultado
+
+
+def procesar_datos_tfgs(user, data):
+    # Importo aqui para evitar el cruce de imports
+    from models import Tfg, Tfg_Asig
+    resultado = []
+    if isinstance(data, dict):
+        data = [data]
+
+    for s_data in data:
+        resul = {}
+
+        resul['tipo'] = s_data['tipo']
+        resul['titulo'] = s_data['titulo']
+        resul['n_alumnos'] = s_data['n_alumnos']
+        resul['descripcion'] = s_data['descripcion']
+        resul['conocimientos_previos'] = s_data['conocimientos_previos']
+        resul['hard_soft'] = s_data['hard_soft']
+        resul['publicado'] = s_data['publicado']
+        resul['validado'] = s_data['validado']
+        resul['created_at'] = s_data['created_at']
+        resul['updated_at'] = s_data['updated_at']
+        resul['tutor'] = Profesor.objects.get(email=s_data['tutor']).to_dict()
+        resul['titulacion'] = Profesor.objects.get(codigo=s_data['titulacion']).to_dict()
+
+        if s_data['cotutor'] is not None:
+            resul['cotutor'] = Profesor.objects.get(email=s_data['cotutor']).to_dict()
+
+        resultado.append(resul)
+    return resultado
