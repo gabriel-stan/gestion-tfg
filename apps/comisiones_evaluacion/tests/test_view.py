@@ -23,8 +23,8 @@ class ComisionesEvaluacionServicesTests(TestCase):
 
         titulacion = Titulacion.objects.create(nombre='Ingenieria Informatica', codigo='GII')
 
-        self.data_evento1 = dict(content=dict(contenido='admin2@admin.es', tipo='CONV_JUN',
-                               titulo='titulo 1', desde='01/07/2016', hasta='25/07/2016'))
+        self.data_evento1 = dict(content=dict(contenido='admin2@admin.es', tipo='CONV_JUN', sub_tipo='ASIG_TFG',
+                               titulo='titulo 1', desde='01/07/2016', hasta='20/07/2016'))
 
         self.data_prof1 = dict(email='prof_ejemplo@ugr.es', first_name='profesor 1',
                                last_name='apellido 1 apellido 12', departamento=dep_atc.codigo, password='75169052')
@@ -94,14 +94,6 @@ class ComisionesEvaluacionServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['data']['email'], self.data_prof4['email'])
 
-        # Inserto una comision
-        res = self.client.post('/api/v1/comisiones/', {'presidente': self.data_prof1['email'],
-                                                       'titular_1': self.data_prof2['email'],
-                                                       'titular_2': self.data_prof3['email'],
-                                                       'sup_presidente': self.data_prof4['email']})
-        resul = json.loads(res.content)
-        self.assertEqual(resul['data']['presidente']['email'], self.data_prof1['email'])
-
         # inserto un tfg correcto
         res = self.client.post('/api/v1/tfgs/', self.data_tfg1)
         resul = json.loads(res.content)
@@ -139,32 +131,38 @@ class ComisionesEvaluacionServicesTests(TestCase):
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'], 'convocatoria': 'CONV_JUN'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'], 'convocatoria': 'CONV_JUN',
+                                                     'tipo': 'ASIG_TFG'})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'], 'convocatoria': 'CONV_JUN'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'], 'convocatoria': 'CONV_JUN',
+                                                     'tipo': 'ASIG_TFG'})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'], 'convocatoria': 'CONV_JUN'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'], 'convocatoria': 'CONV_JUN',
+                                                     'tipo': 'ASIG_TFG'})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'], 'convocatoria': 'CONV_JUN'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'], 'convocatoria': 'CONV_JUN',
+                                                     'tipo': 'ASIG_TFG'})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'], 'convocatoria': 'CONV_JUN'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'], 'convocatoria': 'CONV_JUN',
+                                                     'tipo': 'ASIG_TFG'})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'], 'convocatoria': 'CONV_JUN'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'], 'convocatoria': 'CONV_JUN',
+                                                     'tipo': 'ASIG_TFG'})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
@@ -185,27 +183,27 @@ class ComisionesEvaluacionServicesTests(TestCase):
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[0], 'convocatoria': 'CONV_JUN'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[0], 'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[1], 'convocatoria': 'CONV_JUN'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[1], 'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[2], 'convocatoria': 'CONV_JUN'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[2], 'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[3], 'convocatoria': 'CONV_JUN'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[3], 'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[4], 'convocatoria': 'CONV_JUN'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[4], 'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 

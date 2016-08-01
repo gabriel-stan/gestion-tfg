@@ -17,8 +17,8 @@ class TfgServicesTests(TestCase):
 
         titulacion = Titulacion.objects.create(nombre='Ingenieria Informatica', codigo='IF')
 
-        self.data_evento1 = dict(content=dict(contenido='admin2@admin.es', tipo='CONV_JUN',
-                               titulo='titulo 1', desde='01/07/2016', hasta='25/07/2016'))
+        self.data_evento1 = dict(content=dict(contenido='admin2@admin.es', tipo='CONV_JUN', sub_tipo='ASIG_TFG',
+                               titulo='titulo 1', desde='01/07/2016', hasta='20/07/2016'))
 
         self.data_prof1 = dict(email='prof_ejemplo@ugr.es', first_name='profesor 1',
                                last_name='apellido 1 apellido 12', departamento=dep.codigo, password='75169052')
@@ -109,7 +109,11 @@ class TfgServicesTests(TestCase):
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'], 'convocatoria': 'CONV_JUN'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'], 'tipo': 'ASIG_TFG',
+                                                     'convocatoria': 'CONV_JUN'})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
+        res = self.client.get('/api/v1/tfgs_asig/')
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)

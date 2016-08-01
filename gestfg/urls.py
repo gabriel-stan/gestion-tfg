@@ -21,7 +21,7 @@ from gestfg.views import IndexView, DashboardView
 from authentication.views import AlumnosViewSet, LoginView, LogoutView, ProfesoresViewSet, PermissionsView, \
     UsuariosViewSet, LoadDataView, DepartamentosViewSet
 from tfgs.views import Tfg_asigViewSet, TfgViewSet
-from eventos.views import EventosViewSet
+from eventos.views import EventosViewSet, Tipo_EventosViewSet
 from upload_files.views import Upload_fileView, Upload_file_confirmView
 from comisiones_evaluacion.views import ComisionEvaluacionViewSet
 
@@ -32,6 +32,7 @@ router.register(r'usuarios', UsuariosViewSet)
 router.register(r'tfgs', TfgViewSet)
 router.register(r'tfgs_asig', Tfg_asigViewSet)
 router.register(r'events', EventosViewSet)
+router.register(r'type_events', Tipo_EventosViewSet)
 router.register(r'departamentos', DepartamentosViewSet)
 router.register(r'comisiones', ComisionEvaluacionViewSet)
 

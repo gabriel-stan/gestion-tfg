@@ -66,16 +66,10 @@ class ComisionEvaluacionViewSet(viewsets.ModelViewSet):
             self.logger.info('INICIO WS - COMISIONEVALUACIONVIEW CREATE del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if request.user.has_perm('comisiones_evaluacion.comision.create') or request.user.is_admin:
-                comision = Comision().tutores_comisiones(params.get('convocatoria'))
-                resul = Comision_Evaluacion.objects.create(presidente=params.get('presidente'),
-                                                           titular_1=params.get('titular_1'),
-                                                           titular_2=params.get('titular_2'),
-                                                           sup_presidente=params.get('sup_presidente'),
-                                                           sup_titular_1=params.get('sup_titular_1'),
-                                                           sup_titular_2=params.get('sup_titular_2'))
-                if resul['status']:
-                    resul['data'] = self.serializer_class(resul['data']).data
-                    # resul = utils.to_dict(resul)
+                comision = Comision()
+                resul = comision.tutores_comisiones(params.get('convocatoria'))
+                if resul['staus']:
+                    resul['data'] = resul.tutores_principales
                     resul_status = status.HTTP_200_OK
                 else:
                     resul = dict(message=resul['message'])
