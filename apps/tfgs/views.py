@@ -31,15 +31,33 @@ class TfgViewSet(viewsets.ModelViewSet):
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if 'titulo' in params:
                 tfg = Tfg.objects.get(titulo=params['titulo'])
-                resul = self.serializer_class(tfg).data
+                datas = self.serializer_class(tfg).data
             else:
-                tfg = Tfg.objects.all()
-                resul = self.serializer_class(tfg, many=True).data
-                if len(resul) == 0:
+                # tfg_asig = Tfg_Asig.objects.all()
+                # resul = self.serializer_class(tfg_asig, many=True).data
+                # if len(resul) == 0:
+                #     raise NameError("No hay tfgs almacenados")
+                tfgs = Tfg.objects.all()
+                if len(tfgs) == 0:
                     raise NameError("No hay tfgs almacenados")
+                paginador = Paginator(tfgs, 20)
+                pagina = params.get('pagina')
+                try:
+                    tfgs = paginador.page(pagina)
+                except PageNotAnInteger:
+                    pagina = 1
+                    tfgs = paginador.page(pagina)
+                except EmptyPage:
+                    pagina = paginador.num_pages
+                    tfgs = paginador.page(pagina)
+                datas = {
+                    'resul': utils.procesar_datos_tfgs(request.user, self.serializer_class(tfgs, many=True).data),
+                    'pagina': pagina, 'num_paginas': paginador.num_pages}
+            resul = dict(status=True, data=datas)
+            resul_status = status.HTTP_200_OK
             self.logger.info('FIN WS - TFGVIEW LIST del usuario: %s con resultado: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
-            return Response(dict(status=True, data=resul), status=status.HTTP_200_OK)
+            return Response(resul, status=resul_status)
         except NameError as e:
             resul = dict(message=e.message)
             self.logger.error('TFGVIEW LIST del usuario: %s con resultado: %s' %
@@ -204,6 +222,8 @@ class Tfg_asigViewSet(viewsets.ModelViewSet):
                 # if len(resul) == 0:
                 #     raise NameError("No hay tfgs almacenados")
                 tfgs = Tfg_Asig.objects.all()
+                if len(tfgs) == 0:
+                    raise NameError("No hay tfgs almacenados")
                 paginador = Paginator(tfgs, 20)
                 pagina = params.get('pagina')
                 try:
@@ -217,11 +237,11 @@ class Tfg_asigViewSet(viewsets.ModelViewSet):
                 datas = {
                     'resul': utils.procesar_datos_tfgs_asig(request.user, self.serializer_class(tfgs, many=True).data),
                     'pagina': pagina, 'num_paginas': paginador.num_pages}
-                if len(datas) == 0:
-                    raise NameError("No hay usuarios almacenados")
+            resul = dict(status=True, data=datas)
+            resul_status = status.HTTP_200_OK
             self.logger.info('FIN WS - TFGASIGVIEW LIST del usuario: %s con resultado: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, datas))
-            return Response(dict(status=True, data=datas), status=status.HTTP_200_OK)
+            return Response(resul, status=resul_status)
         except NameError as e:
             resul = dict(message=e.message)
             self.logger.error('TFGASIGVIEW LIST del usuario: %s con resultado: %s' %

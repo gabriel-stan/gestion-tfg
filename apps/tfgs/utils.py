@@ -159,3 +159,33 @@ def procesar_datos_tfgs_asig(user, data):
 
         resultado.append(resul)
     return resultado
+
+
+def procesar_datos_tfgs(user, data):
+    # Importo aqui para evitar el cruce de imports
+    from models import Tfg, Tfg_Asig
+    resultado = []
+    if isinstance(data, dict):
+        data = [data]
+
+    for s_data in data:
+        resul = {}
+
+        resul['tipo'] = s_data['tipo']
+        resul['titulo'] = s_data['titulo']
+        resul['n_alumnos'] = s_data['n_alumnos']
+        resul['descripcion'] = s_data['descripcion']
+        resul['conocimientos_previos'] = s_data['conocimientos_previos']
+        resul['hard_soft'] = s_data['hard_soft']
+        resul['publicado'] = s_data['publicado']
+        resul['validado'] = s_data['validado']
+        resul['created_at'] = s_data['created_at']
+        resul['updated_at'] = s_data['updated_at']
+        resul['tutor'] = Profesor.objects.get(email=s_data['tutor']).to_dict()
+        resul['titulacion'] = Profesor.objects.get(codigo=s_data['titulacion']).to_dict()
+
+        if s_data['cotutor'] is not None:
+            resul['cotutor'] = Profesor.objects.get(email=s_data['cotutor']).to_dict()
+
+        resultado.append(resul)
+    return resultado

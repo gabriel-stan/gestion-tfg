@@ -94,14 +94,6 @@ class ComisionesEvaluacionServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['data']['email'], self.data_prof4['email'])
 
-        # Inserto una comision
-        res = self.client.post('/api/v1/comisiones/', {'presidente': self.data_prof1['email'],
-                                                       'titular_1': self.data_prof2['email'],
-                                                       'titular_2': self.data_prof3['email'],
-                                                       'sup_presidente': self.data_prof4['email']})
-        resul = json.loads(res.content)
-        self.assertEqual(resul['data']['presidente']['email'], self.data_prof1['email'])
-
         # inserto un tfg correcto
         res = self.client.post('/api/v1/tfgs/', self.data_tfg1)
         resul = json.loads(res.content)
