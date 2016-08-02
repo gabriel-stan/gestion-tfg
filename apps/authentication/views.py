@@ -59,7 +59,7 @@ class UsuariosViewSet(viewsets.ModelViewSet):
                                  'pagina': pagina, 'num_paginas': paginador.num_pages}
                     resul = dict(status=True, data=datas)
                     resul_status = status.HTTP_200_OK
-                    
+
                 except NameError as e:
                     resul = dict(status=False, message=e.message)
                     resul_status = status.HTTP_405_METHOD_NOT_ALLOWED
