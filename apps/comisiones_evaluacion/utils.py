@@ -1,5 +1,6 @@
 from django.db.models.fields.related import ManyToManyField
 from authentication.models import Alumno, Profesor
+from comisiones_evaluacion.models import Comision_Evaluacion
 import simplejson as json
 
 
@@ -109,3 +110,15 @@ def procesamiento(comision):
     resul['sup_titular_2'] = unicode(comision.sup_titular_2) if comision.sup_titular_2 else None
 
     return resul
+
+
+def check_miembro(comision, presidente):
+    comisiones = Comision_Evaluacion.all()
+    for i in comisiones:
+        if presidente in (i.presidente, i.titular_1, i.titular_2, i.sup_presidente, i.sup_titular_1) and \
+                        i.id is not comision.id:
+            return False
+    if presidente.departamento == comision.titular_1.departamento or presidente.departamento == \
+            comision.titular_2.departamento:
+        return False
+    return True

@@ -27,4 +27,16 @@ TITULOS = ['Análisis Exploratorio de Datos Mediante Técnicas de Visualización
            'Desarrollo de Herramientas que Fomenten la Democracia Participativa',
            'Desarrollo de una aplicación para el ANÁLISIS BIOMECÁNICO 3D del movimiento deportivo',
            'Titulo de ejemplo',
-           'Participación en la Competición KAGGLE de Ciencia de Datos  *']
+           'Participación en la Competición KAGGLE de Ciencia de Datos  *',
+           'Diseño de una herramienta para la visualización y resolución con metaheurísticas de un problema de optimización combinatoria',
+           'Simulador de redes',
+           'Aplicación híbrida de un gestor de correo electrónico para plataformas móviles',
+           'Sistema de Información para generación de informes de indicios de calidad de publicaciones científicas',
+           'Seguimiento de objetivos mediante un UAV autónomo',
+           'Aplicación de métodos de Extracción de Reglas de Asociación sobre los datos existentes en el Observatorio de Cambio Global de Sierra Nevada',
+           'Sistema de Integración Prestashop-SISCAPP para notificaciones en tiempo real',
+           'Cifrado homomórfico.',
+           'Esteganografía mediante CCE',
+           'Automorfismos de anillos de grupo en Sage',
+           'Robot de validación automática de páginas web',
+           'Validación de un modelo para evaluar la accesibilidad web de las universidades españolas.']
