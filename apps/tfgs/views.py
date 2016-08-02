@@ -150,6 +150,11 @@ class TfgViewSet(viewsets.ModelViewSet):
             self.logger.info('FIN WS - TFGVIEW PUT del usuario: %s con resultado: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(resul, status=resul_status)
+        except Tfg.DoesNotExist:
+            resul = dict(message="El tfg indicado no existe")
+            self.logger.error('TFGVIEW PUT del usuario: %s con resultado: %s' %
+                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            return Response(resul, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             resul = dict(status=False, message="Error en la llamada")
             self.logger.critical('TFGVIEW PUT: %s %s' % (resul, e))
@@ -321,6 +326,11 @@ class Tfg_asigViewSet(viewsets.ModelViewSet):
             self.logger.info('FIN WS - TFGASIGVIEWCONVOCATORIA PUT del usuario: %s con resultado: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(resul, status=resul_status)
+        except Tfg.DoesNotExist:
+            resul = dict(message="El tfg indicado no existe")
+            self.logger.error('TFGASIGVIEWCONVOCATORIA PUT del usuario: %s con resultado: %s' %
+                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            return Response(resul, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             resul = dict(status=False, message="Error en la llamada")
             self.logger.critical('TFGASIGVIEWCONVOCATORIA PUT: %s %s' % (resul, e))

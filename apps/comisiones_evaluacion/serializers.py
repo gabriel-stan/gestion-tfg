@@ -32,10 +32,12 @@ class Comision_EvaluacionSerializer(serializers.ModelSerializer):
             if 'presidente' in validated_data.keys():
                 try:
                     presidente = Profesor.objects.get(email=validated_data.get('presidente'))
+                    if not utils.check_miembro(comision, presidente):
+                        raise NameError('El cambio no esta permitido')
                 except:
                     raise NameError('El presidente no existe')
                 if not isinstance(presidente, Profesor) or presidente.groups.filter(name='Profesores').exists():
-                    raise NameError("Presidente incorrecto")
+                    raise NameError('Presidente incorrecto')
                 else:
                     comision.presidente = presidente
 
@@ -43,6 +45,8 @@ class Comision_EvaluacionSerializer(serializers.ModelSerializer):
             if 'titular_1' in validated_data.keys():
                 try:
                     titular_1 = Profesor.objects.get(email=validated_data.get('titular_1'))
+                    if not utils.check_miembro(comision, titular_1):
+                        raise NameError('El cambio no esta permitido')
                 except:
                     raise NameError('El primer vocal no existe')
                 if not isinstance(titular_1, Profesor) or titular_1.groups.filter(name='Profesores').exists():
@@ -54,6 +58,8 @@ class Comision_EvaluacionSerializer(serializers.ModelSerializer):
             if 'titular_2' in validated_data.keys():
                 try:
                     titular_2 = Profesor.objects.get(email=validated_data.get('titular_2'))
+                    if not utils.check_miembro(comision, titular_2):
+                        raise NameError('El cambio no esta permitido')
                 except:
                     raise NameError('El segundo vocal')
                 if not isinstance(titular_2, Profesor) or titular_2.groups.filter(name='Profesores').exists():
