@@ -40,11 +40,7 @@ class AuthenticationServicesTests(TestCase):
         res = self.client.get('/api/v1/alumnos/', self.data_alum1)
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], False)
-        self.assertEqual(resul['message'], 'El alumno indicado no existe')
-        res = self.client.get('/api/v1/alumnos/')
-        resul = json.loads(res.content)
-        self.assertEqual(resul['status'], False)
-        self.assertEqual(resul['message'], 'No hay alumnos almacenados')
+        self.assertEqual(resul['message'], 'Sin privilegios')
 
     def test_ws_alumnos_post(self):
 
@@ -109,8 +105,7 @@ class AuthenticationServicesTests(TestCase):
         # obtengo todos los usuarios pero sin dni por que soy un profesor
         res = self.client.get('/api/v1/usuarios/')
         resul = json.loads(res.content)
-        self.assertEqual(resul['status'], True)
-        self.assertEqual(resul['data']['resul'][0].get('dni'), None)
+        self.assertEqual(len(resul['data']), 4)
         #self.assertEqual(resul['data'][0].get('clase'), 'Alumno')
 
         # Me logueo con un admin
@@ -135,7 +130,7 @@ class AuthenticationServicesTests(TestCase):
         # obtengo todos los alumnos por que soy un profesor
         res = self.client.get('/api/v1/usuarios/')
         resul = json.loads(res.content)
-        self.assertEqual(resul['status'], True)
+        self.assertEqual(len(resul['data']), 3)
 
     def test_ws_admins_get(self):
         # Me logueo con un admin

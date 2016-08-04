@@ -52,15 +52,15 @@ class TitulacionSerializer(serializers.ModelSerializer):
 
 
 class TfgSerializer(serializers.ModelSerializer):
-    tutor = ProfesorSerializer()
-    cotutor = ProfesorSerializer()
-    titulacion = TitulacionSerializer()
+    # tutor = ProfesorSerializer()
+    # cotutor = ProfesorSerializer()
+    # titulacion = TitulacionSerializer()
     created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
 
     class Meta:
         model = Tfg
         fields = ('id', 'tipo', 'titulo', 'updated_at', 'n_alumnos', 'descripcion', 'conocimientos_previos',
-                  'hard_soft', 'tutor', 'cotutor', 'created_at', 'updated_at', 'titulacion',)
+                  'hard_soft', 'tutor', 'cotutor', 'created_at', 'updated_at', 'titulacion', 'publicado', 'validado')
         read_only_fields = ('created_at', 'updated_at',)
 
     def create(self, validated_data):
@@ -159,6 +159,8 @@ class TfgSerializer(serializers.ModelSerializer):
 
 
 class Tfg_AsigSerializer(serializers.ModelSerializer):
+    created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
+
     class Meta:
         model = Tfg_Asig
         fields = ('id', 'tfg', 'alumno_1', 'alumno_2', 'alumno_3', 'created_at', 'updated_at',)
