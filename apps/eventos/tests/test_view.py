@@ -38,7 +38,7 @@ class EventosServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['data']['email'], self.data_admin['email'])
         # Obtengo los tipos de eventos
-        res = self.client.get('/api/v1/type_events/')
+        res = self.client.get('/api/v1/tipos_eventos/')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
         self.assertEqual(resul['data'][0]['codigo'], 'CONV_JUN')

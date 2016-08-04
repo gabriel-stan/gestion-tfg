@@ -1,6 +1,6 @@
 from django.db import models
 from rest_framework import serializers
-from eventos.models import Evento, Tipo_Evento
+from eventos.models import Evento, Tipo_Evento, SubTipo_Evento
 from authentication.serializers import UsuarioSerializer
 from authentication.models import Usuario
 
@@ -112,4 +112,45 @@ class Tipo_EventoSerializer(serializers.ModelSerializer):
 
     def delete(self, tipo_evento):
         tipo_evento.delete()
+        return dict(status=True)
+
+
+class SubTipo_EventoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SubTipo_Evento
+        fields = ('id', 'codigo', 'nombre',)
+
+    def update(self, subtipo, validated_data):
+        try:
+            # comprobando codigo
+            if 'codigo' in validated_data.keys():
+                new_codigo = validated_data.get('codigo')
+                res = SubTipo_Evento.objects.filter(codigo=new_codigo)
+                if res.count() != 0:
+                    raise NameError("El departamento ya existe")
+                elif not isinstance(new_codigo, basestring):
+                    raise NameError("El codigo del subtipo no tiene formato correcto")
+                else:
+                    subtipo.codigo = new_codigo
+
+            # comprobando nombre
+            if 'nombre' in validated_data.keys():
+                new_nombre = validated_data.get('nombre')
+                if not isinstance(new_nombre, basestring):
+                    raise NameError("El nombre del subtipo no tiene formato correcto")
+                else:
+                    subtipo.nombre = new_nombre
+
+            subtipo.save()
+
+            return dict(status=True, data=subtipo)
+
+        except NameError as e:
+            return dict(status=False, message=e.message)
+        except:
+            return dict(status=False, message="Error en los parametros")
+
+    def delete(self, subtipo):
+        subtipo.delete()
         return dict(status=True)
