@@ -47,6 +47,8 @@ class TfgServicesTests(TestCase):
         self.data_alum1 = dict(email='alumno1@correo.ugr.es', first_name='profesor 2',
                                last_name='apellido 12 apellido 122', password='75169052')
 
+        self.data_titulacion = dict(codigo='GII', nombre='grado en ingenieria informatica')
+
     def test_ws_tfgs(self):
         # Login como administrador
         res = self.client.post('/api/v1/auth/login/', dict(email=self.data_admin['email'],
@@ -117,4 +119,26 @@ class TfgServicesTests(TestCase):
 
         res = self.client.get('/api/v1/tfgs_asig/')
         resul = json.loads(res.content)
-        self.assertEqual(len(resul['data']), 1)
+        self.assertEqual(len(resul['data']), True)
+
+    def test_titulacion(self):
+        # Me logueo con un admin
+        res = self.client.post('/api/v1/auth/login/', {'email': self.data_admin['email'],
+                                                       'password': self.data_admin['password']})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['email'], self.data_admin['email'])
+
+        res = self.client.post('/api/v1/titulaciones/', {'codigo': self.data_titulacion['codigo'],
+                                                               'nombre': self.data_titulacion['nombre']})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        res = self.client.put('/api/v1/titulaciones/', {'codigo': self.data_titulacion['codigo'],
+                                                              'data': json.dumps(
+                                                                  {'nombre': 'grado en ingenieria informatica'})})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['nombre'], 'grado en ingenieria informatica')
+
+        res = self.client.get('/api/v1/titulaciones/')
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data'][1]['nombre'], 'grado en ingenieria informatica')
