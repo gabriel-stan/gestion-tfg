@@ -96,7 +96,7 @@ class TfgServicesTests(TestCase):
         # El tfg existe
         res = self.client.get('/api/v1/tfgs/', {'titulo': self.data_tfg1['titulo']})
         resul = json.loads(res.content)
-        self.assertEqual(resul['status'], True)
+        self.assertEqual(resul['data']['titulo'], self.data_tfg1['titulo'])
 
         # Asigno el TFG
         res = self.client.post('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'],
@@ -106,6 +106,7 @@ class TfgServicesTests(TestCase):
 
         # Creo la convocatoria de Junio
         res = self.client.post('/api/v1/events/',  self.data_evento1, format='json')
+        resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
@@ -116,4 +117,4 @@ class TfgServicesTests(TestCase):
 
         res = self.client.get('/api/v1/tfgs_asig/')
         resul = json.loads(res.content)
-        self.assertEqual(resul['status'], True)
+        self.assertEqual(len(resul['data']), 1)

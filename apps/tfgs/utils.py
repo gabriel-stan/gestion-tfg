@@ -3,6 +3,7 @@ from authentication.models import Alumno, Profesor
 from eventos.models import Periodo, Evento, Tipo_Evento
 import simplejson as json
 import re
+import collections
 
 
 def get_params(req):
@@ -134,58 +135,41 @@ def is_email_alumno(alumno):
 def procesar_datos_tfgs_asig(user, data):
     # Importo aqui para evitar el cruce de imports
     from models import Tfg, Tfg_Asig
-    resultado = []
     if isinstance(data, dict):
         data = [data]
 
-    for s_data in data:
-        resul = {}
+    for key, s_data in enumerate(data):
 
         if s_data['alumno_1'] is not None:
-            resul['alumno_1'] = Alumno.objects.get(id=s_data['alumno_1']).to_dict()
+            data[key]['alumno_1'] = collections.OrderedDict(Alumno.objects.get(id=s_data['alumno_1']).to_dict())
 
         if s_data['alumno_2'] is not None:
-            resul['alumno_2'] = Alumno.objects.get(id=s_data['alumno_2']).to_dict()
+            data[key]['alumno_2'] = collections.OrderedDict(Alumno.objects.get(id=s_data['alumno_2']).to_dict())
         else:
-            resul['alumno_2'] = ''
+            data[key]['alumno_2'] = ''
 
         if s_data['alumno_3'] is not None:
-            resul['alumno_3'] = Alumno.objects.get(id=s_data['alumno_3']).to_dict()
+            data[key]['alumno_3'] = collections.OrderedDict(Alumno.objects.get(id=s_data['alumno_3']).to_dict())
         else:
-            resul['alumno_3'] = ''
+            data[key]['alumno_3'] = ''
 
         if s_data['tfg'] is not None:
-            resul['tfg'] = Tfg.objects.get(id=s_data['tfg']).to_dict()
+            data[key]['tfg'] = collections.OrderedDict(Tfg.objects.get(id=s_data['tfg']).to_dict())
 
-        resultado.append(resul)
-    return resultado
+    return data
 
 
 def procesar_datos_tfgs(user, data):
     # Importo aqui para evitar el cruce de imports
-    from models import Tfg, Tfg_Asig
-    resultado = []
+    from models import Titulacion
     if isinstance(data, dict):
         data = [data]
 
-    for s_data in data:
-        resul = {}
-
-        resul['tipo'] = s_data['tipo']
-        resul['titulo'] = s_data['titulo']
-        resul['n_alumnos'] = s_data['n_alumnos']
-        resul['descripcion'] = s_data['descripcion']
-        resul['conocimientos_previos'] = s_data['conocimientos_previos']
-        resul['hard_soft'] = s_data['hard_soft']
-        resul['publicado'] = s_data['publicado']
-        resul['validado'] = s_data['validado']
-        resul['created_at'] = s_data['created_at']
-        resul['updated_at'] = s_data['updated_at']
-        resul['tutor'] = Profesor.objects.get(email=s_data['tutor']).to_dict()
-        resul['titulacion'] = Profesor.objects.get(codigo=s_data['titulacion']).to_dict()
-
+    for key, s_data in enumerate(data):
+        data[key]['tutor'] = collections.OrderedDict(Profesor.objects.get(id=s_data['tutor']).to_dict())
+        data[key]['titulacion'] = collections.OrderedDict(Titulacion.objects.get(id=s_data['titulacion']).to_dict())
         if s_data['cotutor'] is not None:
-            resul['cotutor'] = Profesor.objects.get(email=s_data['cotutor']).to_dict()
-
-        resultado.append(resul)
-    return resultado
+            data[key]['cotutor'] = Profesor.objects.get(email=s_data['cotutor']['email']).to_dict()
+        else:
+            data[key]['cotutor'] = ''
+    return data
