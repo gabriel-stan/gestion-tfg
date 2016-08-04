@@ -2,6 +2,7 @@ import re
 import simplejson as json
 from django.db.models.fields.related import ManyToManyField
 from django.contrib.auth.models import Permission
+import collections
 
 
 def get_params(req):
@@ -115,57 +116,45 @@ def grupos(grupos):
 
 def procesar_datos_usuario(user, data):
     # Importo aqui para evitar el cruce de imports
-    from models import Alumno, Profesor, Usuario
-    resultado = []
+    from models import Alumno, Profesor, Departamento
     if isinstance(data, dict):
         data = [data]
 
-    for s_data in data:
-        resul = {}
-        if user.is_admin:
-            resul['dni'] = s_data['dni']
-        resul['email'] = s_data['email']
-        resul['first_name'] = s_data['first_name']
-        resul['last_name'] = s_data['last_name']
-        resul['created_at'] = s_data['created_at']
-        resul['updated_at'] = s_data['updated_at']
-
+    for key, s_data in enumerate(data):
         profesor = ''
 
         if s_data['dni'] is not None:
             if Alumno.objects.filter(dni=s_data['dni']).count() != 0:
-                resul['clase'] = 'Alumno'
+                data[key]['clase'] = 'Alumno'
             elif Profesor.objects.filter(dni=s_data['dni']).count() != 0:
-                resul['clase'] = 'Profesor'
+                data[key]['clase'] = 'Profesor'
                 profesor = Profesor.objects.get(dni=s_data['dni'])
             # elif Usuario.objects.get(dni=s_data['dni']).is_admin:
             #     resul['clase'] = 'Administrador'
             else:
-                resul['clase'] = 'Usuario'
+                data[key]['clase'] = 'Usuario'
 
         elif s_data['email'] is not None:
             if Alumno.objects.filter(email=s_data['email']).count() != 0:
-                resul['clase'] = 'Alumno'
+                data[key]['clase'] = 'Alumno'
             elif Profesor.objects.filter(email=s_data['email']).count() != 0:
-                resul['clase'] = 'Profesor'
+                data[key]['clase'] = 'Profesor'
                 profesor = Profesor.objects.get(email=s_data['email'])
             # elif Usuario.objects.get(email=s_data['email']).is_admin:
             #     resul['clase'] = 'Administrador'
             else:
-                resul['clase'] = 'Usuario'
+                data[key]['clase'] = 'Usuario'
 
         else:
-            resul['clase'] = ''
+            data[key]['clase'] = ''
 
-        if resul['clase'] == 'Profesor':
-            resul['departamento'] = profesor.departamento.codigo
-        else:
-            resul['departamento'] = ''
+        if data[key]['clase'] == 'Profesor':
+            data[key]['departamento'] = collections.OrderedDict(Departamento.objects.get(
+                codigo=profesor.departamento.codigo).to_dict())
+            data[key]['jefe_departamento'] = profesor.jefe_departamento
 
-        resul['grupos'] = obtener_grupos(s_data)
-        resul['is_admin'] = s_data['is_admin']
-        resultado.append(resul)
-    return resultado
+        data[key]['grupos'] = obtener_grupos(s_data)
+    return data
 
 
 def procesar_datos_departamento(data):

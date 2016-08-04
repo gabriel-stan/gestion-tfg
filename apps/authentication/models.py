@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import Group
 import signals
+import collections
 
 
 class AccountManager(BaseUserManager):
@@ -64,7 +65,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELD = USERNAME_FIELD
 
     def __unicode__(self):
-        return self.email
+        return self.email or self.dni
 
     def get_full_name(self):
         return ' '.join([str(self.first_name), str(self.last_name)])
@@ -223,10 +224,10 @@ class Profesor(Usuario):
         return self.departamento
 
     def to_dict(self):
-        return dict(email=self.email, dni=self.dni, first_name=self.first_name,
-                    last_name=self.last_name, departamento=self.departamento.to_dict(),
+        return dict(email=self.email, dni=self.dni if self.dni else '', first_name=self.first_name,
+                    last_name=self.last_name, departamento=collections.OrderedDict(self.departamento.to_dict()),
                     jefe_departamento=self.jefe_departamento, is_admin=self.is_admin,
-                    created_at=self.created_at, updated_at=self.updated_at)
+                    created_at=str(self.created_at), updated_at=str(self.updated_at))
 
 
 class Grupos(Group):

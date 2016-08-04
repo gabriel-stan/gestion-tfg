@@ -32,33 +32,31 @@ class UsuariosViewSet(viewsets.ModelViewSet):
             params = utils.get_params(request)
             self.logger.info('INICIO WS - USUARIOSVIEW LIST del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
-            if request.user.has_perm('tfgs.tfg.create') or request.user.is_admin:
+            if request.user.has_perm('authentication.usuario.select') or (request.user.is_admin
+                                                                          if hasattr(request.user, 'is_admin')
+                                                                          else False):
                 try:
                     if 'email' in params:
                         usuario = Usuario.objects.get(email=params['email'])
-                        datas = utils.procesar_datos_usuario(request.user, self.serializer_class(usuario).data)
+                        resul = utils.procesar_datos_usuario(request.user, self.serializer_class(usuario).data)
                     elif 'dni' in params:
                         usuario = Usuario.objects.get(dni=params['dni'])
-                        datas = utils.procesar_datos_usuario(request.user, self.serializer_class(usuario).data)
+                        resul = utils.procesar_datos_usuario(request.user, self.serializer_class(usuario).data)
                     else:
                         usuarios = Usuario.objects.all()
                         if len(usuarios) == 0:
-                            raise NameError("No hay usuarios almacenados")
+                            raise NameError("No hay tfgs almacenados")
                         paginador = Paginator(usuarios, 20)
                         pagina = params.get('pagina')
                         try:
                             usuarios = paginador.page(pagina)
+                            resul = {
+                            'resul': utils.procesar_datos_usuario(request.user, self.serializer_class(usuarios, many=True).data),
+                            'pagina': pagina, 'num_paginas': paginador.num_pages}
                         except PageNotAnInteger:
-                            pagina = 1
-                            usuarios = paginador.page(pagina)
-                        except EmptyPage:
-                            pagina = paginador.num_pages
-                            usuarios = paginador.page(pagina)
-                        datas = {'resul': utils.procesar_datos_usuario(request.user,
-                                                                       self.serializer_class(usuarios, many=True).data),
-                                 'pagina': pagina, 'num_paginas': paginador.num_pages}
-                    resul = dict(status=True, data=datas)
+                            resul = utils.procesar_datos_usuario(request.user, self.serializer_class(usuarios, many=True).data)
                     resul_status = status.HTTP_200_OK
+                    resul =dict(data=resul)
 
                 except NameError as e:
                     resul = dict(status=False, message=e.message)
@@ -179,51 +177,46 @@ class AlumnosViewSet(viewsets.ModelViewSet):
             params = utils.get_params(request)
             self.logger.info('INICIO WS - ALUMNOSVIEW LIST del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
-            try:
-                if 'email' in params:
-                    alumno = Alumno.objects.get(email=params['email'])
-                    datas = self.serializer_class(alumno).data
-                elif 'dni' in params:
-                    alumno = Alumno.objects.get(dni=params['dni'])
-                    datas = self.serializer_class(alumno).data
-                else:
-                    alumnos = Alumno.objects.all()
-                    if len(alumnos) == 0:
-                        raise NameError("No hay alumnos almacenados")
-                    paginador = Paginator(alumnos, 20)
-                    pagina = params.get('pagina')
+            if request.user.has_perm('authentication.usuario.select') or (request.user.is_admin
+                                                                          if hasattr(request.user, 'is_admin')
+                                                                          else False):
+                try:
+                    if 'email' in params:
+                        alumno = Alumno.objects.get(email=params['email'])
+                        resul = self.serializer_class(alumno).data
+                    elif 'dni' in params:
+                        alumno = Alumno.objects.get(dni=params['dni'])
+                        resul = self.serializer_class(alumno).data
+                    else:
+                        usuarios = Alumno.objects.all()
+                        if len(usuarios) == 0:
+                            raise NameError("No hay tfgs almacenados")
+                        paginador = Paginator(usuarios, 20)
+                        pagina = params.get('pagina')
+                        try:
+                            usuarios = paginador.page(pagina)
+                            resul = {
+                            'resul': utils.procesar_datos_usuario(request.user, self.serializer_class(usuarios, many=True).data),
+                            'pagina': pagina, 'num_paginas': paginador.num_pages}
+                        except PageNotAnInteger:
+                            resul = utils.procesar_datos_usuario(request.user, self.serializer_class(usuarios, many=True).data)
+                    resul_status = status.HTTP_200_OK
+                    self.logger.info('FIN WS - ALUMNOSVIEW LIST del usuario: %s con resultado: %s' %
+                                     (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+                    resul =dict(data=resul)
 
-                    try:
-                        alumnos = paginador.page(pagina)
-                    except PageNotAnInteger:
-                        pagina = 1
-                        alumnos = paginador.page(pagina)
-                    except EmptyPage:
-                        pagina = paginador.num_pages
-                        alumnos = paginador.page(pagina)
-                    datas = {'resul': utils.procesar_datos_usuario(request.user, self.serializer_class(alumnos,
-                                                                                                       many=True).data),
-                             'pagina': pagina, 'num_paginas': paginador.num_pages}
-                resul = dict(status=True, data=datas)
-                resul_status = status.HTTP_200_OK
-                self.logger.info('FIN WS - ALUMNOSVIEW LIST del usuario: %s con resultado: %s' %
-                                 (request.user.email if hasattr(request.user, 'email') else request.user.username,
-                                  resul))
-                return Response(resul, status=resul_status)
-            except NameError as e:
-                resul = dict(status=False, message=e.message)
-                resul_status = status.HTTP_400_BAD_REQUEST
-                self.logger.error('FIN WS - ALUMNOSVIEW LIST del usuario: %s con resultado: %s' %
-                                  (request.user.email if hasattr(request.user, 'email') else request.user.username,
-                                   resul))
-                return Response(resul, status=resul_status)
-            except Alumno.DoesNotExist:
-                resul = dict(status=False, message="El alumno indicado no existe")
-                resul_status = status.HTTP_400_BAD_REQUEST
-                self.logger.error('FIN WS - ALUMNOSVIEW LIST del usuario: %s con resultado: %s' %
-                                  (request.user.email if hasattr(request.user, 'email') else request.user.username,
-                                   resul))
-                return Response(resul, status=resul_status)
+                except NameError as e:
+                    resul = dict(status=False, message=e.message)
+                    resul_status = status.HTTP_400_BAD_REQUEST
+                except Alumno.DoesNotExist:
+                    resul = dict(status=False, message="El alumno indicado no existe")
+                    resul_status = status.HTTP_400_BAD_REQUEST
+            else:
+                resul = dict(status=False, message="Sin privilegios")
+                resul_status = status.HTTP_405_METHOD_NOT_ALLOWED
+            self.logger.info('FIN WS - ALUMNOSVIEW LIST del usuario: %s con resultado: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            return Response(resul, status=resul_status)
         except Exception as e:
             resul = dict(status=False, message="Error en la llamada")
             self.logger.critical('ALUMNOSVIEW LIST: %s' % resul)
@@ -359,43 +352,45 @@ class ProfesoresViewSet(viewsets.ModelViewSet):
             params = utils.get_params(request)
             self.logger.info('INICIO WS - PROFESORVIEW LIST del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
-            try:
-                if 'email' in params:
-                    profesor = Profesor.objects.get(email=params['email'])
-                    datas = self.serializer_class(profesor).data
-                elif 'dni' in params:
-                    profesor = Profesor.objects.get(dni=params['dni'])
-                    datas = self.serializer_class(profesor).data
-                else:
-                    profesores = Profesor.objects.all()
-                    if len(profesores) == 0:
-                        raise NameError("No hay profesores almacenados")
-                    paginador = Paginator(profesores, 20)
-                    pagina = params.get('pagina')
-                    try:
-                        profesores = paginador.page(pagina)
-                    except PageNotAnInteger:
-                        pagina = 1
-                        profesores = paginador.page(pagina)
-                    except EmptyPage:
-                        pagina = paginador.num_pages
-                        profesores = paginador.page(pagina)
-                    datas = {'resul': utils.procesar_datos_usuario(request.user, self.serializer_class(profesores,
-                                                                                                       many=True).data),
-                             'pagina': pagina, 'num_paginas': paginador.num_pages}
-                return Response(dict(status=True, data=datas), status=status.HTTP_200_OK)
-            except NameError as e:
-                resul = dict(status=False, message=e.message)
-                self.logger.error('FIN WS - PROFESORVIEW LIST del usuario: %s con resultado: %s' %
-                                  (request.user.email if hasattr(request.user, 'email') else request.user.username,
-                                   resul))
-                return Response(resul, status=status.HTTP_400_BAD_REQUEST)
-            except Profesor.DoesNotExist:
-                resul = dict(status=False, message="El profesor indicado no existe")
-                self.logger.error('FIN WS - PROFESORVIEW LIST del usuario: %s con resultado: %s' %
-                                  (request.user.email if hasattr(request.user, 'email') else request.user.username,
-                                   resul))
-                return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+            if request.user.has_perm('authentication.usuario.select') or (request.user.is_admin
+                                                                          if hasattr(request.user, 'is_admin')
+                                                                          else False):
+                try:
+                    if 'email' in params:
+                        profesor = Profesor.objects.get(email=params['email'])
+                        resul = self.serializer_class(profesor).data
+                    elif 'dni' in params:
+                        profesor = Profesor.objects.get(dni=params['dni'])
+                        resul = self.serializer_class(profesor).data
+                    else:
+                        usuarios = Profesor.objects.all()
+                        if len(usuarios) == 0:
+                            raise NameError("No hay tfgs almacenados")
+                        paginador = Paginator(usuarios, 20)
+                        pagina = params.get('pagina')
+                        try:
+                            usuarios = paginador.page(pagina)
+                            resul = {
+                            'resul': utils.procesar_datos_usuario(request.user, self.serializer_class(usuarios, many=True).data),
+                            'pagina': pagina, 'num_paginas': paginador.num_pages}
+                        except PageNotAnInteger:
+                            resul = self.serializer_class(usuarios, many=True).data
+                            #resul = utils.procesar_datos_usuario(request.user, self.serializer_class(usuarios, many=True).data)
+                    resul_status = status.HTTP_200_OK
+                    resul = dict(data=resul)
+
+                except NameError as e:
+                    resul = dict(status=False, message=e.message)
+                    resul_status = status.HTTP_405_METHOD_NOT_ALLOWED
+                except Profesor.DoesNotExist:
+                    resul = dict(status=False, message="El profesor indicado no existe")
+                    resul_status = status.HTTP_405_METHOD_NOT_ALLOWED
+            else:
+                resul = dict(status=False, message="Sin privilegios")
+                resul_status = status.HTTP_405_METHOD_NOT_ALLOWED
+            self.logger.info('FIN WS - PROFESORVIEW LIST del usuario: %s con resultado: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            return Response(resul, status=resul_status)
         except Exception as e:
             resul = dict(status=False, message="Error en la llamada")
             self.logger.critical('PROFESORVIEW LIST: %s' % resul)
@@ -513,7 +508,7 @@ class LoginView(views.APIView):
     logger = logging.getLogger(__name__)
 
     def post(self, request, format=None):
-
+        #{"email": "admin@example.com", "password": "gestfg"}
         try:
             # params = utils.get_params(request)
             params = request.data
@@ -687,7 +682,7 @@ class DepartamentosViewSet(viewsets.ModelViewSet):
             departamentos = Departamento.objects.all()
             utils.procesar_datos_departamento(departamentos)
             resul = self.serializer_class(departamentos, many=True).data
-            self.logger.info('FIN WS - DEPARTAMENTOSVIEW LIST del usuario: %s con params: %s' %
+            self.logger.info('FIN WS - DEPARTAMENTOSVIEW LIST del usuario: %s con resultado: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(dict(data=resul), status=status.HTTP_200_OK)
         except NameError as e:
