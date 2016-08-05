@@ -783,7 +783,7 @@ class DepartamentosViewSet(viewsets.ModelViewSet):
                                   resul))
             return Response(resul)
 
-        except Profesor.DoesNotExist:
+        except Departamento.DoesNotExist:
             resul = dict(status=False, message="El departamento indicado no existe")
             self.logger.error('INICIO WS - DEPARTAMENTOSVIEW DELETE del usuario: %s con resultado: %s' %
                               (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
