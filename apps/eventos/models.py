@@ -35,7 +35,6 @@ class SubTipo_EventoManager(BaseUserManager):
 class SubTipo_Evento(models.Model):
     nombre = models.CharField(default=None, null=True, max_length=100)
     codigo = models.CharField(default=None, null=True, max_length=20)
-    convocatoria = models.ForeignKey(Tipo_Evento)
     objects = Tipo_EventoManager()
 
     USERNAME_FIELD = 'codigo'
@@ -53,28 +52,33 @@ class EventoManager(models.Manager):
             if not isinstance(kwargs.get('autor'), Usuario):
                 raise NameError("Autor no valido")
 
-            if not kwargs.get('tipo'):
-                raise NameError("Tipo necesario")
+            if not kwargs.get('convocatoria'):
+                raise NameError("Convocatoria necesario")
             else:
-                res_tipo = Tipo_Evento.objects.filter(codigo=kwargs.get('tipo'))
-                if res_tipo.count() == 0:
-                    raise NameError("El Tipo no existe")
+                convocatoria = Tipo_Evento.objects.filter(codigo=kwargs.get('convocatoria'))
+                if convocatoria.count() == 0:
+                    raise NameError("La Convocatoria no existe")
 
-            if not kwargs.get('sub_tipo'):
-                raise NameError("Tipo necesario")
+            if kwargs.get('convocatoria') not in CONVOCATORIAS:
+                tipo = None
+            elif not kwargs.get('tipo'):
+                    raise NameError("Tipo necesario")
             else:
-                res = SubTipo_Evento.objects.filter(codigo=kwargs.get('sub_tipo'), convocatoria=res_tipo)
+                res = SubTipo_Evento.objects.filter(codigo=kwargs.get('tipo'))
                 if res.count() != 1:
                     raise NameError("El SubTipo no existe")
+                tipo=res[0]
 
             evento = Evento.objects.create(contenido=contenido, autor=kwargs.get('autor'),
-                                           tipo=res[0], titulo=kwargs.get('titulo'))
+                                           tipo=tipo, convocatoria=convocatoria[0], titulo=kwargs.get('titulo'))
             evento.save()
-            if kwargs.get('tipo') in CONVOCATORIAS:
+            if kwargs.get('convocatoria') in CONVOCATORIAS:
                 convocatoria = Periodo.objects.create(
                     evento=evento,
-                    start=datetime.strptime(kwargs.get('desde'), '%d/%m/%Y') if kwargs.get('desde') else None,
-                    end=datetime.strptime(kwargs.get('hasta'), '%d/%m/%Y') if kwargs.get('desde') else None)
+                    start=datetime.strptime(kwargs.get('desde')[:19], '%Y-%m-%dT%H:%M:%S') if kwargs.get('desde') else
+                    None,
+                    end=datetime.strptime(kwargs.get('hasta')[:19], '%Y-%m-%dT%H:%M:%S') if kwargs.get('hasta') else
+                    None)
                 convocatoria.save()
 
             return dict(status=True, data=evento)
@@ -87,7 +91,8 @@ class Evento(BaseEvent):
     autor = models.ForeignKey(Usuario)
     titulo = models.CharField(max_length=50, blank=True)
     contenido = models.TextField()
-    tipo = models.ForeignKey(SubTipo_Evento, related_name='tipo_evento', default=None, null=True)
+    tipo = models.ForeignKey(SubTipo_Evento, related_name='tipo', default=None, null=True)
+    convocatoria = models.ForeignKey(Tipo_Evento, related_name='convocatoria_evento', default=None, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -55,6 +55,7 @@ class EventosViewSet(viewsets.ModelViewSet):
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             resul = Evento.objects.create_evento(contenido=params.get('contenido'),
                                                  tipo=params.get('tipo'),
+                                                 convocatoria=params.get('convocatoria'),
                                                  titulo=params.get('titulo'),
                                                  sub_tipo=params.get('sub_tipo'),
                                                  autor=Usuario.objects.get(id=request.user.id),
@@ -322,8 +323,7 @@ class SubTipo_EventosViewSet(viewsets.ModelViewSet):
             params = utils.get_params(request)
             self.logger.info('INICIO WS - SUBTIPOEVENTOSVIEW CREATE del usuario: %s con params: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
-            resul = SubTipo_Evento.objects.create(codigo=params.get('codigo'), nombre=params.get('nombre'),
-                                                  convocatoria=params.get('convocatoria'))
+            resul = SubTipo_Evento.objects.create(codigo=params.get('codigo'), nombre=params.get('nombre'))
             if resul.id:
                 resul = utils.to_dict(dict(status=True, data=resul))
                 resul_status = status.HTTP_200_OK
