@@ -69,55 +69,52 @@ def create_groups(sender, **kwargs):
         print "Tipo de evento %s already exists\n" % tipo.nombre
 
     from eventos.models import SubTipo_Evento
-    for i in Tipo_Evento.objects.filter():
-        tipo, created = SubTipo_Evento.objects.get_or_create(nombre=u'Asignación TFG',
-                                                             codigo='ASIG_TFG', convocatoria=i)
-        if created:
-            print "Tipo de evento %s created successfully\n" % tipo.nombre
-        else:
-            print "Tipo de evento %s already exists\n" % tipo.nombre
+    tipo, created = SubTipo_Evento.objects.get_or_create(nombre=u'Asignación TFG',
+                                                         codigo='ASIG_TFG')
+    if created:
+        print "Tipo de evento %s created successfully\n" % tipo.nombre
+    else:
+        print "Tipo de evento %s already exists\n" % tipo.nombre
 
-        tipo, created = SubTipo_Evento.objects.get_or_create(nombre=u'Notificación Solicitud de Evaluación',
-                                                             codigo='SOL_EVAL', convocatoria=i)
-        if created:
-            print "Tipo de evento %s created successfully\n" % tipo.nombre
-        else:
-            print "Tipo de evento %s already exists\n" % tipo.nombre
+    tipo, created = SubTipo_Evento.objects.get_or_create(nombre=u'Notificación Solicitud de Evaluación',
+                                                         codigo='SOL_EVAL')
+    if created:
+        print "Tipo de evento %s created successfully\n" % tipo.nombre
+    else:
+        print "Tipo de evento %s already exists\n" % tipo.nombre
 
-        tipo, created = SubTipo_Evento.objects.get_or_create(nombre=u'Establecimiento de las Comisiones de Evaluación',
-                                                             codigo='COM_EVAL', convocatoria=i)
-        if created:
-            print "Tipo de evento %s created successfully\n" % tipo.nombre
-        else:
-            print "Tipo de evento %s already exists\n" % tipo.nombre
+    tipo, created = SubTipo_Evento.objects.get_or_create(nombre=u'Establecimiento de las Comisiones de Evaluación',
+                                                         codigo='COM_EVAL')
+    if created:
+        print "Tipo de evento %s created successfully\n" % tipo.nombre
+    else:
+        print "Tipo de evento %s already exists\n" % tipo.nombre
 
-        tipo, created = SubTipo_Evento.objects.get_or_create(nombre=u'Entrega de material', codigo='ENT_MAT',
-                                                             convocatoria=i)
-        if created:
-            print "Tipo de evento %s created successfully\n" % tipo.nombre
-        else:
-            print "Tipo de evento %s already exists\n" % tipo.nombre
+    tipo, created = SubTipo_Evento.objects.get_or_create(nombre=u'Entrega de material', codigo='ENT_MAT')
+    if created:
+        print "Tipo de evento %s created successfully\n" % tipo.nombre
+    else:
+        print "Tipo de evento %s already exists\n" % tipo.nombre
 
-        tipo, created = SubTipo_Evento.objects.get_or_create(nombre=u'Entrega del Informe del Tutor',
-                                                             codigo='ENT_INF_TUTOR', convocatoria=i)
-        if created:
-            print "Tipo de evento %s created successfully\n" % tipo.nombre
-        else:
-            print "Tipo de evento %s already exists\n" % tipo.nombre
+    tipo, created = SubTipo_Evento.objects.get_or_create(nombre=u'Entrega del Informe del Tutor',
+                                                         codigo='ENT_INF_TUTOR')
+    if created:
+        print "Tipo de evento %s created successfully\n" % tipo.nombre
+    else:
+        print "Tipo de evento %s already exists\n" % tipo.nombre
 
-        tipo, created = SubTipo_Evento.objects.get_or_create(nombre=u'Defensa del TFG', codigo='DEF_TFG',
-                                                             convocatoria=i)
-        if created:
-            print "Tipo de evento %s created successfully\n" % tipo.nombre
-        else:
-            print "Tipo de evento %s already exists\n" % tipo.nombre
+    tipo, created = SubTipo_Evento.objects.get_or_create(nombre=u'Defensa del TFG', codigo='DEF_TFG')
+    if created:
+        print "Tipo de evento %s created successfully\n" % tipo.nombre
+    else:
+        print "Tipo de evento %s already exists\n" % tipo.nombre
 
-        tipo, created = SubTipo_Evento.objects.get_or_create(nombre=u'Evaluación del TFG y Notificación al Centro',
-                                                             codigo='EVAL_TFG', convocatoria=i)
-        if created:
-            print "Tipo de evento %s created successfully\n" % tipo.nombre
-        else:
-            print "Tipo de evento %s already exists\n" % tipo.nombre
+    tipo, created = SubTipo_Evento.objects.get_or_create(nombre=u'Evaluación del TFG y Notificación al Centro',
+                                                         codigo='EVAL_TFG')
+    if created:
+        print "Tipo de evento %s created successfully\n" % tipo.nombre
+    else:
+        print "Tipo de evento %s already exists\n" % tipo.nombre
 
     tipo, created = Tipo_Evento.objects.get_or_create(nombre=u'Informativo', codigo='INFOR')
     if created:

@@ -17,8 +17,8 @@ class TfgServicesTests(TestCase):
 
         titulacion = Titulacion.objects.create(nombre='Ingenieria Informatica', codigo='IF')
 
-        self.data_evento1 = dict(content=dict(contenido='admin2@admin.es', tipo='CONV_JUN', sub_tipo='ASIG_TFG',
-                               titulo='titulo 1', desde='01/07/2016', hasta='20/07/2016'))
+        self.data_evento1 = dict(content=dict(contenido='admin2@admin.es', convocatoria='CONV_JUN', tipo='ASIG_TFG',
+                               titulo='titulo 1',desde='2016-08-04T22:00:00.000Z', hasta='2016-08-14T15:00:00.000Z'))
 
         self.data_prof1 = dict(email='prof_ejemplo@ugr.es', first_name='profesor 1',
                                last_name='apellido 1 apellido 12', departamento=dep.codigo, password='75169052')
