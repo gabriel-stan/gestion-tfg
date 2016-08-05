@@ -16,8 +16,11 @@ class EventosServicesTests(TestCase):
 
         # tipo_event = Tipo_Evento.objects.create(nombre='Convocatoria', codigo='CONV')
 
-        self.data_evento1 = dict(content=dict(contenido='admin2@admin.es', tipo='CONV_JUN', sub_tipo='ASIG_TFG',
-                               titulo='titulo 1', desde='01/07/2016', hasta='20/07/2016'))
+        self.data_evento1 = dict(content=dict(contenido='admin2@admin.es', convocatoria='CONV_JUN', tipo='ASIG_TFG',
+                                 titulo='titulo 1', desde='2016-08-04T22:00:00.000Z', hasta='2016-08-14T15:00:00.000Z'))
+
+        self.data_evento2 = dict(content=dict(contenido='admin2@admin.es', convocatoria='INFOR',
+                                 titulo='titulo 1'))
 
     def test_ws_eventos_post(self):
         # Me logueo con un admin
@@ -30,6 +33,13 @@ class EventosServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
         self.assertEqual(resul['data']['contenido'], self.data_evento1['content']['contenido'])
+
+        # Inserto un evento informativo
+        res = self.client.post('/api/v1/events/',  self.data_evento2, format='json')
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+        self.assertEqual(resul['data']['contenido'], self.data_evento2['content']['contenido'])
+
 
     def test_ws_tipos_eventos_post(self):
         # Me logueo con un admin
