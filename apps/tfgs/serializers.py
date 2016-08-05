@@ -178,7 +178,7 @@ class Tfg_AsigSerializer(serializers.ModelSerializer):
                 except:
                     raise NameError("La convocatoria no existe")
                 try:
-                    res_subtipo = SubTipo_Evento.objects.get(codigo=validated_data.get('tipo'), convocatoria=res_tipo)
+                    res_subtipo = SubTipo_Evento.objects.get(codigo=validated_data.get('tipo'))
                 except:
                     raise NameError("El Tipo no existe")
                 if not utils.check_convocatoria(res_tipo, res_subtipo):
