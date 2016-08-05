@@ -169,7 +169,7 @@ def procesar_datos_tfgs(user, data):
         data[key]['tutor'] = collections.OrderedDict(Profesor.objects.get(id=s_data['tutor']).to_dict())
         data[key]['titulacion'] = collections.OrderedDict(Titulacion.objects.get(id=s_data['titulacion']).to_dict())
         if s_data['cotutor'] is not None:
-            data[key]['cotutor'] = Profesor.objects.get(email=s_data['cotutor']['email']).to_dict()
+            data[key]['cotutor'] = collections.OrderedDict(Profesor.objects.get(id=s_data['cotutor']).to_dict())
         else:
             data[key]['cotutor'] = ''
     return data
