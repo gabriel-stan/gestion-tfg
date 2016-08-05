@@ -132,9 +132,9 @@
       fd.append('titulacion', uploadTfgsCtrl.titulacion);
 
       if(uploadTfgsCtrl.preasignados){
-        fd.append('tipe_file', 'tfg_asig');
+        fd.append('type_file', 'tfg_asig');
       } else {
-        fd.append('tipe_file', 'tfg');
+        fd.append('type_file', 'tfg');
       }
 
       Tfgs.upload('/api/v1/upload_file_tfgs/', fd).then(uploadTfgsSuccessFn, uploadTfgsErrorFn);
