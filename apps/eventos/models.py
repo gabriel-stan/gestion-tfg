@@ -26,6 +26,9 @@ class Tipo_Evento(models.Model):
     def __unicode__(self):
         return self.codigo
 
+    def to_dict(self):
+        return dict(nombre=self.nombre, codigo=self.codigo)
+
 
 class SubTipo_EventoManager(BaseUserManager):
     def create_tipo_evento(self, **kwargs):
@@ -42,6 +45,9 @@ class SubTipo_Evento(models.Model):
 
     def __unicode__(self):
         return self.codigo
+
+    def to_dict(self):
+        return dict(nombre=self.nombre, codigo=self.codigo)
 
 
 class EventoManager(models.Manager):

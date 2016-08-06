@@ -154,6 +154,9 @@ def procesar_datos_usuario(user, data):
             data[key]['jefe_departamento'] = profesor.jefe_departamento
 
         data[key]['grupos'] = obtener_grupos(s_data)
+        if not user.is_admin:
+            data[key].pop('dni', None)
+
     return data
 
 

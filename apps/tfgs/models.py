@@ -216,11 +216,11 @@ class Tfg(models.Model):
     def get_cotutor(self):
         return self.cotutor
 
-    def to_dict(self):
+    def to_dict(self, user):
         return dict(titulo=self.titulo, tipo=self.tipo, n_alumnos=self.n_alumnos,
                     descripcion=self.descripcion, conocimientos_previos=self.conocimientos_previos,
-                    hard_soft=self.hard_soft, tutor=self.tutor.to_dict(),
-                    cotutor=self.cotutor.to_dict() if self.cotutor else '', publicado=self.publicado,
+                    hard_soft=self.hard_soft, tutor=self.tutor.to_dict(user),
+                    cotutor=self.cotutor.to_dict(user) if self.cotutor else None, publicado=self.publicado,
                     validado=self.validado, titulacion=self.titulacion.to_dict(), created_at=self.created_at,
                     updated_at=self.updated_at)
 
@@ -358,10 +358,10 @@ class Tfg_Asig(models.Model):
     def get_alumno_3(self):
         return self.alumno_3
 
-    def to_dict(self):
-        return dict(tfg=self.tfg.to_dict(), alumno_1=self.alumno_1.to_dict(),
-                    alumno_2=self.alumno_2.to_dict() if self.alumno_2 else '',
-                    alumno_3=self.alumno_3.to_dict() if self.alumno_3 else '',
-                    convocatoria=self.convocatoria.to_dict()if self.convocatoria else '',
-                    fecha_conv=self.fecha_conv.to_dict() if self.fecha_conv else '',
-                    created_at=self.created_at.to_dict(), updated_at=self.updated_at.to_dict())
+    def to_dict(self, user):
+        return dict(tfg=self.tfg.to_dict(user), alumno_1=self.alumno_1.to_dict(user),
+                    alumno_2=self.alumno_2.to_dict(user) if self.alumno_2 else None,
+                    alumno_3=self.alumno_3.to_dict(user) if self.alumno_3 else None,
+                    convocatoria=self.convocatoria.to_dict()if self.convocatoria else None,
+                    fecha_conv=self.fecha_conv if self.fecha_conv else None,
+                    created_at=self.created_at, updated_at=self.updated_at)
