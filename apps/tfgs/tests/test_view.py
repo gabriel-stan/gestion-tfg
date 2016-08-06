@@ -100,6 +100,11 @@ class TfgServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['data']['titulo'], self.data_tfg1['titulo'])
 
+        # Obtengo todos
+        res = self.client.get('/api/v1/tfgs/')
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data'][0]['titulo'], self.data_tfg1['titulo'])
+
         # Asigno el TFG
         res = self.client.post('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'],
                                                       'alumno1': self.data_alum1['email']})

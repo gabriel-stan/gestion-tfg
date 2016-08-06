@@ -7,13 +7,14 @@ from authentication.models import Usuario
 
 # class EventoSerializer(serializers.PrimaryKeyRelatedField, serializers.ModelSerializer):
 class EventoSerializer(serializers.ModelSerializer):
-    autor = UsuarioSerializer()
-    tipo = models.ForeignKey(Tipo_Evento)
+    #autor = UsuarioSerializer()
+    convocatoria = models.ForeignKey(Tipo_Evento)
+    tipo = models.ForeignKey(SubTipo_Evento)
     created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
 
     class Meta:
         model = Evento
-        fields = ('id', 'contenido', 'tipo', 'autor', 'titulo', 'created_at', 'updated_at')
+        fields = ('id', 'contenido', 'convocatoria', 'tipo', 'autor', 'titulo', 'created_at', 'updated_at')
         read_only_fields = ('created_at', 'updated_at')
 
     def create_evento(self, validated_data):
@@ -32,14 +33,23 @@ class EventoSerializer(serializers.ModelSerializer):
                 else:
                     evento.contenido = new_contenido
 
+            # comprobando convocatoria
+            if 'convocatoria' in validated_data.keys():
+                new_convocatoria = validated_data.get('convocatoria')
+                try:
+                    convocatoria = Tipo_Evento.objects.get(codigo=new_convocatoria)
+                except Tipo_Evento.DoesNotExist:
+                    raise NameError("Convocatoria incorrecto")
+                evento.convocatoria = convocatoria
+
             # comprobando tipo
             if 'tipo' in validated_data.keys():
                 new_tipo = validated_data.get('tipo')
-                tipo = Tipo_Evento.objects.get(codigo=new_tipo)
-                if not isinstance(tipo, Tipo_Evento):
-                    raise NameError("Tipo_Evento incorrecto")
-                else:
-                    evento.tipo = tipo
+                try:
+                    tipo = SubTipo_Evento.objects.get(codigo=new_tipo)
+                except SubTipo_Evento.DoesNotExist:
+                    raise NameError("Tipo Evento incorrecto")
+                evento.tipo = tipo
 
             # comprobando tipo
             if 'autor' in validated_data.keys():
