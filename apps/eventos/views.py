@@ -28,7 +28,7 @@ class EventosViewSet(viewsets.ModelViewSet):
             self.logger.info('INICIO WS - EVENTOSVIEW LIST del usuario: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username))
             eventos = Evento.objects.all()
-            resul = self.serializer_class(eventos, many=True).data
+            resul = utils.procesar_datos_eventos(request.user, self.serializer_class(eventos, many=True).data)
             self.logger.info('FIN WS - EVENTOSVIEW LIST del usuario: %s con resultado: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(dict(status=True, data=resul), status=status.HTTP_200_OK)
@@ -282,7 +282,7 @@ class Tipo_EventosViewSet(viewsets.ModelViewSet):
 class SubTipo_EventosViewSet(viewsets.ModelViewSet):
     lookup_field = 'codigo'
     queryset = SubTipo_Evento.objects.order_by('-created_at')
-    serializer_class = EventoSerializer
+    serializer_class = SubTipo_EventoSerializer
     logger = logging.getLogger(__name__)
 
     def list(self, request):

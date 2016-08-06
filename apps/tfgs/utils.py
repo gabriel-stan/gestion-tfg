@@ -141,20 +141,20 @@ def procesar_datos_tfgs_asig(user, data):
     for key, s_data in enumerate(data):
 
         if s_data['alumno_1'] is not None:
-            data[key]['alumno_1'] = collections.OrderedDict(Alumno.objects.get(id=s_data['alumno_1']).to_dict())
+            data[key]['alumno_1'] = collections.OrderedDict(Alumno.objects.get(id=s_data['alumno_1']).to_dict(user))
 
         if s_data['alumno_2'] is not None:
-            data[key]['alumno_2'] = collections.OrderedDict(Alumno.objects.get(id=s_data['alumno_2']).to_dict())
+            data[key]['alumno_2'] = collections.OrderedDict(Alumno.objects.get(id=s_data['alumno_2']).to_dict(user))
         else:
             data[key]['alumno_2'] = ''
 
         if s_data['alumno_3'] is not None:
-            data[key]['alumno_3'] = collections.OrderedDict(Alumno.objects.get(id=s_data['alumno_3']).to_dict())
+            data[key]['alumno_3'] = collections.OrderedDict(Alumno.objects.get(id=s_data['alumno_3']).to_dict(user))
         else:
             data[key]['alumno_3'] = ''
 
         if s_data['tfg'] is not None:
-            data[key]['tfg'] = collections.OrderedDict(Tfg.objects.get(id=s_data['tfg']).to_dict())
+            data[key]['tfg'] = collections.OrderedDict(Tfg.objects.get(id=s_data['tfg']).to_dict(user))
 
     return data
 
@@ -166,10 +166,10 @@ def procesar_datos_tfgs(user, data):
         data = [data]
 
     for key, s_data in enumerate(data):
-        data[key]['tutor'] = collections.OrderedDict(Profesor.objects.get(id=s_data['tutor']).to_dict())
+        data[key]['tutor'] = collections.OrderedDict(Profesor.objects.get(id=s_data['tutor']).to_dict(user))
         data[key]['titulacion'] = collections.OrderedDict(Titulacion.objects.get(id=s_data['titulacion']).to_dict())
         if s_data['cotutor'] is not None:
-            data[key]['cotutor'] = collections.OrderedDict(Profesor.objects.get(id=s_data['cotutor']).to_dict())
+            data[key]['cotutor'] = collections.OrderedDict(Profesor.objects.get(id=s_data['cotutor']).to_dict(user))
         else:
             data[key]['cotutor'] = ''
     return data
