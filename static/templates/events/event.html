@@ -12,9 +12,8 @@
 
     <div ng-if="event.tipo">
       <p>Tipo convocatoria: {{event.tipo.nombre}}</p>
-      <p>Desde: <span class="fecha">{{event.desde}}</span></p>
-      <p>Hasta: <span class="fecha">{{event.hasta}}</span></p>
-      <!-- <p>Hasta: <script>moment('{{event.hasta}}').toLocaleString()</script></p> -->
+      <p>Desde: <span class="fecha">{{vm.parseTime(event.desde)}}</span></p>
+      <p>Hasta: <span class="fecha">{{vm.parseTime(event.hasta)}}</span></p>
       <hr />
     </div>
 
@@ -26,21 +25,7 @@
     <div class='user-block'>
       <img class='img-circle' src='static/dist/img/user1-128x128.jpg' alt='user image'>
       <span class='username'><a href="#">{{event.autor.email}}</a></span>
-      <span class='description'>{{event.created_at}}</span>
+      <span class='description timeago' id="fecha-update-{{event.id}}">{{vm.parseTimeAgo(event.updated_at)}}</span>
     </div><!-- /.user-block -->
   </div><!-- box-footer -->
 </div><!-- /.box -->
-
-  <script>
-    $( ".fecha" ).each(function( index ) {
-
-      if(!$(this).hasClass("parsed")){
-        console.log( index + ": " + $( this ).text() );
-        var fecha = new Date($( this ).text());
-        fecha = moment(fecha).format("DD/MM/YYYY - hh:mm:ss");
-        console.log(fecha);
-        $(this).html(fecha);
-        $(this).addClass("parsed");
-      }
-    });
-  </script>
