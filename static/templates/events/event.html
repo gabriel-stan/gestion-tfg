@@ -1,13 +1,23 @@
-<div class="box box-primary">
+<div class="box" ng-class="event.tipo ? 'box-danger' : 'box-primary'">
   <div class="box-header with-border">
     <h3 class="box-title">{{event.titulo}}</h3>
     <div class="box-tools pull-right">
       <!-- Buttons, labels, and many other things can be placed here! -->
       <!-- Here is a label for example -->
-      <span class="label label-primary">{{event.tipo}}</span>
+      <span class="label" ng-class="event.tipo ? 'label-danger' : 'label-primary'">{{event.convocatoria.nombre}}</span>
+      <!-- <span class="label label-danger" ng-if="event.tipo">{{event.tipo.nombre}}</span> -->
     </div><!-- /.box-tools -->
   </div><!-- /.box-header -->
   <div class="box-body">
+
+    <div ng-if="event.tipo">
+      <p>Tipo convocatoria: {{event.tipo.nombre}}</p>
+      <p>Desde: <span class="fecha">{{event.desde}}</span></p>
+      <p>Hasta: <span class="fecha">{{event.hasta}}</span></p>
+      <!-- <p>Hasta: <script>moment('{{event.hasta}}').toLocaleString()</script></p> -->
+      <hr />
+    </div>
+
     <div ng-bind-html="event.contenido">
         <!-- esto se genera gracias a ng-bind-html y ngSanitize -->
     </div>
@@ -20,3 +30,17 @@
     </div><!-- /.user-block -->
   </div><!-- box-footer -->
 </div><!-- /.box -->
+
+  <script>
+    $( ".fecha" ).each(function( index ) {
+
+      if(!$(this).hasClass("parsed")){
+        console.log( index + ": " + $( this ).text() );
+        var fecha = new Date($( this ).text());
+        fecha = moment(fecha).format("DD/MM/YYYY - hh:mm:ss");
+        console.log(fecha);
+        $(this).html(fecha);
+        $(this).addClass("parsed");
+      }
+    });
+  </script>

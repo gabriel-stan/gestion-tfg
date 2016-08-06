@@ -77,7 +77,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
         return self.email
 
     def to_dict(self, user):
-        return dict(email=self.email, dni=self.dni if user.is_admin else None, first_name=self.first_name,
+        return dict(email=self.email, dni=self.dni if (hasattr(user, 'is_admin') and user.is_admin) else None, first_name=self.first_name,
                     last_name=self.last_name, is_admin=self.is_admin, created_at=self.created_at,
                     updated_at=self.updated_at)
 
