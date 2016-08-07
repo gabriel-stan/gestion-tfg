@@ -113,7 +113,7 @@
       cabeceras.hard_soft = uploadTfgsCtrl.hard_soft;
       cabeceras.tutor = uploadTfgsCtrl.tutor;
       cabeceras.cotutor = uploadTfgsCtrl.cotutor;
-      cabeceras.titulacion = uploadTfgsCtrl.titulacion2;
+      //cabeceras.titulacion = uploadTfgsCtrl.titulacion2;
 
       if(uploadTfgsCtrl.preasignados){
         cabeceras.alumno_1 = uploadTfgsCtrl.alumno1;
