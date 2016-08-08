@@ -85,7 +85,7 @@ class TfgServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['message'], 'El cotutor no existe')
 
-        #Inserto el cotutor
+        # Inserto el cotutor
         res = self.client.post('/api/v1/profesores/', self.data_prof2)
         resul = json.loads(res.content)
         self.assertEqual(resul['data']['email'], self.data_prof2['email'])
@@ -98,7 +98,7 @@ class TfgServicesTests(TestCase):
         # El tfg existe
         res = self.client.get('/api/v1/tfgs/', {'titulo': self.data_tfg1['titulo']})
         resul = json.loads(res.content)
-        self.assertEqual(resul['data']['titulo'], self.data_tfg1['titulo'])
+        self.assertEqual(resul['data'][0]['titulo'], self.data_tfg1['titulo'])
 
         # Obtengo todos
         res = self.client.get('/api/v1/tfgs/')
@@ -110,6 +110,22 @@ class TfgServicesTests(TestCase):
                                                       'alumno1': self.data_alum1['email']})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
+
+        # Compruebo que esta asignado
+        res = self.client.get('/api/v1/tfgs/', {'titulo': self.data_tfg1['titulo']})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data'][0]['asignado'], True)
+
+        # obtengo con distintos filtros
+        res = self.client.get('/api/v1/tfgs/', {'asignado': True})
+        resul = json.loads(res.content)
+        self.assertEqual(len(resul['data']), 1)
+
+        # obtengo con distintos filtros
+        res = self.client.get('/api/v1/tfgs/', {'tutor': self.data_prof1['email'],
+                                                'titulacion': self.data_tfg1['titulacion']})
+        resul = json.loads(res.content)
+        self.assertEqual(len(resul['data']), 1)
 
         # Creo la convocatoria de Junio
         res = self.client.post('/api/v1/events/',  self.data_evento1, format='json')
@@ -124,7 +140,7 @@ class TfgServicesTests(TestCase):
 
         res = self.client.get('/api/v1/tfgs_asig/')
         resul = json.loads(res.content)
-        self.assertEqual(len(resul['data']), True)
+        self.assertEqual(len(resul['data']), 1)
 
     def test_titulacion(self):
         # Me logueo con un admin
