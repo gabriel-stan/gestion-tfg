@@ -174,3 +174,13 @@ def procesar_datos_tfgs(user, data):
             data[key]['cotutor'] = ''
     return data
 
+
+def procesar_params_tfg(data):
+    # Importo aqui para evitar el cruce de imports
+    from models import Titulacion
+    for key, s_data in data.items():
+        if key in ['tutor', 'cotutor']:
+            data[key] = Profesor.objects.get(email=s_data)
+        elif key == 'titulacion':
+            data[key] = Titulacion.objects.get(codigo=s_data)
+    return data

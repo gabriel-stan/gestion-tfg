@@ -44,11 +44,20 @@ class EventosServicesTests(TestCase):
         self.assertEqual(resul['status'], True)
         self.assertEqual(resul['data']['contenido'], self.data_evento2['content']['contenido'])
 
-        # Me logueo aon otro usuario
+        # Me logueo con otro usuario
         res = self.client.post('/api/v1/auth/login/', {'email': self.data_user['email'],
                                                        'password': self.data_user['password']})
         resul = json.loads(res.content)
         self.assertEqual(resul['data']['email'], self.data_user['email'])
+
+        # Obtengo los eventos
+        res = self.client.get('/api/v1/events/')
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+        self.assertEqual(resul['data'][0]['autor']['dni'], None)
+
+        # Me logueo con otro usuario
+        res = self.client.post('/api/v1/auth/logout/')
 
         # Obtengo los eventos
         res = self.client.get('/api/v1/events/')

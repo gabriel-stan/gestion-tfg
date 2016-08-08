@@ -60,7 +60,8 @@ class TfgSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tfg
         fields = ('id', 'tipo', 'titulo', 'updated_at', 'n_alumnos', 'descripcion', 'conocimientos_previos',
-                  'hard_soft', 'tutor', 'cotutor', 'created_at', 'updated_at', 'titulacion', 'publicado', 'validado')
+                  'hard_soft', 'tutor', 'cotutor', 'created_at', 'updated_at', 'titulacion', 'publicado', 'validado',
+                  'asignado')
         read_only_fields = ('created_at', 'updated_at',)
 
     def create(self, validated_data):
@@ -144,6 +145,35 @@ class TfgSerializer(serializers.ModelSerializer):
                 else:
                     tfg.titulacion = titulacion
 
+            # comprobando publicado
+            if 'publicado' in validated_data.keys():
+                if validated_data.get('publicado') == '' or not isinstance(validated_data.get('publicado'), bool):
+                    raise NameError("Valor Publicado invalido")
+                else:
+                    tfg.hard_soft = validated_data.get('publicado')
+
+            # comprobando validado
+            if 'validado' in validated_data.keys():
+                if validated_data.get('validado') == '' or not isinstance(validated_data.get('validado'), bool):
+                    raise NameError("Valor Validado invalido")
+                else:
+                    tfg.hard_soft = validated_data.get('validado')
+
+            # comprobando asignado
+            if 'asignado' in validated_data.keys():
+                try:
+                    tfg_asig = Tfg_Asig.objects.get(tfg=tfg)
+                except:
+                    raise NameError('El Tfg asignado no existe')
+                if validated_data.get('asignado'):
+                    tfg.asignado = validated_data.get('asignado')
+                else:
+                    try:
+                        resul = self.serializer_class(tfg_asig).delete
+                        tfg.asignado = validated_data.get('asignado')
+                    except:
+                        raise NameError('Error al eliminar la asignacion del tfg')
+
             tfg.save()
 
             return dict(status=True, data=Tfg.objects.get(titulo=tfg.titulo))
@@ -191,3 +221,7 @@ class Tfg_AsigSerializer(serializers.ModelSerializer):
             return dict(status=True, data=Tfg_Asig.objects.get(tfg=tfg_asig.tfg))
         except NameError as e:
             return dict(status=False, message=e.message)
+
+    def delete(self, tfg_asig):
+        tfg_asig.delete()
+        return dict(status=True)
