@@ -24,6 +24,12 @@
       templateUrl: '/static/templates/authentication/login.html'
     })
 
+    .when('/tfgs', {
+      controller: 'TfgsController',
+      controllerAs: 'vm',
+      templateUrl: '/static/templates/layout/tfgs.html'
+    })
+
     .when('/dashboard', {
       controller: 'DashboardController',
       controllerAs: 'dashCtrl',

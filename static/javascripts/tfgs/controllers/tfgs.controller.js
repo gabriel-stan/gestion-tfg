@@ -19,6 +19,25 @@
     var tfgsCtrl = this;
     tfgsCtrl.loadTfgs = loadTfgs;
 
+    tfgsCtrl.parseTimeAgo = function(fecha){
+      // console.log(fecha);
+
+      var fecha = new Date(fecha);
+      fecha = moment(fecha).fromNow();
+
+      return fecha;
+    }
+
+
+    tfgsCtrl.parseTime = function(fecha){
+      // console.log(fecha);
+
+      var fecha = new Date(fecha);
+      fecha = moment(fecha).format("DD/MM/YYYY - hh:mm");
+
+      return fecha;
+    }
+
     loadTfgs();
 
     /**

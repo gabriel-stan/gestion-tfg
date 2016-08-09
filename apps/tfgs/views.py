@@ -32,7 +32,8 @@ class TfgViewSet(viewsets.ModelViewSet):
             # if 'titulo' in params:
             #     tfg = Tfg.objects.get(titulo=params['titulo'])
             #     resul = self.serializer_class(tfg).data
-            if len(params) > 0:
+            underscore = params.get('_', False) # comprobar que no se manda el parametro '_' - cosas del JQuery
+            if len(params) > 0 and not underscore:
                 params = utils.procesar_params_tfg(params)
                 tfgs = Tfg.objects.filter(**params)
                 if len(tfgs) > 0:
