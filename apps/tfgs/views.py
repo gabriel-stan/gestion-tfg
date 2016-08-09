@@ -32,8 +32,9 @@ class TfgViewSet(viewsets.ModelViewSet):
             # if 'titulo' in params:
             #     tfg = Tfg.objects.get(titulo=params['titulo'])
             #     resul = self.serializer_class(tfg).data
-            if len(params) > 0:
-                params = utils.procesar_params_tfg(params)
+            underscore = params.get('_', False) # comprobar que no se manda el parametro '_' - cosas del JQuery
+            if len(params) > 0 and not underscore:
+                params = utils.procesar_params_tfg(request.user, params)
                 tfgs = Tfg.objects.filter(**params)
                 if len(tfgs) > 0:
                     resul = utils.procesar_datos_tfgs(request.user, self.serializer_class(tfgs, many=True).data)
@@ -44,7 +45,8 @@ class TfgViewSet(viewsets.ModelViewSet):
                 # resul = self.serializer_class(tfg_asig, many=True).data
                 # if len(resul) == 0:
                 #     raise NameError("No hay tfgs almacenados")
-                tfgs = Tfg.objects.all()
+                params = utils.procesar_params_tfg(request.user, {})
+                tfgs = Tfg.objects.filter(**params)
                 if len(tfgs) == 0:
                     raise NameError("No hay tfgs almacenados")
                 paginador = Paginator(tfgs, 20)
@@ -136,9 +138,11 @@ class TfgViewSet(viewsets.ModelViewSet):
             params = utils.get_params(request)
             self.logger.info('INICIO WS - TFGVIEW PUT del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
-            if request.user.has_perm('tfgs.tfg.change') or request.user.is_admin:
-                tfg = Tfg.objects.get(titulo=params.get('titulo'))
+            if (request.user.has_perm('tfgs.tfg.change') and utils.check_tfg(request.user, params.get('tfg'))) or \
+                    request.user.is_admin:
+                tfg = Tfg.objects.get(titulo=params.get('tfg'))
                 serializer = self.serializer_class(tfg)
+                params = json.loads(params['datos'])
                 resul = serializer.update(tfg, params)
                 if resul['status']:
                     resul = utils.to_dict(resul)
@@ -147,7 +151,7 @@ class TfgViewSet(viewsets.ModelViewSet):
                     resul = dict(message=resul['message'])
                     resul_status = status.HTTP_400_BAD_REQUEST
             else:
-                resul = dict(message="Parametros incorrectos")
+                resul = dict(message="Sin privilegios")
                 resul_status = status.HTTP_400_BAD_REQUEST
             self.logger.info('FIN WS - TFGVIEW PUT del usuario: %s con resultado: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
@@ -450,7 +454,7 @@ class TitulacionesViewSet(viewsets.ModelViewSet):
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if request.user.has_perm('tfgs.titulacion.change') or request.user.is_admin:
                 titulacion = Titulacion.objects.get(codigo=params.get('codigo'))
-                params = json.loads(params.get('data'))
+                params = json.loads(params.get('datos'))
                 serializer = TitulacionSerializer(titulacion)
                 resul = serializer.update(titulacion, params)
                 if resul['status']:

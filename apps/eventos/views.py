@@ -358,7 +358,7 @@ class SubTipo_EventosViewSet(viewsets.ModelViewSet):
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if request.user.has_perm('eventos.subtipo_eventos.change') or request.user.is_admin:
                 subtipo = SubTipo_Evento.objects.get(codigo=params.get('codigo'))
-                params = json.loads(params.get('data'))
+                params = json.loads(params.get('datos'))
                 serializer = SubTipo_EventoSerializer(subtipo)
                 resul = serializer.update(subtipo, params)
                 if resul['status']:

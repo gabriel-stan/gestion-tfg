@@ -147,32 +147,35 @@ class TfgSerializer(serializers.ModelSerializer):
 
             # comprobando publicado
             if 'publicado' in validated_data.keys():
-                if validated_data.get('publicado') == '' or not isinstance(validated_data.get('publicado'), bool):
+                if validated_data.get('publicado') == '' or not utils.is_bool(validated_data.get('publicado')):
                     raise NameError("Valor Publicado invalido")
                 else:
-                    tfg.hard_soft = validated_data.get('publicado')
+                    tfg.publicado = bool(validated_data.get('publicado'))
 
             # comprobando validado
             if 'validado' in validated_data.keys():
-                if validated_data.get('validado') == '' or not isinstance(validated_data.get('validado'), bool):
+                if validated_data.get('validado') == '' or not utils.is_bool(validated_data.get('validado')):
                     raise NameError("Valor Validado invalido")
                 else:
-                    tfg.hard_soft = validated_data.get('validado')
+                    tfg.validado = bool(validated_data.get('validado'))
 
             # comprobando asignado
             if 'asignado' in validated_data.keys():
-                try:
-                    tfg_asig = Tfg_Asig.objects.get(tfg=tfg)
-                except:
-                    raise NameError('El Tfg asignado no existe')
-                if validated_data.get('asignado'):
-                    tfg.asignado = validated_data.get('asignado')
+                if validated_data.get('asignado') == '' or not utils.is_bool(validated_data.get('asignado')):
+                    raise NameError("Valor Publicado invalido")
                 else:
                     try:
-                        resul = self.serializer_class(tfg_asig).delete
-                        tfg.asignado = validated_data.get('asignado')
+                        tfg_asig = Tfg_Asig.objects.get(tfg=tfg)
                     except:
-                        raise NameError('Error al eliminar la asignacion del tfg')
+                        raise NameError('El Tfg asignado no existe')
+                    if validated_data.get('asignado'):
+                        tfg.asignado = bool(validated_data.get('asignado'))
+                    else:
+                        try:
+                            resul = self.serializer_class(tfg_asig).delete
+                            tfg.asignado = bool(validated_data.get('asignado'))
+                        except:
+                            raise NameError('Error al eliminar la asignacion del tfg')
 
             tfg.save()
 

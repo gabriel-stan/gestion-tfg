@@ -742,7 +742,7 @@ class DepartamentosViewSet(viewsets.ModelViewSet):
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if request.user.has_perm('authentication.departemento.change') or request.user.is_admin:
                 departamento = Departamento.objects.get(codigo=params.get('codigo'))
-                params = json.loads(params.get('data'))
+                params = json.loads(params.get('datos'))
                 serializer = DepartamentoSerializer(departamento)
                 resul = serializer.update(departamento, params)
                 if resul['status']:

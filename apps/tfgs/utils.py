@@ -28,6 +28,7 @@ def get_params(req):
                 datos[key] = value
     return datos
 
+
 def is_string(s):
     try:
         if isinstance(s, int) or isinstance(s, float):
@@ -43,6 +44,14 @@ def is_int(s):
         if isinstance(s, str) or isinstance(s, float):
             raise ValueError
         int(s)
+        return True
+    except ValueError:
+        return False
+
+
+def is_bool(s):
+    try:
+        bool(s)
         return True
     except ValueError:
         return False
@@ -79,7 +88,10 @@ def existe_tfg_asig(alumno):
 
     if alumno:
         if not isinstance(alumno, Alumno):
-            alumno = Alumno.objects.get(email=alumno)
+            try:
+                alumno = Alumno.objects.get(email=alumno)
+            except Alumno.DoesNotExist:
+                raise NameError('No existe el alumno')
         from tfgs.models import Tfg_Asig
         alumno1 = Tfg_Asig.objects.filter(alumno_1=alumno)
         alumno2 = Tfg_Asig.objects.filter(alumno_2=alumno)
@@ -95,12 +107,14 @@ def existe_tfg_asig(alumno):
 
 
 def comprueba_profesor(usuario):
-
-    if isinstance(usuario, Profesor) and usuario.groups.filter(name='Profesores').exists():
-        return True
-    elif is_string(usuario) and Profesor.objects.get(email=usuario):
-        return True
-    else:
+    try:
+        if isinstance(usuario, Profesor) and usuario.groups.filter(name='Profesores').exists():
+            return True
+        elif is_string(usuario) and Profesor.objects.get(email=usuario):
+            return True
+        else:
+            return False
+    except Profesor.DoesNotExist:
         return False
 
 
@@ -118,6 +132,14 @@ def check_convocatoria(convocatoria, tipo):
         if periodo.evento.convocatoria == convocatoria and periodo.evento.tipo == tipo:
             return True
     return False
+
+
+def check_tfg(user, tfg):
+    from models import Tfg
+    if Tfg.objects.filter(titulo=tfg, tutor=user).exists():
+        return True
+    else:
+        return False
 
 
 def is_email_alumno(alumno):
@@ -141,20 +163,31 @@ def procesar_datos_tfgs_asig(user, data):
     for key, s_data in enumerate(data):
 
         if s_data['alumno_1'] is not None:
-            data[key]['alumno_1'] = collections.OrderedDict(Alumno.objects.get(id=s_data['alumno_1']).to_dict(user))
-
+            try:
+                data[key]['alumno_1'] = collections.OrderedDict(Alumno.objects.get(id=s_data['alumno_1']).to_dict(user))
+            except Alumno.DoesNotExist:
+                data[key]['alumno_1'] = None
         if s_data['alumno_2'] is not None:
-            data[key]['alumno_2'] = collections.OrderedDict(Alumno.objects.get(id=s_data['alumno_2']).to_dict(user))
+            try:
+                data[key]['alumno_2'] = collections.OrderedDict(Alumno.objects.get(id=s_data['alumno_2']).to_dict(user))
+            except Alumno.DoesNotExist:
+                data[key]['alumno_2'] = None
         else:
             data[key]['alumno_2'] = ''
 
         if s_data['alumno_3'] is not None:
-            data[key]['alumno_3'] = collections.OrderedDict(Alumno.objects.get(id=s_data['alumno_3']).to_dict(user))
+            try:
+                data[key]['alumno_3'] = collections.OrderedDict(Alumno.objects.get(id=s_data['alumno_3']).to_dict(user))
+            except Alumno.DoesNotExist:
+                data[key]['alumno_3'] = None
         else:
             data[key]['alumno_3'] = ''
 
         if s_data['tfg'] is not None:
-            data[key]['tfg'] = collections.OrderedDict(Tfg.objects.get(id=s_data['tfg']).to_dict(user))
+            try:
+                data[key]['tfg'] = collections.OrderedDict(Tfg.objects.get(id=s_data['tfg']).to_dict(user))
+            except Tfg.DoesNotExist:
+                data[key]['tfg'] = None
 
     return data
 
@@ -166,21 +199,46 @@ def procesar_datos_tfgs(user, data):
         data = [data]
 
     for key, s_data in enumerate(data):
-        data[key]['tutor'] = collections.OrderedDict(Profesor.objects.get(id=s_data['tutor']).to_dict(user))
-        data[key]['titulacion'] = collections.OrderedDict(Titulacion.objects.get(id=s_data['titulacion']).to_dict())
+        try:
+            data[key]['tutor'] = collections.OrderedDict(Profesor.objects.get(id=s_data['tutor']).to_dict(user))
+        except Profesor.DoesNotExist:
+            data[key]['tutor'] = None
+        try:
+            data[key]['titulacion'] = collections.OrderedDict(Titulacion.objects.get(id=s_data['titulacion']).to_dict())
+        except Titulacion.DoesNotExist:
+            data[key]['titulacion'] = None
         if s_data['cotutor'] is not None:
-            data[key]['cotutor'] = collections.OrderedDict(Profesor.objects.get(id=s_data['cotutor']).to_dict(user))
+            try:
+                data[key]['cotutor'] = collections.OrderedDict(Profesor.objects.get(id=s_data['cotutor']).to_dict(user))
+            except Profesor.DoesNotExist:
+                data[key]['cotutor'] = None
         else:
             data[key]['cotutor'] = ''
     return data
 
 
-def procesar_params_tfg(data):
+def procesar_params_tfg(user, data):
     # Importo aqui para evitar el cruce de imports
     from models import Titulacion
     for key, s_data in data.items():
         if key in ['tutor', 'cotutor']:
-            data[key] = Profesor.objects.get(email=s_data)
+            try:
+                data[key] = Profesor.objects.get(email=s_data)
+            except Profesor.DoesNotExist:
+                data[key] = None
         elif key == 'titulacion':
-            data[key] = Titulacion.objects.get(codigo=s_data)
+            try:
+                data[key] = Titulacion.objects.get(codigo=s_data)
+            except Profesor.Titulacion:
+                data[key] = None
+    return _params_perfil(user, data)
+
+
+def _params_perfil(user, data):
+    if getattr(user, 'is_admin', False) or comprueba_profesor(getattr(user, 'email', '')):
+        return data
+    else:
+        data['asignado'] = False
+        data['publicado'] = True
+        data['validado'] = True
     return data
