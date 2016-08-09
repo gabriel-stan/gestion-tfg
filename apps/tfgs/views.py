@@ -29,9 +29,16 @@ class TfgViewSet(viewsets.ModelViewSet):
             params = utils.get_params(request)
             self.logger.info('INICIO WS - TFGVIEW LIST del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
-            if 'titulo' in params:
-                tfg = Tfg.objects.get(titulo=params['titulo'])
-                resul = self.serializer_class(tfg).data
+            # if 'titulo' in params:
+            #     tfg = Tfg.objects.get(titulo=params['titulo'])
+            #     resul = self.serializer_class(tfg).data
+            if len(params) > 0:
+                params = utils.procesar_params_tfg(params)
+                tfgs = Tfg.objects.filter(**params)
+                if len(tfgs) > 0:
+                    resul = utils.procesar_datos_tfgs(request.user, self.serializer_class(tfgs, many=True).data)
+                else:
+                    raise Tfg.DoesNotExist
             else:
                 # tfg_asig = Tfg_Asig.objects.all()
                 # resul = self.serializer_class(tfg_asig, many=True).data

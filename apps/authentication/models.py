@@ -77,9 +77,9 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
         return self.email
 
     def to_dict(self, user):
-        return dict(email=self.email, dni=self.dni if (hasattr(user, 'is_admin') and user.is_admin) else None, first_name=self.first_name,
-                    last_name=self.last_name, is_admin=self.is_admin, created_at=self.created_at,
-                    updated_at=self.updated_at)
+        return dict(email=self.email, dni=self.dni if getattr(user, 'is_admin', False) else None,
+                    first_name=self.first_name, last_name=self.last_name, is_admin=self.is_admin,
+                    created_at=self.created_at, updated_at=self.updated_at)
 
 
 class Administrador(Usuario):
@@ -128,9 +128,9 @@ class Alumno(Usuario):
     objects = AlumnoManager()
 
     def to_dict(self, user):
-        return dict(email=self.email, dni=self.dni if user.is_admin else None, first_name=self.first_name,
-                    last_name=self.last_name, is_admin=self.is_admin, created_at=self.created_at,
-                    updated_at=self.updated_at)
+        return dict(email=self.email, dni=self.dni if getattr(user, 'is_admin', False) else None,
+                    first_name=self.first_name, last_name=self.last_name, is_admin=self.is_admin,
+                    created_at=self.created_at, updated_at=self.updated_at)
 
 
 class DepartamentoManager(BaseUserManager):
@@ -224,8 +224,9 @@ class Profesor(Usuario):
         return self.departamento
 
     def to_dict(self, user):
-        return dict(email=self.email, dni=self.dni if user.is_admin else None, first_name=self.first_name,
-                    last_name=self.last_name, departamento=collections.OrderedDict(self.departamento.to_dict()),
+        return dict(email=self.email, dni=self.dni if getattr(user, 'is_admin', False) else None,
+                    first_name=self.first_name, last_name=self.last_name,
+                    departamento=collections.OrderedDict(self.departamento.to_dict()),
                     jefe_departamento=self.jefe_departamento, is_admin=self.is_admin,
                     created_at=str(self.created_at), updated_at=str(self.updated_at))
 

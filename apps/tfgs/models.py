@@ -182,6 +182,7 @@ class Tfg(models.Model):
     cotutor = models.ForeignKey(Profesor, related_name='cotutor', default=None, null=True)
     publicado = models.BooleanField(default=False)
     validado = models.BooleanField(default=False)
+    asignado = models.BooleanField(default=False)
     titulacion = models.ForeignKey(Titulacion, related_name='titulacion', default=None)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -265,7 +266,8 @@ class Tfg_AsigManager(BaseUserManager):
                 else:
                     tfg_asig = self.model(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2, alumno_3=alumno_3)
                 tfg_asig.save()
-
+                tfg.asignado = True
+                tfg.save()
                 return dict(status=True, data=Tfg_Asig.objects.get(tfg=tfg))
 
         except NameError as e:
