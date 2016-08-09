@@ -235,9 +235,7 @@ def procesar_params_tfg(user, data):
 
 
 def _params_perfil(user, data):
-    if getattr(user, 'is_admin', False) or comprueba_profesor(getattr(user, 'email', '')):
-        return data
-    else:
+    if not getattr(user, 'is_admin', False) and not comprueba_profesor(getattr(user, 'email', '')):
         data['asignado'] = False
         data['publicado'] = True
         data['validado'] = True
