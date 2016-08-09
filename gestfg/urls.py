@@ -39,14 +39,14 @@ router.register(r'departamentos', DepartamentosViewSet)
 router.register(r'comisiones', ComisionEvaluacionViewSet)
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^api/v1/', include(router.urls)),
-    url(r'^api/v1/auth/login/$', LoginView.as_view(), name='login'),
-    url(r'^api/v1/auth/logout/$', LogoutView.as_view(), name='logout'),
-    url(r'^api/v1/auth/permisos/$', PermissionsView.as_view(), name='permisos'),
-    url(r'^api/v1/auth/load_data/$', LoadDataView.as_view(), name='load_data'),
-    url(r'^api/v1/upload_file_tfgs/$', Upload_fileView.as_view(), name='upload_file_tfgs'),
-    url(r'^api/v1/upload_file_tfgs_confirm/$', Upload_file_confirmView.as_view(), name='upload_file_tfgs_confirm'),
+    url(r'^admin/?', include(admin.site.urls)),
+    url(r'^api/v1/?', include(router.urls)),
+    url(r'^api/v1/auth/login/?$', LoginView.as_view(), name='login'),
+    url(r'^api/v1/auth/logout/?$', LogoutView.as_view(), name='logout'),
+    url(r'^api/v1/auth/permisos/?$', PermissionsView.as_view(), name='permisos'),
+    url(r'^api/v1/auth/load_data/?$', LoadDataView.as_view(), name='load_data'),
+    url(r'^api/v1/upload_file_tfgs/?$', Upload_fileView.as_view(), name='upload_file_tfgs'),
+    url(r'^api/v1/upload_file_tfgs_confirm/?$', Upload_file_confirmView.as_view(), name='upload_file_tfgs_confirm'),
     # url(r'^alumnos/$', authentication_views.AlumnosViewSet.alumnos, name='alumnos'),
     # url(r'^logueo/$', login.login, name='login'),
     # url(r'^alumnos/update_alumno/$', alumnos.update_alumno, name='update_alumno'),
@@ -60,5 +60,6 @@ urlpatterns = [
     # url(r'^asig_tfg/$', views_tfg.asig_tfg, name='asig_tfg'),
     # url(r'^asig_tfg/remove/$', views_tfg.remove_asig_tfg, name='remove_asig_tfg'),
     url('^dashboard.*', DashboardView.as_view(), name='dashboard'),
-    url('^/?$', IndexView.as_view(), name='index'),
+    #url('^/?$', IndexView.as_view(), name='index'),
+    url('^/?.*', IndexView.as_view(), name='index'),
 ]

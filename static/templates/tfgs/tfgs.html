@@ -1,4 +1,39 @@
 <!-- Aqui se muestran los eventos -->
+<div>
+
+  <p>Filtrar por:</p>
+
+  <form role="form" ng-submit="vm.filter()" ng-controller="DashboardController as dashCtrl">
+
+      <div class="col-md-3">
+        <select class="form-control" ng-model="vm.filter.titulacion" ng-options="titulacion as titulacion.nombre for titulacion in dashCtrl.titulaciones.data track by titulacion.codigo"  ng-init="vm.filter.titulacion=dashCtrl.titulaciones.data[0]">
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <select class="form-control" ng-model="vm.filter.asignados" ng-init="vm.filter.asignados='false'">
+          <option value="all">Todos</option>
+          <option value="true">Asignados</option>
+          <option value="false">No asignados</option>
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <select class="form-control" ng-model="vm.filter.publicados" ng-init="vm.filter.publicados='true'">
+          <option value="all">Todos</option>
+          <option value="true">Publicados</option>
+          <option value="false">No publicados</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Buscar</button>
+
+  </form>
+
+</div>
+
+<br />
+
 <div ng-repeat="tfg in vm.tfgs | orderBy: '-updated_at'">
   <tfg tfg="tfg"></tfg>
 </div>
