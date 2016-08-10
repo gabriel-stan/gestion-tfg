@@ -203,7 +203,6 @@ class TfgServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['data'][0]['titulo'], self.data_tfg1['titulo'])
 
-
         # obtengo con distintos filtros
         res = self.client.get('/api/v1/tfgs/', {'asignado': False, 'publicado': True,
                                                 'titulacion': self.data_tfg1['titulacion']})

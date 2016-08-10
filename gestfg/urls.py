@@ -25,6 +25,8 @@ from eventos.views import EventosViewSet, Tipo_EventosViewSet, SubTipo_EventosVi
 from upload_files.views import Upload_fileView, Upload_file_confirmView
 from comisiones_evaluacion.views import ComisionEvaluacionViewSet
 
+from authentication.views import ResetPasswordRequestView, PasswordResetConfirmView
+
 router = routers.SimpleRouter()
 router.register(r'alumnos', AlumnosViewSet)
 router.register(r'profesores', ProfesoresViewSet)
@@ -47,6 +49,8 @@ urlpatterns = [
     url(r'^api/v1/auth/load_data/$', LoadDataView.as_view(), name='load_data'),
     url(r'^api/v1/upload_file_tfgs/$', Upload_fileView.as_view(), name='upload_file_tfgs'),
     url(r'^api/v1/upload_file_tfgs_confirm/$', Upload_file_confirmView.as_view(), name='upload_file_tfgs_confirm'),
+    url(r'^api/v1/auth/reset_password', ResetPasswordRequestView.as_view(), name="reset_password"),
+    url(r'^api/v1/auth/password_reset_confirm/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     # url(r'^alumnos/$', authentication_views.AlumnosViewSet.alumnos, name='alumnos'),
     # url(r'^logueo/$', login.login, name='login'),
     # url(r'^alumnos/update_alumno/$', alumnos.update_alumno, name='update_alumno'),

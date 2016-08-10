@@ -58,12 +58,15 @@ def is_bool(s):
 
 
 def to_bool(s):
-    if s in ['true', '1', 't', 'y', 'yes', 'True', 'TRUE']:
-        return True
-    elif s in ['false', '0', 'f', 'n', 'no', 'False', 'FALSE']:
-        return False
+    if not isinstance(s, bool):
+        if s in ['true', '1', 't', 'y', 'yes', 'True', 'TRUE']:
+            return True
+        elif s in ['false', '0', 'f', 'n', 'no', 'False', 'FALSE']:
+            return False
+        else:
+            raise NameError('Error en los parametros de entrada')
     else:
-        raise NameError('Error en los parametros de entrada')
+        return s
 
 
 def to_dict(resul):
