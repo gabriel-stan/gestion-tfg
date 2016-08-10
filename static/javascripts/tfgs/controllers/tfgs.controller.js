@@ -9,15 +9,17 @@
     .module('gestfg.tfgs.controllers')
     .controller('TfgsController', TfgsController);
 
-  TfgsController.$inject = ['$scope', 'Tfgs'];
+  TfgsController.$inject = ['$scope', 'Tfgs', 'Snackbar'];
 
   /**
   * @namespace TfgsController
   */
-  function TfgsController($scope, Tfgs) {
+  function TfgsController($scope, Tfgs, Snackbar) {
 
     var tfgsCtrl = this;
     tfgsCtrl.loadTfgs = loadTfgs;
+    tfgsCtrl.filter = filter;
+    tfgsCtrl.loading = true;
 
     tfgsCtrl.parseTimeAgo = function(fecha){
       // console.log(fecha);
@@ -38,7 +40,7 @@
       return fecha;
     }
 
-    loadTfgs();
+    //loadTfgs();
 
     /**
     * @name loadTfgs
@@ -47,7 +49,9 @@
     */
     function loadTfgs(){
       // alert("Load tfgs controlador");
-      Tfgs.all().then(TfgsSuccessFn, TfgsErrorFn);
+      preFilter();
+
+      Tfgs.all().then(TfgsSuccessFn, TfgsErrorFn).finally(filterFinally);
 
       /**
       * @name TfgsSuccessFn
@@ -66,5 +70,54 @@
         Snackbar.error(data.data.error);
       }
     }
+
+    /**
+    * @name filter
+    * @desc filter tfgs from database
+    * @memberOf gestfg.tfgs.controllers.TfgsController
+    */
+    function filter(){
+      // alert("Load tfgs controlador");
+      preFilter();
+
+      Tfgs.filter(tfgsCtrl.filter.titulacion.codigo, tfgsCtrl.filter.asignados, tfgsCtrl.filter.publicados).then(filterSuccessFn, filterErrorFn).finally(filterFinally);
+
+      /**
+      * @name TfgsSuccessFn
+      * @desc Update tfgs array on view
+      */
+      function filterSuccessFn(data, status, headers, config) {
+        tfgsCtrl.tfgs = data.data.data;
+      }
+
+
+      /**
+      * @name TfgsErrorFn
+      * @desc Show snackbar with error
+      */
+      function filterErrorFn(data, status, headers, config) {
+        Snackbar.error(data.data.message);
+      }
+    }
+
+    /**
+    * @name preFilter
+    * @desc Update view
+    */
+    function preFilter(data, status, headers, config) {
+      tfgsCtrl.loading = true;
+      tfgsCtrl.tfgs = [];
+      $('#filter').addClass('disabled');
+    }
+
+    /**
+    * @name filterFinally
+    * @desc Update view
+    */
+    function filterFinally(data, status, headers, config) {
+      tfgsCtrl.loading = false;
+      $('#filter').removeClass('disabled');
+    }
+
   }
 })();
