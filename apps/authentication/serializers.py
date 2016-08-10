@@ -292,10 +292,11 @@ class ProfesorSerializer(serializers.ModelSerializer):
                     grupo_jefe_departamento = Grupos.objects.get(name='Jefe de Departamento')
                 except:
                     raise NameError('El grupo Jefe de departamento no existe')
-                if validated_data.get('jefe_departamento') == True:
+                if validated_data.get('jefe_departamento') is True:
                     grupo_jefe_departamento.user_set.add(profesor)
                 else:
                     grupo_jefe_departamento.user_set.remove(profesor)
+                profesor.jefe_departamento = validated_data.get('jefe_departamento')
 
             profesor.save()
 
