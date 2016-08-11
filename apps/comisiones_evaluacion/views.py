@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from comisiones_evaluacion.models import Comision_Evaluacion
 from comisiones_evaluacion.serializers import Comision_EvaluacionSerializer
 from rest_framework.response import Response
@@ -21,7 +22,6 @@ class ComisionEvaluacionViewSet(viewsets.ModelViewSet):
         :param request:
         :return :
         {status: True/False, data:{serializer del tfg o tfgs}
-
         """
         try:
             params = utils.get_params(request)
@@ -90,7 +90,6 @@ class ComisionEvaluacionViewSet(viewsets.ModelViewSet):
         :param request: tfg <str>, campos <dict>
         :return :
         """
-
         try:
             params = utils.get_params(request)
             self.logger.info('INICIO WS - COMISIONEVALUACIONVIEW PUT del usuario: %s con parametros: %s' %

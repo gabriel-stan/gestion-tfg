@@ -91,26 +91,26 @@ class Comision(object):
             if len(self.tutores_libres[ORDEN_DEPARTAMENTOS[indice]]) > 0:
                 departamento = ORDEN_DEPARTAMENTOS[indice]
                 ind_suplente = self.tutores_libres[departamento][0]
-                suplente = self.tutores_principales[ORDEN_DEPARTAMENTOS[indice]][ind_suplente]
+                suplente_1 = self.tutores_principales[ORDEN_DEPARTAMENTOS[indice]][ind_suplente]
                 self.tutores_libres[ORDEN_DEPARTAMENTOS[indice]].pop(0)
             elif len(self.tutores_libres[ORDEN_DEPARTAMENTOS[(indice + 1) % 3]]) > 0:
                 departamento = ORDEN_DEPARTAMENTOS[(indice + 1) % 3]
                 ind_suplente = self.tutores_libres[departamento][0]
-                suplente = self.tutores_principales[departamento][ind_suplente]
+                suplente_1 = self.tutores_principales[departamento][ind_suplente]
                 self.tutores_libres[ORDEN_DEPARTAMENTOS[(indice + 1) % 3]].pop(0)
             elif len(self.tutores_libres[ORDEN_DEPARTAMENTOS[(indice + 2) % 3]]) > 0:
                 departamento = ORDEN_DEPARTAMENTOS[(indice + 2) % 3]
                 ind_suplente = self.tutores_libres[departamento][0]
-                suplente = self.tutores_principales[departamento][ind_suplente]
+                suplente_1 = self.tutores_principales[departamento][ind_suplente]
                 self.tutores_libres[ORDEN_DEPARTAMENTOS[(indice + 2) % 3]].pop(0)
             else:
-                suplente = ''
-            self.tribunales[key]['suplente'] = suplente
+                suplente_1 = ''
+            self.tribunales[key]['suplente_1'] = suplente_1
 
     def _guardar_comision(self):
         for i in self.tribunales:
             Comision_Evaluacion.objects.create(presidente=i['presidente'], vocal_1=i['vocal_1'], vocal_2=i['vocal_2'],
-                                               suplente=i['suplente'])
+                                               suplente_1=i['suplente_1'])
 
     def asig_tfgs(self):
         try:

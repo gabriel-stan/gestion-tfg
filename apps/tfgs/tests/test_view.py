@@ -68,12 +68,12 @@ class TfgServicesTests(TestCase):
         # Intento obtener todos ls TFGs, pero no hay ninguno
         res = self.client.get('/api/v1/tfgs/')
         resul = json.loads(res.content)
-        self.assertEqual(resul['message'], 'No hay tfgs almacenados')
+        self.assertEqual(len(resul['data']), 0)
 
         # El tfg no existe
         res = self.client.get('/api/v1/tfgs/', {'titulo': self.data_tfg1['titulo']})
         resul = json.loads(res.content)
-        self.assertEqual(resul['message'], 'El tfg indicado no existe')
+        self.assertEqual(len(resul['data']), 0)
 
         # inserto un tfg erroneo, sin tipo
         res = self.client.post('/api/v1/tfgs/', self.data_tfg_error)
@@ -162,12 +162,12 @@ class TfgServicesTests(TestCase):
         # Intento obtener todos ls TFGs, pero no hay ninguno
         res = self.client.get('/api/v1/tfgs/')
         resul = json.loads(res.content)
-        self.assertEqual(resul['message'], 'No hay tfgs almacenados')
+        self.assertEqual(len(resul['data']), 0)
 
         # El tfg no existe
         res = self.client.get('/api/v1/tfgs/', {'titulo': self.data_tfg1['titulo']})
         resul = json.loads(res.content)
-        self.assertEqual(resul['message'], 'El tfg indicado no existe')
+        self.assertEqual(len(resul['data']), 0)
 
         # inserto un tfg erroneo, sin tipo
         res = self.client.post('/api/v1/tfgs/', self.data_tfg_error)
@@ -202,6 +202,12 @@ class TfgServicesTests(TestCase):
         res = self.client.get('/api/v1/tfgs/')
         resul = json.loads(res.content)
         self.assertEqual(resul['data'][0]['titulo'], self.data_tfg1['titulo'])
+
+        # obtengo con distintos filtros
+        res = self.client.get('/api/v1/tfgs/', {'asignado': False, 'publicado': True,
+                                                'titulacion': self.data_tfg1['titulacion']})
+        resul = json.loads(res.content)
+        self.assertEqual(len(resul['data']), 1)
 
     def test_tfg_put(self):
         # Login como administrador
@@ -248,7 +254,6 @@ class TfgServicesTests(TestCase):
                                                 'validado': True})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
-
 
     def test_titulacion(self):
         # Me logueo con un admin

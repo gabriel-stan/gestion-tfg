@@ -6,6 +6,18 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from rest_framework import permissions, viewsets, status, views
 from rest_framework.response import Response
 from django.contrib.auth.models import Permission
+from django.contrib.auth import get_user_model
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.template import loader
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+from django.core.mail import send_mail
+from gestfg.settings import DEFAULT_FROM_EMAIL, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, HOST
+from django.views.generic import *
+from utils import PasswordResetRequestForm, SetPasswordForm
+from django.contrib import messages
 import json
 import utils
 import django.apps
@@ -794,3 +806,86 @@ class DepartamentosViewSet(viewsets.ModelViewSet):
                                  (request.user.email if hasattr(request.user, 'email') else request.user.username,
                                   resul, e))
             return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ResetPasswordRequestView(FormView):
+    template_name = 'backend/reset_password.html'    #code for template is given below the view's code
+    success_url = '/'
+    form_class = PasswordResetRequestForm
+
+    @staticmethod
+    def validate_email_address(email):
+        '''
+        This method here validates the if the input is an email address or not. Its return type is boolean, True if the input is a email address or False if its not.
+        '''
+        try:
+            validate_email(email)
+            return True
+        except ValidationError:
+            return False
+
+    def post(self, usuario):
+        '''
+        A normal post request which takes input from field "email_or_username" (in ResetPasswordRequestForm).
+        '''
+        if self.validate_email_address(usuario) is True:                 #uses the method written above
+            '''
+            If the input is an valid email address, then the following code will lookup for users associated with that email address. If found then an email will be sent to the address, else an error message will be printed on the screen.
+            '''
+            associated_users= Usuario.objects.filter(email=usuario)
+            if associated_users.exists():
+                for user in associated_users:
+                        c = {
+                            'email': user.email,
+                            'domain': HOST,
+                            'site_name': 'your site',
+                            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                            'user': user,
+                            'token': default_token_generator.make_token(user),
+                            'protocol': 'http',
+                            }
+                        subject_template_name='backend/password_reset_subject.txt'
+                        # copied from django/contrib/admin/templates/registration/password_reset_subject.txt to templates directory
+                        email_template_name='backend/password_reset_email.html'
+                        # copied from django/contrib/admin/templates/registration/password_reset_email.html to templates directory
+                        subject = loader.render_to_string(subject_template_name, c)
+                        # Email subject *must not* contain newlines
+                        subject = ''.join(subject.splitlines())
+                        email = loader.render_to_string(email_template_name, c)
+                        send_mail(subject, email, DEFAULT_FROM_EMAIL , [user.email], fail_silently=False,
+                                  auth_user=EMAIL_HOST_USER, auth_password=EMAIL_HOST_PASSWORD)
+                return True
+            return False
+
+
+class PasswordResetConfirmView(FormView):
+    template_name = 'backend/reset_password.html'
+    success_url = '/'
+    form_class = SetPasswordForm
+
+    def post(self, request, uidb64=None, token=None, *arg, **kwargs):
+        """
+        View that checks the hash in a password reset link and presents a
+        form for entering a new password.
+        """
+        UserModel = get_user_model()
+        form = self.form_class(request.POST)
+        assert uidb64 is not None and token is not None  # checked by URLconf
+        try:
+            uid = urlsafe_base64_decode(uidb64)
+            user = UserModel._default_manager.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, UserModel.DoesNotExist):
+            user = None
+
+        if user is not None and default_token_generator.check_token(user, token):
+            if form.is_valid():
+                new_password=form.cleaned_data['new_password2']
+                user.set_password(new_password)
+                user.save()
+                return self.form_valid(form)
+            else:
+                messages.error(request, 'La proceso ha fallado.')
+                return self.form_invalid(form)
+        else:
+            messages.error(request,'El link ha caducado.')
+            return self.form_invalid(form)

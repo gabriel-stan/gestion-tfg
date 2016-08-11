@@ -67,35 +67,31 @@ class Comision_EvaluacionSerializer(serializers.ModelSerializer):
                 else:
                     comision.titular_2 = titular_2
 
-            # comprobando suplente del presidente
-            if 'sup_presidente' in validated_data.keys():
+            # comprobando primer suplente
+            if 'suplente_1' in validated_data.keys():
                 try:
-                    sup_presidente = Profesor.objects.get(email=validated_data.get('sup_presidente'))
+                    suplente_1 = Profesor.objects.get(email=validated_data.get('sup_presidente'))
+                    if not utils.check_miembro(comision, suplente_1):
+                        raise NameError('El cambio no esta permitido')
                 except:
                     raise NameError('El suplente del presidente no existe')
-                if not isinstance(sup_presidente, Profesor) or sup_presidente.groups.filter(name='Profesores').exists():
+                if not isinstance(suplente_1, Profesor) or suplente_1.groups.filter(name='Profesores').exists():
                     raise NameError("Suplente del presidente incorrecto")
                 else:
-                    comision.sup_presidente = sup_presidente
+                    comision.suplente_1 = suplente_1
 
             # comprobando suplente del primer titular
-            if 'sup_titular_1' in validated_data.keys():
+            if 'suplente_2' in validated_data.keys():
                 try:
-                    sup_titular_1 = Profesor.objects.get(email=validated_data.get('sup_titular_1'))
+                    suplente_2 = Profesor.objects.get(email=validated_data.get('suplente_2'))
+                    if not utils.check_miembro(comision, suplente_2):
+                        raise NameError('El cambio no esta permitido')
                 except:
                     raise ('El suplente del primer vocal no existe')
-                if not isinstance(sup_titular_1, Profesor) or sup_titular_1.groups.filter(name='Profesores').exists():
+                if not isinstance(suplente_2, Profesor) or suplente_2.groups.filter(name='Profesores').exists():
                     raise NameError("Suplente del primer titular incorrecto")
                 else:
-                    comision.sup_titular_1 = sup_titular_1
-
-            # comprobando suplente del titular 2
-            if 'sup_titular_2' in validated_data.keys():
-                sup_titular_2 = Profesor.objects.get(email=validated_data.get('sup_titular_2'))
-                if not isinstance(sup_titular_2, Profesor) or sup_titular_2.groups.filter(name='Profesores').exists():
-                    raise NameError("Suplente del segundo titular incorrecto")
-                else:
-                    comision.sup_titular_2 = sup_titular_2
+                    comision.suplente_2 = suplente_2
 
             comision.save()
 

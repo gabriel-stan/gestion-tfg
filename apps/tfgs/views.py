@@ -39,7 +39,8 @@ class TfgViewSet(viewsets.ModelViewSet):
                 if len(tfgs) > 0:
                     resul = utils.procesar_datos_tfgs(request.user, self.serializer_class(tfgs, many=True).data)
                 else:
-                    raise Tfg.DoesNotExist
+                    resul = []
+
             else:
                 # tfg_asig = Tfg_Asig.objects.all()
                 # resul = self.serializer_class(tfg_asig, many=True).data
@@ -47,8 +48,6 @@ class TfgViewSet(viewsets.ModelViewSet):
                 #     raise NameError("No hay tfgs almacenados")
                 params = utils.procesar_params_tfg(request.user, {})
                 tfgs = Tfg.objects.filter(**params)
-                if len(tfgs) == 0:
-                    raise NameError("No hay tfgs almacenados")
                 paginador = Paginator(tfgs, 20)
                 pagina = params.get('pagina')
                 try:

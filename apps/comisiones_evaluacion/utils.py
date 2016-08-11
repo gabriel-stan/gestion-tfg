@@ -99,6 +99,7 @@ def comprueba_profesor(usuario):
     else:
         return False
 
+
 def procesamiento(comision):
 
     resul = {}
@@ -115,7 +116,7 @@ def procesamiento(comision):
 def check_miembro(comision, presidente):
     comisiones = Comision_Evaluacion.all()
     for i in comisiones:
-        if presidente in (i.presidente, i.titular_1, i.titular_2, i.sup_presidente, i.sup_titular_1) and \
+        if presidente in (i.presidente, i.titular_1, i.titular_2, i.suplente_1, i.suplente_2) and \
                         i.id is not comision.id:
             return False
     if presidente.departamento == comision.titular_1.departamento or presidente.departamento == \

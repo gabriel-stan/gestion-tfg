@@ -41,6 +41,15 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'authentication.Usuario'
 
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'noreply.gestfg@gmail.com'
+SERVER_EMAIL = 'noreply.gestfg@gmail.com'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'gestfg.noreply@gmail.com'
+EMAIL_HOST_PASSWORD = 'noreplygestfg'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+HOST = 'http://127.0.0.1:8000/'
 # Application definition
 
 INSTALLED_APPS = (
@@ -56,7 +65,8 @@ INSTALLED_APPS = (
     'authentication',
     'tfgs',
     'eventos',
-    'comisiones_evaluacion'
+    'comisiones_evaluacion',
+    'notificaciones'
 )
 
 MIDDLEWARE_CLASSES = (

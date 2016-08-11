@@ -57,6 +57,18 @@ def is_bool(s):
         return False
 
 
+def to_bool(s):
+    if not isinstance(s, bool):
+        if s in ['true', '1', 't', 'y', 'yes', 'True', 'TRUE']:
+            return True
+        elif s in ['false', '0', 'f', 'n', 'no', 'False', 'FALSE']:
+            return False
+        else:
+            raise NameError('Error en los parametros de entrada')
+    else:
+        return s
+
+
 def to_dict(resul):
     instance = resul['data']
     opts = instance._meta
@@ -231,12 +243,16 @@ def procesar_params_tfg(user, data):
                 data[key] = Titulacion.objects.get(codigo=s_data)
             except Profesor.Titulacion:
                 data[key] = None
+        elif key in ['publicado', 'asignado', 'validado'] and is_bool(s_data):
+            data[key] = to_bool(s_data)
+        elif key == 'n_alumnos' and is_int(s_data):
+            data[key] = int(s_data)
     return _params_perfil(user, data)
 
 
 def _params_perfil(user, data):
     if not getattr(user, 'is_admin', False) and not comprueba_profesor(getattr(user, 'email', '')):
-        data['asignado'] = False
+        #data['asignado'] = False
         data['publicado'] = True
         data['validado'] = True
     return data
