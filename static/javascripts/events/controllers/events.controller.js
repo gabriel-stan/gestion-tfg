@@ -17,6 +17,25 @@
   function EventsController($scope) {
     var eventsCtrl = this;
 
+    eventsCtrl.parseTimeAgo = function(fecha){
+      // console.log(fecha);
+
+      var fecha = new Date(fecha);
+      fecha = moment(fecha).fromNow();
+
+      return fecha;
+    }
+
+
+    eventsCtrl.parseTime = function(fecha){
+      // console.log(fecha);
+
+      var fecha = new Date(fecha);
+      fecha = moment(fecha).format("DD/MM/YYYY - hh:mm");
+
+      return fecha;
+    }
+
     // eventsCtrl.columns = [];
 
     activate();

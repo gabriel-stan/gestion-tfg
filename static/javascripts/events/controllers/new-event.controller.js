@@ -31,6 +31,21 @@
       // recogemos el contenido del wysihtml5 editor
       newEventCtrl.event.contenido = $("#wysihtml5-editor").val();
 
+      // newEventCtrl.event.tipo = newEventCtrl.event.tipo.codigo;
+      newEventCtrl.event.convocatoria = newEventCtrl.event.tipo.codigo;
+      if(newEventCtrl.event.convocatoria && newEventCtrl.event.convocatoria != 'INFOR'){
+        newEventCtrl.event.tipo = newEventCtrl.event.sub_tipo.codigo;
+
+        var fechas = $('#fechas').data('daterangepicker');
+        // newEventCtrl.event.desde = fechas.startDate.toString();
+        // newEventCtrl.event.hasta = fechas.endDate.toString();
+        newEventCtrl.event.desde = fechas.startDate.toISOString();
+        newEventCtrl.event.hasta = fechas.endDate.toISOString();
+        
+      } else {
+        newEventCtrl.event.tipo = '';
+      }
+
       $rootScope.$broadcast('event.created', {
         titulo: newEventCtrl.event.titulo,
         tipo: newEventCtrl.event.tipo,
@@ -61,7 +76,7 @@
       */
       function createEventErrorFn(data, status, headers, config) {
         $rootScope.$broadcast('event.created.error');
-        Snackbar.error(data.message);
+        Snackbar.error(data.data.message);
       }
     }
   }

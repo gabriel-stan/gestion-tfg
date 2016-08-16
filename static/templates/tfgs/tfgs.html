@@ -1,11 +1,65 @@
 <!-- Aqui se muestran los eventos -->
+<div ng-init="vm.loadTfgs()">
+
+  <p>Filtrar por:</p>
+
+  <form role="form" ng-submit="vm.filter()" ng-controller="DashboardController as dashCtrl">
+
+      <div class="col-md-3">
+        <select class="form-control" ng-model="vm.filter.titulacion" ng-options="titulacion as titulacion.nombre for titulacion in dashCtrl.titulaciones.data track by titulacion.codigo"  ng-init="vm.filter.titulacion=dashCtrl.titulaciones.data[0]">
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <select class="form-control" ng-model="vm.filter.asignados" ng-init="vm.filter.asignados='all'">
+          <option value="all">Todos</option>
+          <option value="True">Asignados</option>
+          <option value="False">No asignados</option>
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <select class="form-control" ng-model="vm.filter.publicados" ng-init="vm.filter.publicados='all'">
+          <option value="all">Todos</option>
+          <option value="True">Publicados</option>
+          <option value="False">No publicados</option>
+        </select>
+      </div>
+
+      <button id="filter" type="submit" class="btn btn-primary">Buscar</button>
+
+  </form>
+
+</div>
+
+<br />
+
 <div ng-repeat="tfg in vm.tfgs | orderBy: '-updated_at'">
   <tfg tfg="tfg"></tfg>
 </div>
 
-<div id="tfgs-empty" ng-show="!vm.tfgs.length">
-  <div class="callout callout-info">
-    <h4>Info</h4>
-    <p>Todavía no hay Tfgs.</p>
+
+<div id="tfgs-empty" class="box box-info" ng-show="!vm.tfgs.length">
+
+  <div ng-show="vm.loading">
+    <div class="box-header">
+      <h3 class="box-title">Cargando...</h3>
+    </div>
+    <div class="box-body">
+      <p>Cargando TFGs...</p>
+    </div><!-- /.box-body -->
+    <!-- Loading (remove the following to stop the loading)-->
+    <div class="overlay">
+      <i class="fa fa-refresh fa-spin"></i>
+    </div>
+    <!-- end loading -->
   </div>
-</div>
+
+  <div ng-show="!vm.loading">
+    <div class="callout callout-info">
+      <h4>Info</h4>
+      <p>No hay TFGs con los criterios seleccionados.</p>
+    </div>
+  </div>
+
+</div><!-- /.box -->

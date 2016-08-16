@@ -19,6 +19,8 @@
     * @memberOf gestfg.tfgs.directives.Tfg
     */
     var directive = {
+      controller: 'TfgsController',
+      controllerAs: 'vm',
       restrict: 'E',
       scope: {
         tfg: '='

@@ -18,6 +18,7 @@
   function Tfgs($http) {
     var Tfgs = {
       all: all,
+      filter: filter,
       create: create,
       get: get,
       upload: upload,
@@ -36,6 +37,31 @@
     */
     function all() {
       return $http.get('/api/v1/tfgs/');
+    }
+
+    /**
+    * @name filter
+    * @desc Get filtered Tfgs
+    * @returns {Promise}
+    * @memberOf gestfg.tfgs.services.Tfgs
+    */
+    function filter(titulacion, asignados, publicados) {
+
+      var params = '?';
+
+      if(titulacion){
+        params += 'titulacion=' + titulacion;
+      }
+
+      if(asignados != null && asignados != 'all' ){
+        params += '&asignado=' + asignados;
+      }
+
+      if(publicados != null && publicados != 'all' ){
+        params += '&publicado=' + publicados;
+      }
+
+      return $http.get('/api/v1/tfgs/' + params);
     }
 
 
