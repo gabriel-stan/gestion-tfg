@@ -46,6 +46,7 @@ class Comision_Evaluacion(models.Model):
     vocal_2 = models.ForeignKey(Profesor, related_name='vocal_2', default=None, null=True)
     suplente_1 = models.ForeignKey(Profesor, related_name='suplente_1', default=None)
     suplente_2 = models.ForeignKey(Profesor, related_name='suplente_2', default=None, null=True)
+    # Convocatoria
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

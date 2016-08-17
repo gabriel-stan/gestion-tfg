@@ -57,7 +57,6 @@ class EventosViewSet(viewsets.ModelViewSet):
                                                  tipo=params.get('tipo'),
                                                  convocatoria=params.get('convocatoria'),
                                                  titulo=params.get('titulo'),
-                                                 sub_tipo=params.get('sub_tipo'),
                                                  autor=Usuario.objects.get(id=request.user.id),
                                                  desde=params.get('desde'), hasta=params.get('hasta'))
 
