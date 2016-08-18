@@ -94,6 +94,13 @@ class ComisionesEvaluacionServicesTests(TestCase):
                           , departamento=dep_atc, password='75169052')
         Profesor.objects.create_user(**self.prof11)
 
+        self.prof12 = dict(email='qwe123@ugr.es', first_name='qwe123 2', last_name='eq 12 apelliweasdaado 122'
+                          , departamento=dep_ccia, password='7516129052')
+        Profesor.objects.create_user(**self.prof11)
+
+        self.prof13 = dict(email='hgm54@ugr.es', first_name='hgm54 2', last_name='dfgre 12 apelergerlido 122'
+                          , departamento=dep_est, password='751690as52')
+        Profesor.objects.create_user(**self.prof11)
 
     def test_formacion_comisiones(self):
         # Login como administrador
@@ -237,4 +244,21 @@ class ComisionesEvaluacionServicesTests(TestCase):
         res = self.client.post('/api/v1/comisiones/', {'convocatoria': 'CONV_JUN'})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
-        self.assertEqual(len(resul['data']['tribunales']), 3)
+        self.assertEqual(len(resul['data']['tribunales']), 2)
+
+        # Creo una comision
+        res = self.client.post('/api/v1/comisiones/', {'convocatoria': 'CONV_JUN'})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+        self.assertEqual(len(resul['data']['tribunales']), 2)
+
+        # Obtengo los tribunales
+        res = self.client.get('/api/v1/tribunales/')
+        resul = json.loads(res.content)
+        self.assertEqual(len(resul['data']), 18)
+
+        # Modifico la fecha de uno
+        res = self.client.put('/api/v1/tribunales/', {'tfg': resul['data'][0]['tfg']['tfg']['titulo'],
+                                                      'datos': json.dumps({'fecha': '2016-07-04T22:00:00.000Z'})})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['fecha'], '2016-07-04T22:00:00Z')

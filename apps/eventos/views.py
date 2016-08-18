@@ -53,19 +53,24 @@ class EventosViewSet(viewsets.ModelViewSet):
             params = utils.get_params(request)
             self.logger.info('INICIO WS - EVENTOSVIEW CREATE del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
-            resul = Evento.objects.create_evento(contenido=params.get('contenido'),
-                                                 tipo=params.get('tipo'),
-                                                 convocatoria=params.get('convocatoria'),
-                                                 titulo=params.get('titulo'),
-                                                 autor=Usuario.objects.get(id=request.user.id),
-                                                 desde=params.get('desde'), hasta=params.get('hasta'))
+            if request.user.has_perm('eventos.evento.change') or request.user.is_admin:
+                resul = Evento.objects.create_evento(contenido=params.get('contenido'),
+                                                     tipo=params.get('tipo'),
+                                                     convocatoria=params.get('convocatoria'),
+                                                     titulo=params.get('titulo'),
+                                                     autor=Usuario.objects.get(id=request.user.id),
+                                                     desde=params.get('desde'), hasta=params.get('hasta'))
 
-            if resul.get('status'):
-                resul = utils.to_dict(resul)
-                resul_status = status.HTTP_200_OK
+                if resul.get('status'):
+                    resul['data'] = self.serializer_class(resul['data']).data
+                    resul['data'] = utils.periodos(resul['data'])
+                    resul_status = status.HTTP_200_OK
+                else:
+                    resul = dict(message=resul['message'])
+                    resul_status = status.HTTP_400_BAD_REQUEST
             else:
-                resul = dict(message=resul['message'])
-                resul_status = status.HTTP_400_BAD_REQUEST
+                resul = dict(status=False, message="Sin privilegios")
+                resul_status = status.HTTP_405_METHOD_NOT_ALLOWED
             self.logger.info('FIN WS - EVENTOSVIEW CREATE del usuario: %s con resultado: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(resul, status=resul_status)
@@ -90,20 +95,23 @@ class EventosViewSet(viewsets.ModelViewSet):
             self.logger.info('INICIO WS - EVENTOSVIEW PUT del usuario: %s con params: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if request.user.has_perm('eventos.evento.change') or request.user.is_admin:
-                evento = Evento.objects.get(contenido=params.get('contenido'))
-                params = json.loads(params.get('data'))
+                evento = Evento.objects.get(contenido=params.get('evento'))
+                params = json.loads(params.get('datos'))
                 serializer = EventoSerializer(evento)
                 resul = serializer.update(evento, params)
                 if resul['status']:
-                    return Response(utils.to_dict(resul))
+                    resul['data'] = utils.periodos(resul['data'])
+                    resul_status = status.HTTP_200_OK
                 else:
-                    return Response(resul)
+                    resul = dict(message=resul['message'])
+                    resul_status = status.HTTP_400_BAD_REQUEST
             else:
                 resul = dict(status=False, message="Sin privilegios")
-                self.logger.info('FIN WS - EVENTOSVIEW PUT del usuario: %s con resultado: %s' %
+                resul_status = status.HTTP_405_METHOD_NOT_ALLOWED
+            self.logger.info('FIN WS - EVENTOSVIEW PUT del usuario: %s con resultado: %s' %
                                  (request.user.email if hasattr(request.user, 'email') else request.user.username,
                                   resul))
-                return Response(resul, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+            return Response(resul, status=resul_status)
         except Exception as e:
             resul = dict(status=False, message="Error en la llamada")
             self.logger.critical('FIN WS - EVENTOSVIEW PUT del usuario: %s con resultado: %s' %

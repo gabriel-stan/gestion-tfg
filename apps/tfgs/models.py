@@ -364,7 +364,7 @@ class Tfg_Asig(models.Model):
         return self.alumno_3
 
     def to_dict(self, user):
-        return dict(tfg=self.tfg.to_dict(user), alumno_1=self.alumno_1.to_dict(user),
+        return dict(id=self.id, tfg=self.tfg.to_dict(user), alumno_1=self.alumno_1.to_dict(user),
                     alumno_2=self.alumno_2.to_dict(user) if self.alumno_2 else None,
                     alumno_3=self.alumno_3.to_dict(user) if self.alumno_3 else None,
                     convocatoria=self.convocatoria.to_dict()if self.convocatoria else None,

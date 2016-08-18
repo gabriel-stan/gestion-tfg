@@ -692,8 +692,7 @@ class DepartamentosViewSet(viewsets.ModelViewSet):
             self.logger.info('INICIO WS - DEPARTAMENTOSVIEW LIST del usuario: %s' %
                              request.user.email if hasattr(request.user, 'email') else request.user.username)
             departamentos = Departamento.objects.all()
-            utils.procesar_datos_departamento(departamentos)
-            resul = self.serializer_class(departamentos, many=True).data
+            resul = utils.procesar_datos_departamento(request.user, self.serializer_class(departamentos, many=True).data)
             self.logger.info('FIN WS - DEPARTAMENTOSVIEW LIST del usuario: %s con resultado: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(dict(data=resul), status=status.HTTP_200_OK)

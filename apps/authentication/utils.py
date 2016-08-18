@@ -197,22 +197,18 @@ def procesar_datos_usuario(user, data):
     return data
 
 
-def procesar_datos_departamento(data):
+def procesar_datos_departamento(user, data):
     # Importo aqui para evitar el cruce de imports
     from models import Profesor, Grupos
     group = Grupos.objects.get(name='Jefe de Departamento')
     users = group.user_set.all()
-    resultado = []
-    for s_data in data:
-        departamento = {}
-        departamento['codigo'] = s_data.codigo
-        departamento['id'] = s_data.id
-        departamento['nombre'] = s_data.nombre
+    if isinstance(data, dict):
+        data = [data]
+    for key, s_data in enumerate(data):
         for s_users in users:
-            if s_users.departamento.codigo == s_data.codigo:
-                departamento['jefe_departamento'] = s_users
-        resultado.append(departamento)
-    return resultado
+            if s_users.profesor.departamento.codigo == s_data['codigo']:
+                data[key]['jefe_departamento'] = collections.OrderedDict(s_users.profesor.to_dict(user))
+    return data
 
 
 def obtener_grupos(data):
