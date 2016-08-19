@@ -146,7 +146,7 @@ class Comision(object):
             presidente = Profesor.objects.get(email=self.tribunales[tribunal_intercambiar]['presidente'])
             serializer.update(tribunal, {'presidente': presidente})
             Tribunales.objects.create(tfg=tfg.tfg, comision=self.tribunales[tribunal_enc]['presidente'])
-        except:
+        except Exception as e:
             raise NameError("Error al generar comites, vuelva a intentarlo")
 
     def bucar_tfg_intercambiar(self, tribunal_key):

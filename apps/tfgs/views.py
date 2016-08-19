@@ -507,17 +507,3 @@ class TitulacionesViewSet(viewsets.ModelViewSet):
                                   resul, e))
             return Response(resul, status=status.HTTP_400_BAD_REQUEST)
 
-
-class TfgEstadisticaView(views.APIView):
-    permission_classes = (permissions.IsAuthenticated,)
-    logger = logging.getLogger(__name__)
-
-    def get(self, request):
-        self.logger.info('INICIO WS - TFGESTADISTICASVIEW GET del usuario: %s' %
-                         request.user.email if hasattr(request.user, 'email') else request.user.username)
-        tfgs = Tfg.objects.all().count()
-        tfgs_asig = Tfg_Asig.objects.all().count()
-        resul = {'status': True, 'data': {'tfgs': tfgs, 'tfgs_asig': tfgs_asig}}
-        self.logger.info('FIN WS - TFGESTADISTICASVIEW GET del usuario: %s, con resultado: %s' %
-                         (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
-        return Response(resul, status=status.HTTP_200_OK)

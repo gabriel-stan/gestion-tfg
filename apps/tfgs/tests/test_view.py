@@ -195,11 +195,6 @@ class TfgServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
-        # obtengo con distintos filtros
-        res = self.client.get('/api/v1/estadisticas/')
-        resul = json.loads(res.content)
-        self.assertEqual(resul['data']['tfgs'], 1)
-
         # Usuario anonimo
         res = self.client.post('/api/v1/auth/logout/')
 
