@@ -66,6 +66,10 @@ class ComisionEvaluacionViewSet(viewsets.ModelViewSet):
                 comision = Comision(request.user)
                 resul = comision.tutores_comisiones(params.get('convocatoria'))
                 comision.asig_tfgs()
+                while comision.reintentar:
+                    comision = Comision(request.user)
+                    resul = comision.tutores_comisiones(params.get('convocatoria'))
+                    comision.asig_tfgs()
                 if resul['status']:
                     resul_status = status.HTTP_200_OK
                 else:

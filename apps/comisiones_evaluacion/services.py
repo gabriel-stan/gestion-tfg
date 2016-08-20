@@ -25,6 +25,7 @@ class Comision(object):
         self.num_tfg = 0
         self.num_tribunales = 0
         self.user = user
+        self.reintentar = False
         for comision in Comision_Evaluacion.objects.all():
             serializer = Comision_EvaluacionSerializer(comision)
             serializer.delete(comision)
@@ -46,7 +47,6 @@ class Comision(object):
                     else:
                         dep_asociado = DEPARTAMENTOS_ASOCIADOS[tfg_asig.tfg.cotutor.departamento.codigo]
                         self._introducir_tutor(dep_asociado, tfg_asig.tfg.cotutor.email)
-                self.num_tutores += 1
             self.tutores_libres['CCIA'] = list(range(0, len(self.tutores_principales['CCIA'])))
             self.tutores_libres['LSI'] = list(range(0, len(self.tutores_principales['LSI'])))
             self.tutores_libres['ATC'] = list(range(0, len(self.tutores_principales['ATC'])))
@@ -83,6 +83,7 @@ class Comision(object):
                 break
         if introducir:
             self.tutores_principales[departamento].append(email)
+            self.num_tutores += 1
 
     def _check_tribunal(self, tribunal, tfg_asig, dict=False):
         if not dict:
@@ -146,21 +147,18 @@ class Comision(object):
             presidente = Profesor.objects.get(email=self.tribunales[tribunal_intercambiar]['presidente'])
             serializer.update(tribunal, {'presidente': presidente})
             Tribunales.objects.create(tfg=tfg.tfg, comision=self.tribunales[tribunal_enc]['presidente'])
-        except Exception as e:
-            raise NameError("Error al generar comites, vuelva a intentarlo")
+        except:
+            self.reintentar = True
 
     def bucar_tfg_intercambiar(self, tribunal_key):
-        try:
-            for tfg in self.tribunales[tribunal_key]['tfgs']:
-                for key, tribunal in enumerate(self.tribunales):
-                    if key is not tribunal_key and tfg['tfg']['tutor']['email'] not in [tribunal.get('presidente'),
-                                                                                        tribunal.get('vocal_1'),
-                                                                                        tribunal.get('vocal_2'),
-                                                                                        tribunal.get('suplente_1'),
-                                                                                        tribunal.get('suplente_2')]:
-                        return key, tfg
-        except:
-            raise NameError("Error al generar comites, vuelva a intentarlo")
+        for tfg in self.tribunales[tribunal_key]['tfgs']:
+            for key, tribunal in enumerate(self.tribunales):
+                if key is not tribunal_key and tfg['tfg']['tutor']['email'] not in [tribunal.get('presidente'),
+                                                                                    tribunal.get('vocal_1'),
+                                                                                    tribunal.get('vocal_2'),
+                                                                                    tribunal.get('suplente_1'),
+                                                                                    tribunal.get('suplente_2')]:
+                    return key, tfg
 
     def asig_tfgs(self):
         try:
