@@ -1,3 +1,31 @@
+
+  <a
+    id="boton-edit"
+    class="btn btn-default disabled"
+    data-toggle="modal"
+    data-target="#modal-edit"
+    ng-click="loadSelectedTFG()"
+  >
+    Editar
+  </a>
+
+  <div class="example-modal">
+    <div class="modal fade" id="modal-edit">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Editar TFG</h4>
+          </div>
+          <div class="modal-body">
+            <new-tfg-modal tfg="selectedTFG"></new-tfg-modal>
+            <!-- <new-user-modal user="selectedUser"></new-user-modal> -->
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+  </div><!-- /.example-modal -->
+
   <table id="tabla-tfgs" class="table table-bordered table-striped">
     <thead>
       <tr>
@@ -66,7 +94,7 @@
           }
       };
 
-      $("#tabla-tfgs").DataTable({
+      var table = $("#tabla-tfgs").DataTable({
           //sDom: '<Bf>rt<"col-md-6"i><"col-md-6"p><"col-md-12"l>',
           sDom: '<Bf>rt<pi><"clear"l>',
           language: {
@@ -83,14 +111,8 @@
                       dt.ajax.reload();
                   }
               },
-              'copyHtml5',
-              'excelHtml5',
-              'csvHtml5',
-              'pdfHtml5',
-              {
-                  extend: 'alert',
-                  text: 'My button 2'
-              }
+              'selectAll',
+              'selectNone'
           ],
           ajax: "/api/v1/tfgs/",
           sDefaultContent: "hello",
@@ -115,6 +137,48 @@
             {"data" : "asignado"}
           ]
         });
+
+        table.on( 'select', function () {
+            var selectedRows = table.rows( { selected: true } ).count();
+
+            table.button( 'edit:name' ).enable( selectedRows === 1 );
+            if(selectedRows === 1){
+              // $("#boton-edit").attr("disabled",selectedRows === 1);
+              $("#boton-edit").removeClass("disabled");
+            } else {
+              $("#boton-edit").addClass("disabled");
+            }
+        } );
+
+        table.on( 'deselect', function () {
+            var selectedRows = table.rows( { selected: true } ).count();
+
+            table.button( 'edit:name' ).enable( selectedRows === 1 );
+            if(selectedRows === 1){
+              // $("#boton-edit").attr("disabled",selectedRows === 1);
+              $("#boton-edit").removeClass("disabled");
+            } else {
+              $("#boton-edit").addClass("disabled");
+            }
+        } );
+
+        new $.fn.dataTable.Buttons( table, {
+            buttons: [
+              'copyHtml5',
+              'excelHtml5',
+              'csvHtml5',
+              'pdfHtml5'
+            ]
+        } );
+
+        table.on( 'preInit.dt', function (e, settings) {
+          // var container = $(table.table().container());
+          var container = $(table.buttons(1).container()[0]);
+          container.prepend(table.buttons(1).container()[1]);
+
+          container.append($('#boton-edit'));
+        });
+
 
       // $('#example2').DataTable({
       //   "paging": true,

@@ -48,6 +48,8 @@
     })
 
     .when('/dashboard/tfgs', {
+      controller: 'TfgsController',
+      controllerAs: 'tfgsCtrl',
       templateUrl: '/static/templates/layout/dashboard/tfgs/tfgs.html'
     })
     .when('/dashboard/tfgs/add', {
