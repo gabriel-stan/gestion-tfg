@@ -2,12 +2,13 @@
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from tfgs.models import Tfg, Tfg_Asig, Titulacion
 from tfgs.serializers import TfgSerializer, Tfg_AsigSerializer, TitulacionSerializer
-from authentication.models import Alumno, Profesor
+from authentication.models import Alumno, Profesor, Grupos
 from rest_framework import viewsets, status, views
 from rest_framework.response import Response
 import json
 import utils
 import logging
+from rest_framework import permissions
 
 
 class TfgViewSet(viewsets.ModelViewSet):
@@ -271,30 +272,48 @@ class Tfg_asigViewSet(viewsets.ModelViewSet):
             params = utils.get_params(request)
             self.logger.info('INICIO WS - TFGASIGVIEW POST del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
-            alumno_2 = None
-            alumno_3 = None
-            tfg = Tfg.objects.get(titulo=params.get('tfg'))
-            alumno_1 = Alumno.objects.get(email=params.get('alumno1'))
-            if 'alumno_2' in params:
-                alumno_2 = Alumno.objects.get(email=params.get('alumno_2'))['id']
-            if 'alumno_3' in params:
-                alumno_3 = Alumno.objects.get(email=params.get('alumno_3'))['id']
-            serializer = self.serializer_class(data=dict(tfg=tfg.id, alumno_1=alumno_1.id, alumno_2=alumno_2,
-                                                         alumno_3=alumno_3))
-            if serializer.is_valid():
-                resul = serializer.create(serializer.validated_data)
-                if resul['status']:
-                    resul = utils.to_dict(resul)
-                    resul_status = status.HTTP_200_OK
+            if request.user.has_perm('tfgs.tfg_asig.change') or request.user.is_admin:
+                alumno_2 = None
+                alumno_3 = None
+                tfg = Tfg.objects.get(titulo=params.get('tfg'))
+                # Si es profesor
+                if Profesor.objects.filter(email=request.user.email).exists() and request.user.email != tfg.tutor.\
+                        email:
+                    raise NameError("El profesor no es tutor del Tfg")
+
+                alumno_1 = Alumno.objects.get(email=params.get('alumno1'))
+                if 'alumno_2' in params:
+                    alumno_2 = Alumno.objects.get(email=params.get('alumno_2'))['id']
+                if 'alumno_3' in params:
+                    alumno_3 = Alumno.objects.get(email=params.get('alumno_3'))['id']
+
+                serializer = self.serializer_class(data=dict(tfg=tfg.id, alumno_1=alumno_1.id, alumno_2=alumno_2,
+                                                             alumno_3=alumno_3))
+                if serializer.is_valid():
+                    resul = serializer.create(serializer.validated_data)
+                    if resul['status']:
+                        resul = utils.to_dict(resul)
+                        resul_status = status.HTTP_200_OK
+                    else:
+                        resul = dict(message=resul['message'])
+                        resul_status = status.HTTP_400_BAD_REQUEST
                 else:
-                    resul = dict(message=resul['message'])
+                    resul = dict(message=serializer.errors)
                     resul_status = status.HTTP_400_BAD_REQUEST
             else:
-                resul = dict(message=serializer.errors)
+                resul = dict(message="Sin privilegios")
                 resul_status = status.HTTP_400_BAD_REQUEST
             self.logger.info('FIN WS - TFGASIGVIEW POST del usuario: %s con resultado: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(resul, status=resul_status)
+        except Alumno.DoesNotExist:
+            resul = dict(message="El tfg indicado no existe")
+            self.logger.error('TITULACIONESVIEW POST del usuario: %s con resultado: %s' %
+                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+        except NameError as e:
+            self.logger.error('TITULACIONESVIEW POST: %s' % e.message)
+            return Response(dict(message=e.message), status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             resul = dict(status=False, message="Error en la llamada")
             self.logger.critical('TFGASIGVIEW POST: %s %s' % (resul, e))
@@ -317,7 +336,7 @@ class Tfg_asigViewSet(viewsets.ModelViewSet):
                     resul = dict(message=resul['message'])
                     resul_status = status.HTTP_400_BAD_REQUEST
             else:
-                resul = dict(message="Parametros incorrectos")
+                resul = dict(message="Sin privilegios")
                 resul_status = status.HTTP_400_BAD_REQUEST
             self.logger.info('FIN WS - TFGASIGVIEWCONVOCATORIA PUT del usuario: %s con resultado: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
@@ -357,7 +376,7 @@ class Tfg_asigViewSet(viewsets.ModelViewSet):
                     resul = dict(message=resul['message'])
                     resul_status = status.HTTP_400_BAD_REQUEST
             else:
-                resul = dict(message="Parametros incorrectos")
+                resul = dict(message="Sin privilegios")
                 resul_status = status.HTTP_400_BAD_REQUEST
             self.logger.info('FIN WS - TFGASIGVIEW DELETE del usuario: %s con resultado: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
@@ -505,3 +524,4 @@ class TitulacionesViewSet(viewsets.ModelViewSet):
                                  (request.user.email if hasattr(request.user, 'email') else request.user.username,
                                   resul, e))
             return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+

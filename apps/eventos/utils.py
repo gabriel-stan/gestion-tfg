@@ -1,5 +1,6 @@
 from django.db.models.fields.related import ManyToManyField
 from authentication.models import Alumno, Profesor, Usuario
+from datetime import datetime
 import simplejson as json
 import collections
 
@@ -118,10 +119,17 @@ def procesar_datos_eventos(user, data):
             data[key]['tipo'] = collections.OrderedDict(SubTipo_Evento.objects.get(id=s_data['tipo']).to_dict())
         else:
             data[key]['tipo'] = ''
-        try:
-            periodo = Periodo.objects.get(evento=s_data['id'])
-            data[key]['desde'] = periodo.start
-            data[key]['hasta'] = periodo.end
-        except Periodo.DoesNotExist:
-            pass
+        data[key] = periodos(data[key])
+    return data
+
+
+def periodos(data):
+    # Importo aqui para evitar el cruce de imports
+    from models import Tipo_Evento, SubTipo_Evento, Periodo
+    try:
+        periodo = Periodo.objects.get(evento=data['id'])
+        data['desde'] = periodo.start.strftime('%Y-%m-%dT%H:%M:%S')
+        data['hasta'] = periodo.end.strftime('%Y-%m-%dT%H:%M:%S')
+    except Periodo.DoesNotExist:
+        pass
     return data

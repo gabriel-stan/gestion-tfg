@@ -9,7 +9,8 @@ PERMISOS_JEFE_DEPARTAMENTO={'tfgs': {'tfg': ['create', 'select', 'change', 'dele
                              'eventos': {'evento': ['create', 'select', 'change', 'delete']},
                              'authentication': {'usuario': ['select']}}
 
-PERMISOS_PROFESORES={'tfgs': {'tfg': ['create', 'select', 'change', 'delete']},
+PERMISOS_PROFESORES={'tfgs': {'tfg': ['create', 'select', 'change', 'delete'],
+                              'tfg_asig': ['create', 'select', 'change', 'delete']},
                      'eventos': {'evento': ['create', 'select', 'change', 'delete']},
                      'authentication': {'usuario': ['select']}}
 

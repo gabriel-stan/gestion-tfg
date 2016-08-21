@@ -66,7 +66,8 @@ INSTALLED_APPS = (
     'tfgs',
     'eventos',
     'comisiones_evaluacion',
-    'notificaciones'
+    'notificaciones',
+    'estadisticas'
 )
 
 MIDDLEWARE_CLASSES = (

@@ -221,6 +221,10 @@ class TfgServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['data']['email'], self.data_prof1['email'])
 
+        res = self.client.post('/api/v1/alumnos/', self.data_alum1)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['email'], self.data_alum1['email'])
+
         # Inserto el cotutor
         res = self.client.post('/api/v1/profesores/', self.data_prof2)
         resul = json.loads(res.content)
@@ -235,6 +239,12 @@ class TfgServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
+        # Asigno el TFG
+        res = self.client.post('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'],
+                                                      'alumno1': self.data_alum1['email']})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
         # Me logueo con otro profesor
         res = self.client.post('/api/v1/auth/login/', {'email': self.data_prof2['email'],
                                                        'password': self.data_prof2['password']})
@@ -244,6 +254,12 @@ class TfgServicesTests(TestCase):
                                                 'validado': True})})
         resul = json.loads(res.content)
         self.assertEqual(resul['message'], 'Sin privilegios')
+
+        # intento asignar un tfg que no es mio
+        res = self.client.post('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'],
+                                                      'alumno1': self.data_alum1['email']})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['message'], 'El profesor no es tutor del Tfg')
 
         # Vuelve el primer profesor
         res = self.client.post('/api/v1/auth/login/', {'email': self.data_prof1['email'],

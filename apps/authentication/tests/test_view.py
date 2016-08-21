@@ -207,6 +207,11 @@ class AuthenticationServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['data']['dni'], self.data_admin['dni'])
 
+        # inserto un profesor
+        res = self.client.post('/api/v1/profesores/', self.data_prof1)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
         res = self.client.post('/api/v1/departamentos/', {'codigo': self.data_departamento['codigo'],
                                                                'nombre': self.data_departamento['nombre']})
         resul = json.loads(res.content)
@@ -217,7 +222,13 @@ class AuthenticationServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['data']['nombre'], 'departamento chulo')
 
+        # Modificar un profesor
+        res = self.client.put('/api/v1/profesores/', {'usuario': self.data_prof1['dni'],
+                                                      'datos': json.dumps({'jefe_departamento': True})})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
         res = self.client.get('/api/v1/departamentos/')
         resul = json.loads(res.content)
-        self.assertEqual(resul['data'][1]['nombre'], 'departamento chulo')
+        self.assertEqual(resul['data'][0]['jefe_departamento']['dni'], self.data_prof1['dni'])
 

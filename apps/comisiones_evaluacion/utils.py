@@ -1,7 +1,9 @@
 from django.db.models.fields.related import ManyToManyField
 from authentication.models import Alumno, Profesor
-from comisiones_evaluacion.models import Comision_Evaluacion
+from comisiones_evaluacion.models import Comision_Evaluacion, Tribunales
+from eventos.models import Periodo
 import simplejson as json
+import collections
 
 
 def get_params(req):
@@ -123,3 +125,29 @@ def check_miembro(comision, presidente):
             comision.titular_2.departamento:
         return False
     return True
+
+
+def check_convocatoria(convocatoria, tipo):
+    periodos = Periodo.objects.for_period()
+    for periodo in periodos:
+        if periodo.evento.convocatoria == convocatoria and periodo.evento.tipo == tipo:
+            return True
+    return False
+
+
+def check_tfg_tribunal(tfg):
+    if Tribunales.objects.filter(tfg=tfg).exists():
+        return False
+    else:
+        return True
+
+
+def procesar_datos_tribunales(user, data):
+    # Importo aqui para evitar el cruce de imports
+    from tfgs.models import Tfg_Asig
+    if isinstance(data, dict):
+        data = [data]
+    for key, s_data in enumerate(data):
+        data[key]['tfg'] = collections.OrderedDict(Tfg_Asig.objects.get(id=s_data['tfg']['id']).to_dict(user))
+        # data[key]['comision'] = collections.OrderedDict(Comision_Evaluacion.objects.get(id=s_data['comision']).to_dict(user))
+    return data
