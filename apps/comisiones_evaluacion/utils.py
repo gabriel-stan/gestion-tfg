@@ -39,6 +39,18 @@ def is_string(s):
         return False
 
 
+def to_bool(s):
+    if not isinstance(s, bool):
+        if s in ['true', '1', 't', 'y', 'yes', 'True', 'TRUE']:
+            return True
+        elif s in ['false', '0', 'f', 'n', 'no', 'False', 'FALSE']:
+            return False
+        else:
+            raise NameError('Error en los parametros de entrada')
+    else:
+        return s
+
+
 def is_int(s):
     try:
         if isinstance(s, str) or isinstance(s, float):

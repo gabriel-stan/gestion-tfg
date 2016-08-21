@@ -16,25 +16,33 @@ ORDEN_DEPARTAMENTOS = {0: 'LSI', 1: 'CCIA', 2: 'ATC'}
 
 class Comision(object):
 
-    def __init__(self, user):
+    def __init__(self, user, convocatoria, comisiones=None):
         self.tutores_principales = {'CCIA': [], 'LSI': [], 'ATC': []}
         self.tutores_libres = {'CCIA': [], 'LSI': [], 'ATC': []}
         self.exitos = []
-        self.tribunales = []
+        self.convocatoria = Tipo_Evento.objects.get(codigo=convocatoria)
+        self.tfgs_asig = Tfg_Asig.objects.filter(convocatoria=self.convocatoria)
+        self.comisiones = []
         self.num_tutores = 0
-        self.num_tfg = 0
-        self.num_tribunales = 0
+        self.num_tfg = self.tfgs_asig.count()
+        self.num_comisiones = 0
         self.user = user
         self.reintentar = False
-        for comision in Comision_Evaluacion.objects.all():
-            serializer = Comision_EvaluacionSerializer(comision)
-            serializer.delete(comision)
+        if not comisiones:
+            self.num_comisiones = 0
+            for comision in Comision_Evaluacion.objects.all():
+                serializer = Comision_EvaluacionSerializer(comision)
+                serializer.delete(comision)
+        else:
+            comisiones = Comision_Evaluacion.objects.all()
+            for key, comision in enumerate(comisiones):
+                self.comisiones.append(comision.to_dict(user))
+                self.comisiones[key]['tfgs'] = []
+            self.num_comisiones = comisiones.count()
 
-    def tutores_comisiones(self, convocatoria):
+    def tutores_comisiones(self):
         try:
             self.departamentos = Departamento.objects.all()
-            convocatoria = Tipo_Evento.objects.get(codigo=convocatoria)
-            self.tfgs_asig = Tfg_Asig.objects.filter(convocatoria=convocatoria)
             for tfg_asig in self.tfgs_asig:
                 if tfg_asig.tfg.tutor.departamento.codigo in DEPARTAMENTOS_PRINCIPALES:
                     self._introducir_tutor(tfg_asig.tfg.tutor.departamento.codigo, tfg_asig.tfg.tutor.email)
@@ -50,9 +58,8 @@ class Comision(object):
             self.tutores_libres['CCIA'] = list(range(0, len(self.tutores_principales['CCIA'])))
             self.tutores_libres['LSI'] = list(range(0, len(self.tutores_principales['LSI'])))
             self.tutores_libres['ATC'] = list(range(0, len(self.tutores_principales['ATC'])))
-            self.num_tfg = self.tfgs_asig.count()
-            self.num_tribunales = int(math.ceil(self.num_tutores * 0.1))
-            for i in range(self.num_tribunales):
+            self.num_comisiones = int(math.ceil(self.num_tutores * 0.1))
+            for i in range(self.num_comisiones):
                 tribunal = {'tfgs': []}
                 indice = random.randint(0, 2)
                 departamento_1 = ORDEN_DEPARTAMENTOS[indice]
@@ -67,11 +74,11 @@ class Comision(object):
                 tribunal['presidente'] = self.tutores_principales[departamento_1][presidente]
                 tribunal['vocal_1'] = self.tutores_principales[departamento_2][vocal_1]
                 tribunal['vocal_2'] = self.tutores_principales[departamento_3][vocal_2]
-                self.tribunales.append(tribunal)
+                self.comisiones.append(tribunal)
             self._seleccion_suplentes()
             self._guardar_comision()
-            return dict(status=True, data=dict(num_tribunales=self.num_tribunales, num_tfg=self.num_tfg,
-                                               num_tutores=self.num_tutores, tribunales=self.tribunales))
+            return dict(status=True, data=dict(num_comisiones=self.num_comisiones, num_tfg=self.num_tfg,
+                                               num_tutores=self.num_tutores, tribunales=self.comisiones))
         except Exception as e:
                 return dict(status=False, message=e)
 
@@ -92,7 +99,7 @@ class Comision(object):
             email = tfg_asig['tfg']['tutor']['email']
         if email in [tribunal.get('presidente'), tribunal.get('vocal_1'), tribunal.get('vocal_2'),
                      tribunal.get('suplente_1'), tribunal.get('suplente_2')] \
-                or len(tribunal['tfgs']) >= (self.num_tfg / self.num_tribunales):
+                or len(tribunal['tfgs']) >= (self.num_tfg / self.num_comisiones):
             return False
         else:
             return True
@@ -118,59 +125,63 @@ class Comision(object):
         return suplente
 
     def _seleccion_suplentes(self):
-        for key, tribunal in enumerate(self.tribunales):
+        for key, tribunal in enumerate(self.comisiones):
             indice = random.randint(0, 2)
             suplente_1 = self._seleccionar_suplente(indice)
             suplente_2 = self._seleccionar_suplente((indice + 1) % 3)
-            self.tribunales[key]['suplente_1'] = suplente_1
-            self.tribunales[key]['suplente_2'] = suplente_2
+            self.comisiones[key]['suplente_1'] = suplente_1
+            self.comisiones[key]['suplente_2'] = suplente_2
 
     def _guardar_comision(self):
-        for i in self.tribunales:
+        for i in self.comisiones:
             Comision_Evaluacion.objects.create(presidente=i['presidente'], vocal_1=i['vocal_1'], vocal_2=i['vocal_2'],
                                                suplente_1=i['suplente_1'], suplente_2=i['suplente_2'])
 
     def intercambiar(self, tfg):
         try:
             tribunal_enc = None
-            for key, tribunal in enumerate(self.tribunales):
-                if tfg.tfg.tutor.email not in [tribunal.get('presidente'), tribunal.get('vocal_1'), tribunal.get('vocal_2'),
-                                               tribunal.get('suplente_1'), tribunal.get('suplente_2')]:
+            for key, tribunal in enumerate(self.comisiones):
+                if tfg.tfg.tutor.email not in [tribunal.get('presidente').get('email'),
+                                               tribunal.get('vocal_1').get('email'),
+                                               tribunal.get('vocal_2').get('email'),
+                                               tribunal.get('suplente_1').get('email'),
+                                               tribunal.get('suplente_2').get('email')]:
                     tribunal_enc = key
                     break
             tribunal_intercambiar, tfg_intercambiar = self.bucar_tfg_intercambiar(tribunal_enc)
-            self.tribunales[tribunal_intercambiar]['tfgs'].append(tfg_intercambiar)
-            self.tribunales[tribunal_enc]['tfgs'].remove(tfg_intercambiar)
-            self.tribunales[tribunal_enc]['tfgs'].append(tfg.to_dict(self.user))
+            self.comisiones[tribunal_intercambiar]['tfgs'].append(tfg_intercambiar)
+            self.comisiones[tribunal_enc]['tfgs'].remove(tfg_intercambiar)
+            self.comisiones[tribunal_enc]['tfgs'].append(tfg.to_dict(self.user))
             tribunal = Tribunales.objects.get(tfg=tfg_intercambiar['id'])
             serializer = TribunalesSerializer(tribunal)
-            presidente = Profesor.objects.get(email=self.tribunales[tribunal_intercambiar]['presidente'])
+            presidente = Profesor.objects.get(email=self.comisiones[tribunal_intercambiar]['presidente']['email'])
             serializer.update(tribunal, {'presidente': presidente})
-            Tribunales.objects.create(tfg=tfg.tfg, comision=self.tribunales[tribunal_enc]['presidente'])
+            Tribunales.objects.create(tfg=tfg.tfg, comision=self.comisiones[tribunal_enc]['presidente']['email'])
         except:
             self.reintentar = True
 
     def bucar_tfg_intercambiar(self, tribunal_key):
-        for tfg in self.tribunales[tribunal_key]['tfgs']:
-            for key, tribunal in enumerate(self.tribunales):
-                if key is not tribunal_key and tfg['tfg']['tutor']['email'] not in [tribunal.get('presidente'),
-                                                                                    tribunal.get('vocal_1'),
-                                                                                    tribunal.get('vocal_2'),
-                                                                                    tribunal.get('suplente_1'),
-                                                                                    tribunal.get('suplente_2')]:
+        for tfg in self.comisiones[tribunal_key]['tfgs']:
+            for key, tribunal in enumerate(self.comisiones):
+                if key is not tribunal_key and tfg['tfg']['tutor']['email'] not in [tribunal.get('presidente').get('email'),
+                                                                                    tribunal.get('vocal_1').get('email'),
+                                                                                    tribunal.get('vocal_2').get('email'),
+                                                                                    tribunal.get('suplente_1').get('email'),
+                                                                                    tribunal.get('suplente_2').get('email')]:
                     return key, tfg
 
     def asig_tfgs(self):
         try:
             for i in self.tfgs_asig:
                 encontrado = False
-                for key, tribunal in enumerate(self.tribunales):
+                for key, tribunal in enumerate(self.comisiones):
                     if self._check_tribunal(tribunal, i):
-                        self.tribunales[key]['tfgs'].append(i.to_dict(self.user))
-                        Tribunales.objects.create(tfg=i.tfg, comision=self.tribunales[key]['presidente'])
+                        self.comisiones[key]['tfgs'].append(i.to_dict(self.user))
+                        Tribunales.objects.create(tfg=i.tfg, comision=self.comisiones[key].get('presidente').get('email'))
                         encontrado = True
                         break
                 if not encontrado:
                     self.intercambiar(i)
+            return dict(status=True, data=dict(tribunales=self.comisiones))
         except Exception as e:
                 return dict(status=False, message=e)

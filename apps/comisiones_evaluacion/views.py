@@ -63,13 +63,13 @@ class ComisionEvaluacionViewSet(viewsets.ModelViewSet):
             self.logger.info('INICIO WS - COMISIONEVALUACIONVIEW POST del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if request.user.has_perm('comisiones_evaluacion.comision.create') or request.user.is_admin:
-                comision = Comision(request.user)
-                resul = comision.tutores_comisiones(params.get('convocatoria'))
-                comision.asig_tfgs()
-                while comision.reintentar:
-                    comision = Comision(request.user)
-                    resul = comision.tutores_comisiones(params.get('convocatoria'))
-                    comision.asig_tfgs()
+                comision = Comision(request.user, params.get('convocatoria'))
+                resul = comision.tutores_comisiones()
+                # comision.asig_tfgs()
+                # while comision.reintentar:
+                #     comision = Comision(request.user)
+                #     resul = comision.tutores_comisiones(params.get('convocatoria'))
+                #     comision.asig_tfgs()
                 if resul['status']:
                     resul_status = status.HTTP_200_OK
                 else:
@@ -193,6 +193,42 @@ class TribunalesViewSet(viewsets.ModelViewSet):
         except Exception as e:
             resul = dict(status=False, message="Error en la llamada")
             self.logger.critical('TRIBUNALESNVIEW LIST: %s %s' % (resul, e))
+            return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+
+    def create(self, request):
+        """
+        POST
+        Insertar los tribunales a partir de una comision
+        :param request:
+        :return :
+        {status: True/False, data:{datos de la comision insertada o de todas las comisiones}
+        """
+        try:
+            params = utils.get_params(request)
+            self.logger.info('INICIO WS - COMISIONEVALUACIONVIEW POST del usuario: %s con parametros: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
+            if request.user.has_perm('comisiones_evaluacion.comision.create') or request.user.is_admin:
+                comisiones = utils.to_bool(params.get('comisiones'))
+                convocatoria = params.get('convocatoria')
+                comision = Comision(request.user, convocatoria, comisiones=comisiones)
+                resul = comision.asig_tfgs()
+                while comision.reintentar:
+                    comision = Comision(request.user, convocatoria, comisiones=comisiones)
+                    comision.asig_tfgs()
+                if resul['status']:
+                    resul_status = status.HTTP_200_OK
+                else:
+                    resul = dict(message=resul['message'])
+                    resul_status = status.HTTP_400_BAD_REQUEST
+            else:
+                resul = dict(message="Sin privilegios")
+                resul_status = status.HTTP_405_METHOD_NOT_ALLOWED
+            self.logger.info('FIN WS - COMISIONEVALUACIONVIEW POST del usuario: %s con resultado: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            return Response(resul, status=resul_status)
+        except Exception as e:
+            resul = dict(status=False, message="Error en la llamada")
+            self.logger.critical('COMISIONEVALUACIONVIEW POST: %s %s' % (resul, e))
             return Response(resul, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request):

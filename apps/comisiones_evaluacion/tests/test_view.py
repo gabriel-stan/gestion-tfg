@@ -246,6 +246,13 @@ class ComisionesEvaluacionServicesTests(TestCase):
         self.assertEqual(resul['status'], True)
         self.assertEqual(len(resul['data']['tribunales']), 2)
 
+        # Creo los tribunales
+        res = self.client.post('/api/v1/tribunales/', {'comisiones': True, 'convocatoria': 'CONV_JUN'})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+        self.assertEqual(len(resul['data']['tribunales'][0]['tfgs']), 9)
+
+
         # Obtengo los tribunales
         res = self.client.get('/api/v1/tribunales/')
         resul = json.loads(res.content)
