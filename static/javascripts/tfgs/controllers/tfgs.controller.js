@@ -40,6 +40,25 @@
       return fecha;
     }
 
+    $scope.loadSelectedTFG = function() {
+      var tfg = $("#tabla-tfgs").DataTable().row( { selected: true } ).data();
+      $scope.selectedTFG.titulacion = tfg.titulacion.codigo;
+      $scope.selectedTFG.asignado = tfg.asignado;
+      $scope.selectedTFG.titulo = tfg.titulo;
+      $scope.selectedTFG.n_alumnos = tfg.n_alumnos;
+      $scope.selectedTFG.descripcion = tfg.descripcion;
+      $scope.selectedTFG.conocimientos_previos = tfg.conocimientos_previos;
+      $scope.selectedTFG.hard_soft = tfg.hard_soft;
+      $scope.selectedTFG.tutor = tfg.tutor.email;
+      $scope.selectedTFG.cotutor = tfg.cotutor.email;
+      $scope.selectedTFG.alumno1 = tfg.alumno1;
+      $scope.selectedTFG.alumno2 = tfg.alumno2;
+      $scope.selectedTFG.alumno3 = tfg.alumno3;
+      $scope.selectedTFG.tipo = tfg.tipo;
+    }
+
+    $scope.selectedTFG = new Object();
+
     //loadTfgs();
 
     /**
