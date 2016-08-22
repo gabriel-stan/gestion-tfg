@@ -29,20 +29,23 @@ class Comision_EvaluacionSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return Comision_Evaluacion.objects.create_user(**validated_data)
 
-    def update(self, comision, validated_data):
+    def update(self, user, comision, validated_data):
         try:
             # comprobando presidente
             if 'presidente' in validated_data.keys():
                 try:
                     presidente = Profesor.objects.get(email=validated_data.get('presidente'))
-                    if not utils.check_miembro(comision, presidente):
-                        raise NameError('El cambio no esta permitido')
-                except:
+                    posicion, id_comision = utils.check_miembro(comision, presidente)
+                    comision_intercambiar = Comision_Evaluacion.objects.get(id=id_comision)
+                    if not posicion:
+                        comision.presidente = presidente
+                    elif utils.check_miembro_repetido(comision_intercambiar,
+                                                      comision.presidente.email) and utils.check_miembro_repetido(
+                            comision, presidente):
+                        utils.intercambiar_miembros(comision, comision_intercambiar, 'presidente', posicion)
+                    comision_intercambiar.save()
+                except Profesor.DoesNotExist:
                     raise NameError('El presidente no existe')
-                if not isinstance(presidente, Profesor) or presidente.groups.filter(name='Profesores').exists():
-                    raise NameError('Presidente incorrecto')
-                else:
-                    comision.presidente = presidente
 
             # comprobando primer titular
             if 'titular_1' in validated_data.keys():
@@ -113,7 +116,7 @@ class Comision_EvaluacionSerializer(serializers.ModelSerializer):
 
             comision.save()
 
-            return dict(status=True, data=Comision_Evaluacion.objects.get(presidente=comision.presidente))
+            return dict(status=True, data=Comision_Evaluacion.objects.get(presidente=comision.presidente).to_dict(user))
         except NameError as e:
             return dict(status=False, message=e.message)
 

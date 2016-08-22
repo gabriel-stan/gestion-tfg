@@ -72,7 +72,7 @@ def to_dict(resul):
             else:
                 data[f.name] = list(f.value_from_object(instance).values_list('pk', flat=True))
         else:
-            data[f.name] = f.value_from_object(instance)
+            data[f.name]['id'] = f.value_from_object(instance)
 
     resul['data'] = data
     return resul
@@ -89,7 +89,6 @@ def check_usuario(user, email):
 
 
 def existe_tfg_asig(alumno):
-
     if not isinstance(alumno, Alumno):
         return False
     else:
@@ -105,7 +104,6 @@ def existe_tfg_asig(alumno):
 
 
 def comprueba_profesor(usuario):
-
     if isinstance(usuario, Profesor) and usuario.groups.filter(name='Profesores').exists():
         return True
     elif is_string(usuario) and Profesor.objects.get(email=usuario):
@@ -115,7 +113,6 @@ def comprueba_profesor(usuario):
 
 
 def procesamiento(comision):
-
     resul = {}
     resul['presidente'] = unicode(comision.presidente)
     resul['titular_1'] = unicode(comision.presidente)
@@ -127,16 +124,36 @@ def procesamiento(comision):
     return resul
 
 
-def check_miembro(comision, presidente):
-    comisiones = Comision_Evaluacion.all()
-    for i in comisiones:
-        if presidente in (i.presidente, i.titular_1, i.titular_2, i.suplente_1, i.suplente_2) and \
-                        i.id is not comision.id:
-            return False
-    if presidente.departamento == comision.titular_1.departamento or presidente.departamento == \
-            comision.titular_2.departamento:
+def intercambiar_miembros(comision_1, comision_2, miembro_1, miembro_2):
+    miembro_1_obj = getattr(comision_1, miembro_1)
+    miembro_2_obj = getattr(comision_2, miembro_2)
+    setattr(comision_1, miembro_1, miembro_2_obj)
+    setattr(comision_2, miembro_2, miembro_1_obj)
+
+
+def check_miembro_repetido(comision, miembro):
+    if miembro in [comision.presidente.email, comision.vocal_1.email, comision.vocal_2.email, comision.suplente_1.email,
+                   comision.suplente_2.email]:
         return False
-    return True
+    else:
+        return True
+
+
+def check_miembro(comision, miembro):
+    comisiones = Comision_Evaluacion.objects.all()
+    for i in comisiones:
+        if i.id is not comision.id:
+            if miembro == i.presidente:
+                return 'presidente', i.id
+            if miembro == i.vocal_1:
+                return 'vocal_1', i.id
+            if miembro == i.vocal_2:
+                return 'vocal_2', i.id
+            if miembro == i.suplente_1:
+                return 'suplente_1', i.id
+            if miembro == i.suplente_2:
+                return 'suplente_2', i.id
+    return False
 
 
 def check_convocatoria(convocatoria, tipo):
@@ -152,6 +169,17 @@ def check_tfg_tribunal(tfg):
         return False
     else:
         return True
+
+
+def procesar_datos_comisiones(user, data):
+    # Importo aqui para evitar el cruce de imports
+    from tfgs.models import Tfg_Asig
+    if isinstance(data, dict):
+        data = [data]
+    for key, s_data in enumerate(data):
+        data[key]['presidente'] = collections.OrderedDict(Profesor.objects.get(id=s_data['presidente']['id']).to_dict(user))
+        # data[key]['comision'] = collections.OrderedDict(Comision_Evaluacion.objects.get(id=s_data['comision']).to_dict(user))
+    return data
 
 
 def procesar_datos_tribunales(user, data):

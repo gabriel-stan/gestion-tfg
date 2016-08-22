@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from comisiones_evaluacion.models import Comision_Evaluacion, Tribunales
 from comisiones_evaluacion.serializers import Comision_EvaluacionSerializer, TribunalesSerializer
+from authentication.models import Profesor
 from rest_framework.response import Response
 from rest_framework import permissions, viewsets, status, views
 from services import Comision
@@ -97,11 +98,12 @@ class ComisionEvaluacionViewSet(viewsets.ModelViewSet):
             self.logger.info('INICIO WS - COMISIONEVALUACIONVIEW PUT del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if request.user.has_perm('comisiones_evaluacion.comision.change') or request.user.is_admin:
-                comision = Comision_Evaluacion.objects.get(presidente=params.get('presidente'))
+                presidente = Profesor.objects.get(email=params.get('presidente'))
+                comision = Comision_Evaluacion.objects.get(presidente=presidente)
                 serializer = self.serializer_class(comision)
-                resul = serializer.update(comision, params)
+                params = json.loads(params.get('datos'))
+                resul = serializer.update(request.user, comision, params)
                 if resul['status']:
-                    resul = utils.to_dict(resul)
                     resul_status = status.HTTP_200_OK
                 else:
                     resul = dict(message=resul['message'])
@@ -112,6 +114,11 @@ class ComisionEvaluacionViewSet(viewsets.ModelViewSet):
             self.logger.info('FIN WS - COMISIONEVALUACIONVIEW PUT del usuario: %s con resultado: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(resul, status=resul_status)
+        except Profesor.DoesNotExist:
+            resul = dict(message="El presidente de la comision no existe")
+            self.logger.error('COMISIONEVALUACIONVIEW DELETE del usuario: %s con resultado: %s' %
+                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            return Response(resul, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             resul = dict(status=False, message="Error en la llamada")
             self.logger.critical('COMISIONEVALUACIONVIEW PUT: %s %s' % (resul, e))

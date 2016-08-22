@@ -133,9 +133,11 @@ class Comision(object):
             self.comisiones[key]['suplente_2'] = suplente_2
 
     def _guardar_comision(self):
-        for i in self.comisiones:
-            Comision_Evaluacion.objects.create(presidente=i['presidente'], vocal_1=i['vocal_1'], vocal_2=i['vocal_2'],
-                                               suplente_1=i['suplente_1'], suplente_2=i['suplente_2'])
+        for key, i in enumerate(self.comisiones):
+            comision = Comision_Evaluacion.objects.create(presidente=i['presidente'], vocal_1=i['vocal_1'],
+                                                          vocal_2=i['vocal_2'], suplente_1=i['suplente_1'],
+                                                          suplente_2=i['suplente_2'])
+            self.comisiones[key] = comision['data'].to_dict(self.user)
 
     def intercambiar(self, tfg):
         try:
