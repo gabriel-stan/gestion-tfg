@@ -10,6 +10,8 @@ from eventos.models import Tipo_Evento, SubTipo_Evento
 from tfgs.models import Tfg_Asig, Tfg
 from tfgs.serializers import Tfg_AsigSerializer
 from datetime import datetime
+import hashlib as hl
+import random
 from django.contrib.auth.models import Group
 
 
@@ -140,9 +142,9 @@ class TribunalesSerializer(serializers.ModelSerializer):
         read_only_fields = ('created_at', 'updated_at')
 
     def create(self, validated_data):
-        return Comision_Evaluacion.objects.create(**validated_data)
+        return Tribunales.objects.create(**validated_data)
 
-    def update(self, tribunal, validated_data):
+    def update(self, user, tribunal, validated_data):
         try:
 
             # comprobando comision
@@ -180,8 +182,9 @@ class TribunalesSerializer(serializers.ModelSerializer):
                 except:
                     raise NameError("Error en formato fecha")
                 tribunal.fecha = new_fecha
+
             tribunal.save()
-            return dict(status=True, data=TribunalesSerializer(Tribunales.objects.get(tfg=tribunal.tfg)).data)
+            return dict(status=True, data=Tribunales.objects.get(tfg=tribunal.tfg).to_dict(user))
         except NameError as e:
             return dict(status=False, message=e.message)
 

@@ -5,8 +5,13 @@ import itertools
 from eventos.models import Tipo_Evento
 from comisiones_evaluacion.models import Comision_Evaluacion, Tribunales
 from comisiones_evaluacion.serializers import TribunalesSerializer, Comision_EvaluacionSerializer
+from gestfg.settings import REPO_PATH
 import random
 import math
+import hashlib as hl
+import random
+import zipfile
+import os
 
 
 DEPARTAMENTOS_PRINCIPALES = ['CCIA', 'LSI', 'ATC']
@@ -157,7 +162,7 @@ class Comision(object):
             tribunal = Tribunales.objects.get(tfg=tfg_intercambiar['id'])
             serializer = TribunalesSerializer(tribunal)
             presidente = Profesor.objects.get(email=self.comisiones[tribunal_intercambiar]['presidente']['email'])
-            serializer.update(tribunal, {'presidente': presidente})
+            serializer.update(self.user, tribunal, {'presidente': presidente})
             Tribunales.objects.create(tfg=tfg.tfg, comision=self.comisiones[tribunal_enc]['presidente']['email'])
         except:
             self.reintentar = True
@@ -187,3 +192,30 @@ class Comision(object):
             return dict(status=True, data=dict(tribunales=self.comisiones))
         except Exception as e:
                 return dict(status=False, message=e)
+
+
+class Tribunal(object):
+
+    def __init__(self, user, tribunal):
+        self.user = user
+        self.tribunal = tribunal
+
+    def upload_doc(self, fichero):
+        if not zipfile.is_zipfile(fichero):
+            raise NameError('El fichero no tiene el formato correcto')
+
+        # calcular nombre del fichero
+        hash_fichero = hl.sha256()
+        hash_fichero.update(fichero.name)
+        hash_fichero.update('%6.6f' % random.randint(0, 999999))
+
+        nombre_fichero = hash_fichero.hexdigest()
+
+        fichero.file.seek(0)
+        with file(os.path.join(REPO_PATH, nombre_fichero), 'wb') as f:
+            f.write(fichero.file.read())
+
+        self.tribunal.documentacion = nombre_fichero
+        self.tribunal.save()
+
+        return dict(status=True, data=self.tribunal.to_dict(self.user))

@@ -20,6 +20,9 @@ apps/*/migrations/0*
 staticfiles
 static/bower_components
 
+#repo
+repo/*
+
 # node generated
 node_modules
 

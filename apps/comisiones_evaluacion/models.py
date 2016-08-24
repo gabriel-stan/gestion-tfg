@@ -118,6 +118,7 @@ class Tribunales(models.Model):
     comision = models.ForeignKey(Comision_Evaluacion, default=None)
     fecha = models.DateTimeField(null=True)
     observaciones = models.CharField(max_length=500, null=True)
+    documentacion = models.CharField(max_length=200, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -141,3 +142,9 @@ class Tribunales(models.Model):
 
     def get_observaciones(self):
         return self.observaciones
+
+    def to_dict(self, user):
+        return dict(tfg=self.tfg.to_dict(user), comision=self.comision.to_dict(user),
+                    fecha=self.fecha, observaciones=self.observaciones,
+                    documentacion=self.documentacion, created_at=self.created_at,
+                    updated_at=self.updated_at)

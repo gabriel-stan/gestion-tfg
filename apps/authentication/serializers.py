@@ -119,7 +119,7 @@ class DepartamentoSerializer(serializers.ModelSerializer):
 
             departamento.save()
 
-            return dict(status=True, data=departamento)
+            return dict(status=True, data=departamento.to_dict())
 
         except NameError as e:
             return dict(status=False, message=e.message)
@@ -149,7 +149,7 @@ class AlumnoSerializer(serializers.ModelSerializer):
             return Alumno.objects.create_user(**validated_data)
         return dict(status=False, message='Error en parametros')
 
-    def update(self, alumno, validated_data):
+    def update(self, user, alumno, validated_data):
         try:
             # comprobando email
             if 'email' in validated_data.keys():
@@ -201,7 +201,7 @@ class AlumnoSerializer(serializers.ModelSerializer):
 
             alumno.save()
 
-            return dict(status=True, data=alumno)
+            return dict(status=True, data=alumno.to_dict(user))
 
         except NameError as e:
             return dict(status=False, message=e.message)
@@ -231,7 +231,7 @@ class ProfesorSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return Profesor.objects.create_user(**validated_data)
 
-    def update(self, profesor, validated_data):
+    def update(self, user, profesor, validated_data):
         try:
             # comprobando email
             if 'email' in validated_data.keys():
@@ -300,7 +300,7 @@ class ProfesorSerializer(serializers.ModelSerializer):
 
             profesor.save()
 
-            return dict(status=True, data=profesor)
+            return dict(status=True, data=profesor.to_dict(user))
 
         except NameError as e:
             return dict(status=False, message=e.message)

@@ -4,7 +4,7 @@ from comisiones_evaluacion.serializers import Comision_EvaluacionSerializer, Tri
 from authentication.models import Profesor
 from rest_framework.response import Response
 from rest_framework import permissions, viewsets, status, views
-from services import Comision
+from services import Comision, Tribunal
 from tfgs.models import Tfg, Tfg_Asig
 import json
 import utils
@@ -248,13 +248,13 @@ class TribunalesViewSet(viewsets.ModelViewSet):
             params = utils.get_params(request)
             self.logger.info('INICIO WS - TRIBUNALESNVIEW PUT del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
-            if request.user.has_perm('tribunales.tribunal.change') or request.user.is_admin:
+            if request.user.has_perm('comisiones_evaluacion.tribunal.change') or request.user.is_admin:
                 tfg = Tfg.objects.get(titulo=params.get('tfg'))
                 tfg_asig = Tfg_Asig.objects.get(tfg=tfg)
                 tribunal = Tribunales.objects.get(tfg=tfg_asig)
                 serializer = self.serializer_class(tribunal)
                 params = json.loads(params.get('datos'))
-                resul = serializer.update(tribunal, params)
+                resul = serializer.update(request.user, tribunal, params)
                 if resul['status']:
                     resul['data'] = utils.procesar_datos_tribunales(request.user, resul['data'])[0]
                     resul_status = status.HTTP_200_OK
@@ -270,4 +270,41 @@ class TribunalesViewSet(viewsets.ModelViewSet):
         except Exception as e:
             resul = dict(status=False, message="Error en la llamada")
             self.logger.critical('TRIBUNALESNVIEW PUT: %s %s' % (resul, e))
+            return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+
+
+class Tribunal_Upload_DocView(views.APIView):
+    logger = logging.getLogger(__name__)
+
+    def post(self, request):
+        """
+        POST
+        Subir un fichero comprimido .zip con la documentacion
+        :param request:
+        :return :
+
+        """
+        try:
+            params = utils.get_params(request)
+            self.logger.info('INICIO WS - TRIBUNALUPLOADDOCVIEW POST del usuario: %s con parametros: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, request.FILES['file']))
+            if request.user.has_perm('comisiones_evaluacion.tribunal.change') or request.user.is_admin:
+                doc = request.FILES['file']
+                tfg = Tfg.objects.get(titulo=params.get('tfg'))
+                tfg_asig = Tfg_Asig.objects.get(tfg=tfg)
+                tribunal = Tribunales.objects.get(tfg=tfg_asig)
+                change_doc = Tribunal(request.user, tribunal)
+                resul = change_doc.upload_doc(doc)
+                if resul['status']:
+                    resul_status = status.HTTP_200_OK
+                else:
+                    resul = dict(message=resul['message'])
+                    resul_status = status.HTTP_400_BAD_REQUEST
+            else:
+                resul = dict(message="Sin privilegios")
+                resul_status = status.HTTP_405_METHOD_NOT_ALLOWED
+            self.logger.info('FIN WS - UPLOADFILEVIEW POST del usuario: %s con resultado: %s' % (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            return Response(resul, status=resul_status)
+        except Exception as e:
+            resul = dict(status=False, message="Error en la llamada")
+            self.logger.critical('UPLOADFILEVIEW POST: %s %s' % (resul, e))
             return Response(resul, status=status.HTTP_400_BAD_REQUEST)

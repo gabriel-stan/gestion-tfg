@@ -66,40 +66,40 @@ class ComisionesEvaluacionServicesTests(TestCase):
                           departamento=dep_est, password='75169052')
         Profesor.objects.create_user(**self.prof4)
 
-        self.prof5 = dict(email='perico@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122'
-                          , departamento=dep_lsi, password='75169052')
+        self.prof5 = dict(email='perico@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122',
+                          departamento=dep_lsi, password='75169052')
         Profesor.objects.create_user(**self.prof5)
 
         self.prof6 = dict(email='franciscoherrera@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122'
                           , departamento=dep_lsi, password='75169052')
         Profesor.objects.create_user(**self.prof6)
 
-        self.prof7 = dict(email='antonio@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122'
-                          , departamento=dep_atc, password='75169052')
+        self.prof7 = dict(email='antonio@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122',
+                          departamento=dep_atc, password='75169052')
         Profesor.objects.create_user(**self.prof7)
 
-        self.prof8 = dict(email='gabriel@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122'
-                          , departamento=dep_ccia, password='75169052')
+        self.prof8 = dict(email='gabriel@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122',
+                          departamento=dep_ccia, password='75169052')
         Profesor.objects.create_user(**self.prof8)
 
-        self.prof9 = dict(email='josemiguel@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122'
-                          , departamento=dep_est, password='75169052')
+        self.prof9 = dict(email='josemiguel@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122',
+                          departamento=dep_est, password='75169052')
         Profesor.objects.create_user(**self.prof9)
 
-        self.prof10 = dict(email='qwdefegw@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122'
-                          , departamento=dep_est, password='75169052')
+        self.prof10 = dict(email='qwdefegw@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122',
+                           departamento=dep_est, password='75169052')
         Profesor.objects.create_user(**self.prof10)
 
-        self.prof11 = dict(email='werwefg@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122'
-                          , departamento=dep_atc, password='75169052')
+        self.prof11 = dict(email='werwefg@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122',
+                           departamento=dep_atc, password='75169052')
         Profesor.objects.create_user(**self.prof11)
 
-        self.prof12 = dict(email='qwe123@ugr.es', first_name='qwe123 2', last_name='eq 12 apelliweasdaado 122'
-                          , departamento=dep_ccia, password='7516129052')
+        self.prof12 = dict(email='qwe123@ugr.es', first_name='qwe123 2', last_name='eq 12 apelliweasdaado 122',
+                           departamento=dep_ccia, password='7516129052')
         Profesor.objects.create_user(**self.prof11)
 
-        self.prof13 = dict(email='hgm54@ugr.es', first_name='hgm54 2', last_name='dfgre 12 apelergerlido 122'
-                          , departamento=dep_est, password='751690as52')
+        self.prof13 = dict(email='hgm54@ugr.es', first_name='hgm54 2', last_name='dfgre 12 apelergerlido 122',
+                           departamento=dep_est, password='751690as52')
         Profesor.objects.create_user(**self.prof11)
 
     def test_formacion_comisiones(self):
@@ -276,7 +276,6 @@ class ComisionesEvaluacionServicesTests(TestCase):
         self.assertEqual(resul['status'], True)
         self.assertEqual(len(resul['data']['tribunales'][0]['tfgs']), 9)
 
-
         # Obtengo los tribunales
         res = self.client.get('/api/v1/tribunales/')
         resul = json.loads(res.content)
@@ -287,3 +286,18 @@ class ComisionesEvaluacionServicesTests(TestCase):
                                                       'datos': json.dumps({'fecha': '2016-07-04T22:00:00.000Z'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['data']['fecha'], '2016-07-04T22:00:00Z')
+
+        # Obtengo los tribunales
+        res = self.client.get('/api/v1/tribunales/')
+        resul = json.loads(res.content)
+        self.assertEqual(len(resul['data']), 18)
+
+        # Modifico la documentacion de otro
+        location = os.path.join(os.path.dirname(__file__), 'test_upload_file_tfgs', 'asd.zip')
+        res = self.client.post('/api/v1/upload_doc/', data={'tfg': resul['data'][0]['tfg']['tfg']['titulo'],
+                                                            'file': ('ListaTFGs_preasignados.xlsx',
+                                                                     open(location, 'rb'))},
+                               format='multipart')
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+

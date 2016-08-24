@@ -102,25 +102,31 @@ class UsuariosViewSet(viewsets.ModelViewSet):
             params = utils.get_params(request)
             self.logger.info('INICIO WS - USUARIOSVIEW CREATE del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
-            if request.user.is_admin:
-                is_admin = str(params.get('is_admin'))
-                serializer = self.serializer_class(data=params)
-                if serializer.is_valid():
-                    if is_admin and is_admin == 'True':
+            is_admin = params.get('is_admin')
+            serializer = self.serializer_class(data=params)
+            if serializer.is_valid():
+                if is_admin:
+                    if str(is_admin) == 'True' and request.user.is_admin:
                         resul = Usuario.objects.create_superuser(**serializer.validated_data)
                     else:
-                        resul = Usuario.objects.create_user(**serializer.validated_data)
-                    if resul['status']:
-                        resul = utils.to_dict(resul)
-                        resul_status = status.HTTP_200_OK
-                    else:
-                        resul_status = status.HTTP_400_BAD_REQUEST
+                        resul = dict(status=False, message="Sin privilegios")
+                        resul_status = status.HTTP_405_METHOD_NOT_ALLOWED
                 else:
-                    resul = dict(status=False, message=serializer.errors)
+                    if utils.is_email_alumno(params.get('email')):
+                        resul = Alumno.objects.create_user(**serializer.validated_data)
+                    elif utils.is_email_profesor(params.get('email')):
+                        resul = Profesor.objects.create_user(**serializer.validated_data)
+                    else:
+                        resul = dict(status=False, message="Error en los parametros de entrada")
+                if resul['status']:
+                    resul = utils.to_dict(resul)
+                    resul_status = status.HTTP_200_OK
+                else:
                     resul_status = status.HTTP_400_BAD_REQUEST
             else:
-                resul = dict(message="Sin privilegios")
-                resul_status = status.HTTP_405_METHOD_NOT_ALLOWED
+                resul = dict(status=False, message=serializer.errors)
+                resul_status = status.HTTP_400_BAD_REQUEST
+
             self.logger.info('FIN WS - USUARIOSVIEW CREATE del usuario: %s con resultado: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(resul, status=resul_status)
@@ -294,9 +300,8 @@ class AlumnosViewSet(viewsets.ModelViewSet):
                     alumno = Alumno.objects.get(dni=params['usuario'])
                 params = json.loads(request.data['datos'])
                 serializer = self.serializer_class(alumno)
-                resul = serializer.update(alumno, params)
+                resul = serializer.update(request.user, alumno, params)
                 if resul['status']:
-                    resul = utils.to_dict(resul)
                     resul_status = status.HTTP_200_OK
                 else:
                     resul_status = status.HTTP_400_BAD_REQUEST
@@ -466,11 +471,10 @@ class ProfesoresViewSet(viewsets.ModelViewSet):
                     profesor = Profesor.objects.get(dni=params['usuario'])
                 params = json.loads(params['datos'])
                 serializer = ProfesorSerializer(profesor)
-                resul = serializer.update(profesor, params)
+                resul = serializer.update(request.user, profesor, params)
             else:
                 resul = dict(status=False, message="Sin privilegios")
             if resul['status']:
-                resul = utils.to_dict(resul)
                 resul_status = status.HTTP_200_OK
             else:
                 resul_status = status.HTTP_400_BAD_REQUEST
@@ -756,16 +760,16 @@ class DepartamentosViewSet(viewsets.ModelViewSet):
                 params = json.loads(params.get('datos'))
                 serializer = DepartamentoSerializer(departamento)
                 resul = serializer.update(departamento, params)
-                if resul['status']:
-                    return Response(utils.to_dict(resul))
-                else:
-                    return Response(resul)
             else:
                 resul = dict(status=False, message="Sin privilegios")
-                self.logger.info('FIN WS - DEPARTAMENTOSVIEW PUT del usuario: %s con resultado: %s' %
-                                 (request.user.email if hasattr(request.user, 'email') else request.user.username,
-                                  resul))
-                return Response(resul, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+            if resul['status']:
+                resul_status = status.HTTP_200_OK
+            else:
+                resul_status = status.HTTP_400_BAD_REQUEST
+            self.logger.info('FIN WS - DEPARTAMENTOSVIEW PUT del usuario: %s con resultado: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username,
+                              resul))
+            return Response(resul, status=resul_status)
         except Exception as e:
             resul = dict(status=False, message="Error en la llamada")
             self.logger.critical('FIN WS - DEPARTAMENTOSVIEW PUT del usuario: %s con resultado: %s %s' %
