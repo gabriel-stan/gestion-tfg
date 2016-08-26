@@ -52,6 +52,11 @@
       controllerAs: 'tfgsCtrl',
       templateUrl: '/static/templates/layout/dashboard/tfgs/tfgs.html'
     })
+    .when('/dashboard/tfgs-asig', {
+      controller: 'TfgsController',
+      controllerAs: 'tfgsCtrl',
+      templateUrl: '/static/templates/layout/dashboard/tfgs/tfgs-asig.html'
+    })
     .when('/dashboard/tfgs/add', {
       controller: 'NewTfgController',
       controllerAs: 'vm',
