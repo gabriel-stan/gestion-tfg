@@ -18,6 +18,7 @@
 
     var tfgsCtrl = this;
     tfgsCtrl.loadTfgs = loadTfgs;
+    tfgsCtrl.presentarTFGs = presentarTFGs;
     tfgsCtrl.filter = filter;
     tfgsCtrl.loading = true;
 
@@ -85,6 +86,56 @@
     }
 
     $scope.selectedTFG = new Object();
+
+
+    $scope.loadSelectedTFGPresentar = function() {
+      var tfgs = $("#tabla-tfgs").DataTable().rows( { selected: true } ).data();
+
+      tfgsCtrl.tfgs_presentar = [];
+
+      $.each(tfgs, function( i, tfg ) {
+        var t = new Object();
+        t.titulo = tfg.tfg.titulo;
+        tfgsCtrl.tfgs_presentar.push(t);
+      });
+
+    }
+
+
+    /**
+    * @name presentarTFGs
+    * @desc Presenta los tfgs a la convocatoria
+    * @memberOf gestfg.tfgs.controllers.TfgsController
+    */
+    function presentarTFGs(){
+
+      $.each(tfgsCtrl.tfgs_presentar, function( i, tfg ) {
+        var convocatoria = new Object();
+        convocatoria.tipo = 'SOL_EVAL';
+        convocatoria.convocatoria = tfgsCtrl.convocatoria;
+
+        Tfgs.presentar(tfg.titulo, JSON.stringify(convocatoria)).then(TfgsSuccessFn, TfgsErrorFn).finally(filterFinally);
+      });
+
+      /**
+      * @name TfgsSuccessFn
+      * @desc Show Snackbar with success
+      */
+      function TfgsSuccessFn(data, status, headers, config) {
+        Snackbar.success("TFG presentado correctamente");
+      }
+
+
+      /**
+      * @name TfgsErrorFn
+      * @desc Show snackbar with error
+      */
+      function TfgsErrorFn(data, status, headers, config) {
+        Snackbar.error(data.data.message);
+      }
+    }
+
+
 
     //loadTfgs();
 

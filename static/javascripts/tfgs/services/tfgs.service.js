@@ -22,6 +22,7 @@
       create: create,
       get: get,
       upload: upload,
+      presentar: presentar,
       insert_validated: insert_validated
     };
 
@@ -84,6 +85,23 @@
         hard_soft: content.hwsw,
         tutor: content.tutor,
         cotutor: content.cotutor
+      });
+    }
+
+
+    /**
+    * @name presentar
+    * @desc Presentar un TFG a la convocatoria indicada
+    * @param {string} tfg Titulo del TFG
+    * @param {string} convocatoria Coonvocatoria
+    * @returns {Promise}
+    * @memberOf gestfg.tfgs.services.Tfgs
+    */
+    function presentar(tfg, convocatoria) {
+      return $http.put('/api/v1/tfgs_asig/', {
+        //content: content
+        tfg: tfg,
+        datos: convocatoria
       });
     }
 
