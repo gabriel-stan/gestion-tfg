@@ -128,8 +128,8 @@ class ComisionesEvaluacionServicesTests(TestCase):
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'], 'convocatoria': 'CONV_JUN',
-                                                     'tipo': 'ASIG_TFG'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'], 'datos': json.dumps(
+            {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 

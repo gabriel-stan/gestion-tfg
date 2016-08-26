@@ -66,40 +66,40 @@ class ComisionesEvaluacionServicesTests(TestCase):
                           departamento=dep_est, password='75169052')
         Profesor.objects.create_user(**self.prof4)
 
-        self.prof5 = dict(email='perico@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122'
-                          , departamento=dep_lsi, password='75169052')
+        self.prof5 = dict(email='perico@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122',
+                          departamento=dep_lsi, password='75169052')
         Profesor.objects.create_user(**self.prof5)
 
         self.prof6 = dict(email='franciscoherrera@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122'
                           , departamento=dep_lsi, password='75169052')
         Profesor.objects.create_user(**self.prof6)
 
-        self.prof7 = dict(email='antonio@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122'
-                          , departamento=dep_atc, password='75169052')
+        self.prof7 = dict(email='antonio@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122',
+                          departamento=dep_atc, password='75169052')
         Profesor.objects.create_user(**self.prof7)
 
-        self.prof8 = dict(email='gabriel@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122'
-                          , departamento=dep_ccia, password='75169052')
+        self.prof8 = dict(email='gabriel@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122',
+                          departamento=dep_ccia, password='75169052')
         Profesor.objects.create_user(**self.prof8)
 
-        self.prof9 = dict(email='josemiguel@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122'
-                          , departamento=dep_est, password='75169052')
+        self.prof9 = dict(email='josemiguel@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122',
+                          departamento=dep_est, password='75169052')
         Profesor.objects.create_user(**self.prof9)
 
-        self.prof10 = dict(email='qwdefegw@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122'
-                          , departamento=dep_est, password='75169052')
+        self.prof10 = dict(email='qwdefegw@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122',
+                           departamento=dep_est, password='75169052')
         Profesor.objects.create_user(**self.prof10)
 
-        self.prof11 = dict(email='werwefg@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122'
-                          , departamento=dep_atc, password='75169052')
+        self.prof11 = dict(email='werwefg@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122',
+                           departamento=dep_atc, password='75169052')
         Profesor.objects.create_user(**self.prof11)
 
-        self.prof12 = dict(email='qwe123@ugr.es', first_name='qwe123 2', last_name='eq 12 apelliweasdaado 122'
-                          , departamento=dep_ccia, password='7516129052')
+        self.prof12 = dict(email='qwe123@ugr.es', first_name='qwe123 2', last_name='eq 12 apelliweasdaado 122',
+                           departamento=dep_ccia, password='7516129052')
         Profesor.objects.create_user(**self.prof11)
 
-        self.prof13 = dict(email='hgm54@ugr.es', first_name='hgm54 2', last_name='dfgre 12 apelergerlido 122'
-                          , departamento=dep_est, password='751690as52')
+        self.prof13 = dict(email='hgm54@ugr.es', first_name='hgm54 2', last_name='dfgre 12 apelergerlido 122',
+                           departamento=dep_est, password='751690as52')
         Profesor.objects.create_user(**self.prof11)
 
     def test_formacion_comisiones(self):
@@ -134,8 +134,8 @@ class ComisionesEvaluacionServicesTests(TestCase):
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'], 'convocatoria': 'CONV_JUN',
-                                                     'tipo': 'ASIG_TFG'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'], 'datos': json.dumps(
+            {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
@@ -156,87 +156,104 @@ class ComisionesEvaluacionServicesTests(TestCase):
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[0], 'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[0], 'datos': json.dumps(
+            {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[1], 'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[1], 'datos': json.dumps(
+            {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[2], 'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[2], 'datos': json.dumps(
+            {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[3], 'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[3], 'datos': json.dumps(
+            {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[4], 'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[4], 'datos': json.dumps(
+            {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[5], 'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[5], 'datos': json.dumps(
+            {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[6], 'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[6], 'datos': json.dumps(
+            {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[7], 'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[7], 'datos': json.dumps(
+            {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[8], 'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[8], 'datos': json.dumps(
+            {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[9], 'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[9], 'datos': json.dumps(
+            {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[10], 'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[10], 'datos': json.dumps(
+            {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[11], 'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[11], 'datos': json.dumps(
+            {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[12], 'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[12], 'datos': json.dumps(
+            {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[13], 'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[13], 'datos': json.dumps(
+            {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[14], 'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[14], 'datos': json.dumps(
+            {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[15], 'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[15], 'datos': json.dumps(
+            {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[16], 'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[16], 'datos': json.dumps(
+            {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
@@ -245,6 +262,19 @@ class ComisionesEvaluacionServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
         self.assertEqual(len(resul['data']['tribunales']), 2)
+
+        # Modifico la comision
+        destino = resul['data']['tribunales'][1]['presidente']['email']
+        res = self.client.put('/api/v1/comisiones/', {'presidente': resul['data']['tribunales'][0]['presidente']['email'],
+                                                      'datos': json.dumps({'presidente': destino})})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['presidente']['email'], destino)
+
+        # Creo los tribunales
+        res = self.client.post('/api/v1/tribunales/', {'comisiones': True, 'convocatoria': 'CONV_JUN'})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+        self.assertEqual(len(resul['data']['tribunales'][0]['tfgs']), 9)
 
         # Obtengo los tribunales
         res = self.client.get('/api/v1/tribunales/')
@@ -256,3 +286,18 @@ class ComisionesEvaluacionServicesTests(TestCase):
                                                       'datos': json.dumps({'fecha': '2016-07-04T22:00:00.000Z'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['data']['fecha'], '2016-07-04T22:00:00Z')
+
+        # Obtengo los tribunales
+        res = self.client.get('/api/v1/tribunales/')
+        resul = json.loads(res.content)
+        self.assertEqual(len(resul['data']), 18)
+
+        # Modifico la documentacion de otro
+        location = os.path.join(os.path.dirname(__file__), 'test_upload_file_tfgs', 'asd.zip')
+        res = self.client.post('/api/v1/upload_doc/', data={'tfg': resul['data'][0]['tfg']['tfg']['titulo'],
+                                                            'file': ('ListaTFGs_preasignados.xlsx',
+                                                                     open(location, 'rb'))},
+                               format='multipart')
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+

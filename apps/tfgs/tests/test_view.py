@@ -209,7 +209,7 @@ class TfgServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(len(resul['data']), 1)
 
-    def test_tfg_put(self):
+    def test_tfg_asignar(self):
         # Login como administrador
         res = self.client.post('/api/v1/auth/login/', dict(email=self.data_admin['email'],
                                                            password=self.data_admin['password']))
@@ -261,9 +261,35 @@ class TfgServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['message'], 'El profesor no es tutor del Tfg')
 
-        # Vuelve el primer profesor
+    def test_tfg_put(self):
+        # Login como administrador
+        res = self.client.post('/api/v1/auth/login/', dict(email=self.data_admin['email'],
+                                                           password=self.data_admin['password']))
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['email'], self.data_admin['email'])
+
+        # Inserto un profesor y un alumno
+        res = self.client.post('/api/v1/profesores/', self.data_prof1)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['email'], self.data_prof1['email'])
+
+        res = self.client.post('/api/v1/alumnos/', self.data_alum1)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['email'], self.data_alum1['email'])
+
+        # Inserto el cotutor
+        res = self.client.post('/api/v1/profesores/', self.data_prof2)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['email'], self.data_prof2['email'])
+
+        # Me logueo con un profesor
         res = self.client.post('/api/v1/auth/login/', {'email': self.data_prof1['email'],
                                                        'password': self.data_prof1['password']})
+
+        # inserto un tfg correcto
+        res = self.client.post('/api/v1/tfgs/', self.data_tfg1)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
 
         # Lo cambio
         res = self.client.put('/api/v1/tfgs/', {'tfg': self.data_tfg1['titulo'], 'datos': json.dumps({'publicado': True,

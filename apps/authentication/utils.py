@@ -122,6 +122,32 @@ def to_dict(resul):
     return resul
 
 
+def is_email_alumno(alumno):
+    from authentication.models import Alumno
+    try:
+        if isinstance(alumno, Alumno):
+            alumno = alumno.email
+        if not re.match(r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$', alumno):
+            return False
+        else:
+            return True
+    except Exception:
+            return False
+
+
+def is_email_profesor(profesor):
+    from authentication.models import Profesor
+    try:
+        if isinstance(profesor, Profesor):
+            profesor = profesor.email
+        if not re.match(r'^[a-z][_a-z0-9]+(@ugr\.es)$', profesor):
+            return False
+        else:
+            return True
+    except Exception:
+            return False
+
+
 # Comprueba que un usuario va a modificar los datos de si mismo
 def check_usuario(user, credential=None):
     if credential in [user.email, user.dni]:

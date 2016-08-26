@@ -29,17 +29,6 @@ class TfgServicesTests(TestCase):
                                 'last_name': self.alumn1_apellidos})
         self.assertEqual(result['status'], False)
 
-    def test_update_alumno(self):
-
-        alumno_serializer = self.serializer_class()
-        result = alumno_serializer.create(
-            {'email': self.alumn1_username, 'first_name': self.alumn1_nombre, 'last_name': self.alumn1_apellidos})
-        self.assertEqual(result['data'].email, self.alumn1_username)
-        alumno = Alumno.objects.get(email=self.alumn1_username)
-        result = alumno_serializer.update(alumno, {'first_name': self.alumn2_nombre,
-                                'last_name': self.alumn2_apellidos})
-        self.assertEqual(result['data'].first_name, self.alumn2_nombre)
-
     def test_insert_alumno_error(self):
 
         alumno = self.serializer_class()

@@ -328,6 +328,7 @@ class Tfg_asigViewSet(viewsets.ModelViewSet):
                 tfg = Tfg.objects.get(titulo=params.get('tfg'))
                 tfg_asig = Tfg_Asig.objects.get(tfg=tfg)
                 serializer = self.serializer_class(tfg)
+                params = json.loads(params.get('datos'))
                 resul = serializer.update(tfg_asig, params)
                 if resul['status']:
                     resul = utils.to_dict(resul)
