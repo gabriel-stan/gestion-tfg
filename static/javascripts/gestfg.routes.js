@@ -87,6 +87,8 @@
     })
 
     .when('/dashboard/comisiones', {
+      controller: 'ComisionesController',
+      controllerAs: 'vm',
       templateUrl: '/static/templates/layout/dashboard/comisiones/comisiones.html'
     })
 

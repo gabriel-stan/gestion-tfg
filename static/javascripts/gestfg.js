@@ -11,6 +11,7 @@
         'gestfg.users',
         'gestfg.tfgs',
         'gestfg.departamentos',
+        'gestfg.comisiones',
         'gestfg.utils',
         'ngSanitize'
       ]);
