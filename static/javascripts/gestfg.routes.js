@@ -86,6 +86,14 @@
       templateUrl: '/static/templates/layout/dashboard/events/add-event.html'
     })
 
+    .when('/dashboard/comisiones', {
+      templateUrl: '/static/templates/layout/dashboard/comisiones/comisiones.html'
+    })
+
+    .when('/dashboard/tribunales', {
+      templateUrl: '/static/templates/layout/dashboard/tribunales/tribunales.html'
+    })
+
     .when('/dashboard/tfgs/upload', {
       templateUrl: '/static/templates/layout/dashboard/tfgs/upload-tfgs.html'
     })
