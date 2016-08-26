@@ -57,6 +57,33 @@
       $scope.selectedTFG.tipo = tfg.tipo;
     }
 
+    $scope.loadSelectedTFGAsig = function() {
+      var tfg = $("#tabla-tfgs").DataTable().row( { selected: true } ).data();
+      $scope.selectedTFG.titulacion = tfg.tfg.titulacion.codigo;
+      $scope.selectedTFG.preasignado = true;
+      $scope.selectedTFG.n_alumnos = tfg.tfg.n_alumnos;
+      $scope.selectedTFG.tipo = tfg.tfg.tipo;
+
+      $scope.selectedTFG.titulo = tfg.tfg.titulo;
+      $scope.selectedTFG.descripcion = tfg.tfg.descripcion;
+      $scope.selectedTFG.conocimientos_previos = tfg.tfg.conocimientos_previos;
+      $scope.selectedTFG.hard_soft = tfg.tfg.hard_soft;
+
+      $scope.selectedTFG.tutor = tfg.tfg.tutor.email;
+      if(tfg.tfg.cotutor){
+          $scope.selectedTFG.cotutor = tfg.tfg.cotutor.email;
+      }
+
+      $scope.selectedTFG.alumno1 = tfg.alumno_1.email;
+      if(tfg.alumno_2){
+          $scope.selectedTFG.alumno2 = tfg.alumno_2.email;
+      }
+
+      if(tfg.alumno_3){
+          $scope.selectedTFG.alumno2 = tfg.alumno_3.email;
+      }
+    }
+
     $scope.selectedTFG = new Object();
 
     //loadTfgs();
