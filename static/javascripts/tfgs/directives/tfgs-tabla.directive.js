@@ -19,8 +19,8 @@
     * @memberOf gestfg.tfgs.directives.tfgsAsigTabla
     */
     var directive = {
-      // controller: 'NewTfgController',
-      // controllerAs: 'vm',
+      // controller: 'TfgsController',
+      // controllerAs: 'tfgsCtrl',
       restrict: 'E',
       templateUrl: '/static/templates/tfgs/tfgs-asig-tabla.html'
     };

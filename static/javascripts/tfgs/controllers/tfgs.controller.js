@@ -19,6 +19,7 @@
     var tfgsCtrl = this;
     tfgsCtrl.loadTfgs = loadTfgs;
     tfgsCtrl.presentarTFGs = presentarTFGs;
+    tfgsCtrl.asignarTFG = asignarTFG;
     tfgsCtrl.filter = filter;
     tfgsCtrl.loading = true;
 
@@ -125,17 +126,27 @@
         Snackbar.success("TFG presentado correctamente");
       }
 
-
-      /**
-      * @name TfgsErrorFn
-      * @desc Show snackbar with error
-      */
-      function TfgsErrorFn(data, status, headers, config) {
-        Snackbar.error(data.data.message);
-      }
     }
 
 
+    /**
+    * @name asignarTFG
+    * @desc Asigna los alumnos al TFG
+    * @memberOf gestfg.tfgs.controllers.TfgsController
+    */
+    function asignarTFG(){
+
+      Tfgs.asignar($scope.selectedTFG).then(TfgsSuccessFn, TfgsErrorFn).finally(filterFinally);
+
+      /**
+      * @name TfgsSuccessFn
+      * @desc Show Snackbar with success
+      */
+      function TfgsSuccessFn(data, status, headers, config) {
+        Snackbar.success("TFG asignado correctamente");
+      }
+
+    }
 
     //loadTfgs();
 
@@ -156,15 +167,6 @@
       */
       function TfgsSuccessFn(data, status, headers, config) {
         tfgsCtrl.tfgs = data.data.data;
-      }
-
-
-      /**
-      * @name TfgsErrorFn
-      * @desc Show snackbar with error
-      */
-      function TfgsErrorFn(data, status, headers, config) {
-        Snackbar.error(data.data.error);
       }
     }
 
@@ -214,6 +216,14 @@
     function filterFinally(data, status, headers, config) {
       tfgsCtrl.loading = false;
       $('#filter').removeClass('disabled');
+    }
+
+    /**
+    * @name TfgsErrorFn
+    * @desc Show snackbar with error
+    */
+    function TfgsErrorFn(data, status, headers, config) {
+      Snackbar.error(data.data.message);
     }
 
   }

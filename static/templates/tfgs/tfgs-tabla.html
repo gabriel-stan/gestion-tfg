@@ -9,6 +9,16 @@
     Editar
   </a>
 
+  <a
+    id="boton-asignar"
+    class="btn btn-default disabled"
+    data-toggle="modal"
+    data-target="#modal-asignar"
+    ng-click="loadSelectedTFG()"
+  >
+    Asignar
+  </a>
+
   <div class="example-modal">
     <div class="modal fade" id="modal-edit">
       <div class="modal-dialog" role="document">
@@ -20,6 +30,64 @@
           <div class="modal-body">
             <new-tfg-modal tfg="selectedTFG"></new-tfg-modal>
             <!-- <new-user-modal user="selectedUser"></new-user-modal> -->
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+  </div><!-- /.example-modal -->
+
+  <div class="example-modal">
+    <div class="modal fade" id="modal-asignar">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Asignar TFG</h4>
+          </div>
+          <div class="modal-body">
+            <!-- <new-tfg-modal tfg="selectedTFG"></new-tfg-modal> -->
+            <!-- <new-user-modal user="selectedUser"></new-user-modal> -->
+
+            <form role="form" class="form-horizontal" ng-submit="tfgsCtrl.asignarTFG()">
+
+              <div class="box-body pad">
+
+                <p>
+                  Asignar el TFG: <b>{{selectedTFG.titulo}}</b>
+                </p>
+
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">Email Alumno 1</label>
+                  <div class="col-sm-8">
+                    <input class="form-control" type="text" placeholder="Email Alumno 1" ng-model="selectedTFG.alumno1">
+                  </div>
+                </div>
+
+                <div class="form-group" ng-show="selectedTFG.n_alumnos >= 2">
+                  <label class="col-sm-4 control-label">Email Alumno 2</label>
+                  <div class="col-sm-8">
+                    <input class="form-control" type="text" placeholder="Email Alumno 2" ng-model="selectedTFG.alumno2">
+                  </div>
+                </div>
+
+                <div class="form-group" ng-show="selectedTFG.n_alumnos >= 3">
+                  <label class="col-sm-4 control-label">Email Alumno 3</label>
+                  <div class="col-sm-8">
+                    <input class="form-control" type="text" placeholder="Email Alumno 3" ng-model="selectedTFG.alumno3">
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="box-footer">
+                <button type="button" class="btn btn-danger pull-left" ng-show="selectedTFG.asignado" ng-click="tfgsCtrl.desasignar()">Desasignar</button>
+                <button type="submit" class="btn btn-primary pull-right">Asignar</button>
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal"style="margin-left:10px; margin-right:10px;">Cancelar</button>
+              </div>
+
+            </form>
+
+
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
@@ -138,29 +206,23 @@
           ]
         });
 
-        table.on( 'select', function () {
+        function botones() {
             var selectedRows = table.rows( { selected: true } ).count();
 
             table.button( 'edit:name' ).enable( selectedRows === 1 );
             if(selectedRows === 1){
               // $("#boton-edit").attr("disabled",selectedRows === 1);
               $("#boton-edit").removeClass("disabled");
+              $("#boton-asignar").removeClass("disabled");
             } else {
               $("#boton-edit").addClass("disabled");
+              $("#boton-asignar").addClass("disabled");
             }
-        } );
+        }
 
-        table.on( 'deselect', function () {
-            var selectedRows = table.rows( { selected: true } ).count();
+        table.on( 'select', botones);
 
-            table.button( 'edit:name' ).enable( selectedRows === 1 );
-            if(selectedRows === 1){
-              // $("#boton-edit").attr("disabled",selectedRows === 1);
-              $("#boton-edit").removeClass("disabled");
-            } else {
-              $("#boton-edit").addClass("disabled");
-            }
-        } );
+        table.on( 'deselect', botones);
 
         new $.fn.dataTable.Buttons( table, {
             buttons: [
@@ -177,6 +239,7 @@
           container.prepend(table.buttons(1).container()[1]);
 
           container.append($('#boton-edit'));
+          container.append($('#boton-asignar'));
         });
 
 

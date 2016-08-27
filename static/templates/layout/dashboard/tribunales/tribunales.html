@@ -1,17 +1,229 @@
- <!-- Content Header (Page header) -->
- <section class="content-header">
-   <h1>
-     Tribunales
-   </h1>
-   <ol class="breadcrumb">
-     <li><a href="/dashboard"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-     <li><a href="/dashboard/tribunales">Tribunales</a></li>
-   </ol>
- </section>
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    Tribunales
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="/dashboard"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+    <li><a href="/dashboard/tribunales">Tribunales</a></li>
+  </ol>
+</section>
 
- <!-- Main content -->
- <section class="content">
+<!-- Main content -->
+<section class="content">
 
-   Aqui se muestran los tribunales
+  <div class="box">
+    <div class="box-header">
+      <!-- <h3 class="box-title">Data Table With Full Features</h3> -->
+    </div><!-- /.box-header -->
 
- </section><!-- /.content -->
+    <div class="box-body">
+
+      <div class="dt-buttons">
+        <button class="btn btn-primary pull-left" data-toggle="modal" data-target="#modal-generar">Generar tribunales</button>
+      </div>
+
+      <a
+      id="boton-edit"
+      class="btn btn-default disabled"
+      data-toggle="modal"
+      data-target="#modal-edit"
+      ng-click="loadSelectedTribunal()"
+      >
+      Editar
+    </a>
+
+  <table id="tabla-tribunales" class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>Titulacion</th>
+        <th>TFG</th>
+        <th>Comision</th>
+        <th>Alumno</th>
+        <th>Convocatoria</th>
+        <th>Fecha presentacion</th>
+        <th>Observaciones</th>
+      </tr>
+    </thead>
+
+    <tfoot>
+      <tr>
+        <th>Titulacion</th>
+        <th>TFG</th>
+        <th>Comision</th>
+        <th>Alumno</th>
+        <th>Convocatoria</th>
+        <th>Fecha presentacion</th>
+        <th>Observaciones</th>
+      </tr>
+    </tfoot>
+  </table>
+</div><!-- /.box-body -->
+</div><!-- /.box -->
+
+<div class="example-modal">
+  <div class="modal fade" id="modal-edit">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Editar Tribunal</h4>
+        </div>
+        <div class="modal-body">
+          <!-- <new-user-modal user="selectedUser"></new-user-modal> -->
+          Ha! por hacer...
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+</div><!-- /.example-modal -->
+
+  <style>
+    div.dataTables_filter{
+      float: right;
+    }
+
+    div.dataTables_paginate{
+      float: right;
+    }
+
+    div.clear{
+      clear: both;
+    }
+
+    div.dt-buttons{
+      margin-right: 10px;
+    }
+  </style>
+
+  <script>
+  $(document).ready(function () {
+
+    var table = $("#tabla-tribunales").DataTable({
+      //sDom: '<Bf>rt<"col-md-6"i><"col-md-6"p><"col-md-12"l>',
+      sDom: '<Bf>rt<pi><"clear"l>',
+        language: {
+          "url": "/static/plugins/datatables/language/Spanish.json"
+        },
+        select: {
+          style: 'multi'
+        },
+        responsive: true,
+        buttons: [
+          {
+            text: 'Reload',
+            action: function ( e, dt, node, config ) {
+              dt.ajax.reload();
+            }
+          },
+          'selectAll',
+          'selectNone'
+        ],
+        ajax: "/static/test/tribunales.json",
+        columns: [
+          {"data" : "tfg.tfg.titulacion.codigo"},
+          {"data" : "tfg.tfg.titulo"},
+          {"data" : "comision.id"},
+          {"data" : "tfg.alumno_1.email"},
+          {"data" : "tfg.convocatoria.codigo"},
+          {"data" : "tfg.fecha_conv"},
+          {"data" : "observaciones"}
+        ]
+      });
+
+      table.on( 'select', function () {
+        var selectedRows = table.rows( { selected: true } ).count();
+
+        table.button( 'edit:name' ).enable( selectedRows === 1 );
+        if(selectedRows === 1){
+          // $("#boton-edit").attr("disabled",selectedRows === 1);
+          $("#boton-edit").removeClass("disabled");
+        } else {
+          $("#boton-edit").addClass("disabled");
+        }
+      } );
+
+      table.on( 'deselect', function () {
+        var selectedRows = table.rows( { selected: true } ).count();
+
+        table.button( 'edit:name' ).enable( selectedRows === 1 );
+        if(selectedRows === 1){
+          // $("#boton-edit").attr("disabled",selectedRows === 1);
+          $("#boton-edit").removeClass("disabled");
+        } else {
+          $("#boton-edit").addClass("disabled");
+        }
+      } );
+
+      new $.fn.dataTable.Buttons( table, {
+        buttons: [
+        'copyHtml5',
+        'excelHtml5',
+        'csvHtml5',
+        'pdfHtml5'
+        ]
+      } );
+
+      table.on( 'preInit.dt', function (e, settings) {
+        // var container = $(table.table().container());
+        var container = $(table.buttons(1).container()[0]);
+        container.prepend(table.buttons(1).container()[1]);
+
+        container.append($('#boton-edit'));
+
+      });
+
+    });
+  </script>
+
+
+  </section><!-- /.content -->
+
+
+  <div class="example-modal">
+    <div class="modal fade" id="modal-generar">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Generar Tribunales</h4>
+          </div>
+          <div class="modal-body">
+
+            <form role="form" class="form-horizontal" ng-submit="vm.generarTribunales()">
+
+              <div class="box-body pad">
+
+                <p>
+                  Generar tribunales para:
+                </p>
+
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">Convocatoria de</label>
+                  <div class="col-sm-8">
+                    <select class="form-control" ng-model="vm.convocatoria">
+                      <option value="">Ninguna</option>
+                      <option value="CONV_JUN">Junio</option>
+                      <option value="CONV_SEPT">Septiembre</option>
+                      <option value="CONV_DIC">Diciembre</option>
+                    </select>
+                  </div>
+                </div>
+
+              </div>
+
+
+
+              <div class="box-footer">
+                <button type="submit" class="btn btn-primary pull-left">Generar</button>
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal"style="margin-left:10px; margin-right:10px;">Cancelar</button>
+              </div>
+
+            </form>
+
+
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+  </div><!-- /.example-modal -->
