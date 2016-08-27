@@ -106,6 +106,10 @@
       templateUrl: '/static/templates/layout/dashboard/upload.html'
     })
 
+    .when('/dashboard/calendar', {
+      templateUrl: '/static/templates/layout/dashboard/calendar/calendar.html'
+    })
+
     .when('/', {
       controller: 'IndexController',
       controllerAs: 'indexCtrl',
