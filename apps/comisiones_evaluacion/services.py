@@ -5,7 +5,7 @@ import itertools
 from eventos.models import Tipo_Evento
 from comisiones_evaluacion.models import Comision_Evaluacion, Tribunales
 from comisiones_evaluacion.serializers import TribunalesSerializer, Comision_EvaluacionSerializer
-from gestfg.settings import REPO_PATH
+from gestfg.settings import DOC_PATH
 import random
 import math
 import hashlib as hl
@@ -212,7 +212,7 @@ class Tribunal(object):
         nombre_fichero = hash_fichero.hexdigest()
 
         fichero.file.seek(0)
-        with file(os.path.join(REPO_PATH, nombre_fichero), 'wb') as f:
+        with file(os.path.join(DOC_PATH, nombre_fichero), 'wb') as f:
             f.write(fichero.file.read())
 
         self.tribunal.documentacion = nombre_fichero
