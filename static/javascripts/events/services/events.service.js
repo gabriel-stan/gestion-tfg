@@ -59,7 +59,9 @@
     * @memberOf gestfg.events.services.Events
     */
     function remove(eventID) {
-      return $http.delete('/api/v1/events/' + eventID);
+      return $http.delete('/api/v1/events/', {
+        id: eventID
+      });
     }
 
     /**
