@@ -379,7 +379,7 @@ class Tfg_asigViewSet(viewsets.ModelViewSet):
         DELETE
         Elimina la asignacion un TFG a uno o varios alumnos
         :param request:
-        :return : 
+        :return :
         {status: True/False, data:{serializer del tfg que ha quedado libre}
         """
 
