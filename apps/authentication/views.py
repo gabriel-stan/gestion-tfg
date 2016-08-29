@@ -103,28 +103,28 @@ class UsuariosViewSet(viewsets.ModelViewSet):
             self.logger.info('INICIO WS - USUARIOSVIEW CREATE del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             is_admin = params.get('is_admin')
-            serializer = self.serializer_class(data=params)
-            if serializer.is_valid():
-                if is_admin:
-                    if str(is_admin) == 'True' and request.user.is_admin:
-                        resul = Usuario.objects.create_superuser(**serializer.validated_data)
-                    else:
-                        resul = dict(status=False, message="Sin privilegios")
-                        resul_status = status.HTTP_405_METHOD_NOT_ALLOWED
+            if is_admin:
+                if str(is_admin) == 'True' and request.user.is_admin:
+                    resul = Usuario.objects.create_superuser(**params)
                 else:
-                    if utils.is_email_alumno(params.get('email')):
-                        resul = Alumno.objects.create_user(**serializer.validated_data)
-                    elif utils.is_email_profesor(params.get('email')):
-                        resul = Profesor.objects.create_user(**serializer.validated_data)
-                    else:
-                        resul = dict(status=False, message="Error en los parametros de entrada")
-                if resul['status']:
-                    resul = utils.to_dict(resul)
-                    resul_status = status.HTTP_200_OK
-                else:
-                    resul_status = status.HTTP_400_BAD_REQUEST
+                    resul = dict(status=False, message="Sin privilegios")
             else:
-                resul = dict(status=False, message=serializer.errors)
+                if utils.is_email_alumno(params.get('email')):
+                    try:
+                        alumno = Alumno.objects.get(dni=params.get('dni'))
+                        serializer = self.serializer_class(alumno)
+                        params['creado'] = True
+                        resul = serializer.update(alumno, params)
+                    except Alumno.DoesNotExist:
+                        resul = Alumno.objects.create_user(**params)
+                elif utils.is_email_profesor(params.get('email')):
+                    resul = Profesor.objects.create_user(**params)
+                else:
+                    resul = dict(status=False, message="Error en los parametros de entrada")
+            if resul['status']:
+                resul = utils.to_dict(resul)
+                resul_status = status.HTTP_200_OK
+            else:
                 resul_status = status.HTTP_400_BAD_REQUEST
 
             self.logger.info('FIN WS - USUARIOSVIEW CREATE del usuario: %s con resultado: %s' %

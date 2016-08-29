@@ -46,7 +46,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
                     raise NameError("El usuario indicado ya existe")
 
             # comprobando dni
-            if 'dni' in validated_data.keys():
+            if 'dni' in validated_data.keys() and not validated_data.get('creado'):
                 new_dni = validated_data.get('dni')
                 res = Usuario.objects.filter(dni=new_dni)
                 if res.count() == 0:
@@ -81,6 +81,8 @@ class UsuarioSerializer(serializers.ModelSerializer):
             #         alumno.set_password(password)
 
             usuario.save()
+            if validated_data.get('creado'):
+                utils.enviar_email_reset_password(usuario.email)
 
             return dict(status=True, data=usuario)
 
