@@ -18,8 +18,9 @@ class AuthenticationServicesTests(TestCase):
         self.data_admin2 = dict(email='admin2@admin.es', first_name='admin 2',
                                 last_name='apellido 1 apellido 12', password='0000', is_admin=True)
 
-        self.data_alum1 = dict(dni='12345678H', first_name='alumno 1',
-                               last_name='apellido 1 apellido 12', password='0000')
+        self.data_alum1 = dict(dni='12345678H', last_name='apellido 1 apellido 12', password='0000')
+
+        self.data_alum1_extra = dict(dni='12345678H', email='perico@correo.ugr.es', first_name='alumno 1')
 
         self.data_alum2 = dict(email='ejemplo2@correo.ugr.es', first_name='alumno 2',
                                last_name='apellido 12 apellido 122', password='0000')
@@ -232,3 +233,14 @@ class AuthenticationServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['data'][0]['jefe_departamento']['dni'], self.data_prof1['dni'])
 
+    def test_ws_alumnos_register(self):
+
+        # inserto un alumno
+        res = self.client.post('/api/v1/alumnos/', self.data_alum1)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        # intento registrarme como un alumno ya dado de alta con el dni
+        res = self.client.post('/api/v1/usuarios/', self.data_alum1_extra)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
