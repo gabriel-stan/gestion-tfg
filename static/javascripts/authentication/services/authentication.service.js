@@ -27,6 +27,7 @@
       login: login,
       logout: logout,
       register: register,
+      recoverPassword: recoverPassword,
       setAuthenticatedAccount: setAuthenticatedAccount,
       unauthenticate: unauthenticate
     };
@@ -103,6 +104,35 @@
        */
       function loginErrorFn(data, status, headers, config) {
         Snackbar.error(data.data);
+      }
+    }
+
+    /**
+     * @name recoverPassword
+     * @desc send recover password request for email provided
+     * @param {string} email The email entered by the user
+     * @returns {Promise}
+     * @memberOf gestfg.authentication.services.Authentication
+     */
+    function recoverPassword(email) {
+      return $http.post('/api/v1/auth/reset_password', {
+        email: email
+      }).then(recoverPasswordSuccessFn, recoverPasswordErrorFn);
+
+      /**
+       * @name recoverPasswordSuccessFn
+       * @desc Show success message
+       */
+      function recoverPasswordSuccessFn(data, status, headers, config) {
+        Snackbar.success("Se le ha enviado un enlace para reestrablecer la contraseña");
+      }
+
+      /**
+       * @name recoverPasswordErrorFn
+       * @desc Log "Epic failure!" to the console
+       */
+      function recoverPasswordErrorFn(data, status, headers, config) {
+        Snackbar.error(data.data.message);
       }
     }
 

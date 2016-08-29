@@ -30,7 +30,7 @@
       templateUrl: '/static/templates/authentication/recover-password.html'
     })
 
-    .when('/set-password', {
+    .when('/reset-password', {
       controller: 'RegisterController',
       controllerAs: 'registerCtrl',
       templateUrl: '/static/templates/authentication/set-password.html'
