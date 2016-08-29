@@ -207,13 +207,15 @@
         });
 
         function botones() {
-            var selectedRows = table.rows( { selected: true } ).count();
+            var selectedRows = table.rows( { selected: true } );
 
             table.button( 'edit:name' ).enable( selectedRows === 1 );
-            if(selectedRows === 1){
+            if(selectedRows.count() === 1){
               // $("#boton-edit").attr("disabled",selectedRows === 1);
               $("#boton-edit").removeClass("disabled");
-              $("#boton-asignar").removeClass("disabled");
+              if(!selectedRows.data()[0].asignado){
+                $("#boton-asignar").removeClass("disabled");
+              }
             } else {
               $("#boton-edit").addClass("disabled");
               $("#boton-asignar").addClass("disabled");
