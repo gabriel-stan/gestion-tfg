@@ -811,10 +811,11 @@ class DepartamentosViewSet(viewsets.ModelViewSet):
             return Response(resul, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ResetPasswordRequestView(FormView):
-    template_name = 'backend/reset_password.html'    #code for template is given below the view's code
+class ResetPasswordRequestView(views.APIView):
+    template_name = 'backend/reset_password.html'
     success_url = '/'
     form_class = PasswordResetRequestForm
+    logger = logging.getLogger(__name__)
 
     @staticmethod
     def validate_email_address(email):
@@ -823,19 +824,24 @@ class ResetPasswordRequestView(FormView):
         '''
         try:
             validate_email(email)
-            return True
+            if Usuario.objects.filter(email=email).exists():
+                return dict(status=True, message="Email enviado")
+            else:
+                return dict(status=False, message="El email no existe en el sistema")
         except ValidationError:
-            return False
+            return dict(status=False, message="Email incorrecto")
 
     def post(self, usuario):
         '''
         A normal post request which takes input from field "email_or_username" (in ResetPasswordRequestForm).
         '''
-        if self.validate_email_address(usuario) is True:                 #uses the method written above
-            '''
-            If the input is an valid email address, then the following code will lookup for users associated with that email address. If found then an email will be sent to the address, else an error message will be printed on the screen.
-            '''
-            associated_users= Usuario.objects.filter(email=usuario)
+
+        if not isinstance(usuario, basestring):
+            params = utils.get_params(usuario)
+            usuario = params.get('email')
+        resul = self.validate_email_address(usuario)
+        if resul['status']:
+            associated_users = Usuario.objects.filter(email=usuario)
             if associated_users.exists():
                 for user in associated_users:
                         c = {
@@ -847,18 +853,22 @@ class ResetPasswordRequestView(FormView):
                             'token': default_token_generator.make_token(user),
                             'protocol': 'http',
                             }
-                        subject_template_name='backend/password_reset_subject.txt'
+                        subject_template_name = 'backend/password_reset_subject.txt'
                         # copied from django/contrib/admin/templates/registration/password_reset_subject.txt to templates directory
-                        email_template_name='backend/password_reset_email.html'
+                        email_template_name = 'backend/password_reset_email.html'
                         # copied from django/contrib/admin/templates/registration/password_reset_email.html to templates directory
                         subject = loader.render_to_string(subject_template_name, c)
                         # Email subject *must not* contain newlines
                         subject = ''.join(subject.splitlines())
                         email = loader.render_to_string(email_template_name, c)
-                        send_mail(subject, email, DEFAULT_FROM_EMAIL , [user.email], fail_silently=False,
+                        send_mail(subject, email, DEFAULT_FROM_EMAIL, [user.email], fail_silently=False,
                                   auth_user=EMAIL_HOST_USER, auth_password=EMAIL_HOST_PASSWORD)
-                return True
-            return False
+                resul_status = status.HTTP_200_OK
+            else:
+                resul_status = status.HTTP_400_BAD_REQUEST
+        else:
+            resul_status = status.HTTP_400_BAD_REQUEST
+        return Response(resul, status=resul_status)
 
 
 class PasswordResetConfirmView(FormView):
@@ -882,7 +892,7 @@ class PasswordResetConfirmView(FormView):
 
         if user is not None and default_token_generator.check_token(user, token):
             if form.is_valid():
-                new_password=form.cleaned_data['new_password2']
+                new_password = form.cleaned_data['new_password2']
                 user.set_password(new_password)
                 user.save()
                 return self.form_valid(form)
@@ -890,5 +900,5 @@ class PasswordResetConfirmView(FormView):
                 messages.error(request, 'La proceso ha fallado.')
                 return self.form_invalid(form)
         else:
-            messages.error(request,'El link ha caducado.')
+            messages.error(request, 'El link ha caducado.')
             return self.form_invalid(form)
