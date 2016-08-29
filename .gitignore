@@ -21,7 +21,7 @@ staticfiles
 static/bower_components
 
 #repo
-repo/*
+contenido/documentacion/*
 
 # node generated
 node_modules
