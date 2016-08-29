@@ -18,6 +18,7 @@
     var registerCtrl = this;
 
     registerCtrl.register = register;
+    registerCtrl.recoverPassword = recoverPassword;
 
     activate();
 
@@ -31,6 +32,15 @@
       if (Authentication.isAuthenticated()) {
         $location.url('/');
       }
+    }
+
+    /**
+    * @name recoverPassword
+    * @desc recoverPassword of a user
+    * @memberOf gestfg.authentication.controllers.RegisterController
+    */
+    function recoverPassword() {
+      Authentication.recoverPassword(registerCtrl.email);
     }
 
     /**
