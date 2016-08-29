@@ -130,7 +130,7 @@ class EventosViewSet(viewsets.ModelViewSet):
             self.logger.info('INICIO WS - EVENTOSVIEW DELETE del usuario: %s con params: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if request.user.is_admin:
-                evento = Evento.objects.get(contenido=params.get('contenido'))
+                evento = Evento.objects.get(id=params.get('id'))
                 serializer = self.serializer_class(evento)
                 resul = serializer.delete(evento)
             else:
