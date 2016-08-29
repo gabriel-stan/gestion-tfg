@@ -38,8 +38,7 @@ class SetPasswordForm(forms.Form):
 
 def enviar_email_reset_password(usuario):
     from views import ResetPasswordRequestView
-    enviar = ResetPasswordRequestView().post(usuario)
-    return enviar
+    ResetPasswordRequestView().post(usuario)
 
 
 def get_params(req):
