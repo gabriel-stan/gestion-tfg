@@ -20,8 +20,11 @@
       all: all,
       filter: filter,
       create: create,
+      update: update,
+      asignar: asignar,
       get: get,
       upload: upload,
+      presentar: presentar,
       insert_validated: insert_validated
     };
 
@@ -84,6 +87,70 @@
         hard_soft: content.hwsw,
         tutor: content.tutor,
         cotutor: content.cotutor
+      });
+    }
+
+
+    /**
+    * @name update
+    * @desc update a Tfg
+    * @param {string} content The content of the Tfg
+    * @returns {Promise}
+    * @memberOf gestfg.tfgs.services.Tfgs
+    */
+    function update(content) {
+
+      var datos = new Object();
+
+      datos.titulacion = content.titulacion;
+      datos.tipo = content.tipo;
+      datos.titulo = content.titulo;
+      datos.descripcion = content.descripcion;
+      datos.n_alumnos = content.alumnos;
+      datos.conocimientos_previos = content.previos;
+      datos.hard_soft = content.hwsw;
+      datos.tutor = content.tutor;
+      datos.cotutor = content.cotutor;
+
+      return $http.put('/api/v1/tfgs/', {
+        //content: content
+        tfg: content.titulo,
+        datos: JSON.stringify(datos)
+      });
+    }
+
+
+    /**
+    * @name presentar
+    * @desc Presentar un TFG a la convocatoria indicada
+    * @param {string} tfg Titulo del TFG
+    * @param {string} convocatoria Coonvocatoria
+    * @returns {Promise}
+    * @memberOf gestfg.tfgs.services.Tfgs
+    */
+    function presentar(tfg, convocatoria) {
+      return $http.put('/api/v1/tfgs_asig/', {
+        //content: content
+        tfg: tfg,
+        datos: convocatoria
+      });
+    }
+
+
+    /**
+    * @name asignar
+    * @desc asignar un TFG
+    * @param {string} tfg TFG
+    * @returns {Promise}
+    * @memberOf gestfg.tfgs.services.Tfgs
+    */
+    function asignar(tfg) {
+      return $http.post('/api/v1/tfgs_asig/', {
+        //content: content
+        tfg: tfg.titulo,
+        alumno1: tfg.alumno1,
+        alumno2: tfg.alumno2,
+        alumno3: tfg.alumno3
       });
     }
 

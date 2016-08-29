@@ -19,6 +19,7 @@
     var Events = {
       all: all,
       create: create,
+      remove: remove,
       get: get
     };
 
@@ -48,6 +49,17 @@
       return $http.post('/api/v1/events/', {
         content: content
       });
+    }
+
+    /**
+    * @name delete
+    * @desc Delete an Event
+    * @param {string} event ID
+    * @returns {Promise}
+    * @memberOf gestfg.events.services.Events
+    */
+    function remove(eventID) {
+      return $http.delete('/api/v1/events/' + eventID);
     }
 
     /**

@@ -52,6 +52,11 @@
       controllerAs: 'tfgsCtrl',
       templateUrl: '/static/templates/layout/dashboard/tfgs/tfgs.html'
     })
+    .when('/dashboard/tfgs-asig', {
+      controller: 'TfgsController',
+      controllerAs: 'tfgsCtrl',
+      templateUrl: '/static/templates/layout/dashboard/tfgs/tfgs-asig.html'
+    })
     .when('/dashboard/tfgs/add', {
       controller: 'NewTfgController',
       controllerAs: 'vm',
@@ -81,6 +86,16 @@
       templateUrl: '/static/templates/layout/dashboard/events/add-event.html'
     })
 
+    .when('/dashboard/comisiones', {
+      controller: 'ComisionesController',
+      controllerAs: 'vm',
+      templateUrl: '/static/templates/layout/dashboard/comisiones/comisiones.html'
+    })
+
+    .when('/dashboard/tribunales', {
+      templateUrl: '/static/templates/layout/dashboard/tribunales/tribunales.html'
+    })
+
     .when('/dashboard/tfgs/upload', {
       templateUrl: '/static/templates/layout/dashboard/tfgs/upload-tfgs.html'
     })
@@ -89,6 +104,10 @@
       controller: 'DashboardController',
       controllerAs: 'dashCtrl',
       templateUrl: '/static/templates/layout/dashboard/upload.html'
+    })
+
+    .when('/dashboard/calendar', {
+      templateUrl: '/static/templates/layout/dashboard/calendar/calendar.html'
     })
 
     .when('/', {

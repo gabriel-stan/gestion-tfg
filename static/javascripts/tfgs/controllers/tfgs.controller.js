@@ -18,6 +18,8 @@
 
     var tfgsCtrl = this;
     tfgsCtrl.loadTfgs = loadTfgs;
+    tfgsCtrl.presentarTFGs = presentarTFGs;
+    tfgsCtrl.asignarTFG = asignarTFG;
     tfgsCtrl.filter = filter;
     tfgsCtrl.loading = true;
 
@@ -57,7 +59,94 @@
       $scope.selectedTFG.tipo = tfg.tipo;
     }
 
+    $scope.loadSelectedTFGAsig = function() {
+      var tfg = $("#tabla-tfgs").DataTable().row( { selected: true } ).data();
+      $scope.selectedTFG.titulacion = tfg.tfg.titulacion.codigo;
+      $scope.selectedTFG.preasignado = true;
+      $scope.selectedTFG.n_alumnos = tfg.tfg.n_alumnos;
+      $scope.selectedTFG.tipo = tfg.tfg.tipo;
+
+      $scope.selectedTFG.titulo = tfg.tfg.titulo;
+      $scope.selectedTFG.descripcion = tfg.tfg.descripcion;
+      $scope.selectedTFG.conocimientos_previos = tfg.tfg.conocimientos_previos;
+      $scope.selectedTFG.hard_soft = tfg.tfg.hard_soft;
+
+      $scope.selectedTFG.tutor = tfg.tfg.tutor.email;
+      if(tfg.tfg.cotutor){
+          $scope.selectedTFG.cotutor = tfg.tfg.cotutor.email;
+      }
+
+      $scope.selectedTFG.alumno1 = tfg.alumno_1.email;
+      if(tfg.alumno_2){
+          $scope.selectedTFG.alumno2 = tfg.alumno_2.email;
+      }
+
+      if(tfg.alumno_3){
+          $scope.selectedTFG.alumno2 = tfg.alumno_3.email;
+      }
+    }
+
     $scope.selectedTFG = new Object();
+
+
+    $scope.loadSelectedTFGPresentar = function() {
+      var tfgs = $("#tabla-tfgs").DataTable().rows( { selected: true } ).data();
+
+      tfgsCtrl.tfgs_presentar = [];
+
+      $.each(tfgs, function( i, tfg ) {
+        var t = new Object();
+        t.titulo = tfg.tfg.titulo;
+        tfgsCtrl.tfgs_presentar.push(t);
+      });
+
+    }
+
+
+    /**
+    * @name presentarTFGs
+    * @desc Presenta los tfgs a la convocatoria
+    * @memberOf gestfg.tfgs.controllers.TfgsController
+    */
+    function presentarTFGs(){
+
+      $.each(tfgsCtrl.tfgs_presentar, function( i, tfg ) {
+        var convocatoria = new Object();
+        convocatoria.tipo = 'SOL_EVAL';
+        convocatoria.convocatoria = tfgsCtrl.convocatoria;
+
+        Tfgs.presentar(tfg.titulo, JSON.stringify(convocatoria)).then(TfgsSuccessFn, TfgsErrorFn).finally(filterFinally);
+      });
+
+      /**
+      * @name TfgsSuccessFn
+      * @desc Show Snackbar with success
+      */
+      function TfgsSuccessFn(data, status, headers, config) {
+        Snackbar.success("TFG presentado correctamente");
+      }
+
+    }
+
+
+    /**
+    * @name asignarTFG
+    * @desc Asigna los alumnos al TFG
+    * @memberOf gestfg.tfgs.controllers.TfgsController
+    */
+    function asignarTFG(){
+
+      Tfgs.asignar($scope.selectedTFG).then(TfgsSuccessFn, TfgsErrorFn).finally(filterFinally);
+
+      /**
+      * @name TfgsSuccessFn
+      * @desc Show Snackbar with success
+      */
+      function TfgsSuccessFn(data, status, headers, config) {
+        Snackbar.success("TFG asignado correctamente");
+      }
+
+    }
 
     //loadTfgs();
 
@@ -78,15 +167,6 @@
       */
       function TfgsSuccessFn(data, status, headers, config) {
         tfgsCtrl.tfgs = data.data.data;
-      }
-
-
-      /**
-      * @name TfgsErrorFn
-      * @desc Show snackbar with error
-      */
-      function TfgsErrorFn(data, status, headers, config) {
-        Snackbar.error(data.data.error);
       }
     }
 
@@ -136,6 +216,14 @@
     function filterFinally(data, status, headers, config) {
       tfgsCtrl.loading = false;
       $('#filter').removeClass('disabled');
+    }
+
+    /**
+    * @name TfgsErrorFn
+    * @desc Show snackbar with error
+    */
+    function TfgsErrorFn(data, status, headers, config) {
+      Snackbar.error(data.data.message);
     }
 
   }

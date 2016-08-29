@@ -5,6 +5,10 @@
       <!-- Buttons, labels, and many other things can be placed here! -->
       <!-- Here is a label for example -->
       <span class="label" ng-class="event.tipo ? 'label-danger' : 'label-primary'">{{event.convocatoria.nombre}}</span>
+      <span ng-controller="UserController as userCtrl">
+        <button ng-show="userCtrl.isAdmin()" class="btn btn-box-tool" data-toggle="modal" data-target="#modal-edit" ng-click="loadSelectedEvent(event)"><i class="fa fa-pencil"></i></button>
+        <a ng-show="userCtrl.isAdmin()" class="btn btn-box-tool" ng-click="removeEvent(event.id)"><i class="fa fa-trash"></i></a>
+      </span>
       <!-- <span class="label label-danger" ng-if="event.tipo">{{event.tipo.nombre}}</span> -->
     </div><!-- /.box-tools -->
   </div><!-- /.box-header -->

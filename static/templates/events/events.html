@@ -1,7 +1,25 @@
 <!-- Aqui se muestran los eventos -->
 <div ng-repeat="evento in indexCtrl.events | orderBy: '-updated_at'">
-  <event event="evento"></event>
+  <div ng-controller="EventsController as eventsCtrl">
+    <event event="evento"></event>
+  </div>
 </div>
+
+<div class="example-modal">
+  <div class="modal fade" id="modal-edit">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Modal Default</h4>
+        </div>
+        <div class="modal-body">
+          <edit-event event="selectedEvent"></edit-event>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+</div><!-- /.example-modal -->
 
 <div id="events-empty" class="hidden">
   <div class="callout callout-info">

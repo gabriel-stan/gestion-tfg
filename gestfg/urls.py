@@ -43,8 +43,8 @@ router.register(r'comisiones', ComisionEvaluacionViewSet)
 router.register(r'tribunales', TribunalesViewSet)
 
 urlpatterns = [
-    url(r'^admin/?', include(admin.site.urls)),
-    url(r'^api/v1/?', include(router.urls)),
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^api/v1/', include(router.urls)),
     url(r'^api/v1/auth/login/?$', LoginView.as_view(), name='login'),
     url(r'^api/v1/auth/logout/?$', LogoutView.as_view(), name='logout'),
     url(r'^api/v1/auth/permisos/?$', PermissionsView.as_view(), name='permisos'),
@@ -69,5 +69,5 @@ urlpatterns = [
     # url(r'^asig_tfg/remove/$', views_tfg.remove_asig_tfg, name='remove_asig_tfg'),
     url('^dashboard.*', DashboardView.as_view(), name='dashboard'),
     #url('^/?$', IndexView.as_view(), name='index'),
-    url('^/?.*', IndexView.as_view(), name='index'),
+    url('^/?', IndexView.as_view(), name='index'),
 ]

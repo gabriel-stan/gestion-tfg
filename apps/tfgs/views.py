@@ -307,7 +307,7 @@ class Tfg_asigViewSet(viewsets.ModelViewSet):
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(resul, status=resul_status)
         except Alumno.DoesNotExist:
-            resul = dict(message="El tfg indicado no existe")
+            resul = dict(message="El alumno indicado no existe")
             self.logger.error('TITULACIONESVIEW POST del usuario: %s con resultado: %s' %
                               (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(resul, status=status.HTTP_400_BAD_REQUEST)
