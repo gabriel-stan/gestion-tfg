@@ -1,13 +1,26 @@
-<div class="box box-primary">
+<div class="box" ng-class="event.tipo ? 'box-danger' : 'box-primary'">
   <div class="box-header with-border">
     <h3 class="box-title">{{event.titulo}}</h3>
     <div class="box-tools pull-right">
       <!-- Buttons, labels, and many other things can be placed here! -->
       <!-- Here is a label for example -->
-      <span class="label label-primary">{{event.tipo}}</span>
+      <span class="label" ng-class="event.tipo ? 'label-danger' : 'label-primary'">{{event.convocatoria.nombre}}</span>
+      <span ng-controller="UserController as userCtrl">
+        <button ng-show="userCtrl.isAdmin()" class="btn btn-box-tool" data-toggle="modal" data-target="#modal-edit" ng-click="loadSelectedEvent(event)"><i class="fa fa-pencil"></i></button>
+        <a ng-show="userCtrl.isAdmin()" class="btn btn-box-tool" ng-click="removeEvent(event.id)"><i class="fa fa-trash"></i></a>
+      </span>
+      <!-- <span class="label label-danger" ng-if="event.tipo">{{event.tipo.nombre}}</span> -->
     </div><!-- /.box-tools -->
   </div><!-- /.box-header -->
   <div class="box-body">
+
+    <div ng-if="event.tipo">
+      <p>Tipo convocatoria: {{event.tipo.nombre}}</p>
+      <p>Desde: <span class="fecha">{{vm.parseTime(event.desde)}}</span></p>
+      <p>Hasta: <span class="fecha">{{vm.parseTime(event.hasta)}}</span></p>
+      <hr />
+    </div>
+
     <div ng-bind-html="event.contenido">
         <!-- esto se genera gracias a ng-bind-html y ngSanitize -->
     </div>
@@ -16,7 +29,7 @@
     <div class='user-block'>
       <img class='img-circle' src='static/dist/img/user1-128x128.jpg' alt='user image'>
       <span class='username'><a href="#">{{event.autor.email}}</a></span>
-      <span class='description'>{{event.created_at}}</span>
+      <span class='description'>{{vm.parseTimeAgo(event.updated_at)}}</span>
     </div><!-- /.user-block -->
   </div><!-- box-footer -->
 </div><!-- /.box -->

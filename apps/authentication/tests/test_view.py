@@ -84,9 +84,10 @@ class AuthenticationServicesTests(TestCase):
                                                        'password': self.data_prof1['password']})
         resul = json.loads(res.content)
         self.assertEqual(resul['data']['dni'], self.data_prof1['dni'])
+
         # Modificar un profesor
         res = self.client.put('/api/v1/profesores/', {'usuario': self.data_prof1['dni'],
-                                                      'datos': json.dumps({'first_name': 'otro profesor 2'})})
+                                                      'datos': json.dumps({'jefe_departamento': True})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
@@ -106,7 +107,7 @@ class AuthenticationServicesTests(TestCase):
         res = self.client.get('/api/v1/usuarios/')
         resul = json.loads(res.content)
         self.assertEqual(len(resul['data']), 4)
-        #self.assertEqual(resul['data'][0].get('clase'), 'Alumno')
+        # self.assertEqual(resul['data'][0].get('clase'), 'Alumno')
 
         # Me logueo con un admin
         res = self.client.post('/api/v1/auth/login/', {'dni': self.data_admin['dni'],
@@ -206,18 +207,28 @@ class AuthenticationServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['data']['dni'], self.data_admin['dni'])
 
+        # inserto un profesor
+        res = self.client.post('/api/v1/profesores/', self.data_prof1)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
         res = self.client.post('/api/v1/departamentos/', {'codigo': self.data_departamento['codigo'],
                                                                'nombre': self.data_departamento['nombre']})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         res = self.client.put('/api/v1/departamentos/', {'codigo': self.data_departamento['codigo'],
-                                                              'data': json.dumps(
-                                                                  {'nombre': 'departamento chulo'})})
+                                                         'datos': json.dumps({'nombre': 'departamento chulo'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['data']['nombre'], 'departamento chulo')
 
+        # Modificar un profesor
+        res = self.client.put('/api/v1/profesores/', {'usuario': self.data_prof1['dni'],
+                                                      'datos': json.dumps({'jefe_departamento': True})})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
         res = self.client.get('/api/v1/departamentos/')
         resul = json.loads(res.content)
-        self.assertEqual(resul['data'][1]['nombre'], 'departamento chulo')
+        self.assertEqual(resul['data'][0]['jefe_departamento']['dni'], self.data_prof1['dni'])
 

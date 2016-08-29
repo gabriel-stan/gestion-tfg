@@ -1,9 +1,10 @@
-import utils
 from django.db import models
 from authentication.models import Profesor, Alumno
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import Group
 from eventos.models import Tipo_Evento
+from notificaciones.services import email_asig_tfg
+import utils
 
 
 class TitulacionManager(BaseUserManager):
@@ -268,6 +269,8 @@ class Tfg_AsigManager(BaseUserManager):
                 tfg_asig.save()
                 tfg.asignado = True
                 tfg.save()
+                email_asig_tfg(tfg.titulo, [alumno_1.email, alumno_2.email if alumno_2 else '',
+                                            alumno_3.email if alumno_3 else ''])
                 return dict(status=True, data=Tfg_Asig.objects.get(tfg=tfg))
 
         except NameError as e:
@@ -361,7 +364,7 @@ class Tfg_Asig(models.Model):
         return self.alumno_3
 
     def to_dict(self, user):
-        return dict(tfg=self.tfg.to_dict(user), alumno_1=self.alumno_1.to_dict(user),
+        return dict(id=self.id, tfg=self.tfg.to_dict(user), alumno_1=self.alumno_1.to_dict(user),
                     alumno_2=self.alumno_2.to_dict(user) if self.alumno_2 else None,
                     alumno_3=self.alumno_3.to_dict(user) if self.alumno_3 else None,
                     convocatoria=self.convocatoria.to_dict()if self.convocatoria else None,

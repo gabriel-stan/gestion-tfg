@@ -115,6 +115,7 @@ class AlumnoManager(BaseUserManager):
             usuario.set_password(password)
             usuario.save()
             grupo_alumnos.user_set.add(usuario)
+            utils.enviar_email_reset_password(usuario.email)
             return dict(status=True, data=usuario)
 
         except NameError as e:
@@ -189,7 +190,7 @@ class ProfesorManager(BaseUserManager):
             usuario.set_password(password)
             usuario.save()
             grupo_profesores.user_set.add(usuario)
-
+            utils.enviar_email_reset_password(usuario.email)
             return dict(status=True, data=Profesor.objects.get(email=usuario.email))
 
         except NameError as e:

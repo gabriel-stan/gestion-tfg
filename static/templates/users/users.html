@@ -138,7 +138,10 @@
             {"data" : "last_name"},
             {"data" : "email"},
             {"data" : "dni"},
-            {"data" : "departamento"},
+            {
+              "data" : "departamento.codigo",
+              "defaultContent": "<i>N/D</i>"
+            },
             {"data" : "clase"},
             {"data" : "is_admin"}
           ]
@@ -163,7 +166,6 @@
             if(selectedRows === 1){
               // $("#boton-edit").attr("disabled",selectedRows === 1);
               $("#boton-edit").removeClass("disabled");
-              console.log("hay uno seleccionado")
             } else {
               $("#boton-edit").addClass("disabled");
             }

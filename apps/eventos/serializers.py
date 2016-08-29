@@ -1,8 +1,9 @@
 from django.db import models
 from rest_framework import serializers
-from eventos.models import Evento, Tipo_Evento, SubTipo_Evento
+from eventos.models import Evento, Tipo_Evento, SubTipo_Evento, Periodo
 from authentication.serializers import UsuarioSerializer
 from authentication.models import Usuario
+from datetime import datetime
 
 
 # class EventoSerializer(serializers.PrimaryKeyRelatedField, serializers.ModelSerializer):
@@ -51,7 +52,7 @@ class EventoSerializer(serializers.ModelSerializer):
                     raise NameError("Tipo Evento incorrecto")
                 evento.tipo = tipo
 
-            # comprobando tipo
+            # comprobando autor
             if 'autor' in validated_data.keys():
                 new_autor = validated_data.get('autor')
                 autor = Usuario.objects.get(email=new_autor)
@@ -68,8 +69,30 @@ class EventoSerializer(serializers.ModelSerializer):
                 else:
                     evento.titulo = new_titulo
 
+            # comprobando desde
+            if 'desde' in validated_data.keys():
+                try:
+                    new_desde = datetime.strptime(validated_data.get('desde')[:19], '%Y-%m-%dT%H:%M:%S')
+                except:
+                    raise NameError("Error en formato fecha desde")
+
+            # comprobando hasta
+            if 'hasta' in validated_data.keys():
+                try:
+                    new_hasta = datetime.strptime(validated_data.get('hasta')[:19], '%Y-%m-%dT%H:%M:%S')
+                except:
+                    raise NameError("Error en formato fecha hasta")
+
+            # Actualizo el periodo
+            if 'hasta' in validated_data.keys() or 'desde' in validated_data.keys():
+                periodo = Periodo.objects.get(evento=evento)
+                if 'hasta' in validated_data.keys():
+                    periodo.end = new_hasta
+                elif 'desde' in validated_data.keys():
+                    periodo.start = new_desde
+                periodo.save()
             evento.save()
-            return dict(status=True, data=evento)
+            return dict(status=True, data=EventoSerializer(Evento.objects.get(contenido=evento.contenido)).data)
 
         except NameError as e:
             return dict(status=False, message=e.message)

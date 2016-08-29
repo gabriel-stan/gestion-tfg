@@ -18,6 +18,7 @@
     var newTfgCtrl = this;
 
     newTfgCtrl.submit = submit;
+    newTfgCtrl.update = update;
 
     /**
     * @name submit
@@ -38,7 +39,7 @@
 
       // $scope.closeThisDialog();
 
-      Tfgs.create(newTfgCtrl.tfg).then(createTfgSuccessFn, createTfgErrorFn);
+      Tfgs.create(newTfgCtrl.tfg).then(createTfgSuccessFn, TfgErrorFn);
 
 
       /**
@@ -48,16 +49,36 @@
       function createTfgSuccessFn(data, status, headers, config) {
         Snackbar.success('El TFG se ha creado con éxito.');
       }
+    }
 
+
+    /**
+    * @name update
+    * @desc Update a Tfg
+    * @memberOf gestfg.tfgs.controllers.NewTfgController
+    */
+    function update() {
+
+      Tfgs.update($scope.tfg).then(updateTfgSuccessFn, TfgErrorFn);
 
       /**
-      * @name createTfgErrorFn
-      * @desc Propagate error event and show snackbar with error message
+      * @name updateTfgSuccessFn
+      * @desc Show snackbar with success message
       */
-      function createTfgErrorFn(data, status, headers, config) {
-        $rootScope.$broadcast('tfg.created.error');
-        Snackbar.error(data.data.message);
+      function updateTfgSuccessFn(data, status, headers, config) {
+        Snackbar.success('El TFG se ha modificado con éxito.');
       }
+    }
+
+
+
+    /**
+    * @name TfgErrorFn
+    * @desc Propagate error event and show snackbar with error message
+    */
+    function TfgErrorFn(data, status, headers, config) {
+      $rootScope.$broadcast('tfg.created.error');
+      Snackbar.error(data.data.message);
     }
   }
 })();

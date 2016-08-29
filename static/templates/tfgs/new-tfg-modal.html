@@ -1,0 +1,109 @@
+  <form role="form" class="form-horizontal" ng-submit="vm.update()">
+
+    <div class="box-body pad">
+
+      <div class="form-group">
+        <label class="col-sm-4 control-label">Titulacion</label>
+        <div class="col-sm-8">
+          <select class="form-control" ng-model="tfg.titulacion" ng-init="tfg.titulacion='GII'">
+            <option value="GII">TFG Informatica</option>
+            <option value="GITT">TFG Telecomunicaciones</option>
+            <option value="GIM">TFG Doble Grado</option>
+            <option value="MPII">TFM Informatica</option>
+            <option value="MPIT">TFM Telecomunicaciones</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- <div class="form-group">
+        <label class="col-sm-4 control-label">Preasignado</label>
+        <div class="col-sm-8">
+          <input type="checkbox" ng-model="tfg.preasignado">
+        </div>
+      </div> -->
+
+      <div class="form-group">
+        <label class="col-sm-4 control-label">Titulo</label>
+        <div class="col-sm-8">
+          <input class="form-control" type="text" placeholder="Titulo" ng-model="tfg.titulo">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-4 control-label">N. Alumnos</label>
+        <div class="col-sm-8">
+          <input class="form-control" type="text" placeholder="Numero Alumnos" ng-model="tfg.n_alumnos">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-4 control-label">Descripcion</label>
+        <div class="col-sm-8">
+          <textarea class="form-control" rows="3" placeholder="Descripcion" ng-model="tfg.descripcion"></textarea>
+        </div>
+      </div>
+
+
+      <div class="form-group">
+        <label class="col-sm-4 control-label">Conocimientos Previos</label>
+        <div class="col-sm-8">
+          <textarea class="form-control" rows="3" placeholder="Conocimientos Previos" ng-model="tfg.conocimientos_previos"></textarea>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-4 control-label">Conocimientos HW y SW</label>
+        <div class="col-sm-8">
+          <textarea class="form-control" rows="3" placeholder="Conocimientos HW y SW" ng-model="tfg.hard_soft"></textarea>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-4 control-label">Email Tutor</label>
+        <div class="col-sm-8">
+          <input class="form-control" type="text" placeholder="Email Tutor" ng-model="tfg.tutor">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-4 control-label">Email Cotutor</label>
+        <div class="col-sm-8">
+          <input class="form-control" type="text" placeholder="Email Cotutor" ng-model="tfg.cotutor">
+        </div>
+      </div>
+
+      <!-- <div class="form-group" ng-show="tfg.preasignado">
+        <label class="col-sm-4 control-label">Email Alumno 1</label>
+        <div class="col-sm-8">
+          <input class="form-control" type="text" placeholder="Email Alumno 1" ng-model="tfg.alumno1">
+        </div>
+      </div>
+
+      <div class="form-group" ng-show="tfg.preasignado">
+        <label class="col-sm-4 control-label">Email Alumno 2</label>
+        <div class="col-sm-8">
+          <input class="form-control" type="text" placeholder="Email Alumno 2" ng-model="tfg.alumno2">
+        </div>
+      </div>
+
+      <div class="form-group" ng-show="tfg.preasignado">
+        <label class="col-sm-4 control-label">Email Alumno 3</label>
+        <div class="col-sm-8">
+          <input class="form-control" type="text" placeholder="Email Alumno 3" ng-model="tfg.alumno3">
+        </div>
+      </div> -->
+
+      <div class="form-group">
+        <label class="col-sm-4 control-label">Tipo</label>
+        <div class="col-sm-8">
+          <input class="form-control" type="text" placeholder="Tipo" ng-model="tfg.tipo">
+        </div>
+      </div>
+
+    <div class="box-footer">
+      <button type="button" class="btn btn-danger pull-left" ng-click="vm.remove()">Borrar</button>
+      <button type="submit" class="btn btn-primary pull-right">Guardar</button>
+      <button type="button" class="btn btn-default pull-right" data-dismiss="modal"style="margin-left:10px; margin-right:10px;">Cancelar</button>
+    </div>
+
+  </form>

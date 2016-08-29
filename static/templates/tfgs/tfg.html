@@ -4,19 +4,49 @@
     <div class="box-tools pull-right">
       <!-- Buttons, labels, and many other things can be placed here! -->
       <!-- Here is a label for example -->
-      <span class="label label-primary">{{tfg.tipo}}</span>
+      <span class="label label-default">{{tfg.tutor.departamento.codigo}}</span>
+      <span class="label label-default">{{tfg.titulacion.codigo}}</span>
     </div><!-- /.box-tools -->
   </div><!-- /.box-header -->
   <div class="box-body">
     <!-- <div ng-bind-html="tfg.descripcion"> -->
         <!-- esto se genera gracias a ng-bind-html y ngSanitize -->
     <!-- </div> -->
+
+    <div class="row">
+      <div class="col-md-6">
+        <p><b>Titulación:</b> {{tfg.titulacion.nombre}}<p>
+        <p><b>Departamento:</b> {{tfg.tutor.departamento.nombre}}<p>
+        <p><b>Tutor:</b> {{tfg.tutor.first_name}} {{tfg.tutor.last_name}}<p>
+        <p><b>Cotutor:</b> {{tfg.cotutor.first_name}} {{tfg.cotutor.last_name}}<p>
+      </div>
+
+      <div class="col-md-6">
+        <p><b>Tipo:</b> {{tfg.tipo}}<p>
+        <p><b>Numero de alumnos:</b> {{tfg.n_alumnos}}<p>
+        <p><b>Asignado:</b> {{tfg.asignado ? 'Si' : 'No'}}<p>
+      </div>
+    </div>
+
+    <h5><b>Conocimientos Previos</b></h5>
+
+    {{tfg.conocimientos_previos ? tfg.conocimientos_previos : 'Ninguno'}}
+
+    <h5><b>Conocimientos Hardware y Software</b></h5>
+
+    {{tfg.hard_soft ? tfg.hard_soft : 'Ninguno'}}
+
+    <h5><b>Descripción</b></h5>
+
+    {{tfg.descripcion}}
+
+
   </div><!-- /.box-body -->
   <div class="box-footer">
     <div class='user-block'>
       <img class='img-circle' src='static/dist/img/user1-128x128.jpg' alt='user image'>
-      <span class='username'><a href="#">{{tfg.tutor.nombre}} {{tfg.tutor.apellidos}}</a></span>
-      <span class='description'>{{tfg.created_at}}</span>
+      <span class='username'><a href="#">{{tfg.tutor.first_name}} {{tfg.tutor.last_name}}</a></span>
+      <span class='description'>{{vm.parseTimeAgo(tfg.updated_at)}}</span>
     </div><!-- /.user-block -->
   </div><!-- box-footer -->
 </div><!-- /.box -->

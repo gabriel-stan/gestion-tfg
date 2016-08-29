@@ -9,13 +9,50 @@
     .module('gestfg.events.controllers')
     .controller('EventsController', EventsController);
 
-  EventsController.$inject = ['$scope'];
+  EventsController.$inject = ['$scope', '$rootScope', 'Events', 'Snackbar'];
 
   /**
   * @namespace EventsController
   */
-  function EventsController($scope) {
+  function EventsController($scope, $rootScope, Events, Snackbar) {
     var eventsCtrl = this;
+
+    eventsCtrl.parseTimeAgo = function(fecha){
+      // console.log(fecha);
+
+      var fecha = new Date(fecha);
+      fecha = moment(fecha).fromNow();
+
+      return fecha;
+    }
+
+
+    eventsCtrl.parseTime = function(fecha){
+      // console.log(fecha);
+
+      var fecha = new Date(fecha);
+      fecha = moment(fecha).format("DD/MM/YYYY - hh:mm");
+
+      return fecha;
+    }
+
+    $scope.loadSelectedEvent = function(evento) {
+      $rootScope.selectedEvent = evento;
+      $('iframe').contents().find('.wysihtml5-editor').html(evento.contenido);
+
+      var fechas = $('#fechas').data('daterangepicker');
+
+      if(evento.desde){
+        fechas.setStartDate(new Date(evento.desde));
+      }
+
+      if(evento.hasta){
+        fechas.setEndDate(new Date(evento.hasta));
+      }
+
+    }
+
+    $rootScope.selectedEvent = new Object();
 
     // eventsCtrl.columns = [];
 
@@ -31,6 +68,39 @@
       $scope.$watchCollection(function () { return $scope.events; }, render);
       // $scope.$watch(function () { return $(window).width(); }, render);
     }
+
+
+    /**
+    * @name remove
+    * @desc Deletes an event
+    * @memberOf gestfg.events.controllers.EventsController
+    */
+    function remove(eventID) {
+
+      if (confirm('¿Borrar el evento?')) {
+        Events.remove(eventID).then(EventsSuccessFn, EventsErrorFn);
+      }
+
+
+      /**
+      * @name EventsSuccessFn
+      * @desc Update events array on view
+      */
+      function EventsSuccessFn(data, status, headers, config) {
+        Snackbar.success("El evento se ha eliminado con exito");
+      }
+
+
+      /**
+      * @name EventsErrorFn
+      * @desc Show snackbar with error
+      */
+      function EventsErrorFn(data, status, headers, config) {
+        Snackbar.error(data.data.error);
+      }
+    }
+
+    $scope.removeEvent = remove;
 
 
     /**

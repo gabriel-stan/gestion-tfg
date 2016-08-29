@@ -5,16 +5,9 @@
     <div class="box-body pad">
 
       <div class="form-group">
-        <label class="col-sm-4 control-label">Código</label>
-        <div class="col-sm-8">
-          <input class="form-control" type="text" placeholder="Código" ng-model="vm.tfg.codigo">
-        </div>
-      </div>
-
-      <div class="form-group">
         <label class="col-sm-4 control-label">Titulacion</label>
         <div class="col-sm-8">
-          <select id="upload-tipo" class="form-control" ng-model="vm.tfg.titulacion">
+          <select class="form-control" ng-model="vm.tfg.titulacion" ng-init="vm.tfg.titulacion='GII'">
             <option value="GII">TFG Informatica</option>
             <option value="GITT">TFG Telecomunicaciones</option>
             <option value="GIM">TFG Doble Grado</option>
@@ -25,9 +18,9 @@
       </div>
 
       <div class="form-group">
-        <label class="col-sm-4 control-label">Tipo</label>
+        <label class="col-sm-4 control-label">Preasignado</label>
         <div class="col-sm-8">
-          <input class="form-control" type="text" placeholder="Tipo" ng-model="vm.tfg.tipo">
+          <input type="checkbox" ng-model="vm.tfg.preasignado">
         </div>
       </div>
 
@@ -39,13 +32,6 @@
       </div>
 
       <div class="form-group">
-        <label class="col-sm-4 control-label">Descripcion</label>
-        <div class="col-sm-8">
-          <input class="form-control" type="text" placeholder="Descripcion" ng-model="vm.tfg.descripcion">
-        </div>
-      </div>
-
-      <div class="form-group">
         <label class="col-sm-4 control-label">N. Alumnos</label>
         <div class="col-sm-8">
           <input class="form-control" type="text" placeholder="Numero Alumnos" ng-model="vm.tfg.alumnos">
@@ -53,16 +39,24 @@
       </div>
 
       <div class="form-group">
+        <label class="col-sm-4 control-label">Descripcion</label>
+        <div class="col-sm-8">
+          <textarea class="form-control" rows="3" placeholder="Descripcion" ng-model="vm.tfg.descripcion"></textarea>
+        </div>
+      </div>
+
+
+      <div class="form-group">
         <label class="col-sm-4 control-label">Conocimientos Previos</label>
         <div class="col-sm-8">
-          <input class="form-control" type="text" placeholder="Conocimientos Previos" ng-model="vm.tfg.previos">
+          <textarea class="form-control" rows="3" placeholder="Conocimientos Previos" ng-model="vm.tfg.previos"></textarea>
         </div>
       </div>
 
       <div class="form-group">
         <label class="col-sm-4 control-label">Conocimientos HW y SW</label>
         <div class="col-sm-8">
-          <input class="form-control" type="text" placeholder="Conocimientos HW y SW" ng-model="vm.tfg.hwsw">
+          <textarea class="form-control" rows="3" placeholder="Conocimientos HW y SW" ng-model="vm.tfg.hwsw"></textarea>
         </div>
       </div>
 
@@ -77,6 +71,34 @@
         <label class="col-sm-4 control-label">Email Cotutor</label>
         <div class="col-sm-8">
           <input class="form-control" type="text" placeholder="Email Cotutor" ng-model="vm.tfg.cotutor">
+        </div>
+      </div>
+
+      <div class="form-group" ng-show="vm.tfg.preasignado">
+        <label class="col-sm-4 control-label">Email Alumno 1</label>
+        <div class="col-sm-8">
+          <input class="form-control" type="text" placeholder="Email Cotutor" ng-model="vm.tfg.alumno1">
+        </div>
+      </div>
+
+      <div class="form-group" ng-show="vm.tfg.preasignado">
+        <label class="col-sm-4 control-label">Email Alumno 2</label>
+        <div class="col-sm-8">
+          <input class="form-control" type="text" placeholder="Email Cotutor" ng-model="vm.tfg.alumno2">
+        </div>
+      </div>
+
+      <div class="form-group" ng-show="vm.tfg.preasignado">
+        <label class="col-sm-4 control-label">Email Alumno 3</label>
+        <div class="col-sm-8">
+          <input class="form-control" type="text" placeholder="Email Cotutor" ng-model="vm.tfg.alumno3">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-4 control-label">Tipo</label>
+        <div class="col-sm-8">
+          <input class="form-control" type="text" placeholder="Tipo" ng-model="vm.tfg.tipo">
         </div>
       </div>
 

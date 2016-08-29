@@ -62,7 +62,6 @@ class TfgServicesTests(TestCase):
                                    hard_soft='conocimientos previos', tutor=self.prof1,
                                    cotutor=self.prof2, titulacion=titulacion.codigo)
 
-        # TODO: Hacer que carge desde el fichero cases sin que pete el test,
         self.TFG1 = {'tipo': 'T2',
                      'titulo': 'Análisis Exploratorio de Datos Mediante Técnicas de Visualización Avanzada',
                      'n_alumnos': '1',
