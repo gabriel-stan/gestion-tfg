@@ -24,6 +24,18 @@
       templateUrl: '/static/templates/authentication/login.html'
     })
 
+    .when('/recover-password', {
+      controller: 'RegisterController',
+      controllerAs: 'registerCtrl',
+      templateUrl: '/static/templates/authentication/recover-password.html'
+    })
+
+    .when('/set-password', {
+      controller: 'RegisterController',
+      controllerAs: 'registerCtrl',
+      templateUrl: '/static/templates/authentication/set-password.html'
+    })
+
     .when('/tfgs', {
       controller: 'TfgsController',
       controllerAs: 'vm',
