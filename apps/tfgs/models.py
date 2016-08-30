@@ -235,9 +235,11 @@ class Tfg_AsigManager(BaseUserManager):
         try:
             # Compruebo lo minimo para asignar el tfg
             if not isinstance(tfg, Tfg) or not isinstance(alumno_1, Alumno) or not alumno_1.groups.filter(
-                    name='Alumnos').exists() or utils.existe_tfg_asig(alumno_1):
+                    name='Alumnos').exists():
                 raise NameError("Error en los parametros de entrada")
 
+            if utils.existe_tfg_asig(alumno_1):
+                raise NameError("El alumno ya tiene un Tfg asignado")
             # Compruebo que no este ya asignado
             try:
                 Tfg_Asig.objects.get(tfg=tfg)
