@@ -170,18 +170,6 @@ def check_tfg_tribunal(tfg):
     else:
         return True
 
-
-def procesar_datos_comisiones(user, data):
-    # Importo aqui para evitar el cruce de imports
-    from tfgs.models import Tfg_Asig
-    if isinstance(data, dict):
-        data = [data]
-    for key, s_data in enumerate(data):
-        data[key]['presidente'] = collections.OrderedDict(Profesor.objects.get(id=s_data['presidente']['id']).to_dict(user))
-        # data[key]['comision'] = collections.OrderedDict(Comision_Evaluacion.objects.get(id=s_data['comision']).to_dict(user))
-    return data
-
-
 def procesar_datos_tribunales(user, data):
     # Importo aqui para evitar el cruce de imports
     from tfgs.models import Tfg_Asig
@@ -190,4 +178,18 @@ def procesar_datos_tribunales(user, data):
     for key, s_data in enumerate(data):
         data[key]['tfg'] = collections.OrderedDict(Tfg_Asig.objects.get(id=s_data['tfg']['id']).to_dict(user))
         # data[key]['comision'] = collections.OrderedDict(Comision_Evaluacion.objects.get(id=s_data['comision']).to_dict(user))
+    return data
+
+
+def procesar_datos_comisiones(user, data):
+    # Importo aqui para evitar el cruce de imports
+    from tfgs.models import Tfg_Asig
+    if isinstance(data, dict):
+        data = [data]
+    for key, s_data in enumerate(data):
+        data[key]['presidente'] = collections.OrderedDict(Profesor.objects.get(id=s_data['presidente']['id']).to_dict(user))
+        data[key]['vocal_1'] = collections.OrderedDict(Profesor.objects.get(id=s_data['vocal_1']['id']).to_dict(user))
+        data[key]['vocal_2'] = collections.OrderedDict(Profesor.objects.get(id=s_data['vocal_2']['id']).to_dict(user))
+        data[key]['suplente_1'] = collections.OrderedDict(Profesor.objects.get(id=s_data['suplente_1']['id']).to_dict(user))
+        data[key]['suplente_2'] = collections.OrderedDict(Profesor.objects.get(id=s_data['suplente_2']['id']).to_dict(user))
     return data

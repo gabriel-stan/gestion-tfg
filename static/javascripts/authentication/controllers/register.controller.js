@@ -76,7 +76,7 @@
     */
     function register() {
       preAction();
-      Authentication.register(registerCtrl.email, registerCtrl.dni, registerCtrl.first_name, registerCtrl.last_name);
+      Authentication.register(registerCtrl.email+'@correo.ugr.es', registerCtrl.dni, registerCtrl.first_name, registerCtrl.last_name);
       postAction();
     }
 

@@ -164,7 +164,7 @@ class ProfesorManager(BaseUserManager):
                 res = Profesor.objects.filter(email=kwargs.get('email'))
                 if res.count() != 0:
                     raise NameError("El profesor ya existe")
-            if kwargs.get('dni'):
+            if kwargs.get('dni') and kwargs.get('dni') is not '':
                 # exp reg para saber si el nick corresponde al correo de la ugr (@correo.ugr.es)
                 if not re.match(r'(\d{8})([-]?)([A-Z]{1})', kwargs.get('dni')):
                     raise NameError("Error en el DNI del profesor")

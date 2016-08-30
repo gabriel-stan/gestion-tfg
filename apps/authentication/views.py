@@ -255,24 +255,27 @@ class AlumnosViewSet(viewsets.ModelViewSet):
             params = utils.get_params(request)
             self.logger.info('INICIO WS - ALUMNOSVIEW CREATE del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
-            serializer = self.serializer_class(data=params)
-            if serializer.is_valid():
-                resul = Alumno.objects.create_user(**serializer.validated_data)
-                if resul['status']:
-                    resul = utils.to_dict(resul)
-                    resul_status = status.HTTP_200_OK
-                else:
-                    resul_status = status.HTTP_400_BAD_REQUEST
-                self.logger.info('FIN WS - ALUMNOSVIEW CREATE del usuario: %s con resultado: %s' %
-                                 (request.user.email if hasattr(request.user, 'email') else request.user.username,
-                                  resul))
-                return Response(resul, status=resul_status)
+            if not params.get('dni') and not request.user.has_perm('authentication.alumno.create') and not (request.user.is_admin):
+                raise NameError('El dni es incorrecto')
+            try:
+                alumno = Alumno.objects.get(dni=params.get('dni'))
+                serializer = self.serializer_class(alumno)
+                params['creado'] = True
+                resul = serializer.update(request.user, alumno, params)
+            except Alumno.DoesNotExist:
+                resul = Alumno.objects.create_user(**params)
+            if resul['status']:
+                resul = utils.to_dict(resul)
+                resul_status = status.HTTP_200_OK
             else:
-                resul = dict(status=False, message=serializer.errors)
-                self.logger.info('FIN WS - ALUMNOSVIEW CREATE del usuario: %s con resultado: %s' %
-                                 (request.user.email if hasattr(request.user, 'email') else request.user.username,
-                                  resul))
-                return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+                resul_status = status.HTTP_400_BAD_REQUEST
+            self.logger.info('FIN WS - ALUMNOSVIEW CREATE del usuario: %s con resultado: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username,
+                              resul))
+            return Response(resul, status=resul_status)
+        except NameError as e:
+            self.logger.error('ALUMNOSVIEW CREATE: %s' % e.message)
+            return Response(dict(status=False, message=e.message), status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             resul = dict(status=False, message="Error en la llamada")
             self.logger.critical('ALUMNOSVIEW CREATE: %s' % resul)
@@ -569,8 +572,8 @@ class LoginView(views.APIView):
             self.logger.info('FIN WS - LOGINVIEW: con resultado: %s' % resul)
             return Response(resul, status=resul_status)
         except NameError as e:
-                self.logger.error('LOGINVIEW: %s' % e.message)
-                return Response(dict(status=False, message=e.message), status=status.HTTP_400_BAD_REQUEST)
+            self.logger.error('LOGINVIEW: %s' % e.message)
+            return Response(dict(status=False, message=e.message), status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             self.logger.critical('LOGINVIEW: %s' % e.message)
             return Response(dict(status=False, message="Error en la llamada"), status=status.HTTP_400_BAD_REQUEST)
