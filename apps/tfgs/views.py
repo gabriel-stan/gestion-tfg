@@ -288,7 +288,7 @@ class Tfg_asigViewSet(viewsets.ModelViewSet):
                         alumno_1 = Alumno.objects.create_user(email=params.get('alumno_1'))
                     else:
                         resul = dict(message='El alumno %s indicado no existe' % params.get('alumno_1'))
-                        self.logger.error('TITULACIONESVIEW POST del usuario: %s con resultado: %s' %
+                        self.logger.error('FIN WS - TFGASIGVIEW POST del usuario: %s con resultado: %s' %
                               (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
                         return Response(resul, status=status.HTTP_400_BAD_REQUEST)
                 if 'alumno_2' in params:
@@ -299,7 +299,7 @@ class Tfg_asigViewSet(viewsets.ModelViewSet):
                             alumno_2 = Alumno.objects.create_user(email=params.get('alumno_2'))
                         else:
                             resul = dict(message='El alumno %s indicado no existe' % params.get('alumno_2'))
-                            self.logger.error('TITULACIONESVIEW POST del usuario: %s con resultado: %s' %
+                            self.logger.error('FIN WS - TFGASIGVIEW POST del usuario: %s con resultado: %s' %
                                               (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
                             return Response(resul, status=status.HTTP_400_BAD_REQUEST)
                 if 'alumno_3' in params:
@@ -310,7 +310,7 @@ class Tfg_asigViewSet(viewsets.ModelViewSet):
                             alumno_3 = Alumno.objects.create_user(email=params.get('alumno_3'))
                         else:
                             resul = dict(message='El alumno %s indicado no existe' % params.get('alumno_3'))
-                            self.logger.error('TITULACIONESVIEW POST del usuario: %s con resultado: %s' %
+                            self.logger.error('FIN WS - TFGASIGVIEW POST del usuario: %s con resultado: %s' %
                                               (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
                             return Response(resul, status=status.HTTP_400_BAD_REQUEST)
 
@@ -334,11 +334,11 @@ class Tfg_asigViewSet(viewsets.ModelViewSet):
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(resul, status=resul_status)
         except NameError as e:
-            self.logger.error('TITULACIONESVIEW POST: %s' % e.message)
+            self.logger.error('FIN WS - TFGASIGVIEW POST: %s' % e.message)
             return Response(dict(message=e.message), status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             resul = dict(status=False, message="Error en la llamada")
-            self.logger.critical('TFGASIGVIEW POST: %s %s' % (resul, e))
+            self.logger.critical('FIN WS - TFGASIGVIEW POST: %s %s' % (resul, e))
             return Response(resul, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request):
