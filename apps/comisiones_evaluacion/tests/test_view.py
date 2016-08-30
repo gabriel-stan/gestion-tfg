@@ -18,7 +18,7 @@ class ComisionesEvaluacionServicesTests(TestCase):
 
         dep_atc = Departamento.objects.create(nombre='ATC', codigo='ATC')
         dep_lsi = Departamento.objects.create(nombre='LSI', codigo='LSI')
-        dep_ccia = Departamento.objects.create(nombre='CCIA', codigo='CCIA')
+        dep_DECSAI = Departamento.objects.create(nombre='DECSAI', codigo='DECSAI')
         dep_est = Departamento.objects.create(nombre='ESTADISTICA', codigo='ESTADISTICA')
 
         titulacion = Titulacion.objects.create(nombre='Ingenieria Informatica', codigo='GII')
@@ -33,7 +33,7 @@ class ComisionesEvaluacionServicesTests(TestCase):
                                last_name='apellido 12 apellido 122', departamento=dep_lsi.codigo, password='75169052')
 
         self.data_prof3 = dict(email='prof_ejemplo3@ugr.es', first_name='profesor 3',
-                               last_name='apellido 12 apellido 122', departamento=dep_ccia.codigo, password='75169052')
+                               last_name='apellido 12 apellido 122', departamento=dep_DECSAI.codigo, password='75169052')
 
         self.data_prof4 = dict(email='prof_ejemplo4@ugr.es', first_name='profesor 4',
                                last_name='apellido 12 apellido 122', departamento=dep_est.codigo, password='75169052')
@@ -59,7 +59,7 @@ class ComisionesEvaluacionServicesTests(TestCase):
         Profesor.objects.create_user(**self.prof2)
 
         self.prof3 = dict(email='eugenioaguirre@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122',
-                          departamento=dep_ccia, password='75169052')
+                          departamento=dep_DECSAI, password='75169052')
         Profesor.objects.create_user(**self.prof3)
 
         self.prof4 = dict(email='miguelgarcia@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122',
@@ -79,7 +79,7 @@ class ComisionesEvaluacionServicesTests(TestCase):
         Profesor.objects.create_user(**self.prof7)
 
         self.prof8 = dict(email='gabriel@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122',
-                          departamento=dep_ccia, password='75169052')
+                          departamento=dep_DECSAI, password='75169052')
         Profesor.objects.create_user(**self.prof8)
 
         self.prof9 = dict(email='josemiguel@ugr.es', first_name='profesor 2', last_name='apellido 12 apellido 122',
@@ -95,7 +95,7 @@ class ComisionesEvaluacionServicesTests(TestCase):
         Profesor.objects.create_user(**self.prof11)
 
         self.prof12 = dict(email='qwe123@ugr.es', first_name='qwe123 2', last_name='eq 12 apelliweasdaado 122',
-                           departamento=dep_ccia, password='7516129052')
+                           departamento=dep_DECSAI, password='7516129052')
         Profesor.objects.create_user(**self.prof11)
 
         self.prof13 = dict(email='hgm54@ugr.es', first_name='hgm54 2', last_name='dfgre 12 apelergerlido 122',
@@ -227,35 +227,35 @@ class ComisionesEvaluacionServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
-        # # Le asigno una convocatoria
-        # res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[12], 'datos': json.dumps(
-        #     {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
-        # resul = json.loads(res.content)
-        # self.assertEqual(resul['status'], True)
-        #
-        # # Le asigno una convocatoria
-        # res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[13], 'datos': json.dumps(
-        #     {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
-        # resul = json.loads(res.content)
-        # self.assertEqual(resul['status'], True)
-        #
-        # # Le asigno una convocatoria
-        # res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[14], 'datos': json.dumps(
-        #     {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
-        # resul = json.loads(res.content)
-        # self.assertEqual(resul['status'], True)
-        #
-        # # Le asigno una convocatoria
-        # res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[15], 'datos': json.dumps(
-        #     {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
-        # resul = json.loads(res.content)
-        # self.assertEqual(resul['status'], True)
-        #
-        # # Le asigno una convocatoria
-        # res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[16], 'datos': json.dumps(
-        #     {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
-        # resul = json.loads(res.content)
-        # self.assertEqual(resul['status'], True)
+        # Le asigno una convocatoria
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[12], 'datos': json.dumps(
+            {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        # Le asigno una convocatoria
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[13], 'datos': json.dumps(
+            {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        # Le asigno una convocatoria
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[14], 'datos': json.dumps(
+            {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        # Le asigno una convocatoria
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[15], 'datos': json.dumps(
+            {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        # Le asigno una convocatoria
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[16], 'datos': json.dumps(
+            {'convocatoria': 'CONV_JUN', 'tipo': 'ASIG_TFG'})})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
 
         # Creo una comision
         res = self.client.post('/api/v1/comisiones/', {'convocatoria': 'CONV_JUN'})

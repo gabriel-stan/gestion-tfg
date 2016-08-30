@@ -30,7 +30,8 @@ class ComisionEvaluacionViewSet(viewsets.ModelViewSet):
             self.logger.info('INICIO WS - COMISIONEVALUACIONVIEW LIST del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             comisiones = Comision_Evaluacion.objects.all()
-            resul = self.serializer_class(comisiones, many=True).data
+            resul = utils.procesar_datos_comisiones(request.user, self.serializer_class(comisiones, many=True).data)
+
             if len(resul) == 0:
                 raise NameError("No hay comisiones almacenadas")
             self.logger.info('FIN WS - COMISIONEVALUACIONVIEW LIST del usuario: %s con resultado: %s' %
