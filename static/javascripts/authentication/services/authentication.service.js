@@ -70,11 +70,11 @@
       * @desc Log "Epic failure!" to the console
       */
       function registerErrorFn(data, status, headers, config) {
-        console.error('Epic failure!');
-        jQuery.each(data.data.message, function(i, val) {
-          Snackbar.error(i + ": " + val[0]);
-        });
-        //Snackbar.error(data.data.message);
+        // console.error('Epic failure!');
+        // jQuery.each(data.data.message, function(i, val) {
+        //   Snackbar.error(i + ": " + val[0]);
+        // });
+        Snackbar.error(data.data.message);
       }
     }
 
