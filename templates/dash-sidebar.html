@@ -1,5 +1,5 @@
 <!-- Left side column. contains the logo and sidebar -->
-<aside class="main-sidebar">
+<aside class="main-sidebar" ng-controller="DashSidebarController as sidebarCtrl">
   <!-- sidebar: style can be found in sidebar.less -->
   <section class="sidebar">
     <!-- Sidebar user panel -->
@@ -26,13 +26,13 @@
     <ul class="sidebar-menu">
       <li class="header">MAIN NAVIGATION</li>
 
-      <li>
+      <li ng-class="getClass('/dashboard')">
         <a href="/dashboard">
           <i class="fa fa-dashboard"></i> <span>Dashboard</span>
         </a>
       </li>
 
-      <li class="treeview">
+      <li class="treeview" ng-class="getClass('/dashboard/usuarios')">
         <a href="#">
           <i class="fa fa-users"></i> <span>Usuarios</span> <i class="fa fa-angle-left pull-right"></i>
         </a>
@@ -42,7 +42,7 @@
         </ul>
       </li>
 
-      <li class="treeview">
+      <li class="treeview" ng-class="getClass('/dashboard/departamentos')">
         <a href="#">
           <i class="fa fa-user"></i> <span>Departamentos</span> <i class="fa fa-angle-left pull-right"></i>
         </a>
@@ -52,7 +52,7 @@
         </ul>
       </li>
 
-      <li class="treeview">
+      <li class="treeview" ng-class="getClass('/dashboard/eventos')">
         <a href="#">
           <i class="fa fa-calendar-o"></i> <span>Eventos</span> <i class="fa fa-angle-left pull-right"></i>
         </a>
@@ -64,7 +64,7 @@
         </ul>
       </li>
 
-      <li class="treeview">
+      <li class="treeview" ng-class="getClass('/dashboard/tfgs')">
         <a href="#">
           <i class="fa fa-folder-open"></i> <span>TFGs</span> <i class="fa fa-angle-left pull-right"></i>
         </a>
@@ -76,25 +76,25 @@
         </ul>
       </li>
 
-      <li>
+      <li ng-class="getClass('/dashboard/comisiones')">
         <a href="/dashboard/comisiones">
           <i class="fa fa-group"></i> <span>Comisiones</span>
         </a>
       </li>
 
-      <li>
+      <li ng-class="getClass('/dashboard/tribunales')">
         <a href="/dashboard/tribunales">
           <i class="fa fa-legal"></i> <span>Tribunales</span>
         </a>
       </li>
 
-      <li>
+      <li ng-class="getClass('/dashboard/upload')">
         <a href="/dashboard/upload">
           <i class="fa fa-upload"></i> <span>Upload</span>
         </a>
       </li>
 
-      <li>
+      <li ng-class="getClass('/dashboard/calendar')">
         <a href="/dashboard/calendar">
           <i class="fa fa-calendar"></i> <span>Calendar</span>
         </a>
