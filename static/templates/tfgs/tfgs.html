@@ -6,7 +6,7 @@
   <form role="form" ng-submit="vm.filter()" ng-controller="DashboardController as dashCtrl">
 
       <div class="col-md-3">
-        <select class="form-control" ng-model="vm.filter.titulacion" ng-options="titulacion as titulacion.nombre for titulacion in dashCtrl.titulaciones.data track by titulacion.codigo"  ng-init="vm.filter.titulacion=dashCtrl.titulaciones.data[0]">
+        <select class="form-control" ng-model="vm.filter.titulacion" ng-options="titulacion as titulacion.nombre for titulacion in dashCtrl.titulaciones.data track by titulacion.codigo"  ng-init="vm.filter.titulacion=dashCtrl.titulaciones.data[0]" required="true">
         </select>
       </div>
 

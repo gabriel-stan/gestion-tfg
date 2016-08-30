@@ -53,7 +53,7 @@
             </div>
             <div class="modal-body">
 
-              <form role="form" class="form-horizontal" ng-submit="tfgsCtrl.presentarTFGs()">
+              <form role="form" class="form-horizontal" ng-submit="presentarTFGs()">
 
                 <div class="box-body pad">
 
@@ -64,7 +64,7 @@
                   <div class="form-group">
                     <label class="col-sm-4 control-label">Convocatoria de</label>
                     <div class="col-sm-8">
-                      <select class="form-control" ng-model="tfgsCtrl.convocatoria">
+                      <select class="form-control" ng-model="tfgsCtrl.convocatoria" required="true">
                         <option value="">Ninguna</option>
                         <option value="CONV_JUN">Junio</option>
                         <option value="CONV_SEPT">Septiembre</option>
@@ -76,7 +76,7 @@
                   <div class="form-group" ng-show="tfgsCtrl.convocatoria != ''">
                     <label class="col-sm-4 control-label">Año</label>
                     <div class="col-sm-8">
-                      <select class="form-control" ng-model="tfgsCtrl.anio">
+                      <select class="form-control" ng-model="tfgsCtrl.anio" required="true">
                         <option value="2016">2016</option>
                         <option value="2017">2017</option>
                         <option value="2018">2018</option>
@@ -89,7 +89,7 @@
 
 
                 <div class="box-footer">
-                  <button type="submit" class="btn btn-primary pull-left">Presentar</button>
+                  <button type="submit" class="btn btn-primary pull-left" ng-disabled="loading">Presentar</button>
                   <button type="button" class="btn btn-default pull-right" data-dismiss="modal"style="margin-left:10px; margin-right:10px;">Cancelar</button>
                 </div>
 
@@ -179,6 +179,7 @@
           select: {
               style: 'multi'
           },
+          processing: true,
           responsive: true,
           buttons: [
               {

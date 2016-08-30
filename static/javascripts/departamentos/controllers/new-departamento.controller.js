@@ -19,6 +19,8 @@
 
     newDepartamentoCtrl.submit = submit;
 
+    $scope.submit = submit;
+
     /**
     * @name submit
     * @desc Create a new Departamento
@@ -32,8 +34,8 @@
       });
 
       // $scope.closeThisDialog();
-
-      Departamentos.create(newDepartamentoCtrl.departamento).then(createDepartamentoSuccessFn, createDepartamentoErrorFn);
+      preAction();
+      Departamentos.create(newDepartamentoCtrl.departamento).then(createDepartamentoSuccessFn, createDepartamentoErrorFn).finally(postAction);
 
 
       /**
@@ -53,6 +55,14 @@
         $rootScope.$broadcast('departamento.created.error');
         Snackbar.error(data.message);
       }
+    }
+
+    function preAction(){
+      $scope.loading = true;
+    }
+
+    function postAction(){
+      $scope.loading = false;
     }
   }
 })();

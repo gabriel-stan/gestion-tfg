@@ -18,6 +18,7 @@
     var loginCtrl = this;
 
     loginCtrl.login = login;
+    $scope.login = login;
 
     activate();
 
@@ -39,7 +40,16 @@
     * @memberOf gestfg.authentication.controllers.LoginController
     */
     function login() {
-      Authentication.login(loginCtrl.email, loginCtrl.password);
+      preAction();
+      Authentication.login(loginCtrl.email, loginCtrl.password).finally(postAction);
+    }
+
+    function preAction(){
+      $scope.loading = true;
+    }
+
+    function postAction(){
+      $scope.loading = false;
     }
   }
 })();

@@ -190,7 +190,7 @@
           </div>
           <div class="modal-body">
 
-            <form role="form" class="form-horizontal" ng-submit="vm.generarTribunales()">
+            <form role="form" class="form-horizontal" ng-submit="generarTribunales()">
 
               <div class="box-body pad">
 
@@ -201,7 +201,7 @@
                 <div class="form-group">
                   <label class="col-sm-4 control-label">Convocatoria de</label>
                   <div class="col-sm-8">
-                    <select class="form-control" ng-model="vm.convocatoria">
+                    <select class="form-control" ng-model="vm.convocatoria" required="true">
                       <option value="">Ninguna</option>
                       <option value="CONV_JUN">Junio</option>
                       <option value="CONV_SEPT">Septiembre</option>
@@ -213,7 +213,7 @@
                 <div class="form-group" ng-show="vm.convocatoria != ''">
                   <label class="col-sm-4 control-label">Año</label>
                   <div class="col-sm-8">
-                    <select class="form-control" ng-model="vm.anio">
+                    <select class="form-control" ng-model="vm.anio" required="true">
                       <option value="2016">2016</option>
                       <option value="2017">2017</option>
                       <option value="2018">2018</option>
@@ -226,7 +226,7 @@
 
 
               <div class="box-footer">
-                <button type="submit" class="btn btn-primary pull-left">Generar</button>
+                <button type="submit" class="btn btn-primary pull-left" ng-disabled="loading">Generar</button>
                 <button type="button" class="btn btn-default pull-right" data-dismiss="modal"style="margin-left:10px; margin-right:10px;">Cancelar</button>
               </div>
 

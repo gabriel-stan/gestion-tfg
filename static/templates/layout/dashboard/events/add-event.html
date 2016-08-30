@@ -19,7 +19,7 @@
 
         <div class="box">
 
-          <form role="form" ng-submit="vm.submit()" ng-controller="DashboardController as dashCtrl">
+          <form role="form" ng-submit="submit()" ng-controller="DashboardController as dashCtrl">
 
             <div class="box-header with-border">
               <h3 class="box-title">Bootstrap WYSIHTML5 <small>Simple and fast</small></h3>
@@ -34,7 +34,7 @@
               <div class="row">
                 <div class="col-md-4">
                   <label>Título</label>
-                  <input class="form-control" type="text" placeholder="Título del evento" ng-model="vm.event.titulo">
+                  <input class="form-control" type="text" placeholder="Título del evento" ng-model="vm.event.titulo" required="true">
                 </div>
 
                 <!-- <div class="col-md-4">
@@ -46,7 +46,7 @@
 
                 <div class="col-md-4">
                   <label>Tipo</label>
-                  <select class="form-control" ng-model="vm.event.tipo" ng-options="tipo as tipo.nombre for tipo in dashCtrl.tipos_evento.data track by tipo.codigo">
+                  <select class="form-control" ng-model="vm.event.tipo" ng-options="tipo as tipo.nombre for tipo in dashCtrl.tipos_evento.data track by tipo.codigo" required="true">
                   </select>
                 </div>
 
@@ -73,7 +73,7 @@
             </div>
 
             <div class="box-footer">
-              <button type="submit" class="btn btn-primary">Publicar</button>
+              <button type="submit" class="btn btn-primary" ng-disabled="loading">Publicar</button>
             </div>
 
           </form>
