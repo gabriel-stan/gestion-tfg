@@ -1,7 +1,7 @@
 from django.db import models
 from authentication.models import Profesor
 from tfgs.models import Tfg_Asig, Titulacion
-from eventos.models import Convocatoria
+from eventos.models import Convocatoria, Tipo_Evento
 from django.contrib.auth.models import BaseUserManager
 from datetime import datetime
 
@@ -36,8 +36,18 @@ class Comision_EvaluacionManager(BaseUserManager):
             except Profesor.DoesNotExist:
                 return dict(status=False, message='El segundo suplente no existe')
 
+            try:
+                convocatoria = Convocatoria.objects.get(tipo=kwargs.get('convocatoria'), anio=kwargs.get('anio'))
+            except Convocatoria.DoesNotExist:
+                return dict(status=False, message='La Convocatoria no existe')
+
+            try:
+                titulacion = Titulacion.objects.get(codigo=kwargs.get('titulacion'))
+            except Convocatoria.DoesNotExist:
+                return dict(status=False, message='La titulacion no existe')
+
             comision = self.model(presidente=presidente, vocal_1=vocal_1, vocal_2=vocal_2, suplente_1=suplente_1,
-                                  suplente_2=suplente_2)
+                                  suplente_2=suplente_2, convocatoria=convocatoria, titulacion=titulacion)
 
             comision.save()
             return dict(status=True, data=Comision_Evaluacion.objects.get(presidente=comision.presidente))
@@ -52,7 +62,7 @@ class Comision_Evaluacion(models.Model):
     vocal_2 = models.ForeignKey(Profesor, related_name='vocal_2', default=None, null=True)
     suplente_1 = models.ForeignKey(Profesor, related_name='suplente_1', default=None)
     suplente_2 = models.ForeignKey(Profesor, related_name='suplente_2', default=None, null=True)
-    convocatoria = models.ForeignKey(Convocatoria, related_name='titulacion', default=None)
+    convocatoria = models.ForeignKey(Convocatoria, related_name='conv_comision', default=None)
     titulacion = models.ForeignKey(Titulacion, related_name='titulacion_comision', default=None)
 
     created_at = models.DateTimeField(auto_now_add=True)

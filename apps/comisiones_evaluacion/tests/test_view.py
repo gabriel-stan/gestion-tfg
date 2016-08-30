@@ -258,7 +258,7 @@ class ComisionesEvaluacionServicesTests(TestCase):
         self.assertEqual(resul['status'], True)
 
         # Creo una comision
-        res = self.client.post('/api/v1/comisiones/', {'convocatoria': 'CONV_SEPT'})
+        res = self.client.post('/api/v1/comisiones/', {'convocatoria': 'CONV_SEPT', 'anio': 2016, 'titulacion': 'GII'})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
         self.assertEqual(len(resul['data']['tribunales']), 2)
@@ -271,7 +271,8 @@ class ComisionesEvaluacionServicesTests(TestCase):
         self.assertEqual(resul['data']['presidente']['email'], destino)
 
         # Creo los tribunales
-        res = self.client.post('/api/v1/tribunales/', {'comisiones': True, 'convocatoria': 'CONV_SEPT'})
+        res = self.client.post('/api/v1/tribunales/', {'comisiones': True, 'convocatoria': 'CONV_SEPT', 'anio': 2016,
+                                                       'titulacion': 'GII'})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
         self.assertEqual(len(resul['data']['tribunales'][0]['tfgs']), 9)
