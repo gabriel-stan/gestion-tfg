@@ -871,34 +871,33 @@ class ResetPasswordRequestView(views.APIView):
         return Response(resul, status=resul_status)
 
 
-class PasswordResetConfirmView(FormView):
+class PasswordResetConfirmView(views.APIView):
     template_name = 'backend/reset_password.html'
     success_url = '/'
     form_class = SetPasswordForm
 
-    def post(self, request, uidb64=None, token=None, *arg, **kwargs):
+    def post(self, request):
         """
         View that checks the hash in a password reset link and presents a
         form for entering a new password.
         """
+        params = utils.get_params(request)
         UserModel = get_user_model()
-        form = self.form_class(request.POST)
-        assert uidb64 is not None and token is not None  # checked by URLconf
         try:
-            uid = urlsafe_base64_decode(uidb64)
+            uid = urlsafe_base64_decode(params.get('uidb64'))
             user = UserModel._default_manager.get(pk=uid)
-        except (TypeError, ValueError, OverflowError, UserModel.DoesNotExist):
-            user = None
 
-        if user is not None and default_token_generator.check_token(user, token):
-            if form.is_valid():
-                new_password = form.cleaned_data['new_password2']
+            if user is not None and default_token_generator.check_token(user, params.get('token')):
+                new_password = params.get('new_password2')
                 user.set_password(new_password)
                 user.save()
-                return self.form_valid(form)
+                resul = dict(status=True)
+                resul_status = status.HTTP_200_OK
             else:
-                messages.error(request, 'La proceso ha fallado.')
-                return self.form_invalid(form)
-        else:
-            messages.error(request, 'El link ha caducado.')
-            return self.form_invalid(form)
+                resul = dict(status=False, message="El link ha caducado")
+                resul_status = status.HTTP_400_BAD_REQUEST
+            return Response(resul, status=resul_status)
+
+        except (TypeError, ValueError, OverflowError, UserModel.DoesNotExist):
+            return Response(dict(status=False, message="Error en la llamada"),
+                            status=status.HTTP_400_BAD_REQUEST)
