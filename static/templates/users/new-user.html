@@ -7,7 +7,7 @@
       <div class="form-group">
         <label class="col-sm-3 control-label">Tipo</label>
         <div class="col-sm-9">
-          <select id="user-tipo" class="form-control" ng-model="vm.user.tipo">
+          <select id="user-tipo" class="form-control" ng-model="vm.user.tipo" required="true">
             <option value="alumnos">Alumno</option>
             <option value="profesores">Profesor</option>
             <option value="usuarios">Usuario</option>
@@ -32,7 +32,7 @@
       <div class="form-group">
         <label class="col-sm-3 control-label">Email</label>
         <div class="col-sm-9">
-          <input class="form-control" type="text" placeholder="Email" ng-model="vm.user.email">
+          <input class="form-control" type="text" placeholder="Email" ng-model="vm.user.email" required="true">
         </div>
       </div>
 

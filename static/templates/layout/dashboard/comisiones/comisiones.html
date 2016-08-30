@@ -223,7 +223,7 @@
                   <div class="form-group">
                     <label class="col-sm-4 control-label">Convocatoria de</label>
                     <div class="col-sm-8">
-                      <select class="form-control" ng-model="vm.convocatoria">
+                      <select class="form-control" ng-model="vm.convocatoria" required="true">
                         <option value="">Ninguna</option>
                         <option value="CONV_JUN">Junio</option>
                         <option value="CONV_SEPT">Septiembre</option>
@@ -232,7 +232,7 @@
                     </div>
                   </div>
 
-                  <div class="form-group" ng-show="vm.convocatoria != ''">
+                  <div class="form-group" ng-show="vm.convocatoria != ''" required="true">
                     <label class="col-sm-4 control-label">Año</label>
                     <div class="col-sm-8">
                       <select class="form-control" ng-model="vm.anio">
