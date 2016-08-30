@@ -14,12 +14,16 @@
   /**
   * @namespace RegisterController
   */
-  function RegisterController($location, $routeParams, $scope, Authentication) {
+  function RegisterController($location, $scope, $routeParams, Authentication) {
     var registerCtrl = this;
 
     registerCtrl.register = register;
     registerCtrl.recoverPassword = recoverPassword;
     registerCtrl.resetPassword = resetPassword;
+
+    $scope.register = register;
+    $scope.recoverPassword = recoverPassword;
+    $scope.resetPassword = resetPassword;
 
     activate();
 
@@ -48,7 +52,8 @@
         registerCtrl.error = false;
         var token = $location.search().token;
         var uidb64 = $location.search().uidb64;
-        Authentication.resetPassword(registerCtrl.password, registerCtrl.repassword, uidb64, token);
+        preAction();
+        Authentication.resetPassword(registerCtrl.password, registerCtrl.repassword, uidb64, token).finally(postAction);
       } else {
         registerCtrl.error = true;
       }
@@ -60,7 +65,8 @@
     * @memberOf gestfg.authentication.controllers.RegisterController
     */
     function recoverPassword() {
-      Authentication.recoverPassword(registerCtrl.email);
+      preAction();
+      Authentication.recoverPassword(registerCtrl.email).finally(postAction);
     }
 
     /**
@@ -69,7 +75,17 @@
     * @memberOf gestfg.authentication.controllers.RegisterController
     */
     function register() {
+      preAction();
       Authentication.register(registerCtrl.email, registerCtrl.dni, registerCtrl.first_name, registerCtrl.last_name);
+      postAction();
+    }
+
+    function preAction(){
+      $scope.loading = true;
+    }
+
+    function postAction(){
+      $scope.loading = false;
     }
   }
 })();

@@ -148,9 +148,9 @@
       return $http.post('/api/v1/tfgs_asig/', {
         //content: content
         tfg: tfg.titulo,
-        alumno1: tfg.alumno1,
-        alumno2: tfg.alumno2,
-        alumno3: tfg.alumno3
+        alumno_1: tfg.alumno1,
+        alumno_2: tfg.alumno2,
+        alumno_3: tfg.alumno3
       });
     }
 

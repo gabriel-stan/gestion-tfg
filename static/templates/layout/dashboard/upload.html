@@ -22,13 +22,13 @@
         <h3 class="box-title">Elige la configuracion adecuada</h3>
       </div><!-- /.box-header -->
       <!-- form start -->
-      <form id="upload-form" class="form-horizontal" ng-submit="dashCtrl.upload()">
+      <form id="upload-form" class="form-horizontal" ng-submit="upload()">
         <div class="box-body">
 
           <div class="form-group">
             <label class="col-sm-3 control-label">Modelo</label>
             <div class="col-sm-9">
-              <select id="user-tipo" class="form-control" ng-model="dashCtrl.up.model">
+              <select id="user-tipo" class="form-control" ng-model="dashCtrl.up.model" required="true">
                 <option value="departamento">Departamentos</option>
                 <option value="profesor">Profesores</option>
                 <option value="titulacion">Titulaciones</option>
@@ -41,7 +41,7 @@
             <div class="col-sm-9">
               <!-- <input id="upload-file" type="file" file-model="dashCtrl.up.file"> -->
               <!-- <input id="upload-file" type="file" ng-change="dashCtrl.loadFile(this)" fileread="dashCtrl.up.file"> -->
-              <input id="upload-file" type="file">
+              <input id="upload-file" type="file" required="true">
             </div>
           </div>
 
@@ -49,7 +49,7 @@
 
         <div class="box-footer">
 
-          <button type="submit" class="btn btn-primary pull-right">Subir</button>
+          <button type="submit" class="btn btn-primary pull-right" ng-disabled="loading">Subir</button>
 
         </div><!-- /.box-footer -->
       </form>

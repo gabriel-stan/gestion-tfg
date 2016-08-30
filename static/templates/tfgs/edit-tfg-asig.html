@@ -1,4 +1,4 @@
-  <form role="form" class="form-horizontal" ng-submit="vm.update()">
+  <form role="form" class="form-horizontal" ng-submit="updateAsig()">
 
     <div class="box-body pad">
 
@@ -72,7 +72,7 @@
       </div>
 
     <div class="box-footer">
-      <button type="submit" class="btn btn-primary pull-left">Guardar</button>
+      <button type="submit" class="btn btn-primary pull-left" ng-disabled="loading">Guardar</button>
       <button type="button" class="btn btn-default pull-right" data-dismiss="modal"style="margin-left:10px; margin-right:10px;">Cancelar</button>
     </div>
 

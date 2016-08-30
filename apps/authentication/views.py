@@ -827,7 +827,7 @@ class ResetPasswordRequestView(views.APIView):
             if Usuario.objects.filter(email=email).exists():
                 return dict(status=True, message="Email enviado")
             else:
-                return dict(status=False, message="El email no existe en el sistema")
+                return dict(status=False, message="No existe una cuenta con el correo indicado")
         except ValidationError:
             return dict(status=False, message="Email incorrecto")
 

@@ -19,6 +19,8 @@
 
     uploadTfgsCtrl.submit = submit;
 
+    $scope.submit = submit;
+
     $scope.load_validated = function() {
       $scope.validados = $routeParams.datos;
       var validados = $rootScope.tfgs_validados;
@@ -68,10 +70,11 @@
     $scope.insert_validated = function() {
 
       if($rootScope.tfgs_validados){
+        preAction();
         if($rootScope.preasignados){
-          Tfgs.insert_validated('tfg_asig', JSON.stringify($rootScope.tfgs_validados.exitos)).then(insertTfgsSuccessFn, insertTfgsErrorFn);
+          Tfgs.insert_validated('tfg_asig', JSON.stringify($rootScope.tfgs_validados.exitos)).then(insertTfgsSuccessFn, insertTfgsErrorFn).finally(postAction);
         } else {
-          Tfgs.insert_validated('tfg', JSON.stringify($rootScope.tfgs_validados.exitos)).then(insertTfgsSuccessFn, insertTfgsErrorFn);
+          Tfgs.insert_validated('tfg', JSON.stringify($rootScope.tfgs_validados.exitos)).then(insertTfgsSuccessFn, insertTfgsErrorFn).finally(postAction);
         }
       } else {
         alert('no hay TFGs validados');
@@ -137,7 +140,8 @@
         fd.append('type_file', 'tfg');
       }
 
-      Tfgs.upload('/api/v1/upload_file_tfgs/', fd).then(uploadTfgsSuccessFn, uploadTfgsErrorFn);
+      preAction();
+      Tfgs.upload('/api/v1/upload_file_tfgs/', fd).then(uploadTfgsSuccessFn, uploadTfgsErrorFn).finally(postAction);
 
       /**
       * @name uploadTfgsSuccessFn
@@ -160,5 +164,14 @@
         Snackbar.error(data.data.message);
       }
     }
+
+    function preAction(){
+      $scope.loading = true;
+    }
+
+    function postAction(){
+      $scope.loading = false;
+    }
+
   }
 })();

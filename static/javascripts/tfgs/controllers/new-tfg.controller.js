@@ -19,6 +19,13 @@
 
     newTfgCtrl.submit = submit;
     newTfgCtrl.update = update;
+    newTfgCtrl.submitAsig = submitAsig;
+    newTfgCtrl.updateAsig = updateAsig;
+
+    $scope.submit = submit;
+    $scope.update = update;
+    $scope.submit = submitAsig;
+    $scope.update = updateAsig;
 
     /**
     * @name submit
@@ -38,8 +45,8 @@
       });
 
       // $scope.closeThisDialog();
-
-      Tfgs.create(newTfgCtrl.tfg).then(createTfgSuccessFn, TfgErrorFn);
+      preAction();
+      Tfgs.create(newTfgCtrl.tfg).then(createTfgSuccessFn, TfgErrorFn).finally(postAction);
 
 
       /**
@@ -59,7 +66,8 @@
     */
     function update() {
 
-      Tfgs.update($scope.tfg).then(updateTfgSuccessFn, TfgErrorFn);
+      preAction();
+      Tfgs.update($scope.tfg).then(updateTfgSuccessFn, TfgErrorFn).finally(postAction);
 
       /**
       * @name updateTfgSuccessFn
@@ -67,9 +75,9 @@
       */
       function updateTfgSuccessFn(data, status, headers, config) {
         Snackbar.success('El TFG se ha modificado con éxito.');
+        postActionSuccess();
       }
     }
-
 
 
     /**
@@ -80,5 +88,20 @@
       $rootScope.$broadcast('tfg.created.error');
       Snackbar.error(data.data.message);
     }
+
+    function preAction(){
+      $scope.loading = true;
+    }
+
+    function postAction(){
+      $scope.loading = false;
+    }
+
+    function postActionSuccess(){
+      $('.modal').modal('hide');
+      $("#tabla-tfgs").DataTable().clear().draw();
+      $("#tabla-tfgs").DataTable().ajax.reload();
+    }
+
   }
 })();

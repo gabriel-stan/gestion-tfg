@@ -60,7 +60,9 @@
       * @desc Log the new user in
       */
       function registerSuccessFn(data, status, headers, config) {
-        Authentication.login(email, password);
+        //window.location = '/login';
+        //Authentication.login(email, password);
+        Snackbar.success("Compruebe el correo indicado para activar su cuenta.");
       }
 
       /**
@@ -104,7 +106,13 @@
        * @desc Log "Epic failure!" to the console
        */
       function loginErrorFn(data, status, headers, config) {
-        Snackbar.error(data.data);
+        var message = data.data.message;
+
+        if(!message && data.status==401){
+          message = 'Usuario/contraseña no coinciden';
+        }
+
+        Snackbar.error(message);
       }
     }
 
@@ -165,7 +173,11 @@
        * @desc Log "Epic failure!" to the console
        */
       function resetPasswordErrorFn(data, status, headers, config) {
-        Snackbar.error(data.data.message);
+        if(data.status>500){
+          Snackbar.error('Error interno');
+        } else {
+          Snackbar.error(data.data.message);
+        }
       }
     }
 
