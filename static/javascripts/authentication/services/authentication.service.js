@@ -28,6 +28,7 @@
       logout: logout,
       register: register,
       recoverPassword: recoverPassword,
+      resetPassword: resetPassword,
       setAuthenticatedAccount: setAuthenticatedAccount,
       unauthenticate: unauthenticate
     };
@@ -46,11 +47,11 @@
     * @returns {Promise}
     * @memberOf gestfg.authentication.services.Authentication
     */
-    function register(email, password, first_name, last_name) {
+    function register(email, dni, first_name, last_name) {
       return $http.post('/api/v1/alumnos/', {
         first_name: first_name,
         last_name: last_name,
-        password: password,
+        dni: dni,
         email: email
        }).then(registerSuccessFn, registerErrorFn);
 
@@ -132,6 +133,38 @@
        * @desc Log "Epic failure!" to the console
        */
       function recoverPasswordErrorFn(data, status, headers, config) {
+        Snackbar.error(data.data.message);
+      }
+    }
+
+
+    /**
+     * @name resetPassword
+     * @desc send reset password request for token provided
+     * @returns {Promise}
+     * @memberOf gestfg.authentication.services.Authentication
+     */
+    function resetPassword(password, repassword, uidb64, token) {
+      return $http.post('/api/v1/auth/password_reset_confirm/', {
+        token: token,
+        uidb64: uidb64,
+        new_password1: password,
+        new_password2: repassword
+      }).then(resetPasswordSuccessFn, resetPasswordErrorFn);
+
+      /**
+       * @name resetPasswordSuccessFn
+       * @desc Show success message
+       */
+      function resetPasswordSuccessFn(data, status, headers, config) {
+        Snackbar.success("Se le ha enviado un enlace para reestrablecer la contraseña");
+      }
+
+      /**
+       * @name resetPasswordErrorFn
+       * @desc Log "Epic failure!" to the console
+       */
+      function resetPasswordErrorFn(data, status, headers, config) {
         Snackbar.error(data.data.message);
       }
     }
