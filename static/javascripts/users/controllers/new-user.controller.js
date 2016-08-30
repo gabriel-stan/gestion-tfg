@@ -116,6 +116,7 @@
       */
       function updateUserSuccessFn(data, status, headers, config) {
         Snackbar.success('El usuario se ha actualizado con éxito.');
+        postActionSuccess();
       }
 
 
@@ -179,6 +180,16 @@
 
     function postAction(){
       $scope.loading = false;
+    }
+
+    function preAction(){
+      $scope.loading = true;
+    }
+
+    function postActionSuccess(){
+      $('.modal').modal('hide');
+      $("#tabla-users").DataTable().clear().draw();
+      $("#tabla-users").DataTable().ajax.reload();
     }
 
   }

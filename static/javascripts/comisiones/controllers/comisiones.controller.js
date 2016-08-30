@@ -43,6 +43,7 @@
       */
       function ComisionesSuccessFn(data, status, headers, config) {
         Snackbar.success("Comisiones generadas correctamente");
+        postActionSuccess();
       }
 
 
@@ -74,6 +75,7 @@
       */
       function ComisionesSuccessFn(data, status, headers, config) {
         Snackbar.success("Comisiones generadas correctamente");
+        postActionSuccess();
       }
 
 
@@ -121,6 +123,12 @@
 
     function postAction(){
       $scope.loading = false;
+    }
+
+    function postActionSuccess(){
+      $('.modal').modal('hide');
+      $("#tabla-comisiones").DataTable().clear().draw();
+      $("#tabla-comisiones").DataTable().ajax.reload();
     }
 
   }

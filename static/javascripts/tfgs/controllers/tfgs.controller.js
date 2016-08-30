@@ -125,6 +125,7 @@
       */
       function TfgsSuccessFn(data, status, headers, config) {
         Snackbar.success("TFG presentado correctamente");
+        postActionSuccess();
       }
 
     }
@@ -146,6 +147,7 @@
       */
       function TfgsSuccessFn(data, status, headers, config) {
         Snackbar.success("TFG asignado correctamente");
+        postActionSuccess();
       }
 
     }
@@ -235,6 +237,12 @@
 
     function postAction(){
       $scope.loading = false;
+    }
+
+    function postActionSuccess(){
+      $('.modal').modal('hide');
+      $("#tabla-tfgs").DataTable().clear().draw();
+      $("#tabla-tfgs").DataTable().ajax.reload();
     }
 
   }
