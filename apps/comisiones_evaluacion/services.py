@@ -1,4 +1,3 @@
-__author__ = 'tonima'
 from tfgs.models import Tfg_Asig
 from authentication.models import Departamento, Profesor
 import itertools
@@ -23,13 +22,15 @@ class Comision(object):
 
     def __init__(self, user, convocatoria, comisiones=None):
         self.tutores_principales = {'CCIA': [], 'LSI': [], 'ATC': []}
+        self.tutores_secundarios = {'CCIA': [], 'LSI': [], 'ATC': []}
         self.tutores_libres = {'CCIA': [], 'LSI': [], 'ATC': []}
         self.exitos = []
         self.convocatoria = Tipo_Evento.objects.get(codigo=convocatoria)
-        self.tfgs_asig = Tfg_Asig.objects.filter(convocatoria=self.convocatoria)
+        self.tfgs_asig_conv = Tfg_Asig.objects.filter(convocatoria=self.convocatoria)
+        self.tfgs_asig = Tfg_Asig.objects.all()
         self.comisiones = []
         self.num_tutores = 0
-        self.num_tfg = self.tfgs_asig.count()
+        self.num_tfg = self.tfgs_asig_conv.count()
         self.num_comisiones = 0
         self.user = user
         self.reintentar = False
@@ -48,7 +49,7 @@ class Comision(object):
     def tutores_comisiones(self):
         try:
             self.departamentos = Departamento.objects.all()
-            for tfg_asig in self.tfgs_asig:
+            for tfg_asig in self.tfgs_asig_conv:
                 if tfg_asig.tfg.tutor.departamento.codigo in DEPARTAMENTOS_PRINCIPALES:
                     self._introducir_tutor(tfg_asig.tfg.tutor.departamento.codigo, tfg_asig.tfg.tutor.email)
                 else:
@@ -60,6 +61,18 @@ class Comision(object):
                     else:
                         dep_asociado = DEPARTAMENTOS_ASOCIADOS[tfg_asig.tfg.cotutor.departamento.codigo]
                         self._introducir_tutor(dep_asociado, tfg_asig.tfg.cotutor.email)
+            for tfg_asig in self.tfgs_asig:
+                if tfg_asig.tfg.tutor.departamento.codigo in DEPARTAMENTOS_PRINCIPALES:
+                    self._introducir_tutor_secundario(tfg_asig.tfg.tutor.departamento.codigo, tfg_asig.tfg.tutor.email)
+                else:
+                    dep_asociado = DEPARTAMENTOS_ASOCIADOS[tfg_asig.tfg.tutor.departamento.codigo]
+                    self._introducir_tutor_secundario(dep_asociado, tfg_asig.tfg.tutor.email)
+                if tfg_asig.tfg.cotutor:
+                    if tfg_asig.tfg.cotutor.departamento.codigo in DEPARTAMENTOS_PRINCIPALES:
+                        self._introducir_tutor_secundario(tfg_asig.tfg.cotutor.departamento.codigo, tfg_asig.tfg.cotutor.email)
+                    else:
+                        dep_asociado = DEPARTAMENTOS_ASOCIADOS[tfg_asig.tfg.cotutor.departamento.codigo]
+                        self._introducir_tutor_secundario(dep_asociado, tfg_asig.tfg.cotutor.email)
             self.tutores_libres['CCIA'] = list(range(0, len(self.tutores_principales['CCIA'])))
             self.tutores_libres['LSI'] = list(range(0, len(self.tutores_principales['LSI'])))
             self.tutores_libres['ATC'] = list(range(0, len(self.tutores_principales['ATC'])))
@@ -87,6 +100,10 @@ class Comision(object):
         except Exception as e:
                 return dict(status=False, message=e)
 
+    def _check_tutores_principales(self, email):
+        return any(email in e for e in [self.tutores_principales['LSI'], self.tutores_principales['ATC'],
+                                        self.tutores_principales['CCIA']])
+
     def _introducir_tutor(self, departamento, email):
         introducir = True
         for i in self.tutores_principales[departamento]:
@@ -96,6 +113,17 @@ class Comision(object):
         if introducir:
             self.tutores_principales[departamento].append(email)
             self.num_tutores += 1
+
+    def _introducir_tutor_secundario(self, departamento, email):
+        introducir = True
+        if not self._check_tutores_principales(email):
+            for i in self.tutores_secundarios[departamento]:
+                if i == email:
+                    introducir = False
+                    break
+            if introducir:
+                self.tutores_secundarios[departamento].append(email)
+                self.num_tutores += 1
 
     def _check_tribunal(self, tribunal, tfg_asig, dict=False):
         if not dict:
@@ -179,7 +207,7 @@ class Comision(object):
 
     def asig_tfgs(self):
         try:
-            for i in self.tfgs_asig:
+            for i in self.tfgs_asig_conv:
                 encontrado = False
                 for key, tribunal in enumerate(self.comisiones):
                     if self._check_tribunal(tribunal, i):
