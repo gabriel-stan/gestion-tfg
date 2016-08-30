@@ -24,6 +24,7 @@ class Comision(object):
         self.tutores_principales = {'CCIA': [], 'LSI': [], 'ATC': []}
         self.tutores_secundarios = {'CCIA': [], 'LSI': [], 'ATC': []}
         self.tutores_libres = {'CCIA': [], 'LSI': [], 'ATC': []}
+        self.tutores_libres_secundarios = {'CCIA': [], 'LSI': [], 'ATC': []}
         self.exitos = []
         self.convocatoria = Tipo_Evento.objects.get(codigo=convocatoria)
         self.tfgs_asig_conv = Tfg_Asig.objects.filter(convocatoria=self.convocatoria)
@@ -76,6 +77,9 @@ class Comision(object):
             self.tutores_libres['CCIA'] = list(range(0, len(self.tutores_principales['CCIA'])))
             self.tutores_libres['LSI'] = list(range(0, len(self.tutores_principales['LSI'])))
             self.tutores_libres['ATC'] = list(range(0, len(self.tutores_principales['ATC'])))
+            self.tutores_libres_secundarios['CCIA'] = list(range(0, len(self.tutores_secundarios['CCIA'])))
+            self.tutores_libres_secundarios['LSI'] = list(range(0, len(self.tutores_secundarios['LSI'])))
+            self.tutores_libres_secundarios['ATC'] = list(range(0, len(self.tutores_secundarios['ATC'])))
             self.num_comisiones = int(math.ceil(self.num_tutores * 0.1))
             for i in range(self.num_comisiones):
                 tribunal = {'tfgs': []}
@@ -83,12 +87,24 @@ class Comision(object):
                 departamento_1 = ORDEN_DEPARTAMENTOS[indice]
                 departamento_2 = ORDEN_DEPARTAMENTOS[(indice + 1) % 3]
                 departamento_3 = ORDEN_DEPARTAMENTOS[(indice + 2) % 3]
-                presidente = random.choice(self.tutores_libres[departamento_1])
-                self.tutores_libres[departamento_1].remove(presidente)
-                vocal_1 = random.choice(self.tutores_libres[departamento_2])
-                self.tutores_libres[departamento_2].remove(vocal_1)
-                vocal_2 = random.choice(self.tutores_libres[departamento_3])
-                self.tutores_libres[departamento_3].remove(vocal_2)
+                if len(self.tutores_libres[departamento_1]) > 0:
+                    presidente = random.choice(self.tutores_libres[departamento_1])
+                    self.tutores_libres[departamento_1].remove(presidente)
+                else:
+                    presidente = random.choice(self.tutores_libres_secundarios[departamento_1])
+                    self.tutores_libres_secundarios[departamento_1].remove(presidente)
+                if len(self.tutores_libres[departamento_2]) > 0:
+                    vocal_1 = random.choice(self.tutores_libres[departamento_2])
+                    self.tutores_libres[departamento_2].remove(vocal_1)
+                else:
+                    vocal_1 = random.choice(self.tutores_libres_secundarios[departamento_2])
+                    self.tutores_libres_secundarios[departamento_2].remove(vocal_1)
+                if len(self.tutores_libres[departamento_3]) > 0:
+                    vocal_2 = random.choice(self.tutores_libres[departamento_3])
+                    self.tutores_libres[departamento_3].remove(vocal_2)
+                else:
+                    vocal_2 = random.choice(self.tutores_libres_secundarios[departamento_3])
+                    self.tutores_libres_secundarios[departamento_3].remove(vocal_2)
                 tribunal['presidente'] = self.tutores_principales[departamento_1][presidente]
                 tribunal['vocal_1'] = self.tutores_principales[departamento_2][vocal_1]
                 tribunal['vocal_2'] = self.tutores_principales[departamento_3][vocal_2]
