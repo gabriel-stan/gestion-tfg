@@ -21,7 +21,10 @@
     tfgsCtrl.presentarTFGs = presentarTFGs;
     tfgsCtrl.asignarTFG = asignarTFG;
     tfgsCtrl.filter = filter;
+
     tfgsCtrl.loading = true;
+
+    $scope.selectedTFG = new Object();
 
     tfgsCtrl.parseTimeAgo = function(fecha){
       // console.log(fecha);
@@ -86,9 +89,6 @@
       }
     }
 
-    $scope.selectedTFG = new Object();
-
-
     $scope.loadSelectedTFGPresentar = function() {
       var tfgs = $("#tabla-tfgs").DataTable().rows( { selected: true } ).data();
 
@@ -115,7 +115,8 @@
         convocatoria.tipo = 'SOL_EVAL';
         convocatoria.convocatoria = tfgsCtrl.convocatoria;
 
-        Tfgs.presentar(tfg.titulo, JSON.stringify(convocatoria)).then(TfgsSuccessFn, TfgsErrorFn).finally(filterFinally);
+        preAction();
+        Tfgs.presentar(tfg.titulo, JSON.stringify(convocatoria)).then(TfgsSuccessFn, TfgsErrorFn).finally(postAction);
       });
 
       /**
@@ -136,7 +137,8 @@
     */
     function asignarTFG(){
 
-      Tfgs.asignar($scope.selectedTFG).then(TfgsSuccessFn, TfgsErrorFn).finally(filterFinally);
+      preAction();
+      Tfgs.asignar($scope.selectedTFG).then(TfgsSuccessFn, TfgsErrorFn).finally(postAction);
 
       /**
       * @name TfgsSuccessFn
@@ -224,6 +226,15 @@
     */
     function TfgsErrorFn(data, status, headers, config) {
       Snackbar.error(data.data.message);
+    }
+
+
+    function preAction(){
+      $scope.loading = true;
+    }
+
+    function postAction(){
+      $scope.loading = false;
     }
 
   }

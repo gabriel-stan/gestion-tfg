@@ -21,6 +21,9 @@
     dashCtrl.departamentos = [];
     dashCtrl.upload = upload;
 
+    $scope.upload = upload;
+
+    // TODO llamarlos dinamicamente
     dashCtrl.tipos_evento =
     {
         "status": true,
@@ -188,7 +191,8 @@
       fd.append('file', f);
       fd.append('model', dashCtrl.up.model);
 
-      Dashboard.upload(fd).then(uploadSuccessFn, uploadErrorFn);
+      preAction();
+      Dashboard.upload(fd).then(uploadSuccessFn, uploadErrorFn).finally(postAction);
 
 
       function uploadSuccessFn(data, status, headers, config) {
@@ -207,5 +211,14 @@
       // }
       // r.readAsBinaryString(f);
     }
+
+    function preAction(){
+      $scope.loading = true;
+    }
+
+    function postAction(){
+      $scope.loading = false;
+    }
+
   }
 })();

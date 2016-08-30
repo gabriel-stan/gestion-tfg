@@ -1,6 +1,6 @@
 <div class="box">
 
-  <form role="form" class="form-horizontal" ng-submit="vm.submit()">
+  <form role="form" class="form-horizontal" ng-submit="submit()">
 
     <div class="box-body pad">
 
@@ -103,7 +103,7 @@
       </div>
 
     <div class="box-footer">
-      <button type="submit" class="btn btn-primary pull-right">Añadir</button>
+      <button type="submit" class="btn btn-primary pull-right" ng-disabled="loading">Añadir</button>
     </div>
 
   </form>

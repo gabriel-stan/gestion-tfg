@@ -18,7 +18,12 @@
 
     var comisionesCtrl = this;
     comisionesCtrl.generarComisiones = generarComisiones;
+    comisionesCtrl.generarTribunales = generarTribunales;
     comisionesCtrl.getComisiones = getComisiones;
+
+    $scope.generarComisiones = generarComisiones;
+    $scope.generarTribunales = generarTribunales;
+    $scope.getComisiones = getComisiones;
 
     /**
     * @name generarComisiones
@@ -28,8 +33,40 @@
     function generarComisiones(){
 
       if(confirm('¿Seguro?')){
-        Comisiones.generate(comisionesCtrl.convocatoria).then(ComisionesSuccessFn, ComisionesErrorFn);
+        preAction();
+        Comisiones.generate(comisionesCtrl.convocatoria).then(ComisionesSuccessFn, ComisionesErrorFn).finally(postAction);
       }
+
+      /**
+      * @name ComisionesSuccessFn
+      * @desc Show Snackbar with success
+      */
+      function ComisionesSuccessFn(data, status, headers, config) {
+        Snackbar.success("Comisiones generadas correctamente");
+      }
+
+
+      /**
+      * @name TfgsErrorFn
+      * @desc Show snackbar with error
+      */
+      function ComisionesErrorFn(data, status, headers, config) {
+        Snackbar.error(data.data.message);
+      }
+    }
+
+    /**
+    * @name generarTribunales
+    * @desc Genera los tribunales a partir de las comisiones y TFGs presentados
+    * @memberOf gestfg.comisiones.controllers.ComisionesController
+    */
+    function generarTribunales(){
+
+      alert('por hacer: comisiones.controller.js');
+      // if(confirm('¿Seguro?')){
+      //   preAction();
+      //   Comisiones.generate(comisionesCtrl.convocatoria).then(ComisionesSuccessFn, ComisionesErrorFn).finally(postAction);
+      // }
 
       /**
       * @name ComisionesSuccessFn
@@ -76,6 +113,14 @@
       function ComisionesErrorFn(data, status, headers, config) {
         Snackbar.error(data.data.message);
       }
+    }
+
+    function preAction(){
+      $scope.loading = true;
+    }
+
+    function postAction(){
+      $scope.loading = false;
     }
 
   }

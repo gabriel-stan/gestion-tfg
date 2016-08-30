@@ -48,7 +48,7 @@
             <!-- <new-tfg-modal tfg="selectedTFG"></new-tfg-modal> -->
             <!-- <new-user-modal user="selectedUser"></new-user-modal> -->
 
-            <form role="form" class="form-horizontal" ng-submit="tfgsCtrl.asignarTFG()">
+            <form role="form" class="form-horizontal" ng-submit="asignarTFG()">
 
               <div class="box-body pad">
 
@@ -81,7 +81,7 @@
 
               <div class="box-footer">
                 <button type="button" class="btn btn-danger pull-left" ng-show="selectedTFG.asignado" ng-click="tfgsCtrl.desasignar()">Desasignar</button>
-                <button type="submit" class="btn btn-primary pull-right">Asignar</button>
+                <button type="submit" class="btn btn-primary pull-right" ng-disabled="loading">Asignar</button>
                 <button type="button" class="btn btn-default pull-right" data-dismiss="modal"style="margin-left:10px; margin-right:10px;">Cancelar</button>
               </div>
 

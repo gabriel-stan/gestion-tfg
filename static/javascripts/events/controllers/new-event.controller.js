@@ -19,6 +19,8 @@
 
     newEventCtrl.submit = submit;
 
+    $scope.submit = submit;
+
     var contenido = $("#wysihtml5-editor").val();
 
     /**
@@ -41,7 +43,7 @@
         // newEventCtrl.event.hasta = fechas.endDate.toString();
         newEventCtrl.event.desde = fechas.startDate.toISOString();
         newEventCtrl.event.hasta = fechas.endDate.toISOString();
-        
+
       } else {
         newEventCtrl.event.tipo = '';
       }
@@ -57,8 +59,8 @@
       });
 
       // $scope.closeThisDialog();
-
-      Events.create(newEventCtrl.event).then(createEventSuccessFn, createEventErrorFn);
+      preAction();
+      Events.create(newEventCtrl.event).then(createEventSuccessFn, createEventErrorFn).finally(postAction);
 
 
       /**
@@ -78,6 +80,14 @@
         $rootScope.$broadcast('event.created.error');
         Snackbar.error(data.data.message);
       }
+    }
+
+    function preAction(){
+      $scope.loading = true;
+    }
+
+    function postAction(){
+      $scope.loading = false;
     }
   }
 })();

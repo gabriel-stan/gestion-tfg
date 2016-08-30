@@ -19,7 +19,7 @@
 
         <div class="box">
 
-          <form role="form" ng-submit="vm.submit()" ng-controller="DashboardController as dashCtrl">
+          <form role="form" ng-submit="submit()" ng-controller="DashboardController as dashCtrl">
 
             <div class="box-header with-border">
               <h3 class="box-title">Bootstrap WYSIHTML5 <small>Simple and fast</small></h3>
@@ -73,7 +73,7 @@
             </div>
 
             <div class="box-footer">
-              <button type="submit" class="btn btn-primary">Publicar</button>
+              <button type="submit" class="btn btn-primary" ng-disabled="loading">Publicar</button>
             </div>
 
           </form>

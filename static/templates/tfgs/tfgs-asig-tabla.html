@@ -53,7 +53,7 @@
             </div>
             <div class="modal-body">
 
-              <form role="form" class="form-horizontal" ng-submit="tfgsCtrl.presentarTFGs()">
+              <form role="form" class="form-horizontal" ng-submit="presentarTFGs()">
 
                 <div class="box-body pad">
 
@@ -89,7 +89,7 @@
 
 
                 <div class="box-footer">
-                  <button type="submit" class="btn btn-primary pull-left">Presentar</button>
+                  <button type="submit" class="btn btn-primary pull-left" ng-disabled="loading">Presentar</button>
                   <button type="button" class="btn btn-default pull-right" data-dismiss="modal"style="margin-left:10px; margin-right:10px;">Cancelar</button>
                 </div>
 

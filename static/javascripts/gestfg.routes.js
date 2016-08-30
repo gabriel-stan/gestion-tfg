@@ -105,6 +105,8 @@
     })
 
     .when('/dashboard/tribunales', {
+      controller: 'ComisionesController',
+      controllerAs: 'vm',
       templateUrl: '/static/templates/layout/dashboard/tribunales/tribunales.html'
     })
 

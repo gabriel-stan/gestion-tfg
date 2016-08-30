@@ -22,7 +22,7 @@
         <h3 class="box-title">Elige la configuracion adecuada</h3>
       </div><!-- /.box-header -->
       <!-- form start -->
-      <form id="upload-form" class="form-horizontal" ng-submit="dashCtrl.upload()">
+      <form id="upload-form" class="form-horizontal" ng-submit="upload()">
         <div class="box-body">
 
           <div class="form-group">
@@ -49,7 +49,7 @@
 
         <div class="box-footer">
 
-          <button type="submit" class="btn btn-primary pull-right">Subir</button>
+          <button type="submit" class="btn btn-primary pull-right" ng-disabled="loading">Subir</button>
 
         </div><!-- /.box-footer -->
       </form>
