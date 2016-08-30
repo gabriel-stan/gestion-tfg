@@ -19,13 +19,13 @@
 
     newTfgCtrl.submit = submit;
     newTfgCtrl.update = update;
-    newTfgCtrl.submitAsig = submitAsig;
-    newTfgCtrl.updateAsig = updateAsig;
+    newTfgCtrl.asignar = asignar;
+    // newTfgCtrl.updateAsig = updateAsig;
 
     $scope.submit = submit;
     $scope.update = update;
-    $scope.submit = submitAsig;
-    $scope.update = updateAsig;
+    $scope.asignar = asignar;
+    // $scope.update = updateAsig;
 
     /**
     * @name submit
@@ -33,16 +33,6 @@
     * @memberOf gestfg.tfgs.controllers.NewTfgController
     */
     function submit() {
-
-      $rootScope.$broadcast('tfg.created', {
-        first_name: newTfgCtrl.tfg.first_name,
-        last_name: newTfgCtrl.tfg.last_name,
-        clase: newTfgCtrl.tfg.clase,
-        is_admin: newTfgCtrl.tfg.is_admin,
-        email: newTfgCtrl.tfg.email,
-        departamento: newTfgCtrl.tfg.departamento,
-        created_at: newTfgCtrl.created_at
-      });
 
       // $scope.closeThisDialog();
       preAction();
@@ -55,6 +45,9 @@
       */
       function createTfgSuccessFn(data, status, headers, config) {
         Snackbar.success('El TFG se ha creado con éxito.');
+        if(newTfgCtrl.tfg.preasignado){
+          asignar();
+        }
       }
     }
 
@@ -76,6 +69,26 @@
       function updateTfgSuccessFn(data, status, headers, config) {
         Snackbar.success('El TFG se ha modificado con éxito.');
         postActionSuccess();
+      }
+    }
+
+    /**
+    * @name submitAsig
+    * @desc Create a new Tfg Asignado
+    * @memberOf gestfg.tfgs.controllers.NewTfgController
+    */
+    function asignar() {
+
+      // $scope.closeThisDialog();
+      preAction();
+      Tfgs.asignar(newTfgCtrl.tfg).then(asignarTfgAsigSuccessFn, TfgErrorFn).finally(postAction);
+
+      /**
+      * @name asignarTfgAsigSuccessFn
+      * @desc Show snackbar with success message
+      */
+      function asignarTfgAsigSuccessFn(data, status, headers, config) {
+        Snackbar.success('El TFG se ha asignado con éxito.');
       }
     }
 
