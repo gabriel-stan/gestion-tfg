@@ -12,7 +12,7 @@ PERMISOS_JEFE_DEPARTAMENTO={'tfgs': {'tfg': ['create', 'select', 'change', 'dele
 PERMISOS_PROFESORES={'tfgs': {'tfg': ['create', 'select', 'change', 'delete'],
                               'tfg_asig': ['create', 'select', 'change', 'delete']},
                      'eventos': {'evento': ['create', 'select', 'change', 'delete']},
-                     'authentication': {'usuario': ['select']}}
+                     'authentication': {'usuario': ['select'], 'alumno': ['create', 'select', 'change', 'delete']}}
 
 PERMISOS_ALUMNOS={'tfgs': {'tfg': ['select']}}
 
@@ -122,6 +122,13 @@ def create_groups(sender, **kwargs):
         print "Tipo de evento %s created successfully\n" % tipo.nombre
     else:
         print "Tipo de evento %s already exists\n" % tipo.nombre
+
+    from eventos.models import Convocatoria
+    tipo, created = Convocatoria.objects.get_or_create(tipo=Tipo_Evento.objects.get(codigo='CONV_SEPT'), anio=2016)
+    if created:
+        print "Tipo de evento %s created successfully\n" % tipo.tipo.codigo
+    else:
+        print "Tipo de evento %s already exists\n" % tipo.tipo.codigo
 post_migrate.connect(create_groups)
 
 

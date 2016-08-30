@@ -17,7 +17,7 @@ class TfgServicesTests(TestCase):
 
         titulacion = Titulacion.objects.create(nombre='Ingenieria Informatica', codigo='IF')
 
-        self.data_evento1 = dict(content=dict(contenido='admin2@admin.es', convocatoria='CONV_JUN', tipo='ASIG_TFG',
+        self.data_evento1 = dict(content=dict(contenido='admin2@admin.es', convocatoria='CONV_SEPT', tipo='ASIG_TFG',
                                titulo='titulo 1',desde='2016-08-04T22:00:00.000Z', hasta='2016-08-14T15:00:00.000Z'))
 
         self.data_prof1 = dict(email='prof_ejemplo@ugr.es', first_name='profesor 1',
@@ -135,7 +135,7 @@ class TfgServicesTests(TestCase):
         # Le asigno una convocatoria
         res = self.client.put('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'],
                                                      'datos': json.dumps({'tipo': 'ASIG_TFG',
-                                                                          'convocatoria': 'CONV_JUN'})})
+                                                                          'convocatoria': 'CONV_SEPT', 'anio': 2016})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
