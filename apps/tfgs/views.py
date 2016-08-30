@@ -285,7 +285,7 @@ class Tfg_asigViewSet(viewsets.ModelViewSet):
                     alumno_1 = Alumno.objects.get(email=params.get('alumno_1'))
                 except Alumno.DoesNotExist:
                     if utils.is_email_alumno(params.get('alumno_1')):
-                        alumno_1 = Alumno.objects.create_user(email=params.get('alumno_1'))
+                        alumno_1 = Alumno.objects.create_user(email=params.get('alumno_1'))['data']
                     else:
                         resul = dict(message='El alumno %s indicado no existe' % params.get('alumno_1'))
                         self.logger.error('FIN WS - TFGASIGVIEW POST del usuario: %s con resultado: %s' %
@@ -293,10 +293,10 @@ class Tfg_asigViewSet(viewsets.ModelViewSet):
                         return Response(resul, status=status.HTTP_400_BAD_REQUEST)
                 if 'alumno_2' in params:
                     try:
-                        alumno_2 = Alumno.objects.get(email=params.get('alumno_2'))['id']
+                        alumno_2 = Alumno.objects.get(email=params.get('alumno_2'))
                     except Alumno.DoesNotExist:
                         if utils.is_email_alumno(params.get('alumno_2')):
-                            alumno_2 = Alumno.objects.create_user(email=params.get('alumno_2'))
+                            alumno_2 = Alumno.objects.create_user(email=params.get('alumno_2'))['data']
                         else:
                             resul = dict(message='El alumno %s indicado no existe' % params.get('alumno_2'))
                             self.logger.error('FIN WS - TFGASIGVIEW POST del usuario: %s con resultado: %s' %
@@ -304,7 +304,7 @@ class Tfg_asigViewSet(viewsets.ModelViewSet):
                             return Response(resul, status=status.HTTP_400_BAD_REQUEST)
                 if 'alumno_3' in params:
                     try:
-                        alumno_3 = Alumno.objects.get(email=params.get('alumno_3'))['id']
+                        alumno_3 = Alumno.objects.get(email=params.get('alumno_3'))
                     except Alumno.DoesNotExist:
                         if utils.is_email_alumno(params.get('alumno_3')):
                             alumno_3 = Alumno.objects.create_user(email=params.get('alumno_3'))

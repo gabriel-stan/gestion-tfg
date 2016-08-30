@@ -68,14 +68,16 @@
             language: {
                 "url": "/static/plugins/datatables/language/Spanish.json"
             },
-            responsive: true,
+            processing: true,
+            scrollX: true,
+            // responsive: true,
             buttons: [
                 'copyHtml5',
                 'excelHtml5',
                 'csvHtml5',
                 'pdfHtml5'
             ],
-            ajax: "/api/v1/departamentos",
+            ajax: "/api/v1/departamentos/",
             columns: [
               {"data" : "codigo"},
               {"data" : "nombre"}
