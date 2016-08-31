@@ -27,8 +27,9 @@ class ComisionesEvaluacionServicesTests(TestCase):
                                               titulo='titulo 1', desde='2016-08-04T22:00:00.000Z',
                                               hasta='2016-08-14T15:00:00.000Z', titulacion=titulacion.codigo))
 
-        self.data_evento_comision = dict(content=dict(contenido='admin2@admin.es', convocatoria='CONV_SEPT', tipo='COM_EVAL',
-                                                      titulo='titulo 1', desde='2016-08-15T22:00:00.000Z',
+        self.data_evento_comision = dict(content=dict(contenido='admin2@admin.es', convocatoria='CONV_SEPT',
+                                                      tipo='COM_EVAL', titulo='titulo 1',
+                                                      desde='2016-08-15T22:00:00.000Z',
                                                       hasta='2016-08-18T15:00:00.000Z', titulacion=titulacion.codigo))
 
         self.data_prof1 = dict(email='prof_ejemplo@ugr.es', first_name='profesor 1',
@@ -282,7 +283,7 @@ class ComisionesEvaluacionServicesTests(TestCase):
 
         # Creo los tribunales
         res = self.client.post('/api/v1/tribunales/', {'comisiones': True, 'convocatoria': 'CONV_SEPT', 'anio': 2016,
-                                                       'titulacion': 'GII'})
+                                                       'titulacion': 'IF'})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
         self.assertEqual(len(resul['data']['tribunales'][0]['tfgs']), 9)

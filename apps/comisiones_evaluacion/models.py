@@ -107,7 +107,8 @@ class TribunalesManager(BaseUserManager):
                 observaciones = kwargs.get('observaciones')
             except:
                 raise NameError("Error en las kwargs.get('fecha')")
-            tribunal = self.model(tfg=tfg, comision=comision, fecha=fecha, observaciones=observaciones)
+            tribunal = self.model(tfg=tfg, comision=comision, fecha=fecha, observaciones=observaciones,
+                                  alumno=kwargs.get('alumno'))
             tribunal.save()
             return dict(status=True, data=Tribunales.objects.get(tfg=tribunal.tfg))
 

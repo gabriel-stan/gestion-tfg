@@ -32,11 +32,6 @@ class TfgServicesTests(TestCase):
     def test_insert_alumno_error(self):
 
         alumno = self.serializer_class()
-        result = alumno.create({'email': '34@correo.ugr.es', 'first_name': self.alumn1_nombre,
-                                'last_name': self.alumn1_apellidos})
-        self.assertEqual(result['status'], False)
-
-        alumno = self.serializer_class()
         result = alumno.create({'email': 'ejemplo34@coreo.ugr.es', 'first_name': self.alumn1_nombre,
                                 'last_name': self.alumn1_apellidos})
         self.assertEqual(result['status'], False)

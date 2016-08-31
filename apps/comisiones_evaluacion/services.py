@@ -32,7 +32,11 @@ class Comision(object):
                                                      subtipo=SubTipo_Evento.objects.get(codigo='COM_EVAL'),
                                                      tipo=Tipo_Evento.objects.get(codigo=convocatoria),
                                                      anio=anio)
-        self.tfgs_asig_conv = Tfg_Asig.objects.filter(convocatoria=self.convocatoria)
+        self.convocatoria_tfgs = Convocatoria.objects.get(titulacion=self.titulacion,
+                                                          subtipo=SubTipo_Evento.objects.get(codigo='SOL_EVAL'),
+                                                          tipo=Tipo_Evento.objects.get(codigo=convocatoria),
+                                                          anio=anio)
+        self.tfgs_asig_conv = Tfg_Asig.objects.filter(convocatoria=self.convocatoria_tfgs)
         self.tfgs_asig = Tfg_Asig.objects.all()
         self.comisiones = []
         self.num_tutores = 0
@@ -241,7 +245,8 @@ class Comision(object):
         for key, tribunal in enumerate(self.comisiones):
             if self._check_tribunal(tribunal, tfg_asig):
                 self.comisiones[key]['tfgs'].append(tfg_asig.to_dict(self.user))
-                Tribunales.objects.create(tfg=tfg_asig.tfg, comision=self.comisiones[key].get('presidente').get('email'))
+                Tribunales.objects.create(tfg=tfg_asig.tfg, comision=self.comisiones[key].get('presidente').get('email'),
+                                          alumno=alumno)
                 encontrado = True
                 break
         if not encontrado:
@@ -250,11 +255,11 @@ class Comision(object):
     def asig_tfgs(self):
         try:
             for i in self.tfgs_asig_conv:
-                self._create_tribunal(i, i.tfg.alumno_1)
-                if i.tfg.alumno_2:
-                    self._create_tribunal(i, i.tfg.alumno_2)
-                if i.tfg.alumno_3:
-                    self._create_tribunal(i, i.tfg.alumno_3)
+                self._create_tribunal(i, i.alumno_1)
+                if i.alumno_2:
+                    self._create_tribunal(i, i.alumno_2)
+                if i.alumno_3:
+                    self._create_tribunal(i, i.alumno_3)
             return dict(status=True, data=dict(tribunales=self.comisiones))
         except Exception as e:
                 return dict(status=False, message=e)
