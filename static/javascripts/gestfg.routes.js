@@ -81,6 +81,8 @@
     })
 
     .when('/dashboard/departamentos', {
+      controller: 'DepartamentosController',
+      controllerAs: 'dptsCtrl',
       templateUrl: '/static/templates/layout/dashboard/departamentos/departamentos.html'
     })
     .when('/dashboard/departamentos/add', {

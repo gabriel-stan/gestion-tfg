@@ -25,6 +25,35 @@
         <!-- <h3 class="box-title">Data Table With Full Features</h3> -->
       </div><!-- /.box-header -->
       <div class="box-body">
+
+        <a
+          id="boton-edit"
+          class="btn btn-default disabled"
+          data-toggle="modal"
+          data-target="#modal-edit"
+          ng-click="loadSelectedDpt()"
+        >
+          Editar
+        </a>
+
+        <div class="example-modal">
+          <div class="modal fade" id="modal-edit">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title">Editar TFG</h4>
+                </div>
+                <div class="modal-body">
+
+                   <edit-departamento departamento="selectedDpt"></edit-departamento>
+
+                </div>
+              </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+          </div><!-- /.modal -->
+        </div><!-- /.example-modal -->
+
         <table id="tabla-dpts" class="table table-bordered table-striped">
           <thead>
             <tr>
@@ -68,6 +97,9 @@
             language: {
                 "url": "/static/plugins/datatables/language/Spanish.json"
             },
+            select: {
+                style: 'single'
+            },
             processing: true,
             scrollX: true,
             // responsive: true,
@@ -82,7 +114,50 @@
               {"data" : "codigo"},
               {"data" : "nombre"}
             ]
-          });
+        });
+
+        table.on( 'select', function () {
+            var selectedRows = table.rows( { selected: true } ).count();
+
+            table.button( 'edit:name' ).enable( selectedRows === 1 );
+            if(selectedRows === 1){
+              // $("#boton-edit").attr("disabled",selectedRows === 1);
+              $("#boton-edit").removeClass("disabled");
+            } else {
+              $("#boton-edit").addClass("disabled");
+            }
+        } );
+
+        table.on( 'deselect', function () {
+            var selectedRows = table.rows( { selected: true } ).count();
+
+            table.button( 'edit:name' ).enable( selectedRows === 1 );
+            if(selectedRows === 1){
+              // $("#boton-edit").attr("disabled",selectedRows === 1);
+              $("#boton-edit").removeClass("disabled");
+            } else {
+              $("#boton-edit").addClass("disabled");
+            }
+        } );
+
+        table.on( 'preInit.dt', function (e, settings) {
+          // var container = $(table.table().container());
+          var container = $(table.buttons(1).container()[0]);
+          container.prepend(table.buttons(1).container()[1]);
+
+          container.append($('#boton-edit'));
+
+          // table.button( 'edit:name' ).attr('ng-dialog','/static/templates/layout/dashboard/users/add-user.html');
+          // table.button( 'edit:name' ).attr('ng-dialog-controller','NewUserController as vm');
+
+          // $('a.buttons-edit').attr('ng-dialog','/static/templates/users/new-user.html');
+          // $('a.buttons-edit').attr('ng-dialog-controller','NewUserController as vm');
+
+          // $('a.buttons-edit').attr('data-toggle','modal');
+          // $('a.buttons-edit').attr('data-target','#modal-edit');
+
+
+        });
 
       });
     </script>

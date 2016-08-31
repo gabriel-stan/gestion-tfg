@@ -9,17 +9,19 @@
     .module('gestfg.departamentos.controllers')
     .controller('NewDepartamentoController', NewDepartamentoController);
 
-  NewDepartamentoController.$inject = ['$rootScope', '$scope', 'Authentication', 'Snackbar', 'Departamentos'];
+  NewDepartamentoController.$inject = ['$rootScope', '$scope', 'Snackbar', 'Departamentos'];
 
   /**
   * @namespace NewDepartamentoController
   */
-  function NewDepartamentoController($rootScope, $scope, Authentication, Snackbar, Departamentos) {
+  function NewDepartamentoController($rootScope, $scope, Snackbar, Departamentos) {
     var newDepartamentoCtrl = this;
 
     newDepartamentoCtrl.submit = submit;
+    newDepartamentoCtrl.edit = edit;
 
     $scope.submit = submit;
+    $scope.edit = edit;
 
     /**
     * @name submit
@@ -35,7 +37,7 @@
 
       // $scope.closeThisDialog();
       preAction();
-      Departamentos.create(newDepartamentoCtrl.departamento).then(createDepartamentoSuccessFn, createDepartamentoErrorFn).finally(postAction);
+      Departamentos.create(newDepartamentoCtrl.departamento).then(createDepartamentoSuccessFn, DepartamentoErrorFn).finally(postAction);
 
 
       /**
@@ -43,18 +45,38 @@
       * @desc Show snackbar with success message
       */
       function createDepartamentoSuccessFn(data, status, headers, config) {
-        Snackbar.success('El usuario se ha creado con éxito.');
+        Snackbar.success('El departamento se ha creado con éxito.');
       }
 
+    }
+
+    /**
+    * @name edit
+    * @desc edit a Departamento
+    * @memberOf gestfg.departamentos.controllers.NewDepartamentoController
+    */
+    function edit() {
+
+      preAction();
+      Departamentos.edit($scope.departamento).then(editDepartamentoSuccessFn, DepartamentoErrorFn).finally(postAction);
 
       /**
-      * @name createDepartamentoErrorFn
-      * @desc Propagate error event and show snackbar with error message
+      * @name editDepartamentoSuccessFn
+      * @desc Show snackbar with success message
       */
-      function createDepartamentoErrorFn(data, status, headers, config) {
-        $rootScope.$broadcast('departamento.created.error');
-        Snackbar.error(data.message);
+      function editDepartamentoSuccessFn(data, status, headers, config) {
+        Snackbar.success('El departamento se ha modificado con éxito.');
+        postActionSuccess();
       }
+
+    }
+
+    /**
+    * @name DepartamentoErrorFn
+    * @desc Show snackbar with error message
+    */
+    function DepartamentoErrorFn(data, status, headers, config) {
+      Snackbar.error(data.message);
     }
 
     function preAction(){
@@ -64,5 +86,12 @@
     function postAction(){
       $scope.loading = false;
     }
+
+    function postActionSuccess(){
+      $('.modal').modal('hide');
+      $("#tabla-dpts").DataTable().clear().draw();
+      $("#tabla-dpts").DataTable().ajax.reload();
+    }
+
   }
 })();
