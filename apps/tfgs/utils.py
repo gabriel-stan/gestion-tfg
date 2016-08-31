@@ -33,8 +33,11 @@ def is_string(s):
     try:
         if isinstance(s, int) or isinstance(s, float):
             raise ValueError
-        str(s)
-        return True
+        #str(s)
+        if isinstance(s, basestring):
+            return True
+        else:
+            raise ValueError
     except ValueError:
         return False
 
