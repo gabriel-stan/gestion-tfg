@@ -63,18 +63,17 @@
     */
     function generarTribunales(){
 
-      alert('por hacer: comisiones.controller.js');
-      // if(confirm('¿Seguro?')){
-      //   preAction();
-      //   Comisiones.generate(comisionesCtrl.convocatoria).then(ComisionesSuccessFn, ComisionesErrorFn).finally(postAction);
-      // }
+      if(confirm('¿Seguro?')){
+        preAction();
+        Comisiones.generarTribunales(comisionesCtrl.titulacion, comisionesCtrl.convocatoria, comisionesCtrl.anio, comisionesCtrl.comisiones).then(ComisionesSuccessFn, ComisionesErrorFn).finally(postAction);
+      }
 
       /**
       * @name ComisionesSuccessFn
       * @desc Show Snackbar with success
       */
       function ComisionesSuccessFn(data, status, headers, config) {
-        Snackbar.success("Comisiones generadas correctamente");
+        Snackbar.success("Tribunales generados correctamente");
         postActionSuccess();
       }
 

@@ -18,7 +18,8 @@
   function Comisiones($http) {
     var Comisiones = {
       all: all,
-      generarComisiones: generarComisiones
+      generarComisiones: generarComisiones,
+      generarTribunales: generarTribunales
     };
 
     return Comisiones;
@@ -46,6 +47,21 @@
         titulacion: titulacion,
         convocatoria: convocatoria,
         anio: anio
+      });
+    }
+
+    /**
+    * @name generarTribunales
+    * @desc generate all tribunales
+    * @returns {Promise}
+    * @memberOf gestfg.comisiones.services.Comisiones
+    */
+    function generarTribunales(titulacion, convocatoria, anio, comisiones) {
+      return $http.post('/api/v1/tribunales/',{
+        titulacion: titulacion,
+        convocatoria: convocatoria,
+        anio: anio,
+        comisiones: comisiones
       });
     }
 
