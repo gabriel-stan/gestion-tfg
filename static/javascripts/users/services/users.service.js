@@ -68,7 +68,9 @@
     }
 
     function remove(tipo, email) {
-      return $http.delete('/api/v1/' + tipo + '/' + email);
+      return $http.delete('/api/v1/' + tipo + '/', {
+        email: email
+      });
     }
   }
 })();
