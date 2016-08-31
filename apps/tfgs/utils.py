@@ -144,7 +144,7 @@ def comprueba_alumno(usuario):
 def check_convocatoria(convocatoria, tipo):
     periodos = Periodo.objects.for_period()
     for periodo in periodos:
-        if periodo.evento.convocatoria == convocatoria and periodo.convocatoria.tipo == tipo:
+        if periodo.evento.convocatoria == convocatoria:
             return True
     return False
 

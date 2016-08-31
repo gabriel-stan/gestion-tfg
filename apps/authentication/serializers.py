@@ -3,7 +3,7 @@ import utils
 from django.db import models
 from django.contrib.auth import update_session_auth_hash
 from rest_framework import serializers
-from authentication.models import Alumno, Profesor, Usuario, Departamento, Grupos
+from authentication.models import Alumno, Profesor, Usuario, Departamento, Grupos, Titulacion
 from django.contrib.auth.models import Group
 
 
@@ -312,4 +312,48 @@ class ProfesorSerializer(serializers.ModelSerializer):
 
     def delete(self, profesor):
         profesor.delete()
+        return dict(status=True)
+
+
+class TitulacionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Titulacion
+        fields = ('id', 'codigo', 'nombre',)
+
+    def update(self, titulacion, validated_data):
+        try:
+            # comprobando codigo
+            if 'codigo' in validated_data.keys():
+                new_codigo = validated_data.get('codigo')
+                try:
+                    res = Titulacion.objects.filter(codigo=new_codigo)
+                except:
+                    raise NameError('La Titulacion no existe')
+                if res.count() != 0:
+                    raise NameError("El departamento ya existe")
+                elif not isinstance(new_codigo, basestring):
+                    raise NameError("El codigo de la titulacion no tiene formato correcto")
+                else:
+                    titulacion.codigo = new_codigo
+
+            # comprobando nombre
+            if 'nombre' in validated_data.keys():
+                new_nombre = validated_data.get('nombre')
+                if not isinstance(new_nombre, basestring):
+                    raise NameError("El nombre de la titulacion no tiene formato correcto")
+                else:
+                    titulacion.nombre = new_nombre
+
+            titulacion.save()
+
+            return dict(status=True, data=titulacion)
+
+        except NameError as e:
+            return dict(status=False, message=e.message)
+        except:
+            return dict(status=False, message="Error en los parametros")
+
+    def delete(self, titulacion):
+        titulacion.delete()
         return dict(status=True)

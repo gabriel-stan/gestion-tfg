@@ -21,10 +21,15 @@ class ComisionesEvaluacionServicesTests(TestCase):
         dep_DECSAI = Departamento.objects.create(nombre='DECSAI', codigo='DECSAI')
         dep_est = Departamento.objects.create(nombre='ESTADISTICA', codigo='ESTADISTICA')
 
-        titulacion = Titulacion.objects.create(nombre='Ingenieria Informatica', codigo='GII')
+        titulacion = Titulacion.objects.create(nombre='Ingenieria Informatica', codigo='IF')
 
-        self.data_evento1 = dict(content=dict(contenido='admin2@admin.es', convocatoria='CONV_SEPT', tipo='ASIG_TFG',
-                                 titulo='titulo 1', desde='2016-08-04T22:00:00.000Z', hasta='2016-08-14T15:00:00.000Z'))
+        self.data_evento1 = dict(content=dict(contenido='admin2@admin.es', convocatoria='CONV_SEPT', tipo='SOL_EVAL',
+                                              titulo='titulo 1', desde='2016-08-04T22:00:00.000Z',
+                                              hasta='2016-08-14T15:00:00.000Z', titulacion=titulacion.codigo))
+
+        self.data_evento_comision = dict(content=dict(contenido='admin2@admin.es', convocatoria='CONV_SEPT', tipo='COM_EVAL',
+                                                      titulo='titulo 1', desde='2016-08-15T22:00:00.000Z',
+                                                      hasta='2016-08-18T15:00:00.000Z', titulacion=titulacion.codigo))
 
         self.data_prof1 = dict(email='prof_ejemplo@ugr.es', first_name='profesor 1',
                                last_name='apellido 1 apellido 12', departamento=dep_atc.codigo, password='75169052')
@@ -128,14 +133,19 @@ class ComisionesEvaluacionServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
-        # Creo la convocatoria de Junio
+        # Creo la convocatoria de Septiembre
         res = self.client.post('/api/v1/events/',  self.data_evento1, format='json')
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        # Creo la convocatoria para la formacion de la comisiones
+        res = self.client.post('/api/v1/events/',  self.data_evento_comision, format='json')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
         res = self.client.put('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'], 'datos': json.dumps(
-            {'convocatoria': 'CONV_SEPT', 'tipo': 'ASIG_TFG', 'anio': 2016})})
+            {'convocatoria': 'CONV_SEPT', 'anio': 2016})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
@@ -145,7 +155,7 @@ class ComisionesEvaluacionServicesTests(TestCase):
                 'cabeceras': json.dumps(dict(tipo='D', titulo='E', n_alumnos='F', alumno_1='G', alumno_2='H',
                                              descripcion='I', conocimientos_previos='J', hard_soft='K', tutor='B',
                                              cotutor='C', titulacion='L')), 'type_file': 'tfg_asig',
-                'titulacion': 'GII'}
+                'titulacion': 'IF'}
         res = self.client.post('/api/v1/upload_file_tfgs/', data, format='multipart')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
@@ -157,108 +167,108 @@ class ComisionesEvaluacionServicesTests(TestCase):
 
         # Le asigno una convocatoria
         res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[0], 'datos': json.dumps(
-            {'convocatoria': 'CONV_SEPT', 'tipo': 'ASIG_TFG', 'anio': 2016})})
+            {'convocatoria': 'CONV_SEPT', 'anio': 2016})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
         res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[1], 'datos': json.dumps(
-            {'convocatoria': 'CONV_SEPT', 'tipo': 'ASIG_TFG', 'anio': 2016})})
+            {'convocatoria': 'CONV_SEPT', 'anio': 2016})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
         res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[2], 'datos': json.dumps(
-            {'convocatoria': 'CONV_SEPT', 'tipo': 'ASIG_TFG', 'anio': 2016})})
+            {'convocatoria': 'CONV_SEPT', 'anio': 2016})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
         res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[3], 'datos': json.dumps(
-            {'convocatoria': 'CONV_SEPT', 'tipo': 'ASIG_TFG', 'anio': 2016})})
+            {'convocatoria': 'CONV_SEPT', 'anio': 2016})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
         res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[4], 'datos': json.dumps(
-            {'convocatoria': 'CONV_SEPT', 'tipo': 'ASIG_TFG', 'anio': 2016})})
+            {'convocatoria': 'CONV_SEPT', 'anio': 2016})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
         res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[5], 'datos': json.dumps(
-            {'convocatoria': 'CONV_SEPT', 'tipo': 'ASIG_TFG', 'anio': 2016})})
+            {'convocatoria': 'CONV_SEPT', 'anio': 2016})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
         res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[6], 'datos': json.dumps(
-            {'convocatoria': 'CONV_SEPT', 'tipo': 'ASIG_TFG', 'anio': 2016})})
+            {'convocatoria': 'CONV_SEPT', 'anio': 2016})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
         res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[7], 'datos': json.dumps(
-            {'convocatoria': 'CONV_SEPT', 'tipo': 'ASIG_TFG', 'anio': 2016})})
+            {'convocatoria': 'CONV_SEPT', 'anio': 2016})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
         res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[8], 'datos': json.dumps(
-            {'convocatoria': 'CONV_SEPT', 'tipo': 'ASIG_TFG', 'anio': 2016})})
+            {'convocatoria': 'CONV_SEPT', 'anio': 2016})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
         res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[9], 'datos': json.dumps(
-            {'convocatoria': 'CONV_SEPT', 'tipo': 'ASIG_TFG', 'anio': 2016})})
+            {'convocatoria': 'CONV_SEPT', 'anio': 2016})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
         res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[10], 'datos': json.dumps(
-            {'convocatoria': 'CONV_SEPT', 'tipo': 'ASIG_TFG', 'anio': 2016})})
+            {'convocatoria': 'CONV_SEPT', 'anio': 2016})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
         res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[11], 'datos': json.dumps(
-            {'convocatoria': 'CONV_SEPT', 'tipo': 'ASIG_TFG', 'anio': 2016})})
+            {'convocatoria': 'CONV_SEPT', 'anio': 2016})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
         res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[12], 'datos': json.dumps(
-            {'convocatoria': 'CONV_SEPT', 'tipo': 'ASIG_TFG', 'anio': 2016})})
+            {'convocatoria': 'CONV_SEPT', 'anio': 2016})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
         res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[13], 'datos': json.dumps(
-            {'convocatoria': 'CONV_SEPT', 'tipo': 'ASIG_TFG', 'anio': 2016})})
+            {'convocatoria': 'CONV_SEPT', 'anio': 2016})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
         res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[14], 'datos': json.dumps(
-            {'convocatoria': 'CONV_SEPT', 'tipo': 'ASIG_TFG', 'anio': 2016})})
+            {'convocatoria': 'CONV_SEPT', 'anio': 2016})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
         res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[15], 'datos': json.dumps(
-            {'convocatoria': 'CONV_SEPT', 'tipo': 'ASIG_TFG', 'anio': 2016})})
+            {'convocatoria': 'CONV_SEPT', 'anio': 2016})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Le asigno una convocatoria
         res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[16], 'datos': json.dumps(
-            {'convocatoria': 'CONV_SEPT', 'tipo': 'ASIG_TFG', 'anio': 2016})})
+            {'convocatoria': 'CONV_SEPT', 'anio': 2016})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Creo una comision
-        res = self.client.post('/api/v1/comisiones/', {'convocatoria': 'CONV_SEPT', 'anio': 2016, 'titulacion': 'GII'})
+        res = self.client.post('/api/v1/comisiones/', {'convocatoria': 'CONV_SEPT', 'anio': 2016, 'titulacion': 'IF'})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
         self.assertEqual(len(resul['data']['tribunales']), 2)

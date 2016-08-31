@@ -4,6 +4,7 @@ from tfgs.models import Tfg_Asig, Titulacion
 from eventos.models import Convocatoria
 from django.contrib.auth.models import BaseUserManager
 from datetime import datetime
+from authentication.models import Alumno
 
 
 class Comision_EvaluacionManager(BaseUserManager):
@@ -36,18 +37,8 @@ class Comision_EvaluacionManager(BaseUserManager):
             except Profesor.DoesNotExist:
                 return dict(status=False, message='El segundo suplente no existe')
 
-            try:
-                convocatoria = Convocatoria.objects.get(tipo=kwargs.get('convocatoria'), anio=kwargs.get('anio'))
-            except Convocatoria.DoesNotExist:
-                return dict(status=False, message='La Convocatoria no existe')
-
-            try:
-                titulacion = Titulacion.objects.get(codigo=kwargs.get('titulacion'))
-            except Convocatoria.DoesNotExist:
-                return dict(status=False, message='La titulacion no existe')
-
             comision = self.model(presidente=presidente, vocal_1=vocal_1, vocal_2=vocal_2, suplente_1=suplente_1,
-                                  suplente_2=suplente_2, convocatoria=convocatoria, titulacion=titulacion)
+                                  suplente_2=suplente_2, convocatoria=kwargs.get('convocatoria'))
 
             comision.save()
             return dict(status=True, data=Comision_Evaluacion.objects.get(presidente=comision.presidente))
@@ -126,6 +117,7 @@ class TribunalesManager(BaseUserManager):
 
 class Tribunales(models.Model):
     tfg = models.ForeignKey(Tfg_Asig, default=None)
+    alumno = models.ForeignKey(Alumno, default=None)
     comision = models.ForeignKey(Comision_Evaluacion, default=None)
     fecha = models.DateTimeField(null=True)
     observaciones = models.CharField(max_length=500, null=True)

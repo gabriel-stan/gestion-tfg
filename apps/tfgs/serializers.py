@@ -7,49 +7,6 @@ from authentication.serializers import ProfesorSerializer
 from eventos.models import Tipo_Evento, SubTipo_Evento, Convocatoria
 
 
-class TitulacionSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Titulacion
-        fields = ('id', 'codigo', 'nombre',)
-
-    def update(self, titulacion, validated_data):
-        try:
-            # comprobando codigo
-            if 'codigo' in validated_data.keys():
-                new_codigo = validated_data.get('codigo')
-                try:
-                    res = Titulacion.objects.filter(codigo=new_codigo)
-                except:
-                    raise NameError('La Titulacion no existe')
-                if res.count() != 0:
-                    raise NameError("El departamento ya existe")
-                elif not isinstance(new_codigo, basestring):
-                    raise NameError("El codigo de la titulacion no tiene formato correcto")
-                else:
-                    titulacion.codigo = new_codigo
-
-            # comprobando nombre
-            if 'nombre' in validated_data.keys():
-                new_nombre = validated_data.get('nombre')
-                if not isinstance(new_nombre, basestring):
-                    raise NameError("El nombre de la titulacion no tiene formato correcto")
-                else:
-                    titulacion.nombre = new_nombre
-
-            titulacion.save()
-
-            return dict(status=True, data=titulacion)
-
-        except NameError as e:
-            return dict(status=False, message=e.message)
-        except:
-            return dict(status=False, message="Error en los parametros")
-
-    def delete(self, titulacion):
-        titulacion.delete()
-        return dict(status=True)
-
 
 class TfgSerializer(serializers.ModelSerializer):
     # tutor = ProfesorSerializer()
@@ -221,7 +178,7 @@ class Tfg_AsigSerializer(serializers.ModelSerializer):
                 if not utils.check_convocatoria(res_convocatoria, res_subtipo):
                     raise NameError("Fuera de plazo")
                 else:
-                    tfg_asig.convocatoria = res_tipo
+                    tfg_asig.convocatoria = res_convocatoria
 
             tfg_asig.save()
 
