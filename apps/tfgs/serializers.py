@@ -4,7 +4,7 @@ from rest_framework import serializers
 from tfgs.models import Tfg, Tfg_Asig, Titulacion
 from authentication.models import Profesor
 from authentication.serializers import ProfesorSerializer
-from eventos.models import Tipo_Evento, SubTipo_Evento
+from eventos.models import Tipo_Evento, SubTipo_Evento, Convocatoria
 
 
 class TitulacionSerializer(serializers.ModelSerializer):
@@ -208,13 +208,14 @@ class Tfg_AsigSerializer(serializers.ModelSerializer):
             if 'convocatoria' in validated_data.keys():
                 try:
                     res_tipo = Tipo_Evento.objects.get(codigo=validated_data.get('convocatoria'))
+                    res_convocatoria = Convocatoria.objects.get(tipo=res_tipo, anio=validated_data.get('anio'))
                 except:
                     raise NameError("La convocatoria no existe")
                 try:
                     res_subtipo = SubTipo_Evento.objects.get(codigo=validated_data.get('tipo'))
                 except:
                     raise NameError("El Tipo no existe")
-                if not utils.check_convocatoria(res_tipo, res_subtipo):
+                if not utils.check_convocatoria(res_convocatoria, res_subtipo):
                     raise NameError("Fuera de plazo")
                 else:
                     tfg_asig.convocatoria = res_tipo

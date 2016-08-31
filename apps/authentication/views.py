@@ -255,7 +255,7 @@ class AlumnosViewSet(viewsets.ModelViewSet):
             params = utils.get_params(request)
             self.logger.info('INICIO WS - ALUMNOSVIEW CREATE del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
-            if not params.get('dni'):
+            if not params.get('dni') and not request.user.has_perm('authentication.alumno.create') and not (request.user.is_admin):
                 raise NameError('El dni es incorrecto')
             try:
                 alumno = Alumno.objects.get(dni=params.get('dni'))

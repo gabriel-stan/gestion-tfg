@@ -1,7 +1,7 @@
 from tfgs.models import Tfg_Asig
 from authentication.models import Departamento, Profesor
 import itertools
-from eventos.models import Tipo_Evento
+from eventos.models import Tipo_Evento, Convocatoria
 from comisiones_evaluacion.models import Comision_Evaluacion, Tribunales
 from comisiones_evaluacion.serializers import TribunalesSerializer, Comision_EvaluacionSerializer
 from gestfg.settings import DOC_PATH
@@ -20,12 +20,14 @@ ORDEN_DEPARTAMENTOS = {0: 'LSI', 1: 'DECSAI', 2: 'ATC'}
 
 class Comision(object):
 
-    def __init__(self, user, convocatoria, comisiones=None):
+    def __init__(self, user, convocatoria, anio, titulacion, comisiones=None):
         self.tutores_principales = {'DECSAI': [], 'LSI': [], 'ATC': []}
         self.tutores_secundarios = {'DECSAI': [], 'LSI': [], 'ATC': []}
         self.tutores_libres = {'DECSAI': [], 'LSI': [], 'ATC': []}
         self.tutores_libres_secundarios = {'DECSAI': [], 'LSI': [], 'ATC': []}
         self.exitos = []
+        self.anio = anio
+        self.titulacion = titulacion
         self.convocatoria = Tipo_Evento.objects.get(codigo=convocatoria)
         self.tfgs_asig_conv = Tfg_Asig.objects.filter(convocatoria=self.convocatoria)
         self.tfgs_asig = Tfg_Asig.objects.all()
@@ -41,7 +43,9 @@ class Comision(object):
                 serializer = Comision_EvaluacionSerializer(comision)
                 serializer.delete(comision)
         else:
-            comisiones = Comision_Evaluacion.objects.all()
+
+            comisiones = Comision_Evaluacion.objects.filter(convocatoria=Convocatoria.objects.get(tipo=self.convocatoria
+                                                                                                  , anio=self.anio))
             for key, comision in enumerate(comisiones):
                 self.comisiones.append(comision.to_dict(user))
                 self.comisiones[key]['tfgs'] = []
@@ -194,7 +198,8 @@ class Comision(object):
         for key, i in enumerate(self.comisiones):
             comision = Comision_Evaluacion.objects.create(presidente=i['presidente'], vocal_1=i['vocal_1'],
                                                           vocal_2=i['vocal_2'], suplente_1=i['suplente_1'],
-                                                          suplente_2=i['suplente_2'])
+                                                          suplente_2=i['suplente_2'], convocatoria=self.convocatoria,
+                                                          anio=self.anio, titulacion=self.titulacion)
             self.comisiones[key] = comision['data'].to_dict(self.user)
 
     def intercambiar(self, tfg):

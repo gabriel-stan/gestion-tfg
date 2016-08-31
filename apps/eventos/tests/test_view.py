@@ -20,7 +20,7 @@ class EventosServicesTests(TestCase):
 
         # tipo_event = Tipo_Evento.objects.create(nombre='Convocatoria', codigo='CONV')
 
-        self.data_evento1 = dict(content=dict(contenido='admin2@admin.es', convocatoria='CONV_JUN', tipo='ASIG_TFG',
+        self.data_evento1 = dict(content=dict(contenido='admin2@admin.es', convocatoria='CONV_SEPT', tipo='ASIG_TFG',
                                  titulo='titulo 1', desde='2016-08-04T22:00:00.000Z', hasta='2016-08-14T15:00:00.000Z'))
 
         self.data_evento2 = dict(content=dict(contenido='admin2@admin.es', convocatoria='INFOR',

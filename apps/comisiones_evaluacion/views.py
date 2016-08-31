@@ -65,7 +65,8 @@ class ComisionEvaluacionViewSet(viewsets.ModelViewSet):
             self.logger.info('INICIO WS - COMISIONEVALUACIONVIEW POST del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if request.user.has_perm('comisiones_evaluacion.comision.create') or request.user.is_admin:
-                comision = Comision(request.user, params.get('convocatoria'))
+                comision = Comision(request.user, params.get('convocatoria'), params.get('anio'),
+                                    params.get('titulacion'))
                 resul = comision.tutores_comisiones()
                 # comision.asig_tfgs()
                 # while comision.reintentar:
@@ -217,11 +218,11 @@ class TribunalesViewSet(viewsets.ModelViewSet):
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if request.user.has_perm('comisiones_evaluacion.comision.create') or request.user.is_admin:
                 comisiones = utils.to_bool(params.get('comisiones'))
-                convocatoria = params.get('convocatoria')
-                comision = Comision(request.user, convocatoria, comisiones=comisiones)
+                comision = Comision(request.user, params.get('convocatoria'), params.get('anio'),
+                                    params.get('titulacion'), comisiones=comisiones)
                 resul = comision.asig_tfgs()
                 while comision.reintentar:
-                    comision = Comision(request.user, convocatoria, comisiones=comisiones)
+                    comision = Comision(request.user, params.get('convocatoria'), comisiones=comisiones)
                     comision.asig_tfgs()
                 if resul['status']:
                     resul_status = status.HTTP_200_OK
