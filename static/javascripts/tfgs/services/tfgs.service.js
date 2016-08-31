@@ -117,7 +117,7 @@
 
       return $http.put('/api/v1/tfgs/', {
         //content: content
-        tfg: content.titulo,
+        tfg: content.old_titulo,
         datos: JSON.stringify(datos)
       });
     }
@@ -151,7 +151,7 @@
       datos.alumno_2 = content.alumno_2;
       datos.alumno_3 = content.alumno_3;
 
-      return $http.put('/api/v1/tfgs-asig/', {
+      return $http.put('/api/v1/tfgs_asig/', {
         //content: content
         tfg: content.titulo,
         datos: JSON.stringify(datos)
@@ -167,7 +167,7 @@
     */
     function removeAsig(tfg) {
 
-      return $http.delete('/api/v1/tfgs-asig/', {
+      return $http.delete('/api/v1/tfgs_asig/' + tfg + '/', {
         tfg: tfg
       });
     }

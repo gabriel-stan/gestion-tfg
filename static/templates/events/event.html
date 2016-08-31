@@ -1,10 +1,10 @@
-<div class="box" ng-class="event.tipo ? 'box-danger' : 'box-primary'">
+<div class="box" ng-class="event.convocatoria ? 'box-danger' : 'box-primary'">
   <div class="box-header with-border">
     <h3 class="box-title">{{event.titulo}}</h3>
     <div class="box-tools pull-right">
       <!-- Buttons, labels, and many other things can be placed here! -->
       <!-- Here is a label for example -->
-      <span class="label" ng-class="event.tipo ? 'label-danger' : 'label-primary'">{{event.convocatoria.nombre}}</span>
+      <span class="label" ng-class="event.convocatoria ? 'label-danger' : 'label-primary'">{{event.convocatoria.tipo.nombre}}</span>
       <span ng-controller="UserController as userCtrl">
         <button ng-show="userCtrl.isAdmin()" class="btn btn-box-tool" data-toggle="modal" data-target="#modal-edit" ng-click="loadSelectedEvent(event)"><i class="fa fa-pencil"></i></button>
         <a ng-show="userCtrl.isAdmin()" class="btn btn-box-tool" ng-click="removeEvent(event.id)"><i class="fa fa-trash"></i></a>
@@ -14,8 +14,8 @@
   </div><!-- /.box-header -->
   <div class="box-body">
 
-    <div ng-if="event.tipo">
-      <p>Tipo convocatoria: {{event.tipo.nombre}}</p>
+    <div ng-if="event.convocatoria">
+      <p>Tipo convocatoria: {{event.convocatoria.subtipo.nombre}}</p>
       <p>Desde: <span class="fecha">{{vm.parseTime(event.desde)}}</span></p>
       <p>Hasta: <span class="fecha">{{vm.parseTime(event.hasta)}}</span></p>
       <hr />
