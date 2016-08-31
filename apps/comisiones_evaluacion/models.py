@@ -1,7 +1,7 @@
 from django.db import models
 from authentication.models import Profesor
 from tfgs.models import Tfg_Asig, Titulacion
-from eventos.models import Convocatoria, Tipo_Evento
+from eventos.models import Convocatoria
 from django.contrib.auth.models import BaseUserManager
 from datetime import datetime
 
@@ -63,7 +63,6 @@ class Comision_Evaluacion(models.Model):
     suplente_1 = models.ForeignKey(Profesor, related_name='suplente_1', default=None)
     suplente_2 = models.ForeignKey(Profesor, related_name='suplente_2', default=None, null=True)
     convocatoria = models.ForeignKey(Convocatoria, related_name='conv_comision', default=None)
-    titulacion = models.ForeignKey(Titulacion, related_name='titulacion_comision', default=None)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

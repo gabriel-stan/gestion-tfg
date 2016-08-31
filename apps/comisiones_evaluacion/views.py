@@ -32,8 +32,8 @@ class ComisionEvaluacionViewSet(viewsets.ModelViewSet):
             comisiones = Comision_Evaluacion.objects.all()
             resul = utils.procesar_datos_comisiones(request.user, self.serializer_class(comisiones, many=True).data)
 
-            if len(resul) == 0:
-                raise NameError("No hay comisiones almacenadas")
+            # if len(resul) == 0:
+            #     raise NameError("No hay comisiones almacenadas")
             self.logger.info('FIN WS - COMISIONEVALUACIONVIEW LIST del usuario: %s con resultado: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(dict(data=resul), status=status.HTTP_200_OK)
@@ -184,8 +184,8 @@ class TribunalesViewSet(viewsets.ModelViewSet):
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             tribunales = Tribunales.objects.all()
             resul = utils.procesar_datos_tribunales(request.user, self.serializer_class(tribunales, many=True).data)
-            if len(resul) == 0:
-                raise NameError("No hay tribunales almacenados")
+            # if len(resul) == 0:
+            #     raise NameError("No hay tribunales almacenados")
             self.logger.info('FIN WS - TRIBUNALESNVIEW LIST del usuario: %s con resultado: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(dict(data=resul), status=status.HTTP_200_OK)
