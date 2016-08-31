@@ -8,6 +8,26 @@ import signals
 import collections
 
 
+class TitulacionManager(BaseUserManager):
+    def create_file(self, **kwargs):
+        return self.model.objects.create(**kwargs)
+
+
+class Titulacion(models.Model):
+    nombre = models.CharField(default=None, unique=True, null=True, max_length=100)
+    codigo = models.CharField(default=None, unique=True, null=True, max_length=20)
+    objects = TitulacionManager()
+
+    USERNAME_FIELD = 'codigo'
+    REQUIRED_FIELD = USERNAME_FIELD
+
+    def __unicode__(self):
+        return self.codigo
+
+    def to_dict(self):
+        return dict(nombre=self.nombre, codigo=self.codigo)
+
+
 class AccountManager(BaseUserManager):
 
     def create_user(self, password=None, **kwargs):

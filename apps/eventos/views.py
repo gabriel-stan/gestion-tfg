@@ -57,6 +57,7 @@ class EventosViewSet(viewsets.ModelViewSet):
                 resul = Evento.objects.create_evento(contenido=params.get('contenido'),
                                                      tipo=params.get('tipo'),
                                                      convocatoria=params.get('convocatoria'),
+                                                     titulacion=params.get('titulacion'),
                                                      titulo=params.get('titulo'),
                                                      autor=Usuario.objects.get(id=request.user.id),
                                                      desde=params.get('desde'), hasta=params.get('hasta'))

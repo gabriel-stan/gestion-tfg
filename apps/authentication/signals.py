@@ -77,12 +77,12 @@ def create_groups(sender, **kwargs):
     else:
         print "Tipo de evento %s already exists\n" % tipo.nombre
 
-    tipo, created = SubTipo_Evento.objects.get_or_create(nombre=u'Notificación Solicitud de Evaluación',
+    tipo_com, created = SubTipo_Evento.objects.get_or_create(nombre=u'Notificación Solicitud de Evaluación',
                                                          codigo='SOL_EVAL')
     if created:
-        print "Tipo de evento %s created successfully\n" % tipo.nombre
+        print "Tipo de evento %s created successfully\n" % tipo_com.nombre
     else:
-        print "Tipo de evento %s already exists\n" % tipo.nombre
+        print "Tipo de evento %s already exists\n" % tipo_com.nombre
 
     tipo, created = SubTipo_Evento.objects.get_or_create(nombre=u'Establecimiento de las Comisiones de Evaluación',
                                                          codigo='COM_EVAL')
@@ -123,12 +123,13 @@ def create_groups(sender, **kwargs):
     else:
         print "Tipo de evento %s already exists\n" % tipo.nombre
 
-    from eventos.models import Convocatoria
-    tipo, created = Convocatoria.objects.get_or_create(tipo=Tipo_Evento.objects.get(codigo='CONV_SEPT'), anio=2016)
+    from authentication.models import Titulacion
+    tipo, created = Titulacion.objects.get_or_create(codigo='GII', nombre='Grado en Ingenieria Informatica')
     if created:
-        print "Tipo de evento %s created successfully\n" % tipo.tipo.codigo
+        print "Tipo de evento %s created successfully\n" % tipo.nombre
     else:
-        print "Tipo de evento %s already exists\n" % tipo.tipo.codigo
+        print "Tipo de evento %s already exists\n" % tipo.nombre
+
 post_migrate.connect(create_groups)
 
 

@@ -2,6 +2,7 @@ from django.contrib.auth.models import BaseUserManager
 from django.db import models
 from authentication.models import Usuario
 from eventtools.models import BaseEvent, BaseOccurrence
+from authentication.models import Titulacion
 import datetime
 
 YEAR_CHOICES = []
@@ -33,27 +34,6 @@ class Tipo_Evento(models.Model):
     def to_dict(self):
         return dict(nombre=self.nombre, codigo=self.codigo)
 
-
-class ConvocatoriaManager(BaseUserManager):
-    def create_convocatoria(self, **kwargs):
-        return self.model.objects.create(**kwargs)
-
-
-class Convocatoria(models.Model):
-    anio = models.IntegerField('anio', choices=YEAR_CHOICES, default=datetime.datetime.now().year)
-    tipo = models.ForeignKey(Tipo_Evento, related_name='convocatoria_tipo', default=None, null=True)
-    objects = ConvocatoriaManager()
-
-    USERNAME_FIELD = 'id'
-    REQUIRED_FIELD = USERNAME_FIELD
-
-    def __unicode__(self):
-        return self.id
-
-    def to_dict(self):
-        return dict(anio=self.anio, tipo=self.tipo.to_dict())
-
-
 class SubTipo_EventoManager(BaseUserManager):
     def create_tipo_evento(self, **kwargs):
         return self.model.objects.create(**kwargs)
@@ -74,6 +54,29 @@ class SubTipo_Evento(models.Model):
         return dict(nombre=self.nombre, codigo=self.codigo)
 
 
+class ConvocatoriaManager(BaseUserManager):
+    def create_convocatoria(self, **kwargs):
+        return self.model.objects.create(**kwargs)
+
+
+class Convocatoria(models.Model):
+    anio = models.IntegerField('anio', choices=YEAR_CHOICES, default=datetime.datetime.now().year)
+    tipo = models.ForeignKey(Tipo_Evento, related_name='convocatoria_tipo', default=None, null=True)
+    titulacion = models.ForeignKey(Titulacion, related_name='convocatoria_titulacion', default=None)
+    subtipo = models.ForeignKey(SubTipo_Evento, related_name='convocatoria_subtipo', default=None)
+    objects = ConvocatoriaManager()
+
+    USERNAME_FIELD = 'id'
+    REQUIRED_FIELD = USERNAME_FIELD
+
+    def __unicode__(self):
+        return self.id
+
+    def to_dict(self):
+        return dict(anio=self.anio, tipo=self.tipo.to_dict(), titulacion=self.titulacion.to_dict(),
+                    subtipo=self.subtipo.to_dict())
+
+
 class EventoManager(models.Manager):
 
     def create_evento(self, contenido, **kwargs):
@@ -83,14 +86,6 @@ class EventoManager(models.Manager):
             if not isinstance(kwargs.get('autor'), Usuario):
                 raise NameError("Autor no valido")
 
-            if not kwargs.get('convocatoria'):
-                raise NameError("Convocatoria necesaria")
-            elif kwargs.get('convocatoria') in CONVOCATORIAS:
-                anio = datetime.datetime.strptime(kwargs.get('desde')[:19], '%Y-%m-%dT%H:%M:%S').year
-                convocatoria = Convocatoria.objects.filter(tipo=Tipo_Evento.objects.get(codigo=kwargs.get('convocatoria')), anio=anio)
-                if convocatoria.count() == 0:
-                    raise NameError("La Convocatoria no existe")
-
             if kwargs.get('convocatoria') not in CONVOCATORIAS:
                 tipo = None
             elif not kwargs.get('tipo'):
@@ -99,10 +94,20 @@ class EventoManager(models.Manager):
                 res = SubTipo_Evento.objects.filter(codigo=kwargs.get('tipo'))
                 if res.count() != 1:
                     raise NameError("El SubTipo no existe")
-                tipo=res[0]
+                subtipo=res[0]
 
-            evento = Evento.objects.create(contenido=contenido, autor=kwargs.get('autor'),
-                                           tipo=tipo, convocatoria=convocatoria[0] if convocatoria else None, titulo=kwargs.get('titulo'))
+            if not kwargs.get('convocatoria'):
+                raise NameError("Convocatoria necesaria")
+            elif kwargs.get('convocatoria') in CONVOCATORIAS:
+                anio = datetime.datetime.strptime(kwargs.get('desde')[:19], '%Y-%m-%dT%H:%M:%S').year
+                convocatoria, created = Convocatoria.objects.get_or_create(
+                    tipo=Tipo_Evento.objects.get(codigo=kwargs.get('convocatoria')),
+                    anio=anio, titulacion=Titulacion.objects.get(codigo=kwargs.get('titulacion')),
+                    subtipo=subtipo)
+                if not created:
+                    raise NameError("La Convocatoria ya existe")
+            evento = Evento.objects.create(contenido=contenido, autor=kwargs.get('autor'), convocatoria=convocatoria,
+                                           titulo=kwargs.get('titulo'))
             evento.save()
             if kwargs.get('convocatoria') in CONVOCATORIAS:
                 convocatoria = Periodo.objects.create(
@@ -123,7 +128,6 @@ class Evento(BaseEvent):
     autor = models.ForeignKey(Usuario)
     titulo = models.CharField(max_length=50, blank=True)
     contenido = models.TextField()
-    tipo = models.ForeignKey(SubTipo_Evento, related_name='tipo', default=None, null=True)
     convocatoria = models.ForeignKey(Convocatoria, related_name='conv_evento', default=None, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

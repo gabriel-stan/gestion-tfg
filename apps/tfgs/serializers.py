@@ -207,14 +207,17 @@ class Tfg_AsigSerializer(serializers.ModelSerializer):
             # comprobando convocatoria
             if 'convocatoria' in validated_data.keys():
                 try:
-                    res_tipo = Tipo_Evento.objects.get(codigo=validated_data.get('convocatoria'))
-                    res_convocatoria = Convocatoria.objects.get(tipo=res_tipo, anio=validated_data.get('anio'))
-                except:
-                    raise NameError("La convocatoria no existe")
-                try:
-                    res_subtipo = SubTipo_Evento.objects.get(codigo=validated_data.get('tipo'))
+                    res_subtipo = SubTipo_Evento.objects.get(codigo='SOL_EVAL')
                 except:
                     raise NameError("El Tipo no existe")
+                try:
+                    res_tipo = Tipo_Evento.objects.get(codigo=validated_data.get('convocatoria'))
+                    res_convocatoria = Convocatoria.objects.get(titulacion=tfg_asig.tfg.titulacion,
+                                                                subtipo=res_subtipo, tipo=res_tipo,
+                                                                anio=validated_data.get('anio'))
+                except:
+                    raise NameError("La convocatoria no existe")
+
                 if not utils.check_convocatoria(res_convocatoria, res_subtipo):
                     raise NameError("Fuera de plazo")
                 else:
