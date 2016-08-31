@@ -167,10 +167,12 @@
 
     function preAction(){
       $scope.loading = true;
+      $('.action-btn').addClass('disabled');
     }
 
     function postAction(){
       $scope.loading = false;
+      $('.action-btn').removeClass('disabled');
     }
 
   }
