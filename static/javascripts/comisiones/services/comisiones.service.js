@@ -18,7 +18,7 @@
   function Comisiones($http) {
     var Comisiones = {
       all: all,
-      generate: generate
+      generarComisiones: generarComisiones
     };
 
     return Comisiones;
@@ -36,14 +36,16 @@
     }
 
     /**
-    * @name generate
+    * @name generarComisiones
     * @desc generate all Comisiones
     * @returns {Promise}
     * @memberOf gestfg.comisiones.services.Comisiones
     */
-    function generate(convocatoria) {
+    function generarComisiones(titulacion, convocatoria, anio) {
       return $http.post('/api/v1/comisiones/',{
-        convocatoria: convocatoria
+        titulacion: titulacion,
+        convocatoria: convocatoria,
+        anio: anio
       });
     }
 

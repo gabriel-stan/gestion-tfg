@@ -34,7 +34,7 @@
 
       if(confirm('¿Seguro?')){
         preAction();
-        Comisiones.generate(comisionesCtrl.convocatoria).then(ComisionesSuccessFn, ComisionesErrorFn).finally(postAction);
+        Comisiones.generarComisiones(comisionesCtrl.titulacion, comisionesCtrl.convocatoria, comisionesCtrl.anio).then(ComisionesSuccessFn, ComisionesErrorFn).finally(postAction);
       }
 
       /**

@@ -223,6 +223,19 @@
                   </p>
 
                   <div class="form-group">
+                    <label class="col-sm-4 control-label">Titulacion</label>
+                    <div class="col-sm-8">
+                      <select class="form-control" ng-model="vm.titulacion" ng-init="vm.titulacion='GII'" required="true">
+                        <option value="GII">TFG Informatica</option>
+                        <option value="GITT">TFG Telecomunicaciones</option>
+                        <option value="GIM">TFG Doble Grado</option>
+                        <option value="MPII">TFM Informatica</option>
+                        <option value="MPIT">TFM Telecomunicaciones</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
                     <label class="col-sm-4 control-label">Convocatoria de</label>
                     <div class="col-sm-8">
                       <select class="form-control" ng-model="vm.convocatoria" required="true">
@@ -246,9 +259,7 @@
                   </div>
 
                 </div>
-
-
-
+                
                 <div class="box-footer">
                   <button type="submit" class="btn btn-primary pull-left" ng-disabled="loading">Generar</button>
                   <button type="button" class="btn btn-default pull-right" data-dismiss="modal"style="margin-left:10px; margin-right:10px;">Cancelar</button>
