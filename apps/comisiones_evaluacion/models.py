@@ -110,7 +110,7 @@ class TribunalesManager(BaseUserManager):
             tribunal = self.model(tfg=tfg, comision=comision, fecha=fecha, observaciones=observaciones,
                                   alumno=kwargs.get('alumno'))
             tribunal.save()
-            return dict(status=True, data=Tribunales.objects.get(tfg=tribunal.tfg))
+            return dict(status=True, data=Tribunales.objects.get(tfg=tribunal.tfg, alumno=kwargs.get('alumno')))
 
         except NameError as e:
             return dict(status=False, message=e.message)
@@ -129,11 +129,11 @@ class Tribunales(models.Model):
 
     objects = TribunalesManager()
 
-    USERNAME_FIELD = 'tfg'
+    USERNAME_FIELD = 'alumno'
     REQUIRED_FIELD = USERNAME_FIELD
 
     def __unicode__(self):
-        return self.tfg
+        return self.alumno
 
     def get_comision(self):
         return self.comision

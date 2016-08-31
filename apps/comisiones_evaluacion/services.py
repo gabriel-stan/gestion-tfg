@@ -207,7 +207,7 @@ class Comision(object):
                                                           suplente_2=i['suplente_2'], convocatoria=self.convocatoria)
             self.comisiones[key] = comision['data'].to_dict(self.user)
 
-    def intercambiar(self, tfg):
+    def intercambiar(self, tfg, alumno):
         try:
             tribunal_enc = None
             for key, tribunal in enumerate(self.comisiones):
@@ -222,7 +222,7 @@ class Comision(object):
             self.comisiones[tribunal_intercambiar]['tfgs'].append(tfg_intercambiar)
             self.comisiones[tribunal_enc]['tfgs'].remove(tfg_intercambiar)
             self.comisiones[tribunal_enc]['tfgs'].append(tfg.to_dict(self.user))
-            tribunal = Tribunales.objects.get(tfg=tfg_intercambiar['id'])
+            tribunal = Tribunales.objects.get(tfg=tfg_intercambiar['id'], alumno=alumno)
             serializer = TribunalesSerializer(tribunal)
             presidente = Profesor.objects.get(email=self.comisiones[tribunal_intercambiar]['presidente']['email'])
             serializer.update(self.user, tribunal, {'presidente': presidente})
@@ -250,7 +250,7 @@ class Comision(object):
                 encontrado = True
                 break
         if not encontrado:
-            self.intercambiar(tfg_asig)
+            self.intercambiar(tfg_asig, alumno)
 
     def asig_tfgs(self):
         try:
