@@ -222,12 +222,12 @@ class Comision(object):
             self.comisiones[tribunal_intercambiar]['tfgs'].append(tfg_intercambiar)
             self.comisiones[tribunal_enc]['tfgs'].remove(tfg_intercambiar)
             self.comisiones[tribunal_enc]['tfgs'].append(tfg.to_dict(self.user))
-            tribunal = Tribunales.objects.get(tfg=tfg_intercambiar['id'], alumno=alumno)
-            serializer = TribunalesSerializer(tribunal)
+            tribunal = Tribunales.objects.filter(tfg=tfg_intercambiar['id']) # TODO comprobar esto
+            serializer = TribunalesSerializer(tribunal[0])
             presidente = Profesor.objects.get(email=self.comisiones[tribunal_intercambiar]['presidente']['email'])
-            serializer.update(self.user, tribunal, {'presidente': presidente})
-            Tribunales.objects.create(tfg=tfg.tfg, comision=self.comisiones[tribunal_enc]['presidente']['email'])
-        except:
+            serializer.update(self.user, tribunal[0], {'presidente': presidente})
+            Tribunales.objects.create(tfg=tfg.tfg, comision=self.comisiones[tribunal_enc]['presidente']['email'], alumno=alumno)
+        except Exception as e:
             self.reintentar = True
 
     def bucar_tfg_intercambiar(self, tribunal_key):

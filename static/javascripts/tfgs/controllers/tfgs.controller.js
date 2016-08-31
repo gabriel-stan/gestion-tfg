@@ -24,6 +24,8 @@
 
     tfgsCtrl.loading = true;
 
+    $scope.presentarTFGs = presentarTFGs;
+
     $scope.selectedTFG = new Object();
 
     tfgsCtrl.parseTimeAgo = function(fecha){
@@ -114,7 +116,7 @@
 
       $.each(tfgsCtrl.tfgs_presentar, function( i, tfg ) {
         var convocatoria = new Object();
-        convocatoria.tipo = 'SOL_EVAL';
+        convocatoria.anio = tfgsCtrl.anio;
         convocatoria.convocatoria = tfgsCtrl.convocatoria;
 
         preAction();

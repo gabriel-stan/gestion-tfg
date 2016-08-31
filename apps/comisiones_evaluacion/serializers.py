@@ -184,7 +184,7 @@ class TribunalesSerializer(serializers.ModelSerializer):
                 tribunal.fecha = new_fecha
 
             tribunal.save()
-            return dict(status=True, data=Tribunales.objects.get(tfg=tribunal.tfg).to_dict(user))
+            return dict(status=True, data=Tribunales.objects.get(tfg=tribunal.tfg, alumno=tribunal.alumno).to_dict(user))
         except NameError as e:
             return dict(status=False, message=e.message)
 
