@@ -21,6 +21,9 @@
       filter: filter,
       create: create,
       update: update,
+      remove: remove,
+      updateAsig: updateAsig,
+      removeAsig: removeAsig,
       asignar: asignar,
       get: get,
       upload: upload,
@@ -82,9 +85,9 @@
         tipo: content.tipo,
         titulo: content.titulo,
         descripcion: content.descripcion,
-        n_alumnos: content.alumnos,
-        conocimientos_previos: content.previos,
-        hard_soft: content.hwsw,
+        n_alumnos: content.n_alumnos,
+        conocimientos_previos: content.conocimientos_previos,
+        hard_soft: content.hard_soft,
         tutor: content.tutor,
         cotutor: content.cotutor
       });
@@ -106,9 +109,9 @@
       datos.tipo = content.tipo;
       datos.titulo = content.titulo;
       datos.descripcion = content.descripcion;
-      datos.n_alumnos = content.alumnos;
-      datos.conocimientos_previos = content.previos;
-      datos.hard_soft = content.hwsw;
+      datos.n_alumnos = content.n_alumnos;
+      datos.conocimientos_previos = content.conocimientos_previos;
+      datos.hard_soft = content.hard_soft;
       datos.tutor = content.tutor;
       datos.cotutor = content.cotutor;
 
@@ -116,6 +119,56 @@
         //content: content
         tfg: content.titulo,
         datos: JSON.stringify(datos)
+      });
+    }
+
+
+    /**
+    * @name remove
+    * @desc remove a Tfg
+    * @returns {Promise}
+    * @memberOf gestfg.tfgs.services.Tfgs
+    */
+    function remove(tfg) {
+
+      return $http.delete('/api/v1/tfgs/', {
+        tfg: tfg
+      });
+    }
+
+
+    /**
+    * @name updateAsig
+    * @desc update a Tfg asignado
+    * @returns {Promise}
+    * @memberOf gestfg.tfgs.services.Tfgs
+    */
+    function updateAsig(content) {
+
+      var datos = new Object();
+
+      datos.alumno_1 = content.alumno_1;
+      datos.alumno_2 = content.alumno_2;
+      datos.alumno_3 = content.alumno_3;
+
+      return $http.put('/api/v1/tfgs-asig/', {
+        //content: content
+        tfg: content.titulo,
+        datos: JSON.stringify(datos)
+      });
+    }
+
+
+    /**
+    * @name removeAsig
+    * @desc remove a Tfg asignado
+    * @returns {Promise}
+    * @memberOf gestfg.tfgs.services.Tfgs
+    */
+    function removeAsig(tfg) {
+
+      return $http.delete('/api/v1/tfgs-asig/', {
+        tfg: tfg
       });
     }
 

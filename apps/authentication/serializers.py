@@ -103,10 +103,11 @@ class DepartamentoSerializer(serializers.ModelSerializer):
             # comprobando codigo
             if 'codigo' in validated_data.keys():
                 new_codigo = validated_data.get('codigo')
-                res = Departamento.objects.filter(codigo=new_codigo)
-                if res.count() != 0:
-                    raise NameError("El departamento ya existe")
-                elif not isinstance(new_codigo, basestring):
+                # res = Departamento.objects.filter(codigo=new_codigo)
+                # if res.count() != 0:
+                #     raise NameError("El departamento ya existe")
+                # elif not isinstance(new_codigo, basestring):
+                if not isinstance(new_codigo, basestring):
                     raise NameError("El codigo del departamento no tiene formato correcto")
                 else:
                     departamento.codigo = new_codigo

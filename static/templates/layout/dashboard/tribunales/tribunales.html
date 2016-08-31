@@ -108,7 +108,9 @@
         select: {
           style: 'multi'
         },
-        responsive: true,
+        processing: true,
+        scrollX: true,
+        // responsive: true,
         buttons: [
           {
             text: 'Reload',
@@ -119,7 +121,7 @@
           'selectAll',
           'selectNone'
         ],
-        ajax: "/static/test/tribunales.json",
+        ajax: "/api/v1/tribunales/",
         columns: [
           {"data" : "tfg.tfg.titulacion.codigo"},
           {"data" : "tfg.tfg.titulo"},
@@ -199,6 +201,19 @@
                 </p>
 
                 <div class="form-group">
+                  <label class="col-sm-4 control-label">Titulacion</label>
+                  <div class="col-sm-8">
+                    <select class="form-control" ng-model="vm.titulacion" ng-init="vm.titulacion='GII'" required="true">
+                      <option value="GII">TFG Informatica</option>
+                      <option value="GITT">TFG Telecomunicaciones</option>
+                      <option value="GIM">TFG Doble Grado</option>
+                      <option value="MPII">TFM Informatica</option>
+                      <option value="MPIT">TFM Telecomunicaciones</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
                   <label class="col-sm-4 control-label">Convocatoria de</label>
                   <div class="col-sm-8">
                     <select class="form-control" ng-model="vm.convocatoria" required="true">
@@ -220,6 +235,25 @@
                     </select>
                   </div>
                 </div>
+
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">Comisiones</label>
+                  <div class=" col-sm-8">
+                    <div class="radio">
+                      <label>
+                        <input type="radio" name="optionsRadios" id="optionsRadios1" value="true" ng-model="vm.comisiones" ng-init="vm.comisiones='true'">
+                        Usar comisiones creadas
+                      </label>
+                    </div>
+                    <div class="radio">
+                      <label>
+                        <input type="radio" name="optionsRadios" id="optionsRadios2" value="false" ng-model="vm.comisiones">
+                        Crear nuevas comisiones
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
 
               </div>
 

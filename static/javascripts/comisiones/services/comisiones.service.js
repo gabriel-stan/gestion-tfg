@@ -18,7 +18,8 @@
   function Comisiones($http) {
     var Comisiones = {
       all: all,
-      generate: generate
+      generarComisiones: generarComisiones,
+      generarTribunales: generarTribunales
     };
 
     return Comisiones;
@@ -36,14 +37,31 @@
     }
 
     /**
-    * @name generate
+    * @name generarComisiones
     * @desc generate all Comisiones
     * @returns {Promise}
     * @memberOf gestfg.comisiones.services.Comisiones
     */
-    function generate(convocatoria) {
+    function generarComisiones(titulacion, convocatoria, anio) {
       return $http.post('/api/v1/comisiones/',{
-        convocatoria: convocatoria
+        titulacion: titulacion,
+        convocatoria: convocatoria,
+        anio: anio
+      });
+    }
+
+    /**
+    * @name generarTribunales
+    * @desc generate all tribunales
+    * @returns {Promise}
+    * @memberOf gestfg.comisiones.services.Comisiones
+    */
+    function generarTribunales(titulacion, convocatoria, anio, comisiones) {
+      return $http.post('/api/v1/tribunales/',{
+        titulacion: titulacion,
+        convocatoria: convocatoria,
+        anio: anio,
+        comisiones: comisiones
       });
     }
 

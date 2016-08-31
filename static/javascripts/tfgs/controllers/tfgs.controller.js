@@ -65,7 +65,7 @@
     $scope.loadSelectedTFGAsig = function() {
       var tfg = $("#tabla-tfgs").DataTable().row( { selected: true } ).data();
       $scope.selectedTFG.titulacion = tfg.tfg.titulacion.codigo;
-      $scope.selectedTFG.preasignado = true;
+      $scope.selectedTFG.asignado = true;
       $scope.selectedTFG.n_alumnos = tfg.tfg.n_alumnos;
       $scope.selectedTFG.tipo = tfg.tfg.tipo;
 
