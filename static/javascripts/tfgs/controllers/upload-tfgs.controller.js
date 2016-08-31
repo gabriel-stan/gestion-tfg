@@ -86,6 +86,7 @@
       */
       function insertTfgsSuccessFn(data, status, headers, config) {
         Snackbar.success('Los TFGs se han insertado con exito.');
+        postActionSuccess();
       }
 
 
@@ -173,6 +174,11 @@
     function postAction(){
       $scope.loading = false;
       $('.action-btn').removeClass('disabled');
+    }
+
+    function postActionSuccess(){
+      $("#tabla-tfgs").DataTable().clear().draw();
+      // $("#tabla-tfgs").DataTable().ajax.reload();
     }
 
   }

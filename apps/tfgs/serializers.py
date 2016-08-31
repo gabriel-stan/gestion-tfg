@@ -84,8 +84,7 @@ class TfgSerializer(serializers.ModelSerializer):
 
             # comprobando n_alumnos
             if 'n_alumnos' in validated_data.keys():
-                if (validated_data.get('n_alumnos') <= 0) or (validated_data.get('n_alumnos') > 3) or \
-                        not (isinstance(validated_data.get('n_alumnos'), int)):
+                if ( int(validated_data.get('n_alumnos')) <= 0) or ( int(validated_data.get('n_alumnos')) > 3):
                     raise NameError("Numero de alumnos incorrecto")
                 else:
                     tfg.n_alumnos = validated_data.get('n_alumnos')

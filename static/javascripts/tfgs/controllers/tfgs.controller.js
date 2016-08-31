@@ -60,6 +60,8 @@
       $scope.selectedTFG.alumno2 = tfg.alumno2;
       $scope.selectedTFG.alumno3 = tfg.alumno3;
       $scope.selectedTFG.tipo = tfg.tipo;
+
+      $scope.selectedTFG.old_titulo = tfg.titulo;
     }
 
     $scope.loadSelectedTFGAsig = function() {
