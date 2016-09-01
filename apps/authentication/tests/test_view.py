@@ -18,8 +18,9 @@ class AuthenticationServicesTests(TestCase):
         self.data_admin2 = dict(email='admin2@admin.es', first_name='admin 2',
                                 last_name='apellido 1 apellido 12', password='0000', is_admin=True)
 
-        self.data_alum1 = dict(dni='12345678H', first_name='alumno 1',
-                               last_name='apellido 1 apellido 12', password='0000')
+        self.data_alum1 = dict(dni='12345678H', last_name='apellido 1 apellido 12', password='0000')
+
+        self.data_alum1_extra = dict(dni='12345678H', email='perico@correo.ugr.es', first_name='alumno 1')
 
         self.data_alum2 = dict(email='ejemplo2@correo.ugr.es', first_name='alumno 2',
                                last_name='apellido 12 apellido 122', password='0000')
@@ -40,11 +41,7 @@ class AuthenticationServicesTests(TestCase):
         res = self.client.get('/api/v1/alumnos/', self.data_alum1)
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], False)
-        self.assertEqual(resul['message'], 'El alumno indicado no existe')
-        res = self.client.get('/api/v1/alumnos/')
-        resul = json.loads(res.content)
-        self.assertEqual(resul['status'], False)
-        self.assertEqual(resul['message'], 'No hay alumnos almacenados')
+        self.assertEqual(resul['message'], 'Sin privilegios')
 
     def test_ws_alumnos_post(self):
 
@@ -71,11 +68,16 @@ class AuthenticationServicesTests(TestCase):
         # Login con un administrador
         res = self.client.post('/api/v1/auth/login/', dict(dni=self.data_admin['dni'],
                                                            password=self.data_admin['password']))
-
-         # elimino el alumno
-        res = self.client.delete('/api/v1/alumnos/', self.data_alum1)
+        # elimino el alumno
+        self.data_alum1['delete'] = True
+        res = self.client.post('/api/v1/alumnos/', self.data_alum1)
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
+
+        #no obengo ninguno
+        res = self.client.get('/api/v1/usuarios/', self.data_alum1)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], False)
 
     def test_ws_profesores_get(self):
         # inserto un profesor
@@ -88,9 +90,10 @@ class AuthenticationServicesTests(TestCase):
                                                        'password': self.data_prof1['password']})
         resul = json.loads(res.content)
         self.assertEqual(resul['data']['dni'], self.data_prof1['dni'])
+
         # Modificar un profesor
         res = self.client.put('/api/v1/profesores/', {'usuario': self.data_prof1['dni'],
-                                                      'datos': json.dumps({'first_name': 'otro profesor 2'})})
+                                                      'datos': json.dumps({'jefe_departamento': True})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
@@ -109,9 +112,8 @@ class AuthenticationServicesTests(TestCase):
         # obtengo todos los usuarios pero sin dni por que soy un profesor
         res = self.client.get('/api/v1/usuarios/')
         resul = json.loads(res.content)
-        self.assertEqual(resul['status'], True)
-        self.assertEqual(resul['data']['resul'][0].get('dni'), None)
-        #self.assertEqual(resul['data'][0].get('clase'), 'Alumno')
+        self.assertEqual(len(resul['data']), 4)
+        # self.assertEqual(resul['data'][0].get('clase'), 'Alumno')
 
         # Me logueo con un admin
         res = self.client.post('/api/v1/auth/login/', {'dni': self.data_admin['dni'],
@@ -135,7 +137,7 @@ class AuthenticationServicesTests(TestCase):
         # obtengo todos los alumnos por que soy un profesor
         res = self.client.get('/api/v1/usuarios/')
         resul = json.loads(res.content)
-        self.assertEqual(resul['status'], True)
+        self.assertEqual(len(resul['data']), 3)
 
     def test_ws_admins_get(self):
         # Me logueo con un admin
@@ -211,18 +213,39 @@ class AuthenticationServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['data']['dni'], self.data_admin['dni'])
 
+        # inserto un profesor
+        res = self.client.post('/api/v1/profesores/', self.data_prof1)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
         res = self.client.post('/api/v1/departamentos/', {'codigo': self.data_departamento['codigo'],
                                                                'nombre': self.data_departamento['nombre']})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         res = self.client.put('/api/v1/departamentos/', {'codigo': self.data_departamento['codigo'],
-                                                              'data': json.dumps(
-                                                                  {'nombre': 'departamento chulo'})})
+                                                         'datos': json.dumps({'nombre': 'departamento chulo'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['data']['nombre'], 'departamento chulo')
 
+        # Modificar un profesor
+        res = self.client.put('/api/v1/profesores/', {'usuario': self.data_prof1['dni'],
+                                                      'datos': json.dumps({'jefe_departamento': True})})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
         res = self.client.get('/api/v1/departamentos/')
         resul = json.loads(res.content)
-        self.assertEqual(resul['data'][1]['nombre'], 'departamento chulo')
+        self.assertEqual(resul['data'][0]['jefe_departamento']['dni'], self.data_prof1['dni'])
 
+    def test_ws_alumnos_register(self):
+
+        # inserto un alumno
+        res = self.client.post('/api/v1/alumnos/', self.data_alum1)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        # intento registrarme como un alumno ya dado de alta con el dni
+        res = self.client.post('/api/v1/usuarios/', self.data_alum1_extra)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)

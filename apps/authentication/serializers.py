@@ -3,7 +3,7 @@ import utils
 from django.db import models
 from django.contrib.auth import update_session_auth_hash
 from rest_framework import serializers
-from authentication.models import Alumno, Profesor, Usuario, Departamento, Grupos
+from authentication.models import Alumno, Profesor, Usuario, Departamento, Grupos, Titulacion
 from django.contrib.auth.models import Group
 
 
@@ -38,7 +38,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
                 res = Usuario.objects.filter(email=new_email)
                 if res.count() == 0:
                     if not utils.is_string(new_email) or not \
-                            re.match(r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$', new_email):
+                            re.match(r'^[a-z][_a-z0-9]+(@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4}))$', new_email):
                         raise NameError("El email no es correcto")
                     else:
                         usuario.email = new_email
@@ -46,7 +46,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
                     raise NameError("El usuario indicado ya existe")
 
             # comprobando dni
-            if 'dni' in validated_data.keys():
+            if 'dni' in validated_data.keys() and not validated_data.get('creado'):
                 new_dni = validated_data.get('dni')
                 res = Usuario.objects.filter(dni=new_dni)
                 if res.count() == 0:
@@ -81,6 +81,8 @@ class UsuarioSerializer(serializers.ModelSerializer):
             #         alumno.set_password(password)
 
             usuario.save()
+            if validated_data.get('creado'):
+                utils.enviar_email_reset_password(usuario.email)
 
             return dict(status=True, data=usuario)
 
@@ -101,10 +103,11 @@ class DepartamentoSerializer(serializers.ModelSerializer):
             # comprobando codigo
             if 'codigo' in validated_data.keys():
                 new_codigo = validated_data.get('codigo')
-                res = Departamento.objects.filter(codigo=new_codigo)
-                if res.count() != 0:
-                    raise NameError("El departamento ya existe")
-                elif not isinstance(new_codigo, basestring):
+                # res = Departamento.objects.filter(codigo=new_codigo)
+                # if res.count() != 0:
+                #     raise NameError("El departamento ya existe")
+                # elif not isinstance(new_codigo, basestring):
+                if not isinstance(new_codigo, basestring):
                     raise NameError("El codigo del departamento no tiene formato correcto")
                 else:
                     departamento.codigo = new_codigo
@@ -119,7 +122,7 @@ class DepartamentoSerializer(serializers.ModelSerializer):
 
             departamento.save()
 
-            return dict(status=True, data=departamento)
+            return dict(status=True, data=departamento.to_dict())
 
         except NameError as e:
             return dict(status=False, message=e.message)
@@ -149,7 +152,7 @@ class AlumnoSerializer(serializers.ModelSerializer):
             return Alumno.objects.create_user(**validated_data)
         return dict(status=False, message='Error en parametros')
 
-    def update(self, alumno, validated_data):
+    def update(self, user, alumno, validated_data):
         try:
             # comprobando email
             if 'email' in validated_data.keys():
@@ -191,7 +194,7 @@ class AlumnoSerializer(serializers.ModelSerializer):
                 if new_last_name == '' or not utils.is_string(new_last_name):
                     raise NameError("Nombre incorrecto")
                 else:
-                    alumno.new_last_name = new_last_name
+                    alumno.last_name = new_last_name
 
             # if 'password' in validated_data.keys() and 'confirm_password' in validated_data.keys():
             #     password = validated_data.get('password')
@@ -201,7 +204,7 @@ class AlumnoSerializer(serializers.ModelSerializer):
 
             alumno.save()
 
-            return dict(status=True, data=alumno)
+            return dict(status=True, data=alumno.to_dict(user))
 
         except NameError as e:
             return dict(status=False, message=e.message)
@@ -231,7 +234,7 @@ class ProfesorSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return Profesor.objects.create_user(**validated_data)
 
-    def update(self, profesor, validated_data):
+    def update(self, user, profesor, validated_data):
         try:
             # comprobando email
             if 'email' in validated_data.keys():
@@ -292,14 +295,15 @@ class ProfesorSerializer(serializers.ModelSerializer):
                     grupo_jefe_departamento = Grupos.objects.get(name='Jefe de Departamento')
                 except:
                     raise NameError('El grupo Jefe de departamento no existe')
-                if validated_data.get('jefe_departamento') == True:
+                if validated_data.get('jefe_departamento') is True:
                     grupo_jefe_departamento.user_set.add(profesor)
                 else:
                     grupo_jefe_departamento.user_set.remove(profesor)
+                profesor.jefe_departamento = validated_data.get('jefe_departamento')
 
             profesor.save()
 
-            return dict(status=True, data=profesor)
+            return dict(status=True, data=profesor.to_dict(user))
 
         except NameError as e:
             return dict(status=False, message=e.message)
@@ -308,4 +312,48 @@ class ProfesorSerializer(serializers.ModelSerializer):
 
     def delete(self, profesor):
         profesor.delete()
+        return dict(status=True)
+
+
+class TitulacionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Titulacion
+        fields = ('id', 'codigo', 'nombre',)
+
+    def update(self, titulacion, validated_data):
+        try:
+            # comprobando codigo
+            if 'codigo' in validated_data.keys():
+                new_codigo = validated_data.get('codigo')
+                try:
+                    res = Titulacion.objects.filter(codigo=new_codigo)
+                except:
+                    raise NameError('La Titulacion no existe')
+                if res.count() != 0:
+                    raise NameError("El departamento ya existe")
+                elif not isinstance(new_codigo, basestring):
+                    raise NameError("El codigo de la titulacion no tiene formato correcto")
+                else:
+                    titulacion.codigo = new_codigo
+
+            # comprobando nombre
+            if 'nombre' in validated_data.keys():
+                new_nombre = validated_data.get('nombre')
+                if not isinstance(new_nombre, basestring):
+                    raise NameError("El nombre de la titulacion no tiene formato correcto")
+                else:
+                    titulacion.nombre = new_nombre
+
+            titulacion.save()
+
+            return dict(status=True, data=titulacion)
+
+        except NameError as e:
+            return dict(status=False, message=e.message)
+        except:
+            return dict(status=False, message="Error en los parametros")
+
+    def delete(self, titulacion):
+        titulacion.delete()
         return dict(status=True)

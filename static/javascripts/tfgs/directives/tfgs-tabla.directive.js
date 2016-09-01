@@ -1,5 +1,5 @@
 /**
-* tfgsTabla
+* tfgsAsigTabla
 * @namespace gestfg.tfgs.directives
 */
 (function () {
@@ -7,22 +7,22 @@
 
   angular
     .module('gestfg.tfgs.directives')
-    .directive('tfgsTabla', tfgsTabla);
+    .directive('tfgsAsigTabla', tfgsAsigTabla);
 
   /**
-  * @namespace tfgsTabla
+  * @namespace tfgsAsigTabla
   */
-  function tfgsTabla() {
+  function tfgsAsigTabla() {
     /**
     * @name directive
     * @desc The directive to be returned
-    * @memberOf gestfg.tfgs.directives.tfgsTabla
+    * @memberOf gestfg.tfgs.directives.tfgsAsigTabla
     */
     var directive = {
-      // controller: 'NewTfgController',
-      // controllerAs: 'vm',
+      // controller: 'TfgsController',
+      // controllerAs: 'tfgsCtrl',
       restrict: 'E',
-      templateUrl: '/static/templates/tfgs/tfgs-tabla.html'
+      templateUrl: '/static/templates/tfgs/tfgs-asig-tabla.html'
     };
 
     return directive;

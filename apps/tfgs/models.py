@@ -1,26 +1,11 @@
-import utils
 from django.db import models
 from authentication.models import Profesor, Alumno
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import Group
-from eventos.models import Tipo_Evento
-
-
-class TitulacionManager(BaseUserManager):
-    def create_file(self, **kwargs):
-        return self.model.objects.create(**kwargs)
-
-
-class Titulacion(models.Model):
-    nombre = models.CharField(default=None, unique=True, null=True, max_length=100)
-    codigo = models.CharField(default=None, unique=True, null=True, max_length=20)
-    objects = TitulacionManager()
-
-    USERNAME_FIELD = 'codigo'
-    REQUIRED_FIELD = USERNAME_FIELD
-
-    def __unicode__(self):
-        return self.codigo
+from eventos.models import Convocatoria
+from notificaciones.services import email_asig_tfg
+from authentication.models import Titulacion
+import utils
 
 
 class TfgManager(BaseUserManager):
@@ -179,6 +164,7 @@ class Tfg(models.Model):
     cotutor = models.ForeignKey(Profesor, related_name='cotutor', default=None, null=True)
     publicado = models.BooleanField(default=False)
     validado = models.BooleanField(default=False)
+    asignado = models.BooleanField(default=False)
     titulacion = models.ForeignKey(Titulacion, related_name='titulacion', default=None)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -213,6 +199,14 @@ class Tfg(models.Model):
     def get_cotutor(self):
         return self.cotutor
 
+    def to_dict(self, user):
+        return dict(titulo=self.titulo, tipo=self.tipo, n_alumnos=self.n_alumnos,
+                    descripcion=self.descripcion, conocimientos_previos=self.conocimientos_previos,
+                    hard_soft=self.hard_soft, tutor=self.tutor.to_dict(user),
+                    cotutor=self.cotutor.to_dict(user) if self.cotutor else None, publicado=self.publicado,
+                    validado=self.validado, titulacion=self.titulacion.to_dict(), created_at=self.created_at,
+                    updated_at=self.updated_at)
+
 
 class Tfg_AsigManager(BaseUserManager):
 
@@ -222,9 +216,11 @@ class Tfg_AsigManager(BaseUserManager):
         try:
             # Compruebo lo minimo para asignar el tfg
             if not isinstance(tfg, Tfg) or not isinstance(alumno_1, Alumno) or not alumno_1.groups.filter(
-                    name='Alumnos').exists() or utils.existe_tfg_asig(alumno_1):
+                    name='Alumnos').exists():
                 raise NameError("Error en los parametros de entrada")
 
+            if utils.existe_tfg_asig(alumno_1):
+                raise NameError("El alumno ya tiene un Tfg asignado")
             # Compruebo que no este ya asignado
             try:
                 Tfg_Asig.objects.get(tfg=tfg)
@@ -254,7 +250,10 @@ class Tfg_AsigManager(BaseUserManager):
                 else:
                     tfg_asig = self.model(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2, alumno_3=alumno_3)
                 tfg_asig.save()
-
+                tfg.asignado = True
+                tfg.save()
+                email_asig_tfg(tfg.titulo, [alumno_1.email, alumno_2.email if alumno_2 else '',
+                                            alumno_3.email if alumno_3 else ''])
                 return dict(status=True, data=Tfg_Asig.objects.get(tfg=tfg))
 
         except NameError as e:
@@ -318,27 +317,13 @@ class Tfg_AsigManager(BaseUserManager):
         except NameError as e:
             return e.message
 
-    # def create_file(self, **kwargs):
-    #     try:
-    #         tfg = Profesor.objects.get(titulo=kwargs.get('titulo'))
-    #         if
-    #         alumno_1 = Profesor.objects.get(email=kwargs.get('cotutor'))
-    #         cotutor = Profesor.objects.get(email=kwargs.get('cotutor'))
-    #
-    #         tfg_asig = Tfg_Asig.objects.create(tfg=tfg, alumno_1=alumno_1, alumno_2=alumno_2, alumno_3=alumno_3)
-    #         tfg.save()
-    #         return dict(status=True, data=Tfg.objects.get(titulo=tfg.titulo))
-    #
-    #     except NameError as e:
-    #         return dict(status=False, message=e.message)
-
 
 class Tfg_Asig(models.Model):
     tfg = models.ForeignKey(Tfg, default=None)
     alumno_1 = models.ForeignKey(Alumno, related_name='alumno_1', default=None)
     alumno_2 = models.ForeignKey(Alumno, related_name='alumno_2', default=None, null=True)
     alumno_3 = models.ForeignKey(Alumno, related_name='alumno_3', default=None, null=True)
-    convocatoria = models.ForeignKey(Tipo_Evento, related_name='convocatoria', default=None, null=True)
+    convocatoria = models.ForeignKey(Convocatoria, related_name='convocatoria', default=None, null=True)
     fecha_conv = models.DateTimeField(null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -360,3 +345,11 @@ class Tfg_Asig(models.Model):
 
     def get_alumno_3(self):
         return self.alumno_3
+
+    def to_dict(self, user):
+        return dict(id=self.id, tfg=self.tfg.to_dict(user), alumno_1=self.alumno_1.to_dict(user),
+                    alumno_2=self.alumno_2.to_dict(user) if self.alumno_2 else None,
+                    alumno_3=self.alumno_3.to_dict(user) if self.alumno_3 else None,
+                    convocatoria=self.convocatoria.to_dict()if self.convocatoria else None,
+                    fecha_conv=self.fecha_conv if self.fecha_conv else None,
+                    created_at=self.created_at, updated_at=self.updated_at)

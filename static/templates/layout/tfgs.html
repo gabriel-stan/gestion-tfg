@@ -1,0 +1,79 @@
+<div class="container">
+<!-- Content Header (Page header) -->
+<section class="content-header" style="margin-bottom:15px">
+  <h1>
+    TFGs
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i> Inicio</a></li>
+    <li class="active">TFGs</li>
+  </ol>
+</section>
+
+<section>
+
+
+<!-- Main content -->
+  <div class="col-md-8">
+
+    <!-- Aqui se muestran los tfgs TODO evento directive or template -->
+    <tfgs></tfgs>
+
+    <!-- fin tfg -->
+
+  </div>
+
+  <div class="col-md-4">
+    <!-- Block buttons -->
+    <div class="box">
+      <div class="box-header">
+        <h3 class="box-title">Sidebar 1</h3>
+      </div>
+      <div class="box-body">
+        <button class="btn btn-default btn-block">.btn-block</button>
+        <button class="btn btn-default btn-block btn-flat">.btn-block .btn-flat</button>
+        <button class="btn btn-default btn-block btn-sm">.btn-block .btn-sm</button>
+      </div>
+    </div><!-- /.box -->
+    <div class="box">
+      <div class="box-header">
+        <h3 class="box-title">Sidebar 2</h3>
+      </div>
+      <div class="box-body">
+        <button class="btn btn-default btn-block">.btn-block</button>
+        <button class="btn btn-default btn-block btn-flat">.btn-block .btn-flat</button>
+        <button class="btn btn-default btn-block btn-sm">.btn-block .btn-sm</button>
+      </div>
+    </div><!-- /.box -->
+    <div class="box">
+      <div class="box-header">
+        <h3 class="box-title">Sidebar 3</h3>
+      </div>
+      <div class="box-body">
+        <button class="btn btn-default btn-block">.btn-block</button>
+        <button class="btn btn-default btn-block btn-flat">.btn-block .btn-flat</button>
+        <button class="btn btn-default btn-block btn-sm">.btn-block .btn-sm</button>
+      </div>
+    </div><!-- /.box -->
+  </div>
+
+
+  </section>
+
+  <!-- antiguo index -->
+
+  <events events="vm.events" ng-show="vm.events && vm.events.length"></events>
+
+  <p ng-hide="vm.events && vm.events.length">
+    <!-- aqui no hay na... -->
+  </p>
+
+  <a class="btn btn-primary btn-fab btn-raised mdi-content-add btn-add-new-event"
+    href="javascript:void(0)"
+    ng-show="vm.isAuthenticated"
+    ng-dialog="/static/templates/events/new-event.html"
+    ng-dialog-controller="NewEventController as vm"></a>
+
+  <!-- end antiguo index -->
+
+</div><!-- /.container -->

@@ -1,19 +1,21 @@
 from django.db import models
 from rest_framework import serializers
-from eventos.models import Evento, Tipo_Evento
+from eventos.models import Evento, Tipo_Evento, SubTipo_Evento, Periodo, Convocatoria
 from authentication.serializers import UsuarioSerializer
 from authentication.models import Usuario
+from datetime import datetime
+import json
 
 
 # class EventoSerializer(serializers.PrimaryKeyRelatedField, serializers.ModelSerializer):
 class EventoSerializer(serializers.ModelSerializer):
-    autor = UsuarioSerializer()
-    tipo = models.ForeignKey(Tipo_Evento)
+    #autor = UsuarioSerializer()
+    convocatoria = models.ForeignKey(Tipo_Evento)
     created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
 
     class Meta:
         model = Evento
-        fields = ('id', 'contenido', 'tipo', 'autor', 'titulo', 'created_at', 'updated_at')
+        fields = ('id', 'contenido', 'convocatoria', 'autor', 'titulo', 'created_at', 'updated_at')
         read_only_fields = ('created_at', 'updated_at')
 
     def create_evento(self, validated_data):
@@ -32,16 +34,25 @@ class EventoSerializer(serializers.ModelSerializer):
                 else:
                     evento.contenido = new_contenido
 
+            # comprobando convocatoria
+            # if 'convocatoria' in validated_data.keys():
+            #     new_convocatoria = validated_data.get('convocatoria')
+            #     try:
+            #         convocatoria = Convocatoria.objects.get(codigo=new_convocatoria)
+            #     except Tipo_Evento.DoesNotExist:
+            #         raise NameError("Convocatoria incorrecto")
+            #     evento.convocatoria = convocatoria
+
             # comprobando tipo
             if 'tipo' in validated_data.keys():
                 new_tipo = validated_data.get('tipo')
-                tipo = Tipo_Evento.objects.get(codigo=new_tipo)
-                if not isinstance(tipo, Tipo_Evento):
-                    raise NameError("Tipo_Evento incorrecto")
-                else:
-                    evento.tipo = tipo
+                try:
+                    tipo = SubTipo_Evento.objects.get(codigo=new_tipo)
+                except SubTipo_Evento.DoesNotExist:
+                    raise NameError("Tipo Evento incorrecto")
+                evento.tipo = tipo
 
-            # comprobando tipo
+            # comprobando autor
             if 'autor' in validated_data.keys():
                 new_autor = validated_data.get('autor')
                 autor = Usuario.objects.get(email=new_autor)
@@ -58,8 +69,30 @@ class EventoSerializer(serializers.ModelSerializer):
                 else:
                     evento.titulo = new_titulo
 
+            # comprobando desde
+            if 'desde' in validated_data.keys():
+                try:
+                    new_desde = datetime.strptime(validated_data.get('desde')[:19], '%Y-%m-%dT%H:%M:%S')
+                except:
+                    raise NameError("Error en formato fecha desde")
+
+            # comprobando hasta
+            if 'hasta' in validated_data.keys():
+                try:
+                    new_hasta = datetime.strptime(validated_data.get('hasta')[:19], '%Y-%m-%dT%H:%M:%S')
+                except:
+                    raise NameError("Error en formato fecha hasta")
+
+            # Actualizo el periodo
+            if 'hasta' in validated_data.keys() or 'desde' in validated_data.keys():
+                periodo = Periodo.objects.get(evento=evento)
+                if 'hasta' in validated_data.keys():
+                    periodo.end = new_hasta
+                elif 'desde' in validated_data.keys():
+                    periodo.start = new_desde
+                periodo.save()
             evento.save()
-            return dict(status=True, data=evento)
+            return dict(status=True, data=EventoSerializer(Evento.objects.get(contenido=evento.contenido)).data)
 
         except NameError as e:
             return dict(status=False, message=e.message)
@@ -112,4 +145,45 @@ class Tipo_EventoSerializer(serializers.ModelSerializer):
 
     def delete(self, tipo_evento):
         tipo_evento.delete()
+        return dict(status=True)
+
+
+class SubTipo_EventoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SubTipo_Evento
+        fields = ('id', 'codigo', 'nombre',)
+
+    def update(self, subtipo, validated_data):
+        try:
+            # comprobando codigo
+            if 'codigo' in validated_data.keys():
+                new_codigo = validated_data.get('codigo')
+                res = SubTipo_Evento.objects.filter(codigo=new_codigo)
+                if res.count() != 0:
+                    raise NameError("El departamento ya existe")
+                elif not isinstance(new_codigo, basestring):
+                    raise NameError("El codigo del subtipo no tiene formato correcto")
+                else:
+                    subtipo.codigo = new_codigo
+
+            # comprobando nombre
+            if 'nombre' in validated_data.keys():
+                new_nombre = validated_data.get('nombre')
+                if not isinstance(new_nombre, basestring):
+                    raise NameError("El nombre del subtipo no tiene formato correcto")
+                else:
+                    subtipo.nombre = new_nombre
+
+            subtipo.save()
+
+            return dict(status=True, data=subtipo)
+
+        except NameError as e:
+            return dict(status=False, message=e.message)
+        except:
+            return dict(status=False, message="Error en los parametros")
+
+    def delete(self, subtipo):
+        subtipo.delete()
         return dict(status=True)

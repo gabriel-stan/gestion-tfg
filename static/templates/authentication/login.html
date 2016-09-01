@@ -1,25 +1,46 @@
-<div class="row">
-  <div class="col-md-4 col-md-offset-4">
-    <h1>Login</h1>
+<div class="container">
+<!-- Content Header (Page header) -->
+<section class="content-header" style="margin-bottom:15px">
+</section>
 
-    <div class="well">
-      <form role="form" ng-submit="loginCtrl.login()">
-        <div class="alert alert-danger" ng-show="error" ng-bind="error"></div>
+<section>
 
-        <div class="form-group">
-          <label for="login__email">Email</label>
-          <input type="text" class="form-control" id="login__email" ng-model="loginCtrl.email" placeholder="ex. john@example.com" />
-        </div>
 
-        <div class="form-group">
-          <label for="login__password">Password</label>
-          <input type="password" class="form-control" id="login__password" ng-model="loginCtrl.password" placeholder="ex. thisisnotgoogleplus" />
-        </div>
+  <div class="row">
 
-        <div class="form-group">
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </div>
-      </form>
+
+    <div class="col-md-4 col-md-offset-4">
+      <!-- general form elements -->
+      <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title">Login</h3>
+        </div><!-- /.box-header -->
+        <!-- form start -->
+        <form role="form" ng-submit="login()">
+          <div class="alert alert-danger" ng-show="error" ng-bind="error"></div>
+
+          <div class="box-body">
+            <div class="form-group">
+              <label for="exampleInputEmail1">Email *</label>
+              <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email" ng-model="loginCtrl.email" required="true">
+            </div>
+            <div class="form-group">
+              <label for="exampleInputPassword1">Password *</label>
+              <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" ng-model="loginCtrl.password" required="true">
+            </div>
+
+            <a href="/recover-password">Recover password</a>
+            <a href="/register" class="pull-right">Register</a>
+          </div><!-- /.box-body -->
+
+          <div class="box-footer">
+            <button type="submit" class="btn btn-primary" ng-disabled="loading">Login</button>
+          </div>
+        </form>
+      </div><!-- /.box -->
     </div>
+
   </div>
-</div>
+
+
+</section>

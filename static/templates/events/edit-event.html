@@ -1,0 +1,111 @@
+<form role="form" ng-submit="editEvent($root.selectedEvent)" ng-controller="DashboardController as dashCtrl">
+
+  <div class="box-header with-border">
+    <h3 class="box-title">Bootstrap WYSIHTML5 <small>Simple and fast</small></h3>
+    <!-- tools box -->
+    <div class="pull-right box-tools">
+      <!-- <button class="btn btn-default btn-sm" data-widget="collapse" data-toggle="tooltip" title="Collapse"><i class="fa fa-minus"></i></button>
+      <button class="btn btn-default btn-sm" data-widget="remove" data-toggle="tooltip" title="Remove"><i class="fa fa-times"></i></button> -->
+    </div><!-- /. tools -->
+  </div><!-- /.box-header -->
+  <div class="box-body pad">
+
+    <div class="row">
+      <div class="col-md-4">
+        <label>Título</label>
+        <input class="form-control" type="text" placeholder="Título del evento" ng-model="$root.selectedEvent.titulo" required="true">
+      </div>
+
+      <!-- <div class="col-md-4">
+        <select class="form-control" ng-model="$root.selectedEvent.tipo">
+          <option>informativo</option>
+          <option>convocatoria</option>
+        </select>
+      </div> -->
+
+      <div class="col-md-4">
+        <label>Tipo</label>
+
+        <!-- <select class="form-control" ng-model="$root.selectedEvent.convocatoria.tipo.nombre"> -->
+        <select class="form-control">
+          <option selected="selected">{{$root.selectedEvent.convocatoria ? $root.selectedEvent.convocatoria.tipo.nombre : 'Informativo'}}</option>
+        </select>
+        <!-- <input class="form-control disabled" type="text" placeholder="Tipo del evento" ng-model="$root.selectedEvent.convocatoria.nombre"> -->
+        <!-- <select class="form-control" ng-model="$root.selectedEvent.tipo"> -->
+      </div>
+
+      <div class="col-md-4" ng-show="$root.selectedEvent.convocatoria">
+        <label>Tipo convocatoria</label>
+
+        <!-- <select class="form-control" ng-model="$root.selectedEvent.convocatoria.subtipo.nombre"> -->
+        <select class="form-control">
+          <option selected="selected">{{$root.selectedEvent.convocatoria.subtipo.nombre}}</option>
+        </select>
+        <!-- <input class="form-control" type="text" placeholder="Subtipo del evento" ng-model="$root.selectedEvent.tipo.nombre"> -->
+        <!-- <p class="form-control" type="text" placeholder="Subtipo del evento" ng-model="$root.selectedEvent.tipo.nombre"></p> -->
+        <!-- <select class="form-control" ng-model="$root.selectedEvent.sub_tipo"> -->
+      </div>
+
+    </div>
+
+    <div class="row" ng-show="$root.selectedEvent.convocatoria">
+
+      <br>
+
+      <div class="col-md-4">
+        <label>Titulación</label>
+
+        <!-- <select class="form-control" ng-model="$root.selectedEvent.convocatoria.titulacion.nombre"> -->
+        <select class="form-control">
+          <option selected="selected">{{$root.selectedEvent.convocatoria.titulacion.nombre}}</option>
+        </select>
+      </div>
+
+      <div class="col-md-4">
+        <label>Fechas</label>
+        <input id="fechas" class="form-control" type="text" placeholder="Fechas">
+      </div>
+    </div>
+
+    <br>
+    <textarea ng-model="$root.selectedEvent.contenido" id="wysihtml5-editor-event" class="textarea" placeholder="Contenido del evento" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
+  </div>
+
+  <div class="box-footer">
+    <button type="submit" class="btn btn-primary pull-left" ng-disabled="loading">Guardar</button>
+    <button type="button" class="btn btn-default pull-right" data-dismiss="modal"style="margin-left:10px; margin-right:10px;">Cancelar</button>
+  </div>
+
+</form>
+
+  <script>
+    $(document).load(function () {
+      //bootstrap WYSIHTML5 - text editor
+      //$('.textarea').data('wysihtml5').editor.composer.disable();
+      //$(".textarea").wysihtml5();
+    });
+
+    // fecha inicio
+    $('#fechas').daterangepicker({
+        timePicker: true,
+        // timePickerIncrement: 5,
+        locale: {
+            format: 'MM/DD/YYYY h:mm A'
+        }
+    });
+
+    $('#fechas').on('apply.daterangepicker', function(ev, picker) {
+        // var fechas = $('#fechas').data('daterangepicker');
+        // fechas.startDate.toString();
+        // fechas.endDate.toString();
+        // fechas.startDate.toISOString();
+        // fechas.endDate.toISOString();
+
+        // console.log(picker.startDate);
+        // console.log(picker.endDate);
+        // console.log(moment.utc(picker.startDate).valueOf());
+        // console.log(moment(picker.endDate).valueOf());
+        // console.log(picker.startDate.format('YYYY-MM-DD'));
+        // console.log(picker.endDate.format('YYYY-MM-DD'));
+    });
+  </script>

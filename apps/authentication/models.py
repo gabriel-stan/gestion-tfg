@@ -5,6 +5,30 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import Group
 import signals
+import collections
+
+
+class TitulacionManager(BaseUserManager):
+    def create_file(self, **kwargs):
+        try:
+            return self.model.objects.create(**kwargs)
+        except:
+            pass
+
+
+class Titulacion(models.Model):
+    nombre = models.CharField(default=None, unique=True, null=True, max_length=100)
+    codigo = models.CharField(default=None, unique=True, null=True, max_length=20)
+    objects = TitulacionManager()
+
+    USERNAME_FIELD = 'codigo'
+    REQUIRED_FIELD = USERNAME_FIELD
+
+    def __unicode__(self):
+        return self.codigo
+
+    def to_dict(self):
+        return dict(nombre=self.nombre, codigo=self.codigo)
 
 
 class AccountManager(BaseUserManager):
@@ -64,7 +88,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELD = USERNAME_FIELD
 
     def __unicode__(self):
-        return self.email
+        return self.email or self.dni
 
     def get_full_name(self):
         return ' '.join([str(self.first_name), str(self.last_name)])
@@ -74,6 +98,11 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 
     def get_email(self):
         return self.email
+
+    def to_dict(self, user):
+        return dict(email=self.email, dni=self.dni if getattr(user, 'is_admin', False) else None,
+                    first_name=self.first_name, last_name=self.last_name, is_admin=self.is_admin,
+                    created_at=self.created_at, updated_at=self.updated_at)
 
 
 class Administrador(Usuario):
@@ -85,7 +114,7 @@ class AlumnoManager(BaseUserManager):
         try:
             if kwargs.get('email'):
                 # exp reg para saber si el nick corresponde al correo de la ugr (@correo.ugr.es)
-                if not re.match(r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$', kwargs.get('email')):
+                if not re.match(r'^[_a-z0-9]+(@correo\.ugr\.es)$', kwargs.get('email')):
                     raise NameError("El email no es correcto o no pertenece a la UGR")
 
                 res = Alumno.objects.filter(email=kwargs.get('email'))
@@ -109,6 +138,8 @@ class AlumnoManager(BaseUserManager):
             usuario.set_password(password)
             usuario.save()
             grupo_alumnos.user_set.add(usuario)
+            if usuario.email:
+                utils.enviar_email_reset_password(usuario.email)
             return dict(status=True, data=usuario)
 
         except NameError as e:
@@ -117,8 +148,14 @@ class AlumnoManager(BaseUserManager):
     def create_file(self, **kwargs):
         return self.model.objects.create(**kwargs)
 
+
 class Alumno(Usuario):
     objects = AlumnoManager()
+
+    def to_dict(self, user):
+        return dict(email=self.email, dni=self.dni if getattr(user, 'is_admin', False) else None,
+                    first_name=self.first_name, last_name=self.last_name, is_admin=self.is_admin,
+                    created_at=self.created_at, updated_at=self.updated_at)
 
 
 class DepartamentoManager(BaseUserManager):
@@ -137,6 +174,9 @@ class Departamento(models.Model):
     def __unicode__(self):
         return self.codigo
 
+    def to_dict(self):
+        return dict(nombre=self.nombre, codigo=self.codigo)
+
 
 class ProfesorManager(BaseUserManager):
     def create_user(self, password=None, **kwargs):
@@ -147,7 +187,7 @@ class ProfesorManager(BaseUserManager):
                 res = Profesor.objects.filter(email=kwargs.get('email'))
                 if res.count() != 0:
                     raise NameError("El profesor ya existe")
-            if kwargs.get('dni'):
+            if kwargs.get('dni') and kwargs.get('dni') is not '':
                 # exp reg para saber si el nick corresponde al correo de la ugr (@correo.ugr.es)
                 if not re.match(r'(\d{8})([-]?)([A-Z]{1})', kwargs.get('dni')):
                     raise NameError("Error en el DNI del profesor")
@@ -174,7 +214,8 @@ class ProfesorManager(BaseUserManager):
             usuario.set_password(password)
             usuario.save()
             grupo_profesores.user_set.add(usuario)
-
+            if usuario.email:
+                utils.enviar_email_reset_password(usuario.email)
             return dict(status=True, data=Profesor.objects.get(email=usuario.email))
 
         except NameError as e:
@@ -207,6 +248,13 @@ class Profesor(Usuario):
 
     def get_departamento(self):
         return self.departamento
+
+    def to_dict(self, user):
+        return dict(email=self.email, dni=self.dni if getattr(user, 'is_admin', False) else None,
+                    first_name=self.first_name, last_name=self.last_name,
+                    departamento=collections.OrderedDict(self.departamento.to_dict()),
+                    jefe_departamento=self.jefe_departamento, is_admin=self.is_admin,
+                    created_at=str(self.created_at), updated_at=str(self.updated_at))
 
 
 class Grupos(Group):

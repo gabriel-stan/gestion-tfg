@@ -1,3 +1,99 @@
+
+  <a
+    id="boton-edit"
+    class="btn btn-default disabled"
+    data-toggle="modal"
+    data-target="#modal-edit"
+    ng-click="loadSelectedTFG()"
+  >
+    Editar
+  </a>
+
+  <a
+    id="boton-asignar"
+    class="btn btn-default disabled"
+    data-toggle="modal"
+    data-target="#modal-asignar"
+    ng-click="loadSelectedTFG()"
+  >
+    Asignar
+  </a>
+
+  <div class="example-modal">
+    <div class="modal fade" id="modal-edit">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Editar TFG</h4>
+          </div>
+          <div class="modal-body">
+            <new-tfg-modal tfg="selectedTFG"></new-tfg-modal>
+            <!-- <new-user-modal user="selectedUser"></new-user-modal> -->
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+  </div><!-- /.example-modal -->
+
+  <div class="example-modal">
+    <div class="modal fade" id="modal-asignar">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Asignar TFG</h4>
+          </div>
+          <div class="modal-body">
+            <!-- <new-tfg-modal tfg="selectedTFG"></new-tfg-modal> -->
+            <!-- <new-user-modal user="selectedUser"></new-user-modal> -->
+
+            <form role="form" class="form-horizontal" ng-submit="asignarTFG()">
+
+              <div class="box-body pad">
+
+                <p>
+                  Asignar el TFG: <b>{{selectedTFG.titulo}}</b>
+                </p>
+
+                <div class="form-group">
+                  <label class="col-sm-4 control-label">Email Alumno 1</label>
+                  <div class="col-sm-8">
+                    <input class="form-control" type="text" placeholder="Email Alumno 1" ng-model="selectedTFG.alumno1" required="true">
+                  </div>
+                </div>
+
+                <div class="form-group" ng-show="selectedTFG.n_alumnos >= 2">
+                  <label class="col-sm-4 control-label">Email Alumno 2</label>
+                  <div class="col-sm-8">
+                    <input class="form-control" type="text" placeholder="Email Alumno 2" ng-model="selectedTFG.alumno2">
+                  </div>
+                </div>
+
+                <div class="form-group" ng-show="selectedTFG.n_alumnos >= 3">
+                  <label class="col-sm-4 control-label">Email Alumno 3</label>
+                  <div class="col-sm-8">
+                    <input class="form-control" type="text" placeholder="Email Alumno 3" ng-model="selectedTFG.alumno3">
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="box-footer">
+                <button type="button" class="btn btn-danger pull-left" ng-show="selectedTFG.asignado" ng-click="tfgsCtrl.desasignar()">Desasignar</button>
+                <button type="submit" class="btn btn-primary pull-right" ng-disabled="loading">Asignar</button>
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal"style="margin-left:10px; margin-right:10px;">Cancelar</button>
+              </div>
+
+            </form>
+
+
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+  </div><!-- /.example-modal -->
+
   <table id="tabla-tfgs" class="table table-bordered table-striped">
     <thead>
       <tr>
@@ -10,6 +106,9 @@
         <th>Conocimientos HW/SW</th>
         <th>Tutor</th>
         <th>Cotutor</th>
+        <th>Validado</th>
+        <th>Publicado</th>
+        <th>Asignado</th>
       </tr>
     </thead>
 
@@ -24,6 +123,9 @@
         <th>Conocimientos HW/SW</th>
         <th>Tutor</th>
         <th>Cotutor</th>
+        <th>Validado</th>
+        <th>Publicado</th>
+        <th>Asignado</th>
       </tr>
     </tfoot>
   </table>
@@ -51,7 +153,19 @@
 
 
   <script>
+
+    // function loaded(){
+    //   alert('loaded');
+    // };
+    //
+    // angular.element($("#boton-edit")).scope().$on('$viewContentLoaded', function(){
+    //     alert('loaded scope');
+    // });
+
     $(document).ready(function () {
+      //console.log('redy en tfgs');
+    // $(document).on('/dashboard/tfgs', function(event){
+      //$(document).off( '/dashboard/tfgs');
       $.fn.dataTable.ext.buttons.alert = {
       className: 'buttons-alert',
 
@@ -60,7 +174,7 @@
           }
       };
 
-      $("#tabla-tfgs").DataTable({
+      var table = $("#tabla-tfgs").DataTable({
           //sDom: '<Bf>rt<"col-md-6"i><"col-md-6"p><"col-md-12"l>',
           sDom: '<Bf>rt<pi><"clear"l>',
           language: {
@@ -69,7 +183,9 @@
           select: {
               style: 'multi'
           },
-          responsive: true,
+          processing: true,
+          scrollX: true,
+          // responsive: true,
           buttons: [
               {
                   text: 'Reload',
@@ -77,14 +193,8 @@
                       dt.ajax.reload();
                   }
               },
-              'copyHtml5',
-              'excelHtml5',
-              'csvHtml5',
-              'pdfHtml5',
-              {
-                  extend: 'alert',
-                  text: 'My button 2'
-              }
+              'selectAll',
+              'selectNone'
           ],
           ajax: "/api/v1/tfgs/",
           sDefaultContent: "hello",
@@ -103,9 +213,51 @@
             {
               "data" : "cotutor.email",
               "defaultContent": "<i>N/D</i>"
-            }
+            },
+            {"data" : "validado"},
+            {"data" : "publicado"},
+            {"data" : "asignado"}
           ]
         });
+
+        function botones() {
+            var selectedRows = table.rows( { selected: true } );
+
+            table.button( 'edit:name' ).enable( selectedRows === 1 );
+            if(selectedRows.count() === 1){
+              // $("#boton-edit").attr("disabled",selectedRows === 1);
+              $("#boton-edit").removeClass("disabled");
+              if(!selectedRows.data()[0].asignado){
+                $("#boton-asignar").removeClass("disabled");
+              }
+            } else {
+              $("#boton-edit").addClass("disabled");
+              $("#boton-asignar").addClass("disabled");
+            }
+        }
+
+        table.on( 'select', botones);
+
+        table.on( 'deselect', botones);
+
+        new $.fn.dataTable.Buttons( table, {
+            buttons: [
+              'copyHtml5',
+              'excelHtml5',
+              'csvHtml5',
+              'pdfHtml5'
+            ]
+        } );
+
+        table.on( 'preInit.dt', function (e, settings) {
+          // var container = $(table.table().container());
+          var container = $(table.buttons(1).container()[0]);
+          container.prepend(table.buttons(1).container()[1]);
+
+          container.append($('#boton-edit'));
+          container.append($('#boton-asignar'));
+        });
+
 
       // $('#example2').DataTable({
       //   "paging": true,

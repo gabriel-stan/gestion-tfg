@@ -1,0 +1,280 @@
+<div class="box">
+  <div class="box-header">
+    <!-- <h3 class="box-title">Data Table With Full Features</h3> -->
+  </div><!-- /.box-header -->
+
+  <div class="box-body">
+
+    <a
+      id="boton-edit"
+      class="btn btn-default disabled"
+      data-toggle="modal"
+      data-target="#modal-edit"
+      ng-click="loadSelectedTFGAsig()"
+    >
+      Editar
+    </a>
+
+    <a
+      id="boton-presentar"
+      class="btn btn-default disabled"
+      data-toggle="modal"
+      data-target="#modal-presentar"
+      ng-click="loadSelectedTFGPresentar()"
+    >
+      Presentar Conv.
+    </a>
+
+    <div class="example-modal">
+      <div class="modal fade" id="modal-edit">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Editar TFG</h4>
+            </div>
+            <div class="modal-body">
+
+              <edit-tfg-asig tfg="selectedTFG"></edit-tfg-asig>
+
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal -->
+    </div><!-- /.example-modal -->
+
+    <div class="example-modal">
+      <div class="modal fade" id="modal-presentar">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Presentar TFGs</h4>
+            </div>
+            <div class="modal-body">
+
+              <form role="form" class="form-horizontal" ng-submit="presentarTFGs()">
+
+                <div class="box-body pad">
+
+                  <p>
+                    Presentar <b>{{tfgsCtrl.tfgs_presentar.length}} TFGs</b> a:
+                  </p>
+
+                  <div class="form-group">
+                    <label class="col-sm-4 control-label">Convocatoria de</label>
+                    <div class="col-sm-8">
+                      <select class="form-control" ng-model="tfgsCtrl.convocatoria" required="true">
+                        <option value="">Ninguna</option>
+                        <option value="CONV_JUN">Junio</option>
+                        <option value="CONV_SEPT">Septiembre</option>
+                        <option value="CONV_DIC">Diciembre</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group" ng-show="tfgsCtrl.convocatoria != ''">
+                    <label class="col-sm-4 control-label">Año</label>
+                    <div class="col-sm-8">
+                      <select class="form-control" ng-model="tfgsCtrl.anio" required="true">
+                        <option value="2016">2016</option>
+                        <option value="2017">2017</option>
+                        <option value="2018">2018</option>
+                      </select>
+                    </div>
+                  </div>
+
+                </div>
+
+
+
+                <div class="box-footer">
+                  <button type="submit" class="btn btn-primary pull-left" ng-disabled="loading">Presentar</button>
+                  <button type="button" class="btn btn-default pull-right" data-dismiss="modal"style="margin-left:10px; margin-right:10px;">Cancelar</button>
+                </div>
+
+              </form>
+
+
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal -->
+    </div><!-- /.example-modal -->
+
+    <table id="tabla-tfgs" class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>Titulación</th>
+          <th>Tipo</th>
+          <th>Título</th>
+          <th>Alumno 1</th>
+          <th>Alumno 2</th>
+          <th>Alumno 3</th>
+          <th>Tutor</th>
+          <th>Cotutor</th>
+          <th>Validado</th>
+          <th>Publicado</th>
+        </tr>
+      </thead>
+
+      <tfoot>
+        <tr>
+          <th>Titulación</th>
+          <th>Tipo</th>
+          <th>Título</th>
+          <th>Alumno 1</th>
+          <th>Alumno 2</th>
+          <th>Alumno 3</th>
+          <th>Tutor</th>
+          <th>Cotutor</th>
+          <th>Validado</th>
+          <th>Publicado</th>
+        </tr>
+      </tfoot>
+    </table>
+
+  </div><!-- /.box-body -->
+</div><!-- /.box -->
+
+
+  <style>
+    div.dataTables_filter{
+      float: right;
+    }
+
+    div.dataTables_paginate{
+      float: right;
+    }
+
+    div.clear{
+      clear: both;
+    }
+
+    td.text-overf {
+      max-width: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  </style>
+
+
+  <script>
+    $(document).ready(function () {
+    // $(document).on('/dashboard/tfgs-asig', function(event){
+      $(document).off( '/dashboard/tfgs-asig');
+      $.fn.dataTable.ext.buttons.alert = {
+      className: 'buttons-alert',
+
+      action: function ( e, dt, node, config ) {
+              alert( this.text() );
+          }
+      };
+
+      var table = $("#tabla-tfgs").DataTable({
+          //sDom: '<Bf>rt<"col-md-6"i><"col-md-6"p><"col-md-12"l>',
+          sDom: '<Bf>rt<pi><"clear"l>',
+          language: {
+              "url": "/static/plugins/datatables/language/Spanish.json"
+          },
+          select: {
+              style: 'multi'
+          },
+          processing: true,
+          scrollX: true,
+          // responsive: true,
+          buttons: [
+              {
+                  text: 'Reload',
+                  action: function ( e, dt, node, config ) {
+                      dt.ajax.reload();
+                  }
+              },
+              'selectAll',
+              'selectNone'
+          ],
+          ajax: "/api/v1/tfgs_asig/",
+          sDefaultContent: "hello",
+          "columnDefs": [
+            { className: "text-overf", "targets": [ 2 ] }
+          ],
+          columns: [
+            {"data" : "tfg.titulacion.codigo"},
+            {"data" : "tfg.tipo"},
+            {"data" : "tfg.titulo"},
+            {"data" : "alumno_1.email"},
+            {
+              "data" : "alumno_2.email",
+              "defaultContent": "<i>N/D</i>"
+            },
+            {
+              "data" : "alumno_3.email",
+              "defaultContent": "<i>N/D</i>"
+            },
+            {"data" : "tfg.tutor.email"},
+            {
+              "data" : "tfg.cotutor.email",
+              "defaultContent": "<i>N/D</i>"
+            },
+            {"data" : "tfg.validado"},
+            {"data" : "tfg.publicado"}
+          ]
+        });
+
+        function botones(){
+
+            var selectedRows = table.rows( { selected: true } ).count();
+
+            table.button( 'edit:name' ).enable( selectedRows === 1 );
+            if(selectedRows === 1){
+              // $("#boton-edit").attr("disabled",selectedRows === 1);
+              $("#boton-edit").removeClass("disabled");
+            } else {
+              $("#boton-edit").addClass("disabled");
+            }
+
+            if(selectedRows > 0){
+              $("#boton-presentar").removeClass("disabled");
+            } else {
+              $("#boton-presentar").addClass("disabled");
+            }
+
+        }
+
+        table.on( 'select', botones);
+
+        table.on( 'deselect', botones);
+
+        new $.fn.dataTable.Buttons( table, {
+            buttons: [
+              'copyHtml5',
+              'excelHtml5',
+              'csvHtml5',
+              'pdfHtml5'
+            ]
+        } );
+
+        table.on( 'preInit.dt', function (e, settings) {
+          // var container = $(table.table().container());
+          var container = $(table.buttons(1).container()[0]);
+          container.prepend(table.buttons(1).container()[1]);
+
+          container.append($('#boton-edit'));
+          container.append($('#boton-presentar'));
+        });
+
+
+      // $('#example2').DataTable({
+      //   "paging": true,
+      //   "lengthChange": false,
+      //   "searching": false,
+      //   "ordering": true,
+      //   "info": true,
+      //   "autoWidth": false,
+      //   "language": {
+      //       "url": "/static/plugins/datatables/language/Spanish.json"
+      //   }
+      // });
+    });
+  </script>

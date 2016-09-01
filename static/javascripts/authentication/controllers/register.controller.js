@@ -9,15 +9,21 @@
     .module('gestfg.authentication.controllers')
     .controller('RegisterController', RegisterController);
 
-  RegisterController.$inject = ['$location', '$scope', 'Authentication'];
+  RegisterController.$inject = ['$location', '$scope', '$routeParams', 'Authentication'];
 
   /**
   * @namespace RegisterController
   */
-  function RegisterController($location, $scope, Authentication) {
+  function RegisterController($location, $scope, $routeParams, Authentication) {
     var registerCtrl = this;
 
     registerCtrl.register = register;
+    registerCtrl.recoverPassword = recoverPassword;
+    registerCtrl.resetPassword = resetPassword;
+
+    $scope.register = register;
+    $scope.recoverPassword = recoverPassword;
+    $scope.resetPassword = resetPassword;
 
     activate();
 
@@ -34,12 +40,52 @@
     }
 
     /**
+    * @name resetPassword
+    * @desc resetPassword of a user
+    * @memberOf gestfg.authentication.controllers.RegisterController
+    */
+    function resetPassword() {
+      //var token = $location.path().split("/")[1]||"";
+      //var token = $routeParams.token;
+
+      if(registerCtrl.password == registerCtrl.repassword){
+        registerCtrl.error = false;
+        var token = $location.search().token;
+        var uidb64 = $location.search().uidb64;
+        preAction();
+        Authentication.resetPassword(registerCtrl.password, registerCtrl.repassword, uidb64, token).finally(postAction);
+      } else {
+        registerCtrl.error = true;
+      }
+    }
+
+    /**
+    * @name recoverPassword
+    * @desc recoverPassword of a user
+    * @memberOf gestfg.authentication.controllers.RegisterController
+    */
+    function recoverPassword() {
+      preAction();
+      Authentication.recoverPassword(registerCtrl.email).finally(postAction);
+    }
+
+    /**
     * @name register
     * @desc Register a new user
     * @memberOf gestfg.authentication.controllers.RegisterController
     */
     function register() {
-      Authentication.register(registerCtrl.email, registerCtrl.password, registerCtrl.first_name, registerCtrl.last_name);
+      preAction();
+      Authentication.register(registerCtrl.email+'@correo.ugr.es', registerCtrl.dni, registerCtrl.first_name, registerCtrl.last_name);
+      postAction();
+    }
+
+    function preAction(){
+      $scope.loading = true;
+    }
+
+    function postAction(){
+      $scope.loading = false;
     }
   }
 })();

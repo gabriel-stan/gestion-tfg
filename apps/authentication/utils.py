@@ -2,6 +2,46 @@ import re
 import simplejson as json
 from django.db.models.fields.related import ManyToManyField
 from django.contrib.auth.models import Permission
+from django import forms
+import collections
+import requests
+
+
+class PasswordResetRequestForm(forms.Form):
+    email_or_username = forms.CharField(label=("Email Or Username"), max_length=254)
+
+
+class SetPasswordForm(forms.Form):
+    """
+    A form that lets a user change set their password without entering the old
+    password
+    """
+    error_messages = {
+        'password_mismatch': ("The two password fields didn't match."),
+        }
+    new_password1 = forms.CharField(label=("New password"),
+                                    widget=forms.PasswordInput)
+    new_password2 = forms.CharField(label=("New password confirmation"),
+                                    widget=forms.PasswordInput)
+
+    def clean_new_password2(self):
+        password1 = self.cleaned_data.get('new_password1')
+        password2 = self.cleaned_data.get('new_password2')
+        if password1 and password2:
+            if password1 != password2:
+                raise forms.ValidationError(
+                    self.error_messages['password_mismatch'],
+                    code='password_mismatch',
+                    )
+        return password2
+
+
+def enviar_email_reset_password(usuario):
+    from views import ResetPasswordRequestView
+    try:
+        ResetPasswordRequestView().post(usuario)
+    except:
+        pass
 
 
 def get_params(req):
@@ -47,6 +87,16 @@ def is_int(s):
         return False
 
 
+def is_email_generico(param):
+    try:
+        if not re.match(r'^[a-z][_a-z0-9]+(@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4}))$', param):
+            return False
+        else:
+            return True
+    except Exception:
+            return False
+
+
 def is_email(param):
     try:
         if not re.match(r'^[a-z][_a-z0-9]+(@(correo\.)?ugr\.es)$', param):
@@ -84,6 +134,32 @@ def to_dict(resul):
     return resul
 
 
+def is_email_alumno(alumno):
+    from authentication.models import Alumno
+    try:
+        if isinstance(alumno, Alumno):
+            alumno = alumno.email
+        if not re.match(r'^[_a-z0-9]+(@correo\.ugr\.es)$', alumno):
+            return False
+        else:
+            return True
+    except Exception:
+            return False
+
+
+def is_email_profesor(profesor):
+    from authentication.models import Profesor
+    try:
+        if isinstance(profesor, Profesor):
+            profesor = profesor.email
+        if not re.match(r'^[a-z][_a-z0-9]+(@ugr\.es)$', profesor):
+            return False
+        else:
+            return True
+    except Exception:
+            return False
+
+
 # Comprueba que un usuario va a modificar los datos de si mismo
 def check_usuario(user, credential=None):
     if credential in [user.email, user.dni]:
@@ -115,75 +191,62 @@ def grupos(grupos):
 
 def procesar_datos_usuario(user, data):
     # Importo aqui para evitar el cruce de imports
-    from models import Alumno, Profesor, Usuario
-    resultado = []
+    from models import Alumno, Profesor, Departamento
     if isinstance(data, dict):
         data = [data]
 
-    for s_data in data:
-        resul = {}
-        if user.is_admin:
-            resul['dni'] = s_data['dni']
-        resul['email'] = s_data['email']
-        resul['first_name'] = s_data['first_name']
-        resul['last_name'] = s_data['last_name']
-        resul['created_at'] = s_data['created_at']
-        resul['updated_at'] = s_data['updated_at']
-
+    for key, s_data in enumerate(data):
         profesor = ''
 
         if s_data['dni'] is not None:
             if Alumno.objects.filter(dni=s_data['dni']).count() != 0:
-                resul['clase'] = 'Alumno'
+                data[key]['clase'] = 'Alumno'
             elif Profesor.objects.filter(dni=s_data['dni']).count() != 0:
-                resul['clase'] = 'Profesor'
+                data[key]['clase'] = 'Profesor'
                 profesor = Profesor.objects.get(dni=s_data['dni'])
             # elif Usuario.objects.get(dni=s_data['dni']).is_admin:
             #     resul['clase'] = 'Administrador'
             else:
-                resul['clase'] = 'Usuario'
+                data[key]['clase'] = 'Usuario'
 
         elif s_data['email'] is not None:
             if Alumno.objects.filter(email=s_data['email']).count() != 0:
-                resul['clase'] = 'Alumno'
+                data[key]['clase'] = 'Alumno'
             elif Profesor.objects.filter(email=s_data['email']).count() != 0:
-                resul['clase'] = 'Profesor'
+                data[key]['clase'] = 'Profesor'
                 profesor = Profesor.objects.get(email=s_data['email'])
             # elif Usuario.objects.get(email=s_data['email']).is_admin:
             #     resul['clase'] = 'Administrador'
             else:
-                resul['clase'] = 'Usuario'
+                data[key]['clase'] = 'Usuario'
 
         else:
-            resul['clase'] = ''
+            data[key]['clase'] = ''
 
-        if resul['clase'] == 'Profesor':
-            resul['departamento'] = profesor.departamento.codigo
-        else:
-            resul['departamento'] = ''
+        if data[key]['clase'] == 'Profesor':
+            data[key]['departamento'] = collections.OrderedDict(Departamento.objects.get(
+                codigo=profesor.departamento.codigo).to_dict())
+            data[key]['jefe_departamento'] = profesor.jefe_departamento
 
-        resul['grupos'] = obtener_grupos(s_data)
-        resul['is_admin'] = s_data['is_admin']
-        resultado.append(resul)
-    return resultado
+        data[key]['grupos'] = obtener_grupos(s_data)
+        if not user.is_admin:
+            data[key].pop('dni', None)
+
+    return data
 
 
-def procesar_datos_departamento(data):
+def procesar_datos_departamento(user, data):
     # Importo aqui para evitar el cruce de imports
     from models import Profesor, Grupos
     group = Grupos.objects.get(name='Jefe de Departamento')
     users = group.user_set.all()
-    resultado = []
-    for s_data in data:
-        departamento = {}
-        departamento['codigo'] = s_data.codigo
-        departamento['id'] = s_data.id
-        departamento['nombre'] = s_data.nombre
+    if isinstance(data, dict):
+        data = [data]
+    for key, s_data in enumerate(data):
         for s_users in users:
-            if s_users.departamento.codigo == s_data.codigo:
-                departamento['jefe_departamento'] = s_users
-        resultado.append(departamento)
-    return resultado
+            if s_users.profesor.departamento.codigo == s_data['codigo']:
+                data[key]['jefe_departamento'] = collections.OrderedDict(s_users.profesor.to_dict(user))
+    return data
 
 
 def obtener_grupos(data):

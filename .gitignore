@@ -20,6 +20,9 @@ apps/*/migrations/0*
 staticfiles
 static/bower_components
 
+#repo
+contenido/documentacion/*
+
 # node generated
 node_modules
 
@@ -93,3 +96,6 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Logs
+log/*

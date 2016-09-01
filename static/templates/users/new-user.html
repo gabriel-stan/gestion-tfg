@@ -1,13 +1,13 @@
 <div class="box">
 
-  <form role="form" class="form-horizontal" ng-submit="vm.submit()">
+  <form role="form" class="form-horizontal" ng-submit="submit()">
 
     <div class="box-body pad">
 
       <div class="form-group">
         <label class="col-sm-3 control-label">Tipo</label>
         <div class="col-sm-9">
-          <select id="user-tipo" class="form-control" ng-model="vm.user.tipo">
+          <select id="user-tipo" class="form-control" ng-model="vm.user.tipo" required="true">
             <option value="alumnos">Alumno</option>
             <option value="profesores">Profesor</option>
             <option value="usuarios">Usuario</option>
@@ -32,7 +32,14 @@
       <div class="form-group">
         <label class="col-sm-3 control-label">Email</label>
         <div class="col-sm-9">
-          <input class="form-control" type="text" placeholder="Email" ng-model="vm.user.email">
+          <input class="form-control" type="email" placeholder="Email" ng-model="vm.user.email" required="true">
+        </div>
+      </div>
+
+      <div class="form-group" ng-show="vm.user.tipo=='alumnos'">
+        <label class="col-sm-3 control-label">DNI</label>
+        <div class="col-sm-9">
+          <input class="form-control" type="text" placeholder="DNI" ng-model="vm.user.dni">
         </div>
       </div>
 
@@ -63,7 +70,8 @@
             <option value="LSI">LSI</option>
             <option value="MATEAPLI">MATEAPLI</option>
             <option value="OPTICA">OPTICA</option>
-            <option value="TDTC">TDTC</option>
+            <option value="TSTC">TSTC</option>
+            <option value="CN">CN</option>
           </select>
         </div>
       </div>
@@ -78,7 +86,7 @@
     </div>
 
     <div class="box-footer">
-      <button type="submit" class="btn btn-primary pull-right">Añadir</button>
+      <button type="submit" class="btn btn-primary pull-right" ng-disabled="loading">Añadir</button>
     </div>
 
   </form>

@@ -19,6 +19,7 @@
     var Departamentos = {
       all: all,
       create: create,
+      edit: edit,
       get: get
     };
 
@@ -47,6 +48,19 @@
     function create(content) {
       return $http.post('/api/v1/departamentos/', {
         content: content
+      });
+    }
+
+    /**
+    * @name edit
+    * @desc edit a Departamento
+    * @returns {Promise}
+    * @memberOf gestfg.departamentos.services.Departamentos
+    */
+    function edit(content) {
+      return $http.put('/api/v1/departamentos/', {
+        codigo: content.old_codigo,
+        datos: JSON.stringify(content)
       });
     }
 

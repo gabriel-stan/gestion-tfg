@@ -21,6 +21,10 @@
     newUserCtrl.update = update;
     newUserCtrl.remove = remove;
 
+    $scope.submit = submit;
+    $scope.update = update;
+    $scope.remove = remove;
+
     /**
     * @name submit
     * @desc Create a new User
@@ -39,8 +43,8 @@
       });
 
       // $scope.closeThisDialog();
-
-      Users.create(newUserCtrl.user).then(createUserSuccessFn, createUserErrorFn);
+      preAction();
+      Users.create(newUserCtrl.user).then(createUserSuccessFn, createUserErrorFn).finally(postAction);
 
 
       /**
@@ -58,7 +62,7 @@
       */
       function createUserErrorFn(data, status, headers, config) {
         $rootScope.$broadcast('user.created.error');
-        Snackbar.error(data.message);
+        Snackbar.error(data.data.message);
       }
     }
 
@@ -102,7 +106,8 @@
 
       content.datos = JSON.stringify(newUserCtrl.user);
 
-      Users.update(content).then(updateUserSuccessFn, updateUserErrorFn);
+      preAction();
+      Users.update(content).then(updateUserSuccessFn, updateUserErrorFn).finally(postAction);
 
 
       /**
@@ -111,6 +116,7 @@
       */
       function updateUserSuccessFn(data, status, headers, config) {
         Snackbar.success('El usuario se ha actualizado con éxito.');
+        postActionSuccess();
       }
 
 
@@ -120,7 +126,7 @@
       */
       function updateUserErrorFn(data, status, headers, config) {
         $rootScope.$broadcast('user.created.error');
-        Snackbar.error(data.message);
+        Snackbar.error(data.data.message);
       }
     }
 
@@ -145,7 +151,8 @@
 
       content.datos = JSON.stringify(newUserCtrl.user);
 
-      Users.remove(content.llamada,content.usuario).then(deleteUserSuccessFn, deleteUserErrorFn);
+      preAction();
+      Users.remove(content.llamada,content.usuario).then(deleteUserSuccessFn, deleteUserErrorFn).finally(postAction);
 
 
       /**
@@ -163,8 +170,27 @@
       */
       function deleteUserErrorFn(data, status, headers, config) {
         $rootScope.$broadcast('user.deleted.error');
-        Snackbar.error(data.message);
+        Snackbar.error(data.data.message);
       }
     }
+
+    function preAction(){
+      $scope.loading = true;
+    }
+
+    function postAction(){
+      $scope.loading = false;
+    }
+
+    function preAction(){
+      $scope.loading = true;
+    }
+
+    function postActionSuccess(){
+      $('.modal').modal('hide');
+      $("#tabla-users").DataTable().clear().draw();
+      $("#tabla-users").DataTable().ajax.reload();
+    }
+
   }
 })();

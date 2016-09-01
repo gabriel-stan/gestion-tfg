@@ -21,7 +21,7 @@ class TfgServicesTests(TestCase):
 
         dep = Departamento.objects.create(nombre='departamento1', codigo=1)
 
-        titulacion = Titulacion.objects.create(nombre='Ingenieria Informatica', codigo='GII')
+        titulacion = Titulacion.objects.create(nombre='Ingenieria Informatica', codigo='IF')
 
         self.prof1 = dict(email='jorgecasillas@ugr.es', first_name='profesor 1', last_name='apellido 1 apellido 12',
                           departamento=dep, password='75169052')
@@ -62,7 +62,6 @@ class TfgServicesTests(TestCase):
                                    hard_soft='conocimientos previos', tutor=self.prof1,
                                    cotutor=self.prof2, titulacion=titulacion.codigo)
 
-        # TODO: Hacer que carge desde el fichero cases sin que pete el test,
         self.TFG1 = {'tipo': 'T2',
                      'titulo': 'Análisis Exploratorio de Datos Mediante Técnicas de Visualización Avanzada',
                      'n_alumnos': '1',

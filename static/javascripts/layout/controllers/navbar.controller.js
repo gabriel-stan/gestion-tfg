@@ -37,5 +37,12 @@
       Authentication.logout();
     }
 
+    $scope.getClass = function (path) {
+      if(path == 'home' && $location.path() == '/'){
+        return 'active';
+      }
+      return ($location.path().substr(0, path.length) === path) ? 'active' : '';
+    }
+
   }
 })();

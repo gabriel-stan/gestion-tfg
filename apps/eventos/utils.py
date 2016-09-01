@@ -1,7 +1,8 @@
 from django.db.models.fields.related import ManyToManyField
-from authentication.models import Alumno, Profesor
+from authentication.models import Alumno, Profesor, Usuario
+from datetime import datetime
 import simplejson as json
-
+import collections
 
 def get_params(req):
     datos = {}
@@ -103,3 +104,28 @@ def comprueba_alumno(usuario):
         return True
     else:
         return False
+
+
+def procesar_datos_eventos(user, data):
+    # Importo aqui para evitar el cruce de imports
+    from models import Tipo_Evento, SubTipo_Evento, Periodo, Convocatoria
+    if isinstance(data, dict):
+        data = [data]
+
+    for key, s_data in enumerate(data):
+        data[key]['autor'] = collections.OrderedDict(Usuario.objects.get(id=s_data['autor']).to_dict(user))
+        data[key]['convocatoria'] = collections.OrderedDict(Convocatoria.objects.get(id=s_data['convocatoria']).to_dict()) if data[key]['convocatoria'] else None
+        data[key] = periodos(data[key])
+    return data
+
+
+def periodos(data):
+    # Importo aqui para evitar el cruce de imports
+    from models import Tipo_Evento, SubTipo_Evento, Periodo
+    try:
+        periodo = Periodo.objects.get(evento=data['id'])
+        data['desde'] = periodo.start.strftime('%Y-%m-%dT%H:%M:%S')
+        data['hasta'] = periodo.end.strftime('%Y-%m-%dT%H:%M:%S')
+    except Periodo.DoesNotExist:
+        pass
+    return data

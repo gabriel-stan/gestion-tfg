@@ -19,6 +19,8 @@
     var Events = {
       all: all,
       create: create,
+      remove: remove,
+      edit: edit,
       get: get
     };
 
@@ -47,6 +49,33 @@
     function create(content) {
       return $http.post('/api/v1/events/', {
         content: content
+      });
+    }
+
+    /**
+    * @name delete
+    * @desc Delete an Event
+    * @param {string} event ID
+    * @returns {Promise}
+    * @memberOf gestfg.events.services.Events
+    */
+    function remove(eventID) {
+      return $http.delete('/api/v1/events/', {
+        id: eventID
+      });
+    }
+
+    /**
+    * @name edit
+    * @desc edit an Event
+    * @param {string} event ID
+    * @returns {Promise}
+    * @memberOf gestfg.events.services.Events
+    */
+    function edit(event) {
+      return $http.post('/api/v1/events/', {
+        id: event.id,
+        content: JSON.stringify(event)
       });
     }
 

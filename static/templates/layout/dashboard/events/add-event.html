@@ -19,7 +19,7 @@
 
         <div class="box">
 
-          <form role="form" ng-submit="vm.submit()">
+          <form role="form" ng-submit="submit()" ng-controller="DashboardController as dashCtrl">
 
             <div class="box-header with-border">
               <h3 class="box-title">Bootstrap WYSIHTML5 <small>Simple and fast</small></h3>
@@ -33,21 +33,58 @@
 
               <div class="row">
                 <div class="col-md-4">
-                  <input class="form-control" type="text" placeholder="Título del evento" ng-model="vm.event.titulo">
+                  <label>Título</label>
+                  <input class="form-control" type="text" placeholder="Título del evento" ng-model="vm.event.titulo" required="true">
                 </div>
-                <div class="col-md-4">
+
+                <!-- <div class="col-md-4">
                   <select class="form-control" ng-model="vm.event.tipo">
                     <option>informativo</option>
                     <option>convocatoria</option>
                   </select>
+                </div> -->
+
+                <div class="col-md-4">
+                  <label>Tipo</label>
+                  <select class="form-control" ng-model="vm.event.tipo" ng-options="tipo as tipo.nombre for tipo in dashCtrl.tipos_evento.data track by tipo.codigo" ng-init="vm.event.tipo=dashCtrl.tipos_evento.data[0]" required="true">
+                  </select>
+                </div>
+
+                <div class="col-md-4" ng-show="vm.event.tipo.codigo != 'INFOR'">
+                  <label>Tipo convocatoria</label>
+                  <select class="form-control" ng-model="vm.event.sub_tipo" ng-options="tipo as tipo.nombre for tipo in dashCtrl.subtipos_evento.data track by tipo.codigo" ng-init="vm.event.sub_tipo=dashCtrl.subtipos_evento.data[0]">
+                  </select>
+                </div>
+
+              </div>
+
+              <div class="row" ng-show="vm.event.tipo.codigo != 'INFOR'">
+
+                <br>
+
+                <div class="col-md-4">
+                  <label>Titulación</label>
+                  <select class="form-control" ng-model="vm.event.titulacion" ng-init="vm.event.titulacion='GII'" required="true">
+                    <option value="GII">TFG Informatica</option>
+                    <option value="GITT">TFG Telecomunicaciones</option>
+                    <option value="GIM">TFG Doble Grado</option>
+                    <option value="MPII">TFM Informatica</option>
+                    <option value="MPIT">TFM Telecomunicaciones</option>
+                  </select>
+                </div>
+
+                <div class="col-md-4">
+                  <label>Fechas</label>
+                  <input id="fechas" class="form-control" type="text" placeholder="Fechas">
                 </div>
               </div>
+
               <br>
               <textarea ng-model="vm.event.contenido" id="wysihtml5-editor" class="textarea" placeholder="Contenido del evento" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
             </div>
 
             <div class="box-footer">
-              <button type="submit" class="btn btn-primary">Publicar</button>
+              <button type="submit" class="btn btn-primary" ng-disabled="loading">Publicar</button>
             </div>
 
           </form>
@@ -63,6 +100,30 @@
   <script>
     $(function () {
       //bootstrap WYSIHTML5 - text editor
-      $(".textarea").wysihtml5();
+      //$(".textarea").wysihtml5();
+    });
+
+    // fecha inicio
+    $('#fechas').daterangepicker({
+        timePicker: true,
+        // timePickerIncrement: 5,
+        locale: {
+            format: 'MM/DD/YYYY h:mm A'
+        }
+    });
+
+    $('#fechas').on('apply.daterangepicker', function(ev, picker) {
+        // var fechas = $('#fechas').data('daterangepicker');
+        // fechas.startDate.toString();
+        // fechas.endDate.toString();
+        // fechas.startDate.toISOString();
+        // fechas.endDate.toISOString();
+
+        // console.log(picker.startDate);
+        // console.log(picker.endDate);
+        // console.log(moment.utc(picker.startDate).valueOf());
+        // console.log(moment(picker.endDate).valueOf());
+        // console.log(picker.startDate.format('YYYY-MM-DD'));
+        // console.log(picker.endDate.format('YYYY-MM-DD'));
     });
   </script>

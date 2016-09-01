@@ -21,6 +21,101 @@
     dashCtrl.departamentos = [];
     dashCtrl.upload = upload;
 
+    $scope.upload = upload;
+
+    // TODO llamarlos dinamicamente
+    dashCtrl.tipos_evento =
+    {
+        "status": true,
+        "data": [
+            {
+                "id": 1,
+                "codigo": "CONV_JUN",
+                "nombre": "Convocatoria de Junio"
+            },
+            {
+                "id": 2,
+                "codigo": "CONV_SEPT",
+                "nombre": "Convocatoria de Septiembre"
+            },
+            {
+                "id": 3,
+                "codigo": "CONV_DIC",
+                "nombre": "Convocatoria de Diciembre"
+            },
+            {
+                "id": 4,
+                "codigo": "INFOR",
+                "nombre": "Informativo"
+            }
+        ]
+    };
+
+    dashCtrl.subtipos_evento =
+    {
+        "data": [
+            {
+                "codigo": "ASIG_TFG",
+                "nombre": "Asignación TFG"
+            },
+            {
+                "codigo": "SOL_EVAL",
+                "nombre": "Notificación Solicitud de Evaluación"
+            },
+            {
+                "codigo": "COM_EVAL",
+                "nombre": "Establecimiento de las Comisiones de Evaluación"
+            },
+            {
+                "codigo": "ENT_MAT",
+                "nombre": "Entrega de material"
+            },
+            {
+                "codigo": "ENT_INF_TUTOR",
+                "nombre": "Entrega del Informe del Tutor"
+            },
+            {
+                "codigo": "DEF_TFG",
+                "nombre": "Defensa del TFG"
+            },
+            {
+                "codigo": "EVAL_TFG",
+                "nombre": "Evaluación del TFG y Notificación al Centro"
+            }
+        ]
+    };
+
+    dashCtrl.titulaciones =
+    {
+        "data": [
+            {
+                "id": 1,
+                "codigo": "GII",
+                "nombre": "Grado en Ingeniería Informática"
+            },
+            {
+                "id": 2,
+                "codigo": "GIM",
+                "nombre": "Doble Grado en Ingeniería Informática y en Matemáticas"
+            },
+            {
+                "id": 3,
+                "codigo": "GITT",
+                "nombre": "Grado en Ingeniería de Tecnologías de Telecomunicación"
+            },
+            {
+                "id": 4,
+                "codigo": "MPII",
+                "nombre": "Máster Profesional en Ingeniería Informática"
+            },
+            {
+                "id": 5,
+                "codigo": "MPIT",
+                "nombre": "Máster Profesional en Ingeniería de Telecomunicación"
+            }
+        ]
+    };
+
     activate();
 
     /**
@@ -39,7 +134,7 @@
         console.log(e);
       }
 
-      //Departamentos.all().then(dptSuccessFn, dptErrorFn);
+      Departamentos.all().then(dptSuccessFn, dptErrorFn);
 
       /**
       * @name eventsSuccessFn
@@ -96,7 +191,8 @@
       fd.append('file', f);
       fd.append('model', dashCtrl.up.model);
 
-      Dashboard.upload(fd).then(uploadSuccessFn, uploadErrorFn);
+      preAction();
+      Dashboard.upload(fd).then(uploadSuccessFn, uploadErrorFn).finally(postAction);
 
 
       function uploadSuccessFn(data, status, headers, config) {
@@ -115,5 +211,14 @@
       // }
       // r.readAsBinaryString(f);
     }
+
+    function preAction(){
+      $scope.loading = true;
+    }
+
+    function postAction(){
+      $scope.loading = false;
+    }
+
   }
 })();

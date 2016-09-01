@@ -17,8 +17,9 @@ class TfgServicesTests(TestCase):
 
         titulacion = Titulacion.objects.create(nombre='Ingenieria Informatica', codigo='IF')
 
-        self.data_evento1 = dict(content=dict(contenido='admin2@admin.es', tipo='CONV_JUN',
-                               titulo='titulo 1', desde='01/07/2016', hasta='25/07/2016'))
+        self.data_evento1 = dict(content=dict(contenido='admin2@admin.es', convocatoria='CONV_SEPT', tipo='SOL_EVAL',
+                                              titulo='titulo 1', desde='2016-08-04T22:00:00.000Z',
+                                              hasta='2016-08-14T15:00:00.000Z', titulacion='IF'))
 
         self.data_prof1 = dict(email='prof_ejemplo@ugr.es', first_name='profesor 1',
                                last_name='apellido 1 apellido 12', departamento=dep.codigo, password='75169052')
@@ -47,6 +48,8 @@ class TfgServicesTests(TestCase):
         self.data_alum1 = dict(email='alumno1@correo.ugr.es', first_name='profesor 2',
                                last_name='apellido 12 apellido 122', password='75169052')
 
+        self.data_titulacion = dict(codigo='GIT', nombre='ingenieria telecomunicaciones')
+
     def test_ws_tfgs(self):
         # Login como administrador
         res = self.client.post('/api/v1/auth/login/', dict(email=self.data_admin['email'],
@@ -66,12 +69,12 @@ class TfgServicesTests(TestCase):
         # Intento obtener todos ls TFGs, pero no hay ninguno
         res = self.client.get('/api/v1/tfgs/')
         resul = json.loads(res.content)
-        self.assertEqual(resul['message'], 'No hay tfgs almacenados')
+        self.assertEqual(len(resul['data']), 0)
 
         # El tfg no existe
         res = self.client.get('/api/v1/tfgs/', {'titulo': self.data_tfg1['titulo']})
         resul = json.loads(res.content)
-        self.assertEqual(resul['message'], 'El tfg indicado no existe')
+        self.assertEqual(len(resul['data']), 0)
 
         # inserto un tfg erroneo, sin tipo
         res = self.client.post('/api/v1/tfgs/', self.data_tfg_error)
@@ -83,7 +86,7 @@ class TfgServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['message'], 'El cotutor no existe')
 
-        #Inserto el cotutor
+        # Inserto el cotutor
         res = self.client.post('/api/v1/profesores/', self.data_prof2)
         resul = json.loads(res.content)
         self.assertEqual(resul['data']['email'], self.data_prof2['email'])
@@ -96,20 +99,223 @@ class TfgServicesTests(TestCase):
         # El tfg existe
         res = self.client.get('/api/v1/tfgs/', {'titulo': self.data_tfg1['titulo']})
         resul = json.loads(res.content)
+        self.assertEqual(resul['data'][0]['titulo'], self.data_tfg1['titulo'])
+
+        # Obtengo todos
+        res = self.client.get('/api/v1/tfgs/')
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data'][0]['titulo'], self.data_tfg1['titulo'])
+
+        # Asigno el TFG
+        res = self.client.post('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'],
+                                                      'alumno_1': self.data_alum1['email']})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        # Compruebo que esta asignado
+        res = self.client.get('/api/v1/tfgs/', {'titulo': self.data_tfg1['titulo']})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data'][0]['asignado'], True)
+
+        # obtengo con distintos filtros
+        res = self.client.get('/api/v1/tfgs/', {'asignado': True})
+        resul = json.loads(res.content)
+        self.assertEqual(len(resul['data']), 1)
+
+        # obtengo con distintos filtros
+        res = self.client.get('/api/v1/tfgs/', {'tutor': self.data_prof1['email'],
+                                                'titulacion': self.data_tfg1['titulacion']})
+        resul = json.loads(res.content)
+        self.assertEqual(len(resul['data']), 1)
+
+        # Creo la convocatoria de Junio
+        res = self.client.post('/api/v1/events/',  self.data_evento1, format='json')
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        # Le asigno una convocatoria
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'],
+                                                     'datos': json.dumps({'tipo': 'ASIG_TFG',
+                                                                          'convocatoria': 'CONV_SEPT', 'anio': 2016})})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        res = self.client.get('/api/v1/tfgs_asig/')
+        resul = json.loads(res.content)
+        self.assertEqual(len(resul['data']), 1)
+
+    def test_ws_tfgs_listado(self):
+        # Login como administrador
+        res = self.client.post('/api/v1/auth/login/', dict(email=self.data_admin['email'],
+                                                           password=self.data_admin['password']))
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['email'], self.data_admin['email'])
+
+        # Inserto un profesor y un alumno
+        res = self.client.post('/api/v1/profesores/', self.data_prof1)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['email'], self.data_prof1['email'])
+
+        res = self.client.post('/api/v1/alumnos/', self.data_alum1)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['email'], self.data_alum1['email'])
+
+        # Intento obtener todos ls TFGs, pero no hay ninguno
+        res = self.client.get('/api/v1/tfgs/')
+        resul = json.loads(res.content)
+        self.assertEqual(len(resul['data']), 0)
+
+        # El tfg no existe
+        res = self.client.get('/api/v1/tfgs/', {'titulo': self.data_tfg1['titulo']})
+        resul = json.loads(res.content)
+        self.assertEqual(len(resul['data']), 0)
+
+        # inserto un tfg erroneo, sin tipo
+        res = self.client.post('/api/v1/tfgs/', self.data_tfg_error)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['message'], 'Tipo de TFG necesario')
+
+        # inserto un tfg incorrecto, el cotutor no existe
+        res = self.client.post('/api/v1/tfgs/', self.data_tfg1)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['message'], 'El cotutor no existe')
+
+        # Inserto el cotutor
+        res = self.client.post('/api/v1/profesores/', self.data_prof2)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['email'], self.data_prof2['email'])
+
+        # inserto un tfg correcto
+        res = self.client.post('/api/v1/tfgs/', self.data_tfg1)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        # Lo cambio
+        res = self.client.put('/api/v1/tfgs/', {'tfg': self.data_tfg1['titulo'], 'datos': json.dumps({'publicado': True,
+                                                'validado': True})})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        # Usuario anonimo
+        res = self.client.post('/api/v1/auth/logout/')
+
+        # Obtengo todos
+        res = self.client.get('/api/v1/tfgs/')
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data'][0]['titulo'], self.data_tfg1['titulo'])
+
+        # obtengo con distintos filtros
+        res = self.client.get('/api/v1/tfgs/', {'asignado': False, 'publicado': True,
+                                                'titulacion': self.data_tfg1['titulacion']})
+        resul = json.loads(res.content)
+        self.assertEqual(len(resul['data']), 1)
+
+    def test_tfg_asignar(self):
+        # Login como administrador
+        res = self.client.post('/api/v1/auth/login/', dict(email=self.data_admin['email'],
+                                                           password=self.data_admin['password']))
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['email'], self.data_admin['email'])
+
+        # Inserto un profesor y un alumno
+        res = self.client.post('/api/v1/profesores/', self.data_prof1)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['email'], self.data_prof1['email'])
+
+        res = self.client.post('/api/v1/alumnos/', self.data_alum1)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['email'], self.data_alum1['email'])
+
+        # Inserto el cotutor
+        res = self.client.post('/api/v1/profesores/', self.data_prof2)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['email'], self.data_prof2['email'])
+
+        # Me logueo con un profesor
+        res = self.client.post('/api/v1/auth/login/', {'email': self.data_prof1['email'],
+                                                       'password': self.data_prof1['password']})
+
+        # inserto un tfg correcto
+        res = self.client.post('/api/v1/tfgs/', self.data_tfg1)
+        resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
         # Asigno el TFG
         res = self.client.post('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'],
-                                                      'alumno1': self.data_alum1['email']})
+                                                      'alumno_1': self.data_alum1['email']})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
-        # Creo la convocatoria de Junio
-        res = self.client.post('/api/v1/events/',  self.data_evento1, format='json')
-        self.assertEqual(resul['status'], True)
+        # Me logueo con otro profesor
+        res = self.client.post('/api/v1/auth/login/', {'email': self.data_prof2['email'],
+                                                       'password': self.data_prof2['password']})
 
-        # Le asigno una convocatoria
-        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'], 'convocatoria': 'CONV_JUN'})
+        # Lo intento cambiar pero no por que no es mi tfg
+        res = self.client.put('/api/v1/tfgs/', {'tfg': self.data_tfg1['titulo'], 'datos': json.dumps({'publicado': True,
+                                                'validado': True})})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['message'], 'Sin privilegios')
+
+        # intento asignar un tfg que no es mio
+        res = self.client.post('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'],
+                                                      'alumno_1': self.data_alum1['email']})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['message'], 'El profesor no es tutor del Tfg')
+
+    def test_tfg_put(self):
+        # Login como administrador
+        res = self.client.post('/api/v1/auth/login/', dict(email=self.data_admin['email'],
+                                                           password=self.data_admin['password']))
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['email'], self.data_admin['email'])
+
+        # Inserto un profesor y un alumno
+        res = self.client.post('/api/v1/profesores/', self.data_prof1)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['email'], self.data_prof1['email'])
+
+        res = self.client.post('/api/v1/alumnos/', self.data_alum1)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['email'], self.data_alum1['email'])
+
+        # Inserto el cotutor
+        res = self.client.post('/api/v1/profesores/', self.data_prof2)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['email'], self.data_prof2['email'])
+
+        # Me logueo con un profesor
+        res = self.client.post('/api/v1/auth/login/', {'email': self.data_prof1['email'],
+                                                       'password': self.data_prof1['password']})
+
+        # inserto un tfg correcto
+        res = self.client.post('/api/v1/tfgs/', self.data_tfg1)
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
+        # Lo cambio
+        res = self.client.put('/api/v1/tfgs/', {'tfg': self.data_tfg1['titulo'], 'datos': json.dumps({'publicado': True,
+                                                'validado': True})})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+    def test_titulacion(self):
+        # Me logueo con un admin
+        res = self.client.post('/api/v1/auth/login/', {'email': self.data_admin['email'],
+                                                       'password': self.data_admin['password']})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['email'], self.data_admin['email'])
+
+        res = self.client.post('/api/v1/titulaciones/', {'codigo': self.data_titulacion['codigo'],
+                                                         'nombre': self.data_titulacion['nombre']})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        res = self.client.put('/api/v1/titulaciones/', {'codigo': self.data_titulacion['codigo'],
+                                                        'datos': json.dumps({'nombre':
+                                                                                'grado en ingenieria informatica'})})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data']['nombre'], 'grado en ingenieria informatica')
+
+        res = self.client.get('/api/v1/titulaciones/')
+        resul = json.loads(res.content)
+        self.assertEqual(resul['data'][2]['nombre'], 'grado en ingenieria informatica')

@@ -19,6 +19,8 @@
 
     uploadTfgsCtrl.submit = submit;
 
+    $scope.submit = submit;
+
     $scope.load_validated = function() {
       $scope.validados = $routeParams.datos;
       var validados = $rootScope.tfgs_validados;
@@ -68,10 +70,11 @@
     $scope.insert_validated = function() {
 
       if($rootScope.tfgs_validados){
+        preAction();
         if($rootScope.preasignados){
-          Tfgs.insert_validated('tfg_asig', JSON.stringify($rootScope.tfgs_validados.exitos)).then(insertTfgsSuccessFn, insertTfgsErrorFn);
+          Tfgs.insert_validated('tfg_asig', JSON.stringify($rootScope.tfgs_validados.exitos)).then(insertTfgsSuccessFn, insertTfgsErrorFn).finally(postAction);
         } else {
-          Tfgs.insert_validated('tfg', JSON.stringify($rootScope.tfgs_validados.exitos)).then(insertTfgsSuccessFn, insertTfgsErrorFn);
+          Tfgs.insert_validated('tfg', JSON.stringify($rootScope.tfgs_validados.exitos)).then(insertTfgsSuccessFn, insertTfgsErrorFn).finally(postAction);
         }
       } else {
         alert('no hay TFGs validados');
@@ -83,6 +86,7 @@
       */
       function insertTfgsSuccessFn(data, status, headers, config) {
         Snackbar.success('Los TFGs se han insertado con exito.');
+        postActionSuccess();
       }
 
 
@@ -113,7 +117,7 @@
       cabeceras.hard_soft = uploadTfgsCtrl.hard_soft;
       cabeceras.tutor = uploadTfgsCtrl.tutor;
       cabeceras.cotutor = uploadTfgsCtrl.cotutor;
-      cabeceras.titulacion = uploadTfgsCtrl.titulacion2;
+      //cabeceras.titulacion = uploadTfgsCtrl.titulacion2;
 
       if(uploadTfgsCtrl.preasignados){
         cabeceras.alumno_1 = uploadTfgsCtrl.alumno1;
@@ -132,12 +136,13 @@
       fd.append('titulacion', uploadTfgsCtrl.titulacion);
 
       if(uploadTfgsCtrl.preasignados){
-        fd.append('tipe_file', 'tfg_asig');
+        fd.append('type_file', 'tfg_asig');
       } else {
-        fd.append('tipe_file', 'tfg');
+        fd.append('type_file', 'tfg');
       }
 
-      Tfgs.upload('/api/v1/upload_file_tfgs/', fd).then(uploadTfgsSuccessFn, uploadTfgsErrorFn);
+      preAction();
+      Tfgs.upload('/api/v1/upload_file_tfgs/', fd).then(uploadTfgsSuccessFn, uploadTfgsErrorFn).finally(postAction);
 
       /**
       * @name uploadTfgsSuccessFn
@@ -160,5 +165,21 @@
         Snackbar.error(data.data.message);
       }
     }
+
+    function preAction(){
+      $scope.loading = true;
+      $('.action-btn').addClass('disabled');
+    }
+
+    function postAction(){
+      $scope.loading = false;
+      $('.action-btn').removeClass('disabled');
+    }
+
+    function postActionSuccess(){
+      $("#tabla-tfgs").DataTable().clear().draw();
+      // $("#tabla-tfgs").DataTable().ajax.reload();
+    }
+
   }
 })();

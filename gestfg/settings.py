@@ -21,8 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 
 # define apps directories
-CONTROLLER_PATH = os.path.join(BASE_DIR, 'apps', 'controller')
-MODEL_PATH = os.path.join(BASE_DIR, 'apps', 'model')
+DOC_PATH = os.path.join(BASE_DIR, 'contenido', 'documentacion')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -41,6 +40,15 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'authentication.Usuario'
 
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'noreply.gestfg@gmail.com'
+SERVER_EMAIL = 'noreply.gestfg@gmail.com'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'gestfg.noreply@gmail.com'
+EMAIL_HOST_PASSWORD = 'noreplygestfg'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+HOST = 'http://127.0.0.1:8000/'
 # Application definition
 
 INSTALLED_APPS = (
@@ -56,7 +64,9 @@ INSTALLED_APPS = (
     'authentication',
     'tfgs',
     'eventos',
-    'comisiones_evaluacion'
+    'comisiones_evaluacion',
+    'notificaciones',
+    'estadisticas'
 )
 
 MIDDLEWARE_CLASSES = (

@@ -1,5 +1,5 @@
 
-  <form role="form" class="form-horizontal" ng-submit="vm.update()">
+  <form role="form" class="form-horizontal" ng-submit="update()">
 
     <div class="box-body pad">
 
@@ -54,7 +54,8 @@
             <option value="LSI">LSI</option>
             <option value="MATEAPLI">MATEAPLI</option>
             <option value="OPTICA">OPTICA</option>
-            <option value="TDTC">TDTC</option>
+            <option value="TSTC">TSTC</option>
+            <option value="CN">CN</option>
           </select>
         </div>
       </div>
@@ -79,8 +80,8 @@
     </div>
 
     <div class="box-footer">
-      <button type="button" class="btn btn-danger pull-left" ng-click="vm.remove()">Borrar</button>
-      <button type="submit" class="btn btn-primary pull-right">Guardar</button>
+      <button type="button" class="btn btn-danger pull-left" ng-click="remove()" ng-disabled="loading">Borrar</button>
+      <button type="submit" class="btn btn-primary pull-right" ng-disabled="loading">Guardar</button>
       <button type="button" class="btn btn-default pull-right" data-dismiss="modal"style="margin-left:10px; margin-right:10px;">Cerrar</button>
     </div>
 

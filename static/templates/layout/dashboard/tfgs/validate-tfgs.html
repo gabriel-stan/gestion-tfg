@@ -107,7 +107,9 @@
             select: {
                 style: 'multi'
             },
-            responsive: true,
+            processing: true,
+            scrollX: true,
+            // responsive: true,
             buttons: [
                 {
                     text: 'Reload',
@@ -125,6 +127,7 @@
                 },
                 {
                     text: 'Insertar',
+                    className: 'btn btn-primary action-btn ',
                     action: function ( e, dt, node, config ) {
                         // angular.element($("#tabla-tfgs")).scope().load_validated();
                         angular.element($("#tabla-tfgs")).scope().insert_validated();

@@ -29,7 +29,7 @@
             <div class="form-group">
               <label class="col-sm-4 control-label">Titulacion</label>
               <div class="col-sm-8">
-                  <select id="upload-titulacion" class="form-control" ng-model="uploadCtrl.titulacion" ng-init="uploadCtrl.titulacion='GII'">
+                  <select id="upload-titulacion" class="form-control" ng-model="uploadCtrl.titulacion" ng-init="uploadCtrl.titulacion='GII'" required="true">
                   <option value="GII">TFG Informatica</option>
                   <option value="GITT">TFG Telecomunicaciones</option>
                   <option value="GIM">TFG Doble Grado</option>
@@ -50,21 +50,21 @@
             <div class="form-group">
               <label class="col-sm-4 control-label">Fila Inicio</label>
               <div class="col-sm-8">
-                <input id="p-fila" class="form-control" type="text" placeholder="5" ng-model="uploadCtrl.p_fila">
+                <input id="p-fila" class="form-control" type="text" placeholder="5" ng-model="uploadCtrl.p_fila" required="true">
               </div>
             </div>
 
             <div class="form-group">
               <label class="col-sm-4 control-label">Fila Fin</label>
               <div class="col-sm-8">
-                <input id="u-fila" class="form-control" type="text" placeholder="15" ng-model="uploadCtrl.u_fila">
+                <input id="u-fila" class="form-control" type="text" placeholder="15" ng-model="uploadCtrl.u_fila" required="true">
               </div>
             </div>
 
             <div class="form-group">
               <label class="col-sm-4 control-label">Titulo</label>
               <div class="col-sm-8">
-                <select id="upload-titulo" class="form-control" ng-model="uploadCtrl.titulo" ng-init="uploadCtrl.titulo='E'">
+                <select id="upload-titulo" class="form-control" ng-model="uploadCtrl.titulo" ng-init="uploadCtrl.titulo='E'" required="true">
                   <option>A</option>
                   <option>B</option>
                   <option>C</option>
@@ -87,7 +87,7 @@
             <div class="form-group">
               <label class="col-sm-4 control-label">N. Alumnos</label>
               <div class="col-sm-8">
-                <select id="upload-alumnos" class="form-control" ng-model="uploadCtrl.n_alumnos" ng-init="uploadCtrl.n_alumnos='F'">
+                <select id="upload-alumnos" class="form-control" ng-model="uploadCtrl.n_alumnos" ng-init="uploadCtrl.n_alumnos='F'" required="true">
                   <option>A</option>
                   <option>B</option>
                   <option>C</option>
@@ -110,7 +110,7 @@
             <div class="form-group">
               <label class="col-sm-4 control-label">Descripcion</label>
               <div class="col-sm-8">
-                <select id="upload-desc" class="form-control" ng-model="uploadCtrl.descripcion" ng-init="uploadCtrl.descripcion='G'">
+                <select id="upload-desc" class="form-control" ng-model="uploadCtrl.descripcion" ng-init="uploadCtrl.descripcion='G'" required="true">
                   <option>A</option>
                   <option>B</option>
                   <option>C</option>
@@ -133,7 +133,7 @@
             <div class="form-group">
               <label class="col-sm-4 control-label">Conocimientos Previos</label>
               <div class="col-sm-8">
-                <select id="upload-prev" class="form-control" ng-model="uploadCtrl.conocimientos_previos" ng-init="uploadCtrl.conocimientos_previos='H'">
+                <select id="upload-prev" class="form-control" ng-model="uploadCtrl.conocimientos_previos" ng-init="uploadCtrl.conocimientos_previos='H'" required="true">
                   <option>A</option>
                   <option>B</option>
                   <option>C</option>
@@ -156,30 +156,7 @@
             <div class="form-group">
               <label class="col-sm-4 control-label">Conocimientos HW y SW</label>
               <div class="col-sm-8">
-                <select id="upload-hwsw" class="form-control" ng-model="uploadCtrl.hard_soft" ng-init="uploadCtrl.hard_soft='I'">
-                  <option>A</option>
-                  <option>B</option>
-                  <option>C</option>
-                  <option>D</option>
-                  <option>E</option>
-                  <option>F</option>
-                  <option>G</option>
-                  <option>H</option>
-                  <option>I</option>
-                  <option>J</option>
-                  <option>K</option>
-                  <option>L</option>
-                  <option>M</option>
-                  <option>N</option>
-                  <option>O</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="col-sm-4 control-label">Titulacion</label>
-              <div class="col-sm-8">
-                <select id="titulacion2" class="form-control" ng-model="uploadCtrl.titulacion2" ng-init="uploadCtrl.titulacion2='J'">
+                <select id="upload-hwsw" class="form-control" ng-model="uploadCtrl.hard_soft" ng-init="uploadCtrl.hard_soft='I'" required="true">
                   <option>A</option>
                   <option>B</option>
                   <option>C</option>
@@ -202,7 +179,7 @@
             <div class="form-group">
               <label class="col-sm-4 control-label">Email Tutor</label>
               <div class="col-sm-8">
-                <select id="upload-tutor" class="form-control" ng-model="uploadCtrl.tutor" ng-init="uploadCtrl.tutor='B'">
+                <select id="upload-tutor" class="form-control" ng-model="uploadCtrl.tutor" ng-init="uploadCtrl.tutor='B'" required="true">
                   <option>A</option>
                   <option>B</option>
                   <option>C</option>
@@ -225,7 +202,7 @@
             <div class="form-group">
               <label class="col-sm-4 control-label">Email Cotutor</label>
               <div class="col-sm-8">
-                <select id="upload-cotutor" class="form-control" ng-model="uploadCtrl.cotutor" ng-init="uploadCtrl.cotutor='C'">
+                <select id="upload-cotutor" class="form-control" ng-model="uploadCtrl.cotutor" ng-init="uploadCtrl.cotutor='C'" required="true">
                   <option>A</option>
                   <option>B</option>
                   <option>C</option>
@@ -248,7 +225,7 @@
             <div class="form-group" ng-show="uploadCtrl.preasignados">
               <label class="col-sm-4 control-label">Email Alumno 1</label>
               <div class="col-sm-8">
-                <select id="upload-alumno1" class="form-control" ng-model="uploadCtrl.alumno1">
+                <select id="upload-alumno1" class="form-control" ng-model="uploadCtrl.alumno1" required="true">
                   <option>A</option>
                   <option>B</option>
                   <option>C</option>
@@ -317,7 +294,7 @@
             <div class="form-group">
               <label class="col-sm-4 control-label">Tipo</label>
               <div class="col-sm-8">
-                <select id="tipo" class="form-control" ng-model="uploadCtrl.tipo" ng-init="uploadCtrl.tipo='D'">
+                <select id="tipo" class="form-control" ng-model="uploadCtrl.tipo" ng-init="uploadCtrl.tipo='D'" required="true">
                   <option>A</option>
                   <option>B</option>
                   <option>C</option>
@@ -340,7 +317,7 @@
             <div class="form-group">
               <label class="col-sm-4 control-label">Fichero Excel</label>
               <div class="col-sm-8">
-                <input id="upload-file" type="file">
+                <input id="upload-file" type="file" required="true">
               </div>
             </div>
 
@@ -348,7 +325,7 @@
 
         <div class="box-footer">
 
-          <button type="submit" class="btn btn-primary pull-right">Subir</button>
+          <button type="submit" class="btn btn-primary pull-right" ng-disabled="loading">Subir</button>
 
         </div><!-- /.box-footer -->
       </form>

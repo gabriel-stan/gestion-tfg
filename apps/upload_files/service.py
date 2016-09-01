@@ -42,7 +42,7 @@ class Tfgs_masivos(object):
                      conocimientos_previos=
                      self.ws[cabeceras['conocimientos_previos'] + str(i)].value,
                      hard_soft=self.ws[cabeceras['hard_soft'] + str(i)].value,
-                     titulacion=self.ws[cabeceras['titulacion'] + str(i)].value,
+                     #titulacion=self.ws[cabeceras['titulacion'] + str(i)].value,
                      tutor=self.ws[cabeceras['tutor'] + str(i)].value,
                      cotutor=self.ws[cabeceras['cotutor'] + str(i)].value)
 

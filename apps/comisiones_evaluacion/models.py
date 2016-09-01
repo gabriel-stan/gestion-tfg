@@ -1,7 +1,10 @@
 from django.db import models
 from authentication.models import Profesor
+from tfgs.models import Tfg_Asig, Titulacion
+from eventos.models import Convocatoria
 from django.contrib.auth.models import BaseUserManager
-from services import Comision
+from datetime import datetime
+from authentication.models import Alumno
 
 
 class Comision_EvaluacionManager(BaseUserManager):
@@ -15,39 +18,27 @@ class Comision_EvaluacionManager(BaseUserManager):
                 return dict(status=False, message='El presidente no existe')
 
             try:
-                sup_presidente = Profesor.objects.get(email=kwargs.get('sup_presidente'))
-            except Profesor.DoesNotExist:
-                return dict(status=False, message='El sustituto del presidente no existe')
-
-            try:
-                titular_1 = Profesor.objects.get(email=kwargs.get('titular_1'))
+                vocal_1 = Profesor.objects.get(email=kwargs.get('vocal_1'))
             except Profesor.DoesNotExist:
                 return dict(status=False, message='El primer titular no existe')
 
             try:
-                titular_2 = Profesor.objects.get(email=kwargs.get('titular_2'))
+                vocal_2 = Profesor.objects.get(email=kwargs.get('vocal_2'))
             except Profesor.DoesNotExist:
                 return dict(status=False, message='El segundo titular no existe')
 
-            if kwargs.get('sup_titular_1'):
-                try:
-                    sup_titular_1 = Profesor.objects.get(email=kwargs.get('sup_titular_1'))
-                except Profesor.DoesNotExist:
-                    return dict(status=False, message='El sustituto del primer titular no existe')
-            else:
-                sup_titular_1 = None
+            try:
+                suplente_1 = Profesor.objects.get(email=kwargs.get('suplente_1'))
+            except Profesor.DoesNotExist:
+                return dict(status=False, message='El primer suplente no existe')
 
-            if kwargs.get('sup_titular_2'):
-                try:
-                    sup_titular_2 = Profesor.objects.get(email=kwargs.get('sup_titular_2'))
-                except Profesor.DoesNotExist:
-                    return dict(status=False, message='El sustituto del segundo titular no existe')
-            else:
-                sup_titular_2 = None
+            try:
+                suplente_2 = Profesor.objects.get(email=kwargs.get('suplente_2'))
+            except Profesor.DoesNotExist:
+                return dict(status=False, message='El segundo suplente no existe')
 
-            comision = self.model(presidente=presidente, titular_1=titular_1, titular_2=titular_2,
-                                  sup_presidente=sup_presidente, sup_titular_1=sup_titular_1,
-                                  sup_titular_2=sup_titular_2)
+            comision = self.model(presidente=presidente, vocal_1=vocal_1, vocal_2=vocal_2, suplente_1=suplente_1,
+                                  suplente_2=suplente_2, convocatoria=kwargs.get('convocatoria'))
 
             comision.save()
             return dict(status=True, data=Comision_Evaluacion.objects.get(presidente=comision.presidente))
@@ -55,37 +46,14 @@ class Comision_EvaluacionManager(BaseUserManager):
         except NameError as e:
             return dict(status=False, message=e.message)
 
-    def create_file(self, **kwargs):
-        try:
-            presidente = Profesor.objects.get(email=kwargs.get('presidente'))
-            sup_presidente = Profesor.objects.get(email=kwargs.get('sup_presidente'))
-            titular_1 = Profesor.objects.get(email=kwargs.get('titular_1'))
-            sup_titular_1 = Profesor.objects.get(email=kwargs.get('sup_titular_1'))
-            if kwargs.get('titular_2'):
-                titular_2 = Profesor.objects.get(email=kwargs.get('titular_2'))
-                sup_titular_2 = Profesor.objects.get(email=kwargs.get('sup_titular_2'))
-            else:
-                titular_2 = None
-                sup_titular_2 = None
-
-            comision = self.model(presidente=presidente, titular_1=titular_1, titular_2=titular_2,
-                                  sup_presidente=sup_presidente, sup_titular_1=sup_titular_1,
-                                  sup_titular_2=sup_titular_2)
-
-            comision.save()
-            return dict(status=True, data=Comision_Evaluacion.objects.get(id=comision.id))
-
-        except NameError as e:
-            return dict(status=False, message=e.message)
-
 
 class Comision_Evaluacion(models.Model):
     presidente = models.ForeignKey(Profesor, related_name='presidente', default=None)
-    titular_1 = models.ForeignKey(Profesor, related_name='titular_1', default=None)
-    titular_2 = models.ForeignKey(Profesor, related_name='titular_2', default=None, null=True)
-    sup_presidente = models.ForeignKey(Profesor, related_name='sup_presidente', default=None)
-    sup_titular_1 = models.ForeignKey(Profesor, related_name='sup_titular_1', default=None, null=True)
-    sup_titular_2 = models.ForeignKey(Profesor, related_name='sup_titular_2', default=None, null=True)
+    vocal_1 = models.ForeignKey(Profesor, related_name='vocal_1', default=None)
+    vocal_2 = models.ForeignKey(Profesor, related_name='vocal_2', default=None, null=True)
+    suplente_1 = models.ForeignKey(Profesor, related_name='suplente_1', default=None)
+    suplente_2 = models.ForeignKey(Profesor, related_name='suplente_2', default=None, null=True)
+    convocatoria = models.ForeignKey(Convocatoria, related_name='conv_comision', default=None)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -98,17 +66,89 @@ class Comision_Evaluacion(models.Model):
     def __unicode__(self):
         return self.presidente
 
-    def get_titular_1(self):
-        return self.titular_1
+    def get_vocal_1(self):
+        return self.vocal_1
 
-    def get_titular_2(self):
-        return self.titular_2
+    def get_vocal_2(self):
+        return self.vocal_2
 
-    def get_sup_presidente(self):
-        return self.sup_presidente
+    def get_suplente_1(self):
+        return self.suplente_1
 
-    def get_sup_titular_1(self):
-        return self.sup_titular_1
+    def to_dict(self, user):
+        return dict(presidente=self.presidente.to_dict(user), vocal_1=self.vocal_1.to_dict(user),
+                    vocal_2=self.vocal_2.to_dict(user), suplente_1=self.suplente_1.to_dict(user),
+                    suplente_2=self.suplente_2.to_dict(user), created_at=self.created_at,
+                    updated_at=self.updated_at)
 
-    def get_sup_titular_2(self):
-        return self.sup_titular_2
+
+class TribunalesManager(BaseUserManager):
+
+    def create(self, **kwargs):
+        try:
+
+            try:
+                tfg = Tfg_Asig.objects.get(tfg=kwargs.get('tfg'))
+            except Tfg_Asig.DoesNotExist:
+                return dict(status=False, message='El tfg no existe')
+
+            try:
+                comision = Comision_Evaluacion.objects.get(presidente=
+                                                           Profesor.objects.get(email=kwargs.get('comision')))
+            except Comision_Evaluacion.DoesNotExist:
+                return dict(status=False, message='La comision no existe')
+
+            try:
+                fecha = datetime.strptime(kwargs.get('fecha'), '%Y-%m-%dT%H:%M:%S') if kwargs.get('fecha') else None
+            except:
+                raise NameError("Error en la fecha")
+
+            try:
+                observaciones = kwargs.get('observaciones')
+            except:
+                raise NameError("Error en las kwargs.get('fecha')")
+            tribunal = self.model(tfg=tfg, comision=comision, fecha=fecha, observaciones=observaciones,
+                                  alumno=kwargs.get('alumno'))
+            tribunal.save()
+            return dict(status=True, data=Tribunales.objects.get(tfg=tribunal.tfg, alumno=kwargs.get('alumno')))
+
+        except NameError as e:
+            return dict(status=False, message=e.message)
+
+
+class Tribunales(models.Model):
+    tfg = models.ForeignKey(Tfg_Asig, default=None)
+    alumno = models.ForeignKey(Alumno, default=None)
+    comision = models.ForeignKey(Comision_Evaluacion, default=None)
+    fecha = models.DateTimeField(null=True)
+    observaciones = models.CharField(max_length=500, null=True)
+    documentacion = models.CharField(max_length=200, null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    objects = TribunalesManager()
+
+    USERNAME_FIELD = 'alumno'
+    REQUIRED_FIELD = USERNAME_FIELD
+
+    def __unicode__(self):
+        return self.alumno
+
+    def get_comision(self):
+        return self.comision
+
+    def get_fecha(self):
+        return self.fecha
+
+    def get_hora(self):
+        return self.hora
+
+    def get_observaciones(self):
+        return self.observaciones
+
+    def to_dict(self, user):
+        return dict(tfg=self.tfg.to_dict(user), comision=self.comision.to_dict(user),
+                    fecha=self.fecha, observaciones=self.observaciones,
+                    documentacion=self.documentacion, created_at=self.created_at,
+                    updated_at=self.updated_at)

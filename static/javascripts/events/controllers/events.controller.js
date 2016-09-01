@@ -9,13 +9,54 @@
     .module('gestfg.events.controllers')
     .controller('EventsController', EventsController);
 
-  EventsController.$inject = ['$scope'];
+  EventsController.$inject = ['$scope', '$rootScope', 'Events', 'Snackbar'];
 
   /**
   * @namespace EventsController
   */
-  function EventsController($scope) {
+  function EventsController($scope, $rootScope, Events, Snackbar) {
+
     var eventsCtrl = this;
+
+    $scope.editEvent = edit;
+    $scope.removeEvent = remove;
+
+    $rootScope.selectedEvent = new Object();
+
+    eventsCtrl.parseTimeAgo = function(fecha){
+      // console.log(fecha);
+
+      var fecha = new Date(fecha);
+      fecha = moment(fecha).fromNow();
+
+      return fecha;
+    }
+
+
+    eventsCtrl.parseTime = function(fecha){
+      // console.log(fecha);
+
+      var fecha = new Date(fecha);
+      fecha = moment(fecha).format("DD/MM/YYYY - hh:mm");
+
+      return fecha;
+    }
+
+    $scope.loadSelectedEvent = function(evento) {
+      $rootScope.selectedEvent = evento;
+      $('iframe').contents().find('.wysihtml5-editor').html(evento.contenido);
+
+      var fechas = $('#fechas').data('daterangepicker');
+
+      if(evento.desde){
+        fechas.setStartDate(new Date(evento.desde));
+      }
+
+      if(evento.hasta){
+        fechas.setEndDate(new Date(evento.hasta));
+      }
+
+    }
 
     // eventsCtrl.columns = [];
 
@@ -28,92 +69,75 @@
     * @memberOf gestfg.events.controllers.EventsController
     */
     function activate() {
-      $scope.$watchCollection(function () { return $scope.events; }, render);
+      //$scope.$watchCollection(function () { return $scope.events; }, render);
       // $scope.$watch(function () { return $(window).width(); }, render);
     }
 
 
     /**
-    * @name calculateNumberOfColumns
-    * @desc Calculate number of columns based on screen width
-    * @returns {Number} The number of columns containing Events
+    * @name remove
+    * @desc Deletes an event
     * @memberOf gestfg.events.controllers.EventsController
     */
-    // function calculateNumberOfColumns() {
-    //   var width = $(window).width();
-    //
-    //   if (width >= 1200) {
-    //     return 4;
-    //   } else if (width >= 992) {
-    //     return 3;
-    //   } else if (width >= 768) {
-    //     return 2;
-    //   } else {
-    //     return 1;
-    //   }
-    // }
+    function remove(eventID) {
 
-
-    /**
-    * @name approximateShortestColumn
-    * @desc An algorithm for approximating which column is shortest
-    * @returns The index of the shortest column
-    * @memberOf gestfg.events.controllers.EventsController
-    */
-    // function approximateShortestColumn() {
-    //   var scores = vm.columns.map(columnMapFn);
-    //
-    //   return scores.indexOf(Math.min.apply(this, scores));
+      if (confirm('¿Borrar el evento?')) {
+        Events.remove(eventID).then(EventsSuccessFn, EventsErrorFn);
+      }
 
 
       /**
-      * @name columnMapFn
-      * @desc A map function for scoring column heights
-      * @returns The approximately normalized height of a given column
+      * @name EventsSuccessFn
+      * @desc Update events array on view
       */
-      // function columnMapFn(column) {
-      //   var lengths = column.map(function (element) {
-      //     return element.contenido.length;
-      //   });
-      //
-      //   return lengths.reduce(sum, 0) * column.length;
-      // }
+      function EventsSuccessFn(data, status, headers, config) {
+        Snackbar.success("El evento se ha eliminado con exito");
+      }
 
 
       /**
-      * @name sum
-      * @desc Sums two numbers
-      * @params {Number} m The first number to be summed
-      * @params {Number} n The second number to be summed
-      * @returns The sum of two numbers
+      * @name EventsErrorFn
+      * @desc Show snackbar with error
       */
-    //   function sum(m, n) {
-    //     return m + n;
-    //   }
-    // }
-
-
-    /**
-    * @name render
-    * @desc Renders Events into columns of approximately equal height
-    * @param {Array} current The current value of `vm.events`
-    * @param {Array} original The value of `vm.events` before it was updated
-    * @memberOf gestfg.events.controllers.EventsController
-    */
-    function render(current, original) {
-      // if (current !== original) {
-      //   vm.columns = [];
-      //
-      //   for (var i = 0; i < calculateNumberOfColumns(); ++i) {
-      //     vm.columns.push([]);
-      //   }
-      //
-      //   for (var i = 0; i < current.length; ++i) {
-      //     var column = approximateShortestColumn();
-      //
-      //     vm.columns[column].push(current[i]);
-      //   }
-      // }
+      function EventsErrorFn(data, status, headers, config) {
+        Snackbar.error(data.data.error);
+      }
     }
+
+
+    /**
+    * @name edit
+    * @desc Edit an event
+    * @memberOf gestfg.events.controllers.EventsController
+    */
+    function edit(event) {
+
+      Events.edit(event).then(EventsSuccessFn, EventsErrorFn);
+
+      /**
+      * @name EventsSuccessFn
+      * @desc Update events array on view
+      */
+      function EventsSuccessFn(data, status, headers, config) {
+        Snackbar.success("Los cambios se han guardado con exito");
+      }
+
+      /**
+      * @name EventsErrorFn
+      * @desc Show snackbar with error
+      */
+      function EventsErrorFn(data, status, headers, config) {
+        Snackbar.error(data.data.error);
+      }
+    }
+
+    function preAction(){
+      $scope.loading = true;
+    }
+
+    function postAction(){
+      $scope.loading = false;
+    }
+
   }
 })();
