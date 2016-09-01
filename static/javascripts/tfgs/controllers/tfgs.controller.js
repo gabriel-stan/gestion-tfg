@@ -9,12 +9,12 @@
     .module('gestfg.tfgs.controllers')
     .controller('TfgsController', TfgsController);
 
-  TfgsController.$inject = ['$scope', 'Tfgs', 'Snackbar'];
+  TfgsController.$inject = ['$scope', '$document', 'Tfgs', 'Snackbar'];
 
   /**
   * @namespace TfgsController
   */
-  function TfgsController($scope, Tfgs, Snackbar) {
+  function TfgsController($scope, $document, Tfgs, Snackbar) {
 
     var tfgsCtrl = this;
     tfgsCtrl.loadTfgs = loadTfgs;
@@ -248,6 +248,16 @@
       $("#tabla-tfgs").DataTable().clear().draw();
       $("#tabla-tfgs").DataTable().ajax.reload();
     }
+
+    $document.on('/dashboard/tfgs', function(){
+      //$document.off('/dashboard/tfgs');
+      //$document.trigger('ready');
+    });
+
+    $document.on('/dashboard/tfgs-asig', function(){
+      //$document.off('/dashboard/tfgs-asig');
+      //$document.trigger('ready');
+    });
 
   }
 })();

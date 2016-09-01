@@ -26,8 +26,9 @@
       <div class="col-md-4">
         <label>Tipo</label>
 
-        <select class="form-control" ng-model="$root.selectedEvent.convocatoria.tipo.nombre">
-          <option selected="selected">{{$root.selectedEvent.convocatoria.tipo.nombre}}</option>
+        <!-- <select class="form-control" ng-model="$root.selectedEvent.convocatoria.tipo.nombre"> -->
+        <select class="form-control">
+          <option selected="selected">{{$root.selectedEvent.convocatoria ? $root.selectedEvent.convocatoria.tipo.nombre : 'Informativo'}}</option>
         </select>
         <!-- <input class="form-control disabled" type="text" placeholder="Tipo del evento" ng-model="$root.selectedEvent.convocatoria.nombre"> -->
         <!-- <select class="form-control" ng-model="$root.selectedEvent.tipo"> -->
@@ -36,7 +37,8 @@
       <div class="col-md-4" ng-show="$root.selectedEvent.convocatoria">
         <label>Tipo convocatoria</label>
 
-        <select class="form-control" ng-model="$root.selectedEvent.convocatoria.subtipo.nombre">
+        <!-- <select class="form-control" ng-model="$root.selectedEvent.convocatoria.subtipo.nombre"> -->
+        <select class="form-control">
           <option selected="selected">{{$root.selectedEvent.convocatoria.subtipo.nombre}}</option>
         </select>
         <!-- <input class="form-control" type="text" placeholder="Subtipo del evento" ng-model="$root.selectedEvent.tipo.nombre"> -->
@@ -53,7 +55,8 @@
       <div class="col-md-4">
         <label>Titulación</label>
 
-        <select class="form-control" ng-model="$root.selectedEvent.convocatoria.titulacion.nombre">
+        <!-- <select class="form-control" ng-model="$root.selectedEvent.convocatoria.titulacion.nombre"> -->
+        <select class="form-control">
           <option selected="selected">{{$root.selectedEvent.convocatoria.titulacion.nombre}}</option>
         </select>
       </div>
@@ -76,9 +79,10 @@
 </form>
 
   <script>
-    $(function () {
+    $(document).load(function () {
       //bootstrap WYSIHTML5 - text editor
-      $(".textarea").wysihtml5();
+      //$('.textarea').data('wysihtml5').editor.composer.disable();
+      //$(".textarea").wysihtml5();
     });
 
     // fecha inicio

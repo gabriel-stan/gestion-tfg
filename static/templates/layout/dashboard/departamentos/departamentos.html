@@ -89,7 +89,9 @@
     </style>
 
     <script>
-      $(document).ready(function () {
+      // $(document).ready(function () {
+      $(document).on('/dashboard/departamentos', function(event){
+        $(document).off( '/dashboard/departamentos');
 
         var table = $("#tabla-dpts").DataTable({
             //sDom: '<Bf>rt<"col-md-6"i><"col-md-6"p><"col-md-12"l>',
