@@ -398,7 +398,7 @@ class Tfg_asigViewSet(viewsets.ModelViewSet):
                 serializer = self.serializer_class(tfg_asig)
                 resul = serializer.delete(tfg_asig)
                 if resul['status']:
-                    resul = utils.to_dict(resul)
+                    # resul = utils.to_dict(resul)
                     resul_status = status.HTTP_200_OK
                 else:
                     resul = dict(message=resul['message'])

@@ -25,6 +25,7 @@
     tfgsCtrl.loading = true;
 
     $scope.presentarTFGs = presentarTFGs;
+    $scope.asignarTFG = asignarTFG;
 
     $scope.selectedTFG = new Object();
 
