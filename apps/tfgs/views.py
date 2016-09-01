@@ -396,7 +396,7 @@ class Tfg_asigViewSet(viewsets.ModelViewSet):
                 tfg = Tfg.objects.get(titulo=params.get('titulo'))
                 tfg_asig = Tfg_Asig.objects.get(tfg=tfg)
                 serializer = self.serializer_class(tfg_asig)
-                resul = serializer.delete_tfg(tfg_asig)
+                resul = serializer.delete(tfg_asig)
                 if resul['status']:
                     resul = utils.to_dict(resul)
                     resul_status = status.HTTP_200_OK

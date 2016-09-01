@@ -33,6 +33,7 @@ class EventosServicesTests(TestCase):
                                                        'password': self.data_admin['password']})
         resul = json.loads(res.content)
         self.assertEqual(resul['data']['email'], self.data_admin['email'])
+
         # Inserto un evento
         res = self.client.post('/api/v1/events/',  self.data_evento1, format='json')
         resul = json.loads(res.content)
@@ -40,7 +41,7 @@ class EventosServicesTests(TestCase):
         self.assertEqual(resul['data']['contenido'], self.data_evento1['content']['contenido'])
 
         # Modifico la fecha desde
-        res = self.client.put('/api/v1/events/',  {'evento': self.data_evento1['content']['contenido'],
+        res = self.client.put('/api/v1/events/',  {'evento': resul['data']['id'],
                                                    'datos': json.dumps({'desde': '2016-07-04T22:00:00.000Z'})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
