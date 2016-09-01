@@ -204,5 +204,7 @@ class Tfg_AsigSerializer(serializers.ModelSerializer):
             return dict(status=False, message=e.message)
 
     def delete(self, tfg_asig):
+        tfg_asig.tfg.asignado = False
+        tfg_asig.tfg.save()
         tfg_asig.delete()
         return dict(status=True)
