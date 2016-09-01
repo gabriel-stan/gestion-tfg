@@ -31,7 +31,7 @@
     function submit() {
 
       // recogemos el contenido del wysihtml5 editor
-      newEventCtrl.event.contenido = $("#wysihtml5-editor").val();
+      //newEventCtrl.event.contenido = $("#wysihtml5-editor").val();
 
       // newEventCtrl.event.tipo = newEventCtrl.event.tipo.codigo;
       newEventCtrl.event.convocatoria = newEventCtrl.event.tipo.codigo;
