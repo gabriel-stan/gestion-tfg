@@ -98,7 +98,7 @@ class EventosViewSet(viewsets.ModelViewSet):
             self.logger.info('INICIO WS - EVENTOSVIEW PUT del usuario: %s con params: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if request.user.has_perm('eventos.evento.change') or request.user.is_admin:
-                evento = Evento.objects.get(contenido=params.get('evento'))
+                evento = Evento.objects.get(id=params.get('evento'))
                 params = json.loads(params.get('datos'))
                 serializer = EventoSerializer(evento)
                 resul = serializer.update(evento, params)
