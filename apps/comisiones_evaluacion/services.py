@@ -49,6 +49,9 @@ class Comision(object):
             for comision in Comision_Evaluacion.objects.all():
                 serializer = Comision_EvaluacionSerializer(comision)
                 serializer.delete(comision)
+            for tribunal in Tribunales.objects.all():
+                serializer = TribunalesSerializer(tribunal)
+                serializer.delete(tribunal)
         else:
             comisiones = Comision_Evaluacion.objects.filter(convocatoria=self.convocatoria)
             for key, comision in enumerate(comisiones):
@@ -105,7 +108,8 @@ class Comision(object):
             self._seleccion_suplentes()
             self._guardar_comision()
             return dict(status=True, data=dict(num_comisiones=self.num_comisiones, num_tfg=self.num_tfg,
-                                               num_tutores=self.num_tutores, tribunales=self.comisiones))
+                                               num_tutores=self.num_tutores, tribunales=self.comisiones,
+                                               titulacion=self.titulacion))
         except Exception as e:
                 return dict(status=False, message=e)
 
