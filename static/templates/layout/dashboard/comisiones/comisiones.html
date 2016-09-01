@@ -37,6 +37,9 @@
       <thead>
         <tr>
           <th>ID</th>
+          <th>Titulacion</th>
+          <th>Convocatoria</th>
+          <th>Año</th>
           <th>Presidente</th>
           <th>Dept.</th>
           <th>Vocal 1</th>
@@ -53,6 +56,9 @@
       <tfoot>
         <tr>
           <th>ID</th>
+          <th>Titulacion</th>
+          <th>Convocatoria</th>
+          <th>Año</th>
           <th>Presidente</th>
           <th>Dept.</th>
           <th>Vocal 1</th>
@@ -157,6 +163,9 @@
           ],
           columns: [
             {"data" : "id"},
+            {"data" : "convocatoria.titulacion.codigo"},
+            {"data" : "convocatoria.tipo.nombre"},
+            {"data" : "convocatoria.anio"},
             {"data" : "presidente.email"},
             {"data" : "presidente.departamento.codigo"},
             {"data" : "vocal_1.email"},
