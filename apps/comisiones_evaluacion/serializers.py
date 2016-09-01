@@ -25,7 +25,7 @@ class Comision_EvaluacionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comision_Evaluacion
         fields = ('id', 'presidente', 'vocal_1', 'vocal_2', 'suplente_1',
-                  'suplente_2')
+                  'suplente_2', 'convocatoria')
         read_only_fields = ('created_at', 'updated_at')
 
     def create(self, validated_data):
@@ -190,7 +190,7 @@ class TribunalesSerializer(serializers.ModelSerializer):
 
     def delete(self, tribunal):
         try:
-            Tribunales.objects.get(tfg=tribunal.tfg).delete()
+            Tribunales.objects.get(alumno=tribunal.alumno).delete()
             return dict(status=True)
         except Tribunales.DoesNotExist:
             return dict(status=False, message="El tribunal no existe")

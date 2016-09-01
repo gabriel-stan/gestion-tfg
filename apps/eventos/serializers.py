@@ -26,11 +26,8 @@ class EventoSerializer(serializers.ModelSerializer):
             # comprobando contenido
             if 'contenido' in validated_data.keys():
                 new_contenido = validated_data.get('contenido')
-                res = Evento.objects.filter(contenido=new_contenido)
-                if res.count() != 0:
-                    raise NameError("El evento ya existe")
-                elif not isinstance(new_contenido, basestring):
-                    raise NameError("El codigo del evento no tiene formato correcto")
+                if not isinstance(new_contenido, basestring):
+                    raise NameError("Error en el contenido")
                 else:
                     evento.contenido = new_contenido
 
@@ -53,15 +50,15 @@ class EventoSerializer(serializers.ModelSerializer):
                 evento.tipo = tipo
 
             # comprobando autor
-            if 'autor' in validated_data.keys():
-                new_autor = validated_data.get('autor')
-                autor = Usuario.objects.get(email=new_autor)
-                if not isinstance(autor, Usuario):
-                    raise NameError("Autor incorrecto")
-                else:
-                    evento.autor = autor
+            # if 'autor' in validated_data.keys():
+            #     new_autor = validated_data.get('autor')
+            #     autor = Usuario.objects.get(email=new_autor)
+            #     if not isinstance(autor, Usuario):
+            #         raise NameError("Autor incorrecto")
+            #     else:
+            #         evento.autor = autor
 
-            # comprobando tipo
+            # comprobando titulo
             if 'titulo' in validated_data.keys():
                 new_titulo = validated_data.get('titulo')
                 if not isinstance(new_titulo, basestring):
@@ -88,7 +85,7 @@ class EventoSerializer(serializers.ModelSerializer):
                 periodo = Periodo.objects.get(evento=evento)
                 if 'hasta' in validated_data.keys():
                     periodo.end = new_hasta
-                elif 'desde' in validated_data.keys():
+                if 'desde' in validated_data.keys():
                     periodo.start = new_desde
                 periodo.save()
             evento.save()

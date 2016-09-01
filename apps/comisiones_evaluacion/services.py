@@ -50,12 +50,16 @@ class Comision(object):
                 serializer = Comision_EvaluacionSerializer(comision)
                 serializer.delete(comision)
         else:
-
             comisiones = Comision_Evaluacion.objects.filter(convocatoria=self.convocatoria)
             for key, comision in enumerate(comisiones):
                 self.comisiones.append(comision.to_dict(user))
                 self.comisiones[key]['tfgs'] = []
             self.num_comisiones = comisiones.count()
+
+            for tribunal in Tribunales.objects.all():
+                if tribunal.comision in comisiones:
+                    serializer = TribunalesSerializer(tribunal)
+                    serializer.delete(tribunal)
 
     def tutores_comisiones(self):
         try:
@@ -106,7 +110,8 @@ class Comision(object):
             self._seleccion_suplentes()
             self._guardar_comision()
             return dict(status=True, data=dict(num_comisiones=self.num_comisiones, num_tfg=self.num_tfg,
-                                               num_tutores=self.num_tutores, tribunales=self.comisiones))
+                                               num_tutores=self.num_tutores, tribunales=self.comisiones,
+                                               titulacion=self.titulacion.to_dict()))
         except Exception as e:
                 return dict(status=False, message=e)
 

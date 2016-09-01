@@ -224,6 +224,8 @@ class TribunalesViewSet(viewsets.ModelViewSet):
                 comisiones = utils.to_bool(params.get('comisiones'))
                 comision = Comision(request.user, params.get('convocatoria'), params.get('anio'),
                                     params.get('titulacion'), comisiones=comisiones)
+                if not comisiones:
+                    comision.tutores_comisiones()
                 resul = comision.asig_tfgs()
                 while comision.reintentar:
                     comision = Comision(request.user, params.get('convocatoria'), comisiones=comisiones)

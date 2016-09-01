@@ -111,6 +111,18 @@
     * @memberOf gestfg.events.controllers.EventsController
     */
     function edit(event) {
+      // recogemos el contenido del wysihtml5 editor
+      //event.contenido = $("#wysihtml5-editor").val();
+
+      if(event.convocatoria){
+
+        var fechas = $('#fechas').data('daterangepicker');
+        // newEventCtrl.event.desde = fechas.startDate.toString();
+        // newEventCtrl.event.hasta = fechas.endDate.toString();
+        event.desde = fechas.startDate.toISOString();
+        event.hasta = fechas.endDate.toISOString();
+
+      }
 
       Events.edit(event).then(EventsSuccessFn, EventsErrorFn);
 

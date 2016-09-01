@@ -60,8 +60,9 @@
     * @memberOf gestfg.events.services.Events
     */
     function remove(eventID) {
-      return $http.delete('/api/v1/events/', {
-        id: eventID
+      return $http.post('/api/v1/events/', {
+        id: eventID,
+        delete: true
       });
     }
 
@@ -73,9 +74,9 @@
     * @memberOf gestfg.events.services.Events
     */
     function edit(event) {
-      return $http.post('/api/v1/events/', {
-        id: event.id,
-        content: JSON.stringify(event)
+      return $http.put('/api/v1/events/', {
+        evento: event.id,
+        datos: JSON.stringify(event)
       });
     }
 
