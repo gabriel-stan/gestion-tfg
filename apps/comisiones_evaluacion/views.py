@@ -62,6 +62,8 @@ class ComisionEvaluacionViewSet(viewsets.ModelViewSet):
         """
         try:
             params = utils.get_params(request)
+            if params.get('delete'):
+                return ComisionEvaluacionViewSet().delete(request)
             self.logger.info('INICIO WS - COMISIONEVALUACIONVIEW POST del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if request.user.has_perm('comisiones_evaluacion.comision.create') or request.user.is_admin:
@@ -180,6 +182,8 @@ class TribunalesViewSet(viewsets.ModelViewSet):
         """
         try:
             params = utils.get_params(request)
+            if params.get('delete'):
+                return TribunalesViewSet().delete(request)
             self.logger.info('INICIO WS - TRIBUNALESNVIEW LIST del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             tribunales = Tribunales.objects.all()

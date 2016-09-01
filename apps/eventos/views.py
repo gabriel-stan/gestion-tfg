@@ -51,6 +51,8 @@ class EventosViewSet(viewsets.ModelViewSet):
         """
         try:
             params = utils.get_params(request)
+            if params.get('delete'):
+                return EventosViewSet().delete(request)
             self.logger.info('INICIO WS - EVENTOSVIEW CREATE del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if request.user.has_perm('eventos.evento.change') or request.user.is_admin:
@@ -196,6 +198,8 @@ class Tipo_EventosViewSet(viewsets.ModelViewSet):
         """
         try:
             params = utils.get_params(request)
+            if params.get('delete'):
+                return Tipo_EventosViewSet().delete(request)
             self.logger.info('INICIO WS - TIPO_EVENTOSVIEW CREATE del usuario: %s con params: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             resul = Tipo_Evento.objects.create(codigo=params.get('codigo'), nombre=params.get('nombre'))
@@ -329,6 +333,8 @@ class SubTipo_EventosViewSet(viewsets.ModelViewSet):
         """
         try:
             params = utils.get_params(request)
+            if params.get('delete'):
+                return SubTipo_EventosViewSet().delete(request)
             self.logger.info('INICIO WS - SUBTIPOEVENTOSVIEW CREATE del usuario: %s con params: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             resul = SubTipo_Evento.objects.create(codigo=params.get('codigo'), nombre=params.get('nombre'))
