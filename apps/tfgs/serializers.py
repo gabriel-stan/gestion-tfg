@@ -81,14 +81,17 @@ class TfgSerializer(serializers.ModelSerializer):
 
             # comprobando cotutor
             if 'cotutor' in validated_data.keys():
-                try:
-                    cotutor = Profesor.objects.get(email=validated_data.get('cotutor'))
-                except:
-                    raise NameError("El Cotutor no existe")
-                # if not isinstance(cotutor, Profesor) or not cotutor.groups.filter(name='Profesores').exists():
-                #     raise NameError("Cotutor incorrecto")
-                # else:
-                tfg.cotutor = cotutor
+                if validated_data.get('cotutor') == '':
+                    try:
+                        cotutor = Profesor.objects.get(email=validated_data.get('cotutor'))
+                    except:
+                        raise NameError("El Cotutor no existe")
+                    # if not isinstance(cotutor, Profesor) or not cotutor.groups.filter(name='Profesores').exists():
+                    #     raise NameError("Cotutor incorrecto")
+                    # else:
+                    tfg.cotutor = cotutor
+                else:
+                    tfg.cotutor = None
 
             # comprobando titulacion
             if 'titulacion' in validated_data.keys():
