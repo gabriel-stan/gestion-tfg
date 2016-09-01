@@ -48,20 +48,8 @@
         newEventCtrl.event.tipo = '';
       }
 
-      $rootScope.$broadcast('event.created', {
-        titulo: newEventCtrl.event.titulo,
-        tipo: newEventCtrl.event.tipo,
-        contenido: newEventCtrl.event.contenido,
-        autor: {
-          email: Authentication.getAuthenticatedAccount().data.email
-        },
-        created_at: newEventCtrl.created_at
-      });
-
-      // $scope.closeThisDialog();
       preAction();
       Events.create(newEventCtrl.event).then(createEventSuccessFn, createEventErrorFn).finally(postAction);
-
 
       /**
       * @name createEventSuccessFn

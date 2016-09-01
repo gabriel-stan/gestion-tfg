@@ -19,8 +19,8 @@ from rest_framework_nested import routers
 
 from gestfg.views import IndexView, DashboardView
 from authentication.views import AlumnosViewSet, LoginView, LogoutView, ProfesoresViewSet, PermissionsView, \
-    UsuariosViewSet, LoadDataView, DepartamentosViewSet
-from tfgs.views import Tfg_asigViewSet, TfgViewSet, TitulacionesViewSet
+    UsuariosViewSet, LoadDataView, DepartamentosViewSet, TitulacionesViewSet
+from tfgs.views import Tfg_asigViewSet, TfgViewSet
 from eventos.views import EventosViewSet, Tipo_EventosViewSet, SubTipo_EventosViewSet
 from upload_files.views import Upload_fileView, Upload_file_confirmView
 from comisiones_evaluacion.views import ComisionEvaluacionViewSet, TribunalesViewSet, Tribunal_Upload_DocView

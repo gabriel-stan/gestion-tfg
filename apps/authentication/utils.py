@@ -87,6 +87,16 @@ def is_int(s):
         return False
 
 
+def is_email_generico(param):
+    try:
+        if not re.match(r'^[a-z][_a-z0-9]+(@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4}))$', param):
+            return False
+        else:
+            return True
+    except Exception:
+            return False
+
+
 def is_email(param):
     try:
         if not re.match(r'^[a-z][_a-z0-9]+(@(correo\.)?ugr\.es)$', param):
@@ -129,7 +139,7 @@ def is_email_alumno(alumno):
     try:
         if isinstance(alumno, Alumno):
             alumno = alumno.email
-        if not re.match(r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$', alumno):
+        if not re.match(r'^[_a-z0-9]+(@correo\.ugr\.es)$', alumno):
             return False
         else:
             return True

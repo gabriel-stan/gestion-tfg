@@ -2,29 +2,10 @@ from django.db import models
 from authentication.models import Profesor, Alumno
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import Group
-from eventos.models import Tipo_Evento
+from eventos.models import Convocatoria
 from notificaciones.services import email_asig_tfg
+from authentication.models import Titulacion
 import utils
-
-
-class TitulacionManager(BaseUserManager):
-    def create_file(self, **kwargs):
-        return self.model.objects.create(**kwargs)
-
-
-class Titulacion(models.Model):
-    nombre = models.CharField(default=None, unique=True, null=True, max_length=100)
-    codigo = models.CharField(default=None, unique=True, null=True, max_length=20)
-    objects = TitulacionManager()
-
-    USERNAME_FIELD = 'codigo'
-    REQUIRED_FIELD = USERNAME_FIELD
-
-    def __unicode__(self):
-        return self.codigo
-
-    def to_dict(self):
-        return dict(nombre=self.nombre, codigo=self.codigo)
 
 
 class TfgManager(BaseUserManager):
@@ -342,7 +323,7 @@ class Tfg_Asig(models.Model):
     alumno_1 = models.ForeignKey(Alumno, related_name='alumno_1', default=None)
     alumno_2 = models.ForeignKey(Alumno, related_name='alumno_2', default=None, null=True)
     alumno_3 = models.ForeignKey(Alumno, related_name='alumno_3', default=None, null=True)
-    convocatoria = models.ForeignKey(Tipo_Evento, related_name='convocatoria', default=None, null=True)
+    convocatoria = models.ForeignKey(Convocatoria, related_name='convocatoria', default=None, null=True)
     fecha_conv = models.DateTimeField(null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)

@@ -62,7 +62,7 @@
       */
       function createUserErrorFn(data, status, headers, config) {
         $rootScope.$broadcast('user.created.error');
-        Snackbar.error(data.message);
+        Snackbar.error(data.data.message);
       }
     }
 
@@ -126,7 +126,7 @@
       */
       function updateUserErrorFn(data, status, headers, config) {
         $rootScope.$broadcast('user.created.error');
-        Snackbar.error(data.message);
+        Snackbar.error(data.data.message);
       }
     }
 
@@ -170,7 +170,7 @@
       */
       function deleteUserErrorFn(data, status, headers, config) {
         $rootScope.$broadcast('user.deleted.error');
-        Snackbar.error(data.message);
+        Snackbar.error(data.data.message);
       }
     }
 

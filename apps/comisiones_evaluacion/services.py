@@ -1,7 +1,7 @@
 from tfgs.models import Tfg_Asig
-from authentication.models import Departamento, Profesor
+from authentication.models import Departamento, Profesor, Titulacion
 import itertools
-from eventos.models import Tipo_Evento, Convocatoria
+from eventos.models import Tipo_Evento, Convocatoria, SubTipo_Evento
 from comisiones_evaluacion.models import Comision_Evaluacion, Tribunales
 from comisiones_evaluacion.serializers import TribunalesSerializer, Comision_EvaluacionSerializer
 from gestfg.settings import DOC_PATH
@@ -26,10 +26,17 @@ class Comision(object):
         self.tutores_libres = {'DECSAI': [], 'LSI': [], 'ATC': []}
         self.tutores_libres_secundarios = {'DECSAI': [], 'LSI': [], 'ATC': []}
         self.exitos = []
-        self.anio = anio
-        self.titulacion = titulacion
-        self.convocatoria = Tipo_Evento.objects.get(codigo=convocatoria)
-        self.tfgs_asig_conv = Tfg_Asig.objects.filter(convocatoria=self.convocatoria)
+        self.anio = int(anio)
+        self.titulacion = Titulacion.objects.get(codigo=titulacion)
+        self.convocatoria = Convocatoria.objects.get(titulacion=self.titulacion,
+                                                     subtipo=SubTipo_Evento.objects.get(codigo='COM_EVAL'),
+                                                     tipo=Tipo_Evento.objects.get(codigo=convocatoria),
+                                                     anio=anio)
+        self.convocatoria_tfgs = Convocatoria.objects.get(titulacion=self.titulacion,
+                                                          subtipo=SubTipo_Evento.objects.get(codigo='SOL_EVAL'),
+                                                          tipo=Tipo_Evento.objects.get(codigo=convocatoria),
+                                                          anio=anio)
+        self.tfgs_asig_conv = Tfg_Asig.objects.filter(convocatoria=self.convocatoria_tfgs)
         self.tfgs_asig = Tfg_Asig.objects.all()
         self.comisiones = []
         self.num_tutores = 0
@@ -44,8 +51,7 @@ class Comision(object):
                 serializer.delete(comision)
         else:
 
-            comisiones = Comision_Evaluacion.objects.filter(convocatoria=Convocatoria.objects.get(tipo=self.convocatoria
-                                                                                                  , anio=self.anio))
+            comisiones = Comision_Evaluacion.objects.filter(convocatoria=self.convocatoria)
             for key, comision in enumerate(comisiones):
                 self.comisiones.append(comision.to_dict(user))
                 self.comisiones[key]['tfgs'] = []
@@ -198,11 +204,10 @@ class Comision(object):
         for key, i in enumerate(self.comisiones):
             comision = Comision_Evaluacion.objects.create(presidente=i['presidente'], vocal_1=i['vocal_1'],
                                                           vocal_2=i['vocal_2'], suplente_1=i['suplente_1'],
-                                                          suplente_2=i['suplente_2'], convocatoria=self.convocatoria,
-                                                          anio=self.anio, titulacion=self.titulacion)
+                                                          suplente_2=i['suplente_2'], convocatoria=self.convocatoria)
             self.comisiones[key] = comision['data'].to_dict(self.user)
 
-    def intercambiar(self, tfg):
+    def intercambiar(self, tfg, alumno):
         try:
             tribunal_enc = None
             for key, tribunal in enumerate(self.comisiones):
@@ -217,12 +222,12 @@ class Comision(object):
             self.comisiones[tribunal_intercambiar]['tfgs'].append(tfg_intercambiar)
             self.comisiones[tribunal_enc]['tfgs'].remove(tfg_intercambiar)
             self.comisiones[tribunal_enc]['tfgs'].append(tfg.to_dict(self.user))
-            tribunal = Tribunales.objects.get(tfg=tfg_intercambiar['id'])
-            serializer = TribunalesSerializer(tribunal)
+            tribunal = Tribunales.objects.filter(tfg=tfg_intercambiar['id']) # TODO comprobar esto
+            serializer = TribunalesSerializer(tribunal[0])
             presidente = Profesor.objects.get(email=self.comisiones[tribunal_intercambiar]['presidente']['email'])
-            serializer.update(self.user, tribunal, {'presidente': presidente})
-            Tribunales.objects.create(tfg=tfg.tfg, comision=self.comisiones[tribunal_enc]['presidente']['email'])
-        except:
+            serializer.update(self.user, tribunal[0], {'presidente': presidente})
+            Tribunales.objects.create(tfg=tfg.tfg, comision=self.comisiones[tribunal_enc]['presidente']['email'], alumno=alumno)
+        except Exception as e:
             self.reintentar = True
 
     def bucar_tfg_intercambiar(self, tribunal_key):
@@ -235,18 +240,26 @@ class Comision(object):
                                                                                     tribunal.get('suplente_2').get('email')]:
                     return key, tfg
 
+    def _create_tribunal(self, tfg_asig, alumno):
+        encontrado = False
+        for key, tribunal in enumerate(self.comisiones):
+            if self._check_tribunal(tribunal, tfg_asig):
+                self.comisiones[key]['tfgs'].append(tfg_asig.to_dict(self.user))
+                Tribunales.objects.create(tfg=tfg_asig.tfg, comision=self.comisiones[key].get('presidente').get('email'),
+                                          alumno=alumno)
+                encontrado = True
+                break
+        if not encontrado:
+            self.intercambiar(tfg_asig, alumno)
+
     def asig_tfgs(self):
         try:
             for i in self.tfgs_asig_conv:
-                encontrado = False
-                for key, tribunal in enumerate(self.comisiones):
-                    if self._check_tribunal(tribunal, i):
-                        self.comisiones[key]['tfgs'].append(i.to_dict(self.user))
-                        Tribunales.objects.create(tfg=i.tfg, comision=self.comisiones[key].get('presidente').get('email'))
-                        encontrado = True
-                        break
-                if not encontrado:
-                    self.intercambiar(i)
+                self._create_tribunal(i, i.alumno_1)
+                if i.alumno_2:
+                    self._create_tribunal(i, i.alumno_2)
+                if i.alumno_3:
+                    self._create_tribunal(i, i.alumno_3)
             return dict(status=True, data=dict(tribunales=self.comisiones))
         except Exception as e:
                 return dict(status=False, message=e)

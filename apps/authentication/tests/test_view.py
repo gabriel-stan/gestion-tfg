@@ -68,11 +68,16 @@ class AuthenticationServicesTests(TestCase):
         # Login con un administrador
         res = self.client.post('/api/v1/auth/login/', dict(dni=self.data_admin['dni'],
                                                            password=self.data_admin['password']))
-
-         # elimino el alumno
-        res = self.client.delete('/api/v1/alumnos/', self.data_alum1)
+        # elimino el alumno
+        self.data_alum1['delete'] = True
+        res = self.client.post('/api/v1/alumnos/', self.data_alum1)
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
+
+        #no obengo ninguno
+        res = self.client.get('/api/v1/usuarios/', self.data_alum1)
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], False)
 
     def test_ws_profesores_get(self):
         # inserto un profesor

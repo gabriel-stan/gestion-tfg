@@ -20,10 +20,11 @@ class ComisionesEvaluacionServicesTests(TestCase):
         dep_ccia = Departamento.objects.create(nombre='CCIA', codigo='CCIA')
         dep_est = Departamento.objects.create(nombre='ESTADISTICA', codigo='ESTADISTICA')
 
-        titulacion = Titulacion.objects.create(nombre='Ingenieria Informatica', codigo='GII')
+        titulacion = Titulacion.objects.create(nombre='Ingenieria Informatica', codigo='IF')
 
-        self.data_evento1 = dict(content=dict(contenido='admin2@admin.es', convocatoria='CONV_SEPT', tipo='ASIG_TFG',
-                                 titulo='titulo 1', desde='2016-09-04T22:00:00.000Z', hasta='2016-09-14T15:00:00.000Z'))
+        self.data_evento1 = dict(content=dict(contenido='admin2@admin.es', convocatoria='CONV_SEPT', tipo='SOL_EVAL',
+                                 titulo='titulo 1', desde='2016-09-04T22:00:00.000Z', hasta='2016-09-14T15:00:00.000Z',
+                                 titulacion='IF'))
 
         self.data_alum1 = dict(email='alumno1@correo.ugr.es', first_name='alumno 1',
                                last_name='apellido 12 apellido 122', password='75169052')
@@ -129,7 +130,7 @@ class ComisionesEvaluacionServicesTests(TestCase):
 
         # Le asigno una convocatoria
         res = self.client.put('/api/v1/tfgs_asig/', {'tfg': self.data_tfg1['titulo'], 'datos': json.dumps(
-            {'convocatoria': 'CONV_SEPT', 'tipo': 'ASIG_TFG', 'anio': 2016})})
+            {'convocatoria': 'CONV_SEPT', 'anio': 2016})})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 

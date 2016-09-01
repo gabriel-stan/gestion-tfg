@@ -115,10 +115,6 @@ def procesar_datos_eventos(user, data):
     for key, s_data in enumerate(data):
         data[key]['autor'] = collections.OrderedDict(Usuario.objects.get(id=s_data['autor']).to_dict(user))
         data[key]['convocatoria'] = collections.OrderedDict(Convocatoria.objects.get(id=s_data['convocatoria']).to_dict()) if data[key]['convocatoria'] else None
-        if s_data['tipo'] is not None:
-            data[key]['tipo'] = collections.OrderedDict(SubTipo_Evento.objects.get(id=s_data['tipo']).to_dict())
-        else:
-            data[key]['tipo'] = ''
         data[key] = periodos(data[key])
     return data
 

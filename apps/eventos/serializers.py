@@ -1,21 +1,21 @@
 from django.db import models
 from rest_framework import serializers
-from eventos.models import Evento, Tipo_Evento, SubTipo_Evento, Periodo
+from eventos.models import Evento, Tipo_Evento, SubTipo_Evento, Periodo, Convocatoria
 from authentication.serializers import UsuarioSerializer
 from authentication.models import Usuario
 from datetime import datetime
+import json
 
 
 # class EventoSerializer(serializers.PrimaryKeyRelatedField, serializers.ModelSerializer):
 class EventoSerializer(serializers.ModelSerializer):
     #autor = UsuarioSerializer()
     convocatoria = models.ForeignKey(Tipo_Evento)
-    tipo = models.ForeignKey(SubTipo_Evento)
     created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
 
     class Meta:
         model = Evento
-        fields = ('id', 'contenido', 'convocatoria', 'tipo', 'autor', 'titulo', 'created_at', 'updated_at')
+        fields = ('id', 'contenido', 'convocatoria', 'autor', 'titulo', 'created_at', 'updated_at')
         read_only_fields = ('created_at', 'updated_at')
 
     def create_evento(self, validated_data):
@@ -35,13 +35,13 @@ class EventoSerializer(serializers.ModelSerializer):
                     evento.contenido = new_contenido
 
             # comprobando convocatoria
-            if 'convocatoria' in validated_data.keys():
-                new_convocatoria = validated_data.get('convocatoria')
-                try:
-                    convocatoria = Tipo_Evento.objects.get(codigo=new_convocatoria)
-                except Tipo_Evento.DoesNotExist:
-                    raise NameError("Convocatoria incorrecto")
-                evento.convocatoria = convocatoria
+            # if 'convocatoria' in validated_data.keys():
+            #     new_convocatoria = validated_data.get('convocatoria')
+            #     try:
+            #         convocatoria = Convocatoria.objects.get(codigo=new_convocatoria)
+            #     except Tipo_Evento.DoesNotExist:
+            #         raise NameError("Convocatoria incorrecto")
+            #     evento.convocatoria = convocatoria
 
             # comprobando tipo
             if 'tipo' in validated_data.keys():

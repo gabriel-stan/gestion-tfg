@@ -9,12 +9,12 @@
     .module('gestfg.tfgs.controllers')
     .controller('TfgsController', TfgsController);
 
-  TfgsController.$inject = ['$scope', 'Tfgs', 'Snackbar'];
+  TfgsController.$inject = ['$scope', '$document', 'Tfgs', 'Snackbar'];
 
   /**
   * @namespace TfgsController
   */
-  function TfgsController($scope, Tfgs, Snackbar) {
+  function TfgsController($scope, $document, Tfgs, Snackbar) {
 
     var tfgsCtrl = this;
     tfgsCtrl.loadTfgs = loadTfgs;
@@ -23,6 +23,8 @@
     tfgsCtrl.filter = filter;
 
     tfgsCtrl.loading = true;
+
+    $scope.presentarTFGs = presentarTFGs;
 
     $scope.selectedTFG = new Object();
 
@@ -60,6 +62,8 @@
       $scope.selectedTFG.alumno2 = tfg.alumno2;
       $scope.selectedTFG.alumno3 = tfg.alumno3;
       $scope.selectedTFG.tipo = tfg.tipo;
+
+      $scope.selectedTFG.old_titulo = tfg.titulo;
     }
 
     $scope.loadSelectedTFGAsig = function() {
@@ -112,7 +116,7 @@
 
       $.each(tfgsCtrl.tfgs_presentar, function( i, tfg ) {
         var convocatoria = new Object();
-        convocatoria.tipo = 'SOL_EVAL';
+        convocatoria.anio = tfgsCtrl.anio;
         convocatoria.convocatoria = tfgsCtrl.convocatoria;
 
         preAction();
@@ -244,6 +248,16 @@
       $("#tabla-tfgs").DataTable().clear().draw();
       $("#tabla-tfgs").DataTable().ajax.reload();
     }
+
+    $document.on('/dashboard/tfgs', function(){
+      //$document.off('/dashboard/tfgs');
+      //$document.trigger('ready');
+    });
+
+    $document.on('/dashboard/tfgs-asig', function(){
+      //$document.off('/dashboard/tfgs-asig');
+      //$document.trigger('ready');
+    });
 
   }
 })();

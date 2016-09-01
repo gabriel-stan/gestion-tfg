@@ -144,7 +144,7 @@ def comprueba_alumno(usuario):
 def check_convocatoria(convocatoria, tipo):
     periodos = Periodo.objects.for_period()
     for periodo in periodos:
-        if periodo.evento.convocatoria == convocatoria and periodo.evento.tipo == tipo:
+        if periodo.evento.convocatoria == convocatoria:
             return True
     return False
 
@@ -161,7 +161,7 @@ def is_email_alumno(alumno):
     try:
         if isinstance(alumno, Alumno):
             alumno = alumno.email
-        if not re.match(r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$', alumno):
+        if not re.match(r'^[_a-z0-9]+(@correo\.ugr\.es)$', alumno):
             return False
         else:
             return True

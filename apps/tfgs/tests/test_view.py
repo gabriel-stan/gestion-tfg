@@ -17,8 +17,9 @@ class TfgServicesTests(TestCase):
 
         titulacion = Titulacion.objects.create(nombre='Ingenieria Informatica', codigo='IF')
 
-        self.data_evento1 = dict(content=dict(contenido='admin2@admin.es', convocatoria='CONV_SEPT', tipo='ASIG_TFG',
-                               titulo='titulo 1',desde='2016-08-04T22:00:00.000Z', hasta='2016-08-14T15:00:00.000Z'))
+        self.data_evento1 = dict(content=dict(contenido='admin2@admin.es', convocatoria='CONV_SEPT', tipo='SOL_EVAL',
+                                              titulo='titulo 1', desde='2016-08-04T22:00:00.000Z',
+                                              hasta='2016-08-14T15:00:00.000Z', titulacion='IF'))
 
         self.data_prof1 = dict(email='prof_ejemplo@ugr.es', first_name='profesor 1',
                                last_name='apellido 1 apellido 12', departamento=dep.codigo, password='75169052')
@@ -47,7 +48,7 @@ class TfgServicesTests(TestCase):
         self.data_alum1 = dict(email='alumno1@correo.ugr.es', first_name='profesor 2',
                                last_name='apellido 12 apellido 122', password='75169052')
 
-        self.data_titulacion = dict(codigo='GII', nombre='grado en ingenieria informatica')
+        self.data_titulacion = dict(codigo='GIT', nombre='ingenieria telecomunicaciones')
 
     def test_ws_tfgs(self):
         # Login como administrador
@@ -305,7 +306,7 @@ class TfgServicesTests(TestCase):
         self.assertEqual(resul['data']['email'], self.data_admin['email'])
 
         res = self.client.post('/api/v1/titulaciones/', {'codigo': self.data_titulacion['codigo'],
-                                                               'nombre': self.data_titulacion['nombre']})
+                                                         'nombre': self.data_titulacion['nombre']})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
@@ -317,4 +318,4 @@ class TfgServicesTests(TestCase):
 
         res = self.client.get('/api/v1/titulaciones/')
         resul = json.loads(res.content)
-        self.assertEqual(resul['data'][1]['nombre'], 'grado en ingenieria informatica')
+        self.assertEqual(resul['data'][2]['nombre'], 'grado en ingenieria informatica')

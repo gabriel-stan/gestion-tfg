@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth import authenticate, login, logout
-from authentication.models import Alumno, Profesor, Grupos, Usuario, Departamento
+from authentication.models import Alumno, Profesor, Grupos, Usuario, Departamento, Titulacion
 from authentication.serializers import AlumnoSerializer, ProfesorSerializer, UsuarioSerializer, DepartamentoSerializer
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from rest_framework import permissions, viewsets, status, views
@@ -16,6 +16,7 @@ from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from gestfg.settings import DEFAULT_FROM_EMAIL, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, HOST
 from django.views.generic import *
+from authentication.serializers import TitulacionSerializer
 from utils import PasswordResetRequestForm, SetPasswordForm
 from django.contrib import messages
 import json
@@ -100,6 +101,8 @@ class UsuariosViewSet(viewsets.ModelViewSet):
         """
         try:
             params = utils.get_params(request)
+            if params.get('delete'):
+                return UsuariosViewSet().delete(request)
             self.logger.info('INICIO WS - USUARIOSVIEW CREATE del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             is_admin = params.get('is_admin')
@@ -151,7 +154,7 @@ class UsuariosViewSet(viewsets.ModelViewSet):
             self.logger.info('INICIO WS - USUARIOSSVIEW PUT del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if utils.check_usuario(request.user, params['usuario']):
-                if utils.is_email(params['usuario']):
+                if utils.is_email_generico(params['usuario']):
                     usuario = Usuario.objects.get(email=params['usuario'])
                 elif utils.is_dni(params['usuario']):
                     usuario = Usuario.objects.get(dni=params['usuario'])
@@ -172,6 +175,39 @@ class UsuariosViewSet(viewsets.ModelViewSet):
         except Exception as e:
             resul = dict(status=False, message="Error en la llamada")
             self.logger.critical('USUARIOSSVIEW PUT: %s' % resul)
+            return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request):
+        """
+        Eliminar un usuario
+        :param request:
+        :return :
+        """
+
+        try:
+            params = utils.get_params(request)
+            self.logger.info('INICIO WS - USUARIOSVIEW DELETE del usuario: %s con parametros: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
+            if request.user.is_admin:
+                if utils.is_email(params.get('email')):
+                    usuario = Usuario.objects.get(email=params.get('email'))
+                elif utils.is_dni(params.get('dni')):
+                    usuario = Usuario.objects.get(dni=params.get('dni'))
+                serializer = self.serializer_class(usuario)
+                resul = serializer.delete(usuario)
+            else:
+                resul = dict(status=False, message="Parametros incorrectos")
+            self.logger.info('FIN WS - USUARIOSVIEW DELETE del usuario: %s con resultado: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            return Response(resul, status=status.HTTP_200_OK)
+        except Usuario.DoesNotExist:
+            resul = (dict(status=False, message="El alumno indicado no existe"))
+            self.logger.error('FIN WS - USUARIOSVIEW DELETE del usuario: %s con resultado: %s' %
+                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+        except Exception:
+            resul = dict(status=False, message="Error en la llamada")
+            self.logger.critical('USUARIOSVIEW DELETE: %s' % resul)
             return Response(resul, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -253,6 +289,8 @@ class AlumnosViewSet(viewsets.ModelViewSet):
         """
         try:
             params = utils.get_params(request)
+            if params.get('delete'):
+                return AlumnosViewSet().delete(request)
             self.logger.info('INICIO WS - ALUMNOSVIEW CREATE del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if not params.get('dni') and not request.user.has_perm('authentication.alumno.create') and not (request.user.is_admin):
@@ -342,7 +380,7 @@ class AlumnosViewSet(viewsets.ModelViewSet):
             self.logger.info('FIN WS - ALUMNOSVIEW DELETE del usuario: %s con resultado: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(resul, status=status.HTTP_200_OK)
-        except Profesor.DoesNotExist:
+        except Alumno.DoesNotExist:
             resul = (dict(status=False, message="El alumno indicado no existe"))
             self.logger.error('FIN WS - ALUMNOSVIEW DELETE del usuario: %s con resultado: %s' %
                               (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
@@ -429,6 +467,8 @@ class ProfesoresViewSet(viewsets.ModelViewSet):
         """
         try:
             params = utils.get_params(request)
+            if params.get('delete'):
+                return ProfesoresViewSet().delete(request)
             self.logger.info('INICIO WS - PROFESORVIEW CREATE del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             params['departamento'] = Departamento.objects.get(codigo=params['departamento']).id
@@ -723,6 +763,8 @@ class DepartamentosViewSet(viewsets.ModelViewSet):
         """
         try:
             params = utils.get_params(request)
+            if params.get('delete'):
+                return DepartamentosViewSet().delete(request)
             self.logger.info('INICIO WS - DEPARTAMENTOSVIEW CREATE del usuario: %s con params: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             resul = Departamento.objects.create(codigo=params.get('codigo'), nombre=params.get('nombre'))
@@ -904,3 +946,139 @@ class PasswordResetConfirmView(views.APIView):
         except (TypeError, ValueError, OverflowError, UserModel.DoesNotExist):
             return Response(dict(status=False, message="Error en la llamada"),
                             status=status.HTTP_400_BAD_REQUEST)
+
+class TitulacionesViewSet(viewsets.ModelViewSet):
+    lookup_field = 'codigo'
+    queryset = Titulacion.objects.order_by('-created_at')
+    serializer_class = TitulacionSerializer
+    logger = logging.getLogger(__name__)
+
+    def list(self, request):
+        """
+        GET
+        Obtener los datos de las Titulaciones
+        :param request:
+        :return :
+        {status: True/False, data:{serializer de las Titulacion}
+
+        """
+        try:
+            self.logger.info('INICIO WS - TITULACIONESVIEW LIST del usuario: %s' %
+                             request.user.email if hasattr(request.user, 'email') else request.user.username)
+            titulaciones = Titulacion.objects.all()
+            resul = self.serializer_class(titulaciones, many=True).data
+            self.logger.info('FIN WS - TITULACIONESVIEW LIST del usuario: %s con resultado: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            return Response(dict(data=resul), status=status.HTTP_200_OK)
+        except NameError as e:
+            self.logger.error('TITULACIONESVIEW LIST: %s' % e.message)
+            return Response(dict(message=e.message), status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            resul = dict(status=False, message="Error en la llamada")
+            self.logger.critical('TITULACIONESVIEW LIST del usuario: %s con resultado: %s %s' %
+                                 (request.user.email if hasattr(request.user, 'email') else request.user.username,
+                                  resul, e))
+            return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+
+    def create(self, request):
+        """
+        POST
+        Insertar una titulacion nueva
+        :param request:
+        :return :
+        {status: True/False, data:{datos de la titulacion}
+        """
+        try:
+            params = utils.get_params(request)
+            if params.get('delete'):
+                return TitulacionesViewSet().delete(request)
+            self.logger.info('INICIO WS - TITULACIONESVIEW CREATE del usuario: %s con params: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
+            resul = Titulacion.objects.create(codigo=params.get('codigo'), nombre=params.get('nombre'))
+            if resul.id:
+                resul = utils.to_dict(dict(status=True, data=resul))
+                resul_status = status.HTTP_200_OK
+            else:
+                resul = dict(message=resul['message'])
+                resul_status = status.HTTP_400_BAD_REQUEST
+                self.logger.info('FIN WS - TITULACIONESVIEW CREATE del usuario: %s con params: %s' %
+                                 (request.user.email if hasattr(request.user, 'email') else request.user.username,
+                                  resul))
+            return Response(resul, status=resul_status)
+        except Exception as e:
+            resul = dict(status=False, message="Error en la llamada")
+            self.logger.critical('FIN WS - TITULACIONESVIEW CREATE del usuario: %s con params: %s %s' %
+                                 (request.user.email if hasattr(request.user, 'email') else request.user.username,
+                                  resul, e))
+            return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request):
+        """
+        PUT
+        Cambia los datos de una titulacion
+        :param request:
+        :return :
+        {status: True/False, data:{datos de la titulacion cambiada}
+
+        :param request:
+        :return:
+        """
+        try:
+            params = utils.get_params(request)
+            self.logger.info('INICIO WS - TITULACIONESVIEW PUT del usuario: %s con params: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
+            if request.user.has_perm('tfgs.titulacion.change') or request.user.is_admin:
+                titulacion = Titulacion.objects.get(codigo=params.get('codigo'))
+                params = json.loads(params.get('datos'))
+                serializer = TitulacionSerializer(titulacion)
+                resul = serializer.update(titulacion, params)
+                if resul['status']:
+                    return Response(utils.to_dict(resul))
+                else:
+                    return Response(resul)
+            else:
+                resul = dict(status=False, message="Sin privilegios")
+                self.logger.info('FIN WS - TITULACIONESVIEW PUT del usuario: %s con resultado: %s' %
+                                 (request.user.email if hasattr(request.user, 'email') else request.user.username,
+                                  resul))
+                return Response(resul, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        except Exception as e:
+            resul = dict(status=False, message="Error en la llamada")
+            self.logger.critical('FIN WS - TITULACIONESVIEW PUT del usuario: %s con resultado: %s %s' %
+                                 (request.user.email if hasattr(request.user, 'email') else request.user.username,
+                                  resul, e))
+            return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request):
+        """
+        Eliminar una titulacion
+        :param request:
+        :return :
+        """
+        try:
+            params = utils.get_params(request)
+            self.logger.info('INICIO WS - TITULACIONESVIEW DELETE del usuario: %s con params: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
+            if request.user.is_admin:
+                titulacion = Titulacion.objects.get(codigo=params.get('codigo'))
+                serializer = self.serializer_class(titulacion)
+                resul = serializer.delete(titulacion)
+            else:
+                resul = dict(status=False, message="Parametros incorrectos")
+            self.logger.critical('FIN WS - TITULACIONESVIEW DELETE del usuario: %s con resultado: %s' %
+                                 (request.user.email if hasattr(request.user, 'email') else request.user.username,
+                                  resul))
+            return Response(resul)
+
+        except Titulacion.DoesNotExist:
+            resul = dict(status=False, message="La titulacion indicada no existe")
+            self.logger.error('INICIO WS - TITULACIONESVIEW DELETE del usuario: %s con resultado: %s' %
+                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            resul = dict(status=False, message="Error en la llamada")
+            self.logger.critical('INICIO WS - TITULACIONESVIEW DELETE del usuario: %s con resultado: %s %s' %
+                                 (request.user.email if hasattr(request.user, 'email') else request.user.username,
+                                  resul, e))
+            return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+

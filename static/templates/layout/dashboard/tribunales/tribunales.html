@@ -97,7 +97,10 @@
   </style>
 
   <script>
-  $(document).ready(function () {
+  // $(document).ready(function () {
+  $(document).on('/dashboard/tribunales', function(event){
+    $(document).off( '/dashboard/tribunales');
+    //console.log(event);
 
     var table = $("#tabla-tribunales").DataTable({
       //sDom: '<Bf>rt<"col-md-6"i><"col-md-6"p><"col-md-12"l>',
