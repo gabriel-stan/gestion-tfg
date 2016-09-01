@@ -184,6 +184,7 @@ def procesar_datos_tribunales(user, data):
 def procesar_datos_comisiones(user, data):
     # Importo aqui para evitar el cruce de imports
     from tfgs.models import Tfg_Asig
+    from eventos.models import Convocatoria
     if isinstance(data, dict):
         data = [data]
     for key, s_data in enumerate(data):
@@ -192,4 +193,6 @@ def procesar_datos_comisiones(user, data):
         data[key]['vocal_2'] = collections.OrderedDict(Profesor.objects.get(id=s_data['vocal_2']['id']).to_dict(user))
         data[key]['suplente_1'] = collections.OrderedDict(Profesor.objects.get(id=s_data['suplente_1']['id']).to_dict(user))
         data[key]['suplente_2'] = collections.OrderedDict(Profesor.objects.get(id=s_data['suplente_2']['id']).to_dict(user))
+        # TODO Hacer serializer de convocatoria
+        data[key]['convocatoria'] = collections.OrderedDict(Convocatoria.objects.get(id=s_data['convocatoria']).to_dict())
     return data

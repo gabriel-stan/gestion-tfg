@@ -147,9 +147,9 @@
 
       var datos = new Object();
 
-      datos.alumno_1 = content.alumno_1;
-      datos.alumno_2 = content.alumno_2;
-      datos.alumno_3 = content.alumno_3;
+      datos.alumno_1 = content.alumno1;
+      datos.alumno_2 = content.alumno2;
+      datos.alumno_3 = content.alumno3;
 
       return $http.put('/api/v1/tfgs_asig/', {
         //content: content
@@ -167,8 +167,9 @@
     */
     function removeAsig(tfg) {
 
-      return $http.delete('/api/v1/tfgs_asig/' + tfg + '/', {
-        tfg: tfg
+      return $http.post('/api/v1/tfgs_asig/', {
+        titulo: tfg,
+        delete: true
       });
     }
 
