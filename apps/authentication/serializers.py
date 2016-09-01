@@ -38,7 +38,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
                 res = Usuario.objects.filter(email=new_email)
                 if res.count() == 0:
                     if not utils.is_string(new_email) or not \
-                            re.match(r'^[a-z][_a-z0-9]+(@correo\.ugr\.es)$', new_email):
+                            re.match(r'^[a-z][_a-z0-9]+(@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4}))$', new_email):
                         raise NameError("El email no es correcto")
                     else:
                         usuario.email = new_email

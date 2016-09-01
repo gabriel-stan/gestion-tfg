@@ -87,6 +87,16 @@ def is_int(s):
         return False
 
 
+def is_email_generico(param):
+    try:
+        if not re.match(r'^[a-z][_a-z0-9]+(@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4}))$', param):
+            return False
+        else:
+            return True
+    except Exception:
+            return False
+
+
 def is_email(param):
     try:
         if not re.match(r'^[a-z][_a-z0-9]+(@(correo\.)?ugr\.es)$', param):

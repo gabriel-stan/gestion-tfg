@@ -154,7 +154,7 @@ class UsuariosViewSet(viewsets.ModelViewSet):
             self.logger.info('INICIO WS - USUARIOSSVIEW PUT del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if utils.check_usuario(request.user, params['usuario']):
-                if utils.is_email(params['usuario']):
+                if utils.is_email_generico(params['usuario']):
                     usuario = Usuario.objects.get(email=params['usuario'])
                 elif utils.is_dni(params['usuario']):
                     usuario = Usuario.objects.get(dni=params['usuario'])
