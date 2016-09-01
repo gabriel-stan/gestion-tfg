@@ -194,7 +194,7 @@ class AlumnoSerializer(serializers.ModelSerializer):
                 if new_last_name == '' or not utils.is_string(new_last_name):
                     raise NameError("Nombre incorrecto")
                 else:
-                    alumno.new_last_name = new_last_name
+                    alumno.last_name = new_last_name
 
             # if 'password' in validated_data.keys() and 'confirm_password' in validated_data.keys():
             #     password = validated_data.get('password')

@@ -27,3 +27,8 @@
 .table {
   width: 100% !important;
 }
+
+.dataTables_processing
+{
+  z-index: 105;
+}

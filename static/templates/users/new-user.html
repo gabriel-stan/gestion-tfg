@@ -32,7 +32,14 @@
       <div class="form-group">
         <label class="col-sm-3 control-label">Email</label>
         <div class="col-sm-9">
-          <input class="form-control" type="text" placeholder="Email" ng-model="vm.user.email" required="true">
+          <input class="form-control" type="email" placeholder="Email" ng-model="vm.user.email" required="true">
+        </div>
+      </div>
+
+      <div class="form-group" ng-show="vm.user.tipo=='alumnos'">
+        <label class="col-sm-3 control-label">DNI</label>
+        <div class="col-sm-9">
+          <input class="form-control" type="text" placeholder="DNI" ng-model="vm.user.dni">
         </div>
       </div>
 
