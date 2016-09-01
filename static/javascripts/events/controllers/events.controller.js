@@ -122,7 +122,6 @@
         Snackbar.success("Los cambios se han guardado con exito");
       }
 
-
       /**
       * @name EventsErrorFn
       * @desc Show snackbar with error
