@@ -259,3 +259,12 @@ def _params_perfil(user, data):
         data['publicado'] = True
         data['validado'] = True
     return data
+
+
+def get_or_create_alumno(email):
+    if not Alumno.objects.filter(email=email if email else None).exists():
+        Alumno.objects.create_user(email=email)
+    try:
+        return Alumno.objects.get(email=email)
+    except Alumno.DoesNotExist:
+        raise NameError('Error en el alumno %s' % email)
