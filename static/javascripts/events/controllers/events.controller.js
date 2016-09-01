@@ -112,12 +112,7 @@
     */
     function edit(event) {
 
-      alert('por hacer: events.controller.js');
-
-      // if (confirm('¿Borrar el evento?')) {
-      //   Events.remove(eventID).then(EventsSuccessFn, EventsErrorFn);
-      // }
-
+      Events.edit(event).then(EventsSuccessFn, EventsErrorFn);
 
       /**
       * @name EventsSuccessFn
