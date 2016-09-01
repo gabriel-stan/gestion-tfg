@@ -105,7 +105,17 @@
   </style>
 
   <script>
-    $(document).ready(function () {
+
+    // $(document).on('/dashboard/comisiones', function(event){
+    //   $(document).off( '/dashboard/comisiones');
+    //   event.stopPropagation();
+    //   console.log(event);
+    //   //alert('recibido');
+    // });
+
+    // $(document).ready(function () {
+    $(document).on('/dashboard/comisiones', function(event){
+        $(document).off( '/dashboard/comisiones');
 
         var table = $("#tabla-comisiones").DataTable({
           //sDom: '<Bf>rt<"col-md-6"i><"col-md-6"p><"col-md-12"l>',

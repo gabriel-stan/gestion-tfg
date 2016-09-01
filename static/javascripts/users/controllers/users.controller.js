@@ -9,12 +9,12 @@
     .module('gestfg.users.controllers')
     .controller('UsersController', UsersController);
 
-  UsersController.$inject = ['$scope'];
+  UsersController.$inject = ['$scope', '$document'];
 
   /**
   * @namespace UsersController
   */
-  function UsersController($scope) {
+  function UsersController($scope, $document) {
 
     var usersCtrl = this;
     usersCtrl.loadUsers = loadUsers;
@@ -44,6 +44,11 @@
 
     $scope.selectedUser = new Object();
 
+
+    $document.on('/dashboard/usuarios', function(event){
+      $document.off('/dashboard/usuarios');
+      $document.trigger('ready');
+    });
 
   }
 })();
