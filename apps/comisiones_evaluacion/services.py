@@ -50,7 +50,6 @@ class Comision(object):
                 serializer = Comision_EvaluacionSerializer(comision)
                 serializer.delete(comision)
         else:
-
             comisiones = Comision_Evaluacion.objects.filter(convocatoria=self.convocatoria)
             for key, comision in enumerate(comisiones):
                 self.comisiones.append(comision.to_dict(user))

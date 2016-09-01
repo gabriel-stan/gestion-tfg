@@ -185,7 +185,6 @@ class TfgViewSet(viewsets.ModelViewSet):
                 serializer = self.serializer_class(tfg)
                 resul = serializer.delete_tfg(tfg)
                 if resul['status']:
-                    resul = utils.to_dict(resul)
                     resul_status = status.HTTP_200_OK
                 else:
                     resul = dict(message=resul['message'])
@@ -285,39 +284,11 @@ class Tfg_asigViewSet(viewsets.ModelViewSet):
                 if Profesor.objects.filter(email=request.user.email).exists() and request.user.email != tfg.tutor.\
                         email:
                     raise NameError("El profesor no es tutor del Tfg")
-
-                try:
-                    alumno_1 = Alumno.objects.get(email=params.get('alumno_1'))
-                except Alumno.DoesNotExist:
-                    if utils.is_email_alumno(params.get('alumno_1')):
-                        alumno_1 = Alumno.objects.create_user(email=params.get('alumno_1'))['data']
-                    else:
-                        resul = dict(message='El alumno %s indicado no existe' % params.get('alumno_1'))
-                        self.logger.error('FIN WS - TFGASIGVIEW POST del usuario: %s con resultado: %s' %
-                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
-                        return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+                alumno_1 = utils.get_or_create_alumno(params.get('alumno_1'))
                 if 'alumno_2' in params:
-                    try:
-                        alumno_2 = Alumno.objects.get(email=params.get('alumno_2'))
-                    except Alumno.DoesNotExist:
-                        if utils.is_email_alumno(params.get('alumno_2')):
-                            alumno_2 = Alumno.objects.create_user(email=params.get('alumno_2'))['data']
-                        else:
-                            resul = dict(message='El alumno %s indicado no existe' % params.get('alumno_2'))
-                            self.logger.error('FIN WS - TFGASIGVIEW POST del usuario: %s con resultado: %s' %
-                                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
-                            return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+                    alumno_2 = utils.get_or_create_alumno(params.get('alumno_2'))
                 if 'alumno_3' in params:
-                    try:
-                        alumno_3 = Alumno.objects.get(email=params.get('alumno_3'))
-                    except Alumno.DoesNotExist:
-                        if utils.is_email_alumno(params.get('alumno_3')):
-                            alumno_3 = Alumno.objects.create_user(email=params.get('alumno_3'))
-                        else:
-                            resul = dict(message='El alumno %s indicado no existe' % params.get('alumno_3'))
-                            self.logger.error('FIN WS - TFGASIGVIEW POST del usuario: %s con resultado: %s' %
-                                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
-                            return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+                    alumno_3 = utils.get_or_create_alumno(params.get('alumno_3'))
 
                 serializer = self.serializer_class(data=dict(tfg=tfg.id, alumno_1=alumno_1.id, alumno_2=alumno_2,
                                                              alumno_3=alumno_3))
