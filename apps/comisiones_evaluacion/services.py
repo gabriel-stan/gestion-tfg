@@ -57,8 +57,9 @@ class Comision(object):
             self.num_comisiones = comisiones.count()
 
             for tribunal in Tribunales.objects.all():
-                serializer = TribunalesSerializer(tribunal)
-                serializer.delete(tribunal)
+                if tribunal.comision in self.comisiones:
+                    serializer = TribunalesSerializer(tribunal)
+                    serializer.delete(tribunal)
 
     def tutores_comisiones(self):
         try:

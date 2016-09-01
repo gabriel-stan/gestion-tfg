@@ -190,7 +190,7 @@ class TribunalesSerializer(serializers.ModelSerializer):
 
     def delete(self, tribunal):
         try:
-            Tribunales.objects.get(tfg=tribunal.tfg).delete()
+            Tribunales.objects.get(alumno=tribunal.alumno).delete()
             return dict(status=True)
         except Tribunales.DoesNotExist:
             return dict(status=False, message="El tribunal no existe")
