@@ -81,7 +81,7 @@ class TfgSerializer(serializers.ModelSerializer):
 
             # comprobando cotutor
             if 'cotutor' in validated_data.keys():
-                if validated_data.get('cotutor') == '':
+                if validated_data.get('cotutor') != '':
                     try:
                         cotutor = Profesor.objects.get(email=validated_data.get('cotutor'))
                     except:
