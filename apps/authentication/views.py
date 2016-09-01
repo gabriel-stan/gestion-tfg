@@ -101,6 +101,8 @@ class UsuariosViewSet(viewsets.ModelViewSet):
         """
         try:
             params = utils.get_params(request)
+            if params.get('delete'):
+                return UsuariosViewSet().delete(request)
             self.logger.info('INICIO WS - USUARIOSVIEW CREATE del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             is_admin = params.get('is_admin')
@@ -173,6 +175,39 @@ class UsuariosViewSet(viewsets.ModelViewSet):
         except Exception as e:
             resul = dict(status=False, message="Error en la llamada")
             self.logger.critical('USUARIOSSVIEW PUT: %s' % resul)
+            return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request):
+        """
+        Eliminar un usuario
+        :param request:
+        :return :
+        """
+
+        try:
+            params = utils.get_params(request)
+            self.logger.info('INICIO WS - USUARIOSVIEW DELETE del usuario: %s con parametros: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
+            if request.user.is_admin:
+                if utils.is_email(params.get('email')):
+                    usuario = Usuario.objects.get(email=params.get('email'))
+                elif utils.is_dni(params.get('dni')):
+                    usuario = Usuario.objects.get(dni=params.get('dni'))
+                serializer = self.serializer_class(usuario)
+                resul = serializer.delete(usuario)
+            else:
+                resul = dict(status=False, message="Parametros incorrectos")
+            self.logger.info('FIN WS - USUARIOSVIEW DELETE del usuario: %s con resultado: %s' %
+                             (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            return Response(resul, status=status.HTTP_200_OK)
+        except Usuario.DoesNotExist:
+            resul = (dict(status=False, message="El alumno indicado no existe"))
+            self.logger.error('FIN WS - USUARIOSVIEW DELETE del usuario: %s con resultado: %s' %
+                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
+            return Response(resul, status=status.HTTP_400_BAD_REQUEST)
+        except Exception:
+            resul = dict(status=False, message="Error en la llamada")
+            self.logger.critical('USUARIOSVIEW DELETE: %s' % resul)
             return Response(resul, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -254,6 +289,8 @@ class AlumnosViewSet(viewsets.ModelViewSet):
         """
         try:
             params = utils.get_params(request)
+            if params.get('delete'):
+                return AlumnosViewSet().delete(request)
             self.logger.info('INICIO WS - ALUMNOSVIEW CREATE del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if not params.get('dni') and not request.user.has_perm('authentication.alumno.create') and not (request.user.is_admin):
@@ -343,7 +380,7 @@ class AlumnosViewSet(viewsets.ModelViewSet):
             self.logger.info('FIN WS - ALUMNOSVIEW DELETE del usuario: %s con resultado: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
             return Response(resul, status=status.HTTP_200_OK)
-        except Profesor.DoesNotExist:
+        except Alumno.DoesNotExist:
             resul = (dict(status=False, message="El alumno indicado no existe"))
             self.logger.error('FIN WS - ALUMNOSVIEW DELETE del usuario: %s con resultado: %s' %
                               (request.user.email if hasattr(request.user, 'email') else request.user.username, resul))
@@ -430,6 +467,8 @@ class ProfesoresViewSet(viewsets.ModelViewSet):
         """
         try:
             params = utils.get_params(request)
+            if params.get('delete'):
+                return ProfesoresViewSet().delete(request)
             self.logger.info('INICIO WS - PROFESORVIEW CREATE del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             params['departamento'] = Departamento.objects.get(codigo=params['departamento']).id
@@ -724,6 +763,8 @@ class DepartamentosViewSet(viewsets.ModelViewSet):
         """
         try:
             params = utils.get_params(request)
+            if params.get('delete'):
+                return DepartamentosViewSet().delete(request)
             self.logger.info('INICIO WS - DEPARTAMENTOSVIEW CREATE del usuario: %s con params: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             resul = Departamento.objects.create(codigo=params.get('codigo'), nombre=params.get('nombre'))
@@ -949,6 +990,8 @@ class TitulacionesViewSet(viewsets.ModelViewSet):
         """
         try:
             params = utils.get_params(request)
+            if params.get('delete'):
+                return TitulacionesViewSet().delete(request)
             self.logger.info('INICIO WS - TITULACIONESVIEW CREATE del usuario: %s con params: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             resul = Titulacion.objects.create(codigo=params.get('codigo'), nombre=params.get('nombre'))

@@ -88,6 +88,8 @@ class TfgViewSet(viewsets.ModelViewSet):
         """
         try:
             params = utils.get_params(request)
+            if params.get('delete'):
+                return TfgViewSet().delete(request)
             self.logger.info('INICIO WS - TFGVIEW CREATE del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if request.user.has_perm('tfgs.tfg.create') or request.user.is_admin:
@@ -271,6 +273,8 @@ class Tfg_asigViewSet(viewsets.ModelViewSet):
 
         try:
             params = utils.get_params(request)
+            if params.get('delete'):
+                return Tfg_asigViewSet().delete(request)
             self.logger.info('INICIO WS - TFGASIGVIEW POST del usuario: %s con parametros: %s' %
                              (request.user.email if hasattr(request.user, 'email') else request.user.username, params))
             if request.user.has_perm('tfgs.tfg_asig.change') or request.user.is_admin:
