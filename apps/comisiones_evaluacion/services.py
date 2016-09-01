@@ -111,7 +111,7 @@ class Comision(object):
             self._guardar_comision()
             return dict(status=True, data=dict(num_comisiones=self.num_comisiones, num_tfg=self.num_tfg,
                                                num_tutores=self.num_tutores, tribunales=self.comisiones,
-                                               titulacion=self.titulacion))
+                                               titulacion=self.titulacion.to_dict()))
         except Exception as e:
                 return dict(status=False, message=e)
 
