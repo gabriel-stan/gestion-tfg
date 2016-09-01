@@ -49,15 +49,16 @@ class Comision(object):
             for comision in Comision_Evaluacion.objects.all():
                 serializer = Comision_EvaluacionSerializer(comision)
                 serializer.delete(comision)
-            for tribunal in Tribunales.objects.all():
-                serializer = TribunalesSerializer(tribunal)
-                serializer.delete(tribunal)
         else:
             comisiones = Comision_Evaluacion.objects.filter(convocatoria=self.convocatoria)
             for key, comision in enumerate(comisiones):
                 self.comisiones.append(comision.to_dict(user))
                 self.comisiones[key]['tfgs'] = []
             self.num_comisiones = comisiones.count()
+
+            for tribunal in Tribunales.objects.all():
+                serializer = TribunalesSerializer(tribunal)
+                serializer.delete(tribunal)
 
     def tutores_comisiones(self):
         try:
