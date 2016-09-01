@@ -25,7 +25,7 @@ class Comision_EvaluacionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comision_Evaluacion
         fields = ('id', 'presidente', 'vocal_1', 'vocal_2', 'suplente_1',
-                  'suplente_2')
+                  'suplente_2', 'convocatoria')
         read_only_fields = ('created_at', 'updated_at')
 
     def create(self, validated_data):
