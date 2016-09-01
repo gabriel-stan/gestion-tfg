@@ -2,7 +2,7 @@ import utils
 from django.db import models
 from rest_framework import serializers
 from tfgs.models import Tfg, Tfg_Asig, Titulacion
-from authentication.models import Profesor
+from authentication.models import Profesor, Alumno
 from authentication.serializers import ProfesorSerializer
 from eventos.models import Tipo_Evento, SubTipo_Evento, Convocatoria
 
@@ -163,6 +163,21 @@ class Tfg_AsigSerializer(serializers.ModelSerializer):
 
     def update(self, tfg_asig, validated_data):
         try:
+            # comprobando alumno_1
+            if 'alumno_1' in validated_data.keys():
+                alumno_1 = utils.get_or_create_alumno(validated_data.get('alumno_1'))
+                tfg_asig.alumno_1 = alumno_1
+
+            # comprobando alumno_2
+            if 'alumno_2' in validated_data.keys():
+                alumno_2 = utils.get_or_create_alumno(validated_data.get('alumno_2'))
+                tfg_asig.alumno_2 = alumno_2
+
+            # comprobando alumno_3
+            if 'alumno_3' in validated_data.keys():
+                alumno_3 = utils.get_or_create_alumno(validated_data.get('alumno_3'))
+                tfg_asig.alumno_3 = alumno_3
+
             # comprobando convocatoria
             if 'convocatoria' in validated_data.keys():
                 try:
