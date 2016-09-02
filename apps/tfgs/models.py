@@ -8,6 +8,7 @@ from authentication.models import Titulacion
 import utils
 
 
+
 class TfgManager(BaseUserManager):
 
     def create(self, titulo, **kwargs):
@@ -252,8 +253,8 @@ class Tfg_AsigManager(BaseUserManager):
                 tfg_asig.save()
                 tfg.asignado = True
                 tfg.save()
-                email_asig_tfg(tfg.titulo, [alumno_1.email, alumno_2.email if alumno_2 else '',
-                                            alumno_3.email if alumno_3 else ''])
+                email_asig_tfg(tfg.titulo, [alumno_1.email if alumno_1.email else '', alumno_2.email if (alumno_2 and alumno_2.email) else '',
+                                            alumno_3.email if (alumno_3 and alumno_3yes.email) else ''])
                 return dict(status=True, data=Tfg_Asig.objects.get(tfg=tfg))
 
         except NameError as e:
@@ -266,25 +267,15 @@ class Tfg_AsigManager(BaseUserManager):
             # Compruebo lo minimo para asignar el tfg
             if not isinstance(tfg, Tfg):
                 raise NameError("Error en los parametros de entrada")
-            try:
-                alumno_1 = Alumno.objects.get(email=alumno_1)
-            except:
-                if not utils.is_email_alumno(alumno_1):
-                    raise NameError("Error en el primer alumno")
 
-            if alumno_2:
-                try:
-                    alumno_2 = Alumno.objects.get(email=alumno_2)
-                except:
-                    if not utils.is_email_alumno(alumno_1):
-                        raise NameError("Error en el segundo alumno")
+            if not utils.is_email_alumno(alumno_1) and not utils.is_dni(alumno_1):
+                raise NameError("Error en el primer alumno")
 
-            if alumno_3:
-                try:
-                    alumno_3 = Alumno.objects.get(email=alumno_3)
-                except:
-                    if not utils.is_email_alumno(alumno_1):
-                        raise NameError("Error en el tercer alumno")
+            if alumno_2 and not utils.is_email_alumno(alumno_2) and not utils.is_dni(alumno_2):
+                raise NameError("Error en el segundo alumno")
+
+            if alumno_3 and not utils.is_email_alumno(alumno_3) and not utils.is_dni(alumno_3):
+                raise NameError("Error en el tercer alumno")
 
             if utils.existe_tfg_asig(alumno_1):
                 raise NameError("el alumno %s ya tiene un tfg asignado" % alumno_1)

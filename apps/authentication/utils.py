@@ -107,15 +107,17 @@ def is_email(param):
             return False
 
 
-def is_dni(param):
+def is_dni(alumno):
+    from models import Alumno
     try:
-        if not re.match(r'(\d{8})([-]?)([A-Z]{1})', param):
+        if isinstance(alumno, Alumno):
+            alumno = alumno.dni
+        if not re.match(r' (([X-Z]{1})([-]?)(\d{7})([-]?)([A-Z]{1}))|((\d{8})([-]?)([A-Z]{1}))', alumno):
             return False
         else:
             return True
     except Exception:
             return False
-
 
 def to_dict(resul):
     instance = resul['data']

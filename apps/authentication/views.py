@@ -611,6 +611,10 @@ class LoginView(views.APIView):
                 resul_status = status.HTTP_401_UNAUTHORIZED
             self.logger.info('FIN WS - LOGINVIEW: con resultado: %s' % resul)
             return Response(resul, status=resul_status)
+        except Usuario.DoesNotExist:
+            resul = dict(status=False, message="Login incorrecto")
+            self.logger.error('PROFESORVIEW DELETE: %s' % resul)
+            return Response(resul, status=status.HTTP_400_BAD_REQUEST)
         except NameError as e:
             self.logger.error('LOGINVIEW: %s' % e.message)
             return Response(dict(status=False, message=e.message), status=status.HTTP_400_BAD_REQUEST)

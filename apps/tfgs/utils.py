@@ -169,6 +169,18 @@ def is_email_alumno(alumno):
             return False
 
 
+def is_dni(alumno):
+    try:
+        if isinstance(alumno, Alumno):
+            alumno = alumno.dni
+        if not re.match(r' (([X-Z]{1})([-]?)(\d{7})([-]?)([A-Z]{1}))|((\d{8})([-]?)([A-Z]{1}))', alumno):
+            return False
+        else:
+            return True
+    except Exception:
+            return False
+
+
 def procesar_datos_tfgs_asig(user, data):
     # Importo aqui para evitar el cruce de imports
     from models import Tfg, Tfg_Asig

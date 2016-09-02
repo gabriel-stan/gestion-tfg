@@ -1,3 +1,4 @@
+import re
 from django.db.models.fields.related import ManyToManyField
 from authentication.models import Alumno, Profesor
 import simplejson as json
@@ -111,3 +112,39 @@ def get_model(model):
     for i in models:
         if i._meta.model_name == str(model):
             return i
+
+
+def is_email_alumno(alumno):
+    try:
+        if isinstance(alumno, Alumno):
+            alumno = alumno.email
+        if not re.match(r'^[_a-z0-9]+(@correo\.ugr\.es)$', alumno):
+            return False
+        else:
+            return True
+    except Exception:
+            return False
+
+
+def is_dni(alumno):
+    try:
+        if isinstance(alumno, Alumno):
+            alumno = alumno.dni
+        if not re.match(r'(([X-Z]{1})([-]?)(\d{7})([-]?)([A-Z]{1}))|((\d{8})([-]?)([A-Z]{1}))', alumno):
+            return False
+        else:
+            return True
+    except Exception:
+            return False
+
+
+def alumno_email_or_dni(alumno):
+    if alumno:
+        if is_email_alumno(alumno):
+            resul = Alumno(email=alumno)
+            return resul, resul.email
+        else:
+            resul = Alumno(dni=alumno)
+            return resul, resul.dni
+    else:
+        return None, None
