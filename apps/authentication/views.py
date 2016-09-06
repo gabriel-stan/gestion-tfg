@@ -910,6 +910,7 @@ class ResetPasswordRequestView(views.APIView):
                         # Email subject *must not* contain newlines
                         subject = ''.join(subject.splitlines())
                         email = loader.render_to_string(email_template_name, c)
+                        self.logger.info('INICIO WS - Enviando email de recuperacion de password al usuario: %s ' % (user.email))
                         send_mail_task.delay(subject, email, DEFAULT_FROM_EMAIL, [user.email], fail_silently=False,
                                              auth_user=EMAIL_HOST_USER, auth_password=EMAIL_HOST_PASSWORD)
                 resul_status = status.HTTP_200_OK
