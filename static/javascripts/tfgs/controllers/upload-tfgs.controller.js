@@ -123,6 +123,10 @@
         cabeceras.alumno_1 = uploadTfgsCtrl.alumno1;
         cabeceras.alumno_2 = uploadTfgsCtrl.alumno2;
         cabeceras.alumno_3 = uploadTfgsCtrl.alumno3;
+
+        cabeceras.nombre_alumno_1 = uploadTfgsCtrl.nombre_alumno1;
+        cabeceras.nombre_alumno_2 = uploadTfgsCtrl.nombre_alumno2;
+        cabeceras.nombre_alumno_3 = uploadTfgsCtrl.nombre_alumno3;
       }
 
       var fd = new FormData();

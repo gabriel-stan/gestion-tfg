@@ -137,7 +137,7 @@ class TfgServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
         self.assertEqual(resul['exitos'][0]['fila'], 5)
-        self.assertEqual(resul['exitos'][0]['tfg']['alumno_1'], 'tonima@correo.ugr.es')
+        self.assertEqual(resul['exitos'][0]['tfg']['alumno_1'], '75169052S')
         res = self.client.post('/api/v1/upload_file_tfgs_confirm/', data={'list_tfg': json.dumps(resul['exitos']),
                                                                           'model': 'tfg_asig'})
         resul = json.loads(res.content)
@@ -145,6 +145,6 @@ class TfgServicesTests(TestCase):
         res = self.client.post('/api/v1/auth/login/', {'email':'admin@admin.es', 'password':'0000'})
         resul = json.loads(res.content)
         self.assertEqual(resul['data']['email'], 'admin@admin.es')
-        res = self.client.get('/api/v1/usuarios/', {'email': 'tonima@correo.ugr.es'})
+        res = self.client.get('/api/v1/usuarios/', {'dni': '75169052S'})
         resul = json.loads(res.content)
-        self.assertEqual(resul['data'][0]['email'], 'tonima@correo.ugr.es')
+        self.assertEqual(resul['data'][0]['dni'], '75169052S')

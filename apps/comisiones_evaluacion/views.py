@@ -264,7 +264,6 @@ class TribunalesViewSet(viewsets.ModelViewSet):
                 params = json.loads(params.get('datos'))
                 resul = serializer.update(request.user, tribunal, params)
                 if resul['status']:
-                    resul['data'] = utils.procesar_datos_tribunales(request.user, resul['data'])[0]
                     resul_status = status.HTTP_200_OK
                 else:
                     resul = dict(message=resul['message'])

@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import Group
+import utils
 import signals
 import collections
 
@@ -122,7 +123,7 @@ class AlumnoManager(BaseUserManager):
                     raise NameError("El alumno ya existe")
             if kwargs.get('dni'):
                 # exp reg para saber si el nick corresponde al correo de la ugr (@correo.ugr.es)
-                if not re.match(r'(\d{8})([-]?)([A-Z]{1})', kwargs.get('dni')):
+                if not re.match(r'(([X-Z]{1})([-]?)(\d{7})([-]?)([A-Z]{1}))|((\d{8})([-]?)([A-Z]{1}))', kwargs.get('dni')):
                     raise NameError("Error en el DNI del alumno")
 
             if kwargs.get('first_name') and not utils.is_string(kwargs.get('first_name')):
@@ -237,8 +238,8 @@ class ProfesorManager(BaseUserManager):
 
             return dict(status=True, data=Profesor.objects.get(email=usuario.email))
 
-        except NameError as e:
-            return dict(status=False, message=e.message)
+        except Exception as e:
+            pass
 
 
 class Profesor(Usuario):

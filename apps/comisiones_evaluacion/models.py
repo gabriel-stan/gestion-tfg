@@ -151,4 +151,4 @@ class Tribunales(models.Model):
         return dict(tfg=self.tfg.to_dict(user), comision=self.comision.to_dict(user),
                     fecha=self.fecha, observaciones=self.observaciones,
                     documentacion=self.documentacion, created_at=self.created_at,
-                    updated_at=self.updated_at)
+                    updated_at=self.updated_at, alumno=self.alumno.to_dict(user))
