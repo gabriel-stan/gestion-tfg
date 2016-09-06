@@ -13,7 +13,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template import loader
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
-from django.core.mail import send_mail
+from gestfg.tasks import send_mail_task
 from gestfg.settings import DEFAULT_FROM_EMAIL, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, HOST
 from django.views.generic import *
 from authentication.serializers import TitulacionSerializer
@@ -910,8 +910,8 @@ class ResetPasswordRequestView(views.APIView):
                         # Email subject *must not* contain newlines
                         subject = ''.join(subject.splitlines())
                         email = loader.render_to_string(email_template_name, c)
-                        send_mail(subject, email, DEFAULT_FROM_EMAIL, [user.email], fail_silently=False,
-                                  auth_user=EMAIL_HOST_USER, auth_password=EMAIL_HOST_PASSWORD)
+                        send_mail_task.delay(subject, email, DEFAULT_FROM_EMAIL, [user.email], fail_silently=False,
+                                             auth_user=EMAIL_HOST_USER, auth_password=EMAIL_HOST_PASSWORD)
                 resul_status = status.HTTP_200_OK
             else:
                 resul_status = status.HTTP_400_BAD_REQUEST

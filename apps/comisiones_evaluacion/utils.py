@@ -177,7 +177,7 @@ def procesar_datos_tribunales(user, data):
         data = [data]
     for key, s_data in enumerate(data):
         data[key]['tfg'] = collections.OrderedDict(Tfg_Asig.objects.get(id=s_data['tfg']['id']).to_dict(user))
-        # data[key]['comision'] = collections.OrderedDict(Comision_Evaluacion.objects.get(id=s_data['comision']).to_dict(user))
+        data[key]['alumno'] = collections.OrderedDict(Alumno.objects.get(id=s_data['alumno']).to_dict(user))
     return data
 
 
