@@ -102,11 +102,43 @@ class ComisionesEvaluacionServicesTests(TestCase):
 
         self.prof12 = dict(email='qwe123@ugr.es', first_name='qwe123 2', last_name='eq 12 apelliweasdaado 122',
                            departamento=dep_DECSAI, password='7516129052')
-        Profesor.objects.create_user(**self.prof11)
+        Profesor.objects.create_user(**self.prof12)
 
         self.prof13 = dict(email='hgm54@ugr.es', first_name='hgm54 2', last_name='dfgre 12 apelergerlido 122',
                            departamento=dep_est, password='751690as52')
-        Profesor.objects.create_user(**self.prof11)
+        Profesor.objects.create_user(**self.prof13)
+
+        self.prof14 = dict(email='hgm5412@ugr.es', first_name='hgm5412 2', last_name='dfgre 12 apelergerlido 122',
+                           departamento=dep_atc, password='751690as52')
+        Profesor.objects.create_user(**self.prof14)
+
+        self.prof15 = dict(email='qwe23456fg@ugr.es', first_name='qwe23456fg 2', last_name='dfgrasde 12 apelergewqerlido 122',
+                           departamento=dep_DECSAI, password='75121690as52')
+        Profesor.objects.create_user(**self.prof15)
+
+        self.prof16 = dict(email='prof16@ugr.es', first_name='prof16 2', last_name='dfgrasde 12 apelergewqerlido 122',
+                           departamento=dep_DECSAI, password='75121690as52')
+        Profesor.objects.create_user(**self.prof16)
+
+        self.prof17 = dict(email='prof17@ugr.es', first_name='prof17 2', last_name='dfgrasde 12 apelergewqerlido 122',
+                           departamento=dep_DECSAI, password='75121690as52')
+        Profesor.objects.create_user(**self.prof17)
+
+        self.prof18 = dict(email='prof18@ugr.es', first_name='prof18 2', last_name='dfgrasde 12 apelergewqerlido 122',
+                           departamento=dep_DECSAI, password='75121690as52')
+        Profesor.objects.create_user(**self.prof18)
+
+        self.prof19 = dict(email='prof19@ugr.es', first_name='prof19 2', last_name='dfgrasde 12 apelergewqerlido 122',
+                           departamento=dep_DECSAI, password='75121690as52')
+        Profesor.objects.create_user(**self.prof19)
+
+        self.prof20 = dict(email='prof20@ugr.es', first_name='prof20 2', last_name='dfgrasde 12 apelergewqerlido 122',
+                           departamento=dep_DECSAI, password='75121690as52')
+        Profesor.objects.create_user(**self.prof20)
+
+        self.prof21 = dict(email='prof21@ugr.es', first_name='prof21 2', last_name='dfgrasde 12 apelergewqerlido 122',
+                           departamento=dep_DECSAI, password='75121690as52')
+        Profesor.objects.create_user(**self.prof21)
 
     def test_formacion_comisiones(self):
         # Login como administrador
@@ -152,11 +184,27 @@ class ComisionesEvaluacionServicesTests(TestCase):
 
         # Envio el fichero y carga TFGs
         location = os.path.join(os.path.dirname(__file__), 'test_upload_file_tfgs', 'ListaTFGs_preasignados.xlsx')
-        data = {'file': ('ListaTFGs_preasignados.xlsx', open(location, 'rb')), 'u_fila': 21, 'p_fila': 5,
+        data = {'file': ('ListaTFGs_preasignados.xlsx', open(location, 'rb')), 'u_fila': 24, 'p_fila': 5,
                 'cabeceras': json.dumps(dict(tipo='D', titulo='E', n_alumnos='F', alumno_1='G', alumno_2='H',
                                              descripcion='I', conocimientos_previos='J', hard_soft='K', tutor='B',
                                              cotutor='C', titulacion='L')), 'type_file': 'tfg_asig',
                 'titulacion': 'IF'}
+        res = self.client.post('/api/v1/upload_file_tfgs/', data, format='multipart')
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        res = self.client.post('/api/v1/upload_file_tfgs_confirm/', data={'list_tfg': json.dumps(resul['exitos']),
+                                                                          'model': 'tfg_asig'})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        # Envio el fichero y carga de otros TFGs
+        location = os.path.join(os.path.dirname(__file__), 'test_upload_file_tfgs', 'ListaTFGs_preasignados_otros.xlsx')
+        data = {'file': ('ListaTFGs_preasignados_otros.xlsx', open(location, 'rb')), 'u_fila': 10, 'p_fila': 5,
+                'cabeceras': json.dumps(dict(tipo='D', titulo='E', n_alumnos='F', alumno_1='G', alumno_2='H',
+                                             descripcion='I', conocimientos_previos='J', hard_soft='K', tutor='B',
+                                             cotutor='C', titulacion='L')), 'type_file': 'tfg_asig',
+                'titulacion': 'GII'}
         res = self.client.post('/api/v1/upload_file_tfgs/', data, format='multipart')
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
@@ -268,11 +316,29 @@ class ComisionesEvaluacionServicesTests(TestCase):
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
 
+        # Le asigno una convocatoria
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[17], 'datos': json.dumps(
+            {'convocatoria': 'CONV_SEPT', 'anio': 2016})})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        # Le asigno una convocatoria
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[18], 'datos': json.dumps(
+            {'convocatoria': 'CONV_SEPT', 'anio': 2016})})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
+        # Le asigno una convocatoria
+        res = self.client.put('/api/v1/tfgs_asig/', {'tfg': TITULOS[19], 'datos': json.dumps(
+            {'convocatoria': 'CONV_SEPT', 'anio': 2016})})
+        resul = json.loads(res.content)
+        self.assertEqual(resul['status'], True)
+
         # Creo una comision
         res = self.client.post('/api/v1/comisiones/', {'convocatoria': 'CONV_SEPT', 'anio': 2016, 'titulacion': 'IF'})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
-        self.assertEqual(len(resul['data']['tribunales']), 2)
+        self.assertEqual(len(resul['data']['tribunales']), 4)
 
         # Modifico la comision
         destino = resul['data']['tribunales'][1]['presidente']['email']
@@ -286,12 +352,12 @@ class ComisionesEvaluacionServicesTests(TestCase):
                                                        'titulacion': 'IF'})
         resul = json.loads(res.content)
         self.assertEqual(resul['status'], True)
-        self.assertEqual(len(resul['data']['tribunales'][0]['tfgs']), 9)
+        self.assertEqual(len(resul['data']['tribunales'][0]['tfgs']), 6)
 
         # Obtengo los tribunales
         res = self.client.get('/api/v1/tribunales/')
         resul = json.loads(res.content)
-        self.assertEqual(len(resul['data']), 18)
+        self.assertEqual(len(resul['data']), 21)
 
         # Modifico la fecha de uno
         res = self.client.put('/api/v1/tribunales/', {'tfg': resul['data'][0]['tfg']['tfg']['titulo'],
@@ -302,7 +368,7 @@ class ComisionesEvaluacionServicesTests(TestCase):
         # Obtengo los tribunales
         res = self.client.get('/api/v1/tribunales/')
         resul = json.loads(res.content)
-        self.assertEqual(len(resul['data']), 18)
+        self.assertEqual(len(resul['data']), 21)
 
         # Modifico la documentacion de otro
         location = os.path.join(os.path.dirname(__file__), 'test_upload_file_tfgs', 'asd.zip')

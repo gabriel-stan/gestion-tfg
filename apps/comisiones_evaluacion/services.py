@@ -1,3 +1,4 @@
+from __future__ import division
 from tfgs.models import Tfg_Asig
 from authentication.models import Departamento, Profesor, Titulacion
 import itertools
@@ -94,9 +95,7 @@ class Comision(object):
             self.tutores_libres_secundarios['DECSAI'] = list(range(0, len(self.tutores_secundarios['DECSAI'])))
             self.tutores_libres_secundarios['LSI'] = list(range(0, len(self.tutores_secundarios['LSI'])))
             self.tutores_libres_secundarios['ATC'] = list(range(0, len(self.tutores_secundarios['ATC'])))
-            self.num_comisiones = int(math.ceil(self.num_tutores * 0.1))
-            if self.num_comisiones == 1:
-                self.num_comisiones = 2
+            self.num_comisiones = int(math.ceil(float(self.num_tfg) / 6.0) if self.num_tfg >= 12 else 2)
             for i in range(self.num_comisiones):
                 tribunal = {'tfgs': []}
                 indice = random.randint(0, 2)
