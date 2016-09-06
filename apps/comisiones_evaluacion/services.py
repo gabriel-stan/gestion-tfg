@@ -1,3 +1,4 @@
+from __future__ import division
 from tfgs.models import Tfg_Asig
 from authentication.models import Departamento, Profesor, Titulacion
 import itertools
@@ -65,38 +66,42 @@ class Comision(object):
         try:
             self.departamentos = Departamento.objects.all()
             for tfg_asig in self.tfgs_asig_conv:
-                if tfg_asig.tfg.tutor.departamento.codigo in DEPARTAMENTOS_PRINCIPALES:
-                    self._introducir_tutor(tfg_asig.tfg.tutor.departamento.codigo, tfg_asig.tfg.tutor.email)
-                else:
-                    dep_asociado = DEPARTAMENTOS_ASOCIADOS[tfg_asig.tfg.tutor.departamento.codigo]
-                    self._introducir_tutor(dep_asociado, tfg_asig.tfg.tutor.email)
-                if tfg_asig.tfg.cotutor:
-                    if tfg_asig.tfg.cotutor.departamento.codigo in DEPARTAMENTOS_PRINCIPALES:
-                        self._introducir_tutor(tfg_asig.tfg.cotutor.departamento.codigo, tfg_asig.tfg.cotutor.email)
+                try:
+                    if tfg_asig.tfg.tutor.departamento.codigo in DEPARTAMENTOS_PRINCIPALES:
+                        self._introducir_tutor(tfg_asig.tfg.tutor.departamento.codigo, tfg_asig.tfg.tutor.email)
                     else:
-                        dep_asociado = DEPARTAMENTOS_ASOCIADOS[tfg_asig.tfg.cotutor.departamento.codigo]
-                        self._introducir_tutor(dep_asociado, tfg_asig.tfg.cotutor.email)
+                        dep_asociado = DEPARTAMENTOS_ASOCIADOS[tfg_asig.tfg.tutor.departamento.codigo]
+                        self._introducir_tutor(dep_asociado, tfg_asig.tfg.tutor.email)
+                    if tfg_asig.tfg.cotutor:
+                        if tfg_asig.tfg.cotutor.departamento.codigo in DEPARTAMENTOS_PRINCIPALES:
+                            self._introducir_tutor(tfg_asig.tfg.cotutor.departamento.codigo, tfg_asig.tfg.cotutor.email)
+                        else:
+                            dep_asociado = DEPARTAMENTOS_ASOCIADOS[tfg_asig.tfg.cotutor.departamento.codigo]
+                            self._introducir_tutor(dep_asociado, tfg_asig.tfg.cotutor.email)
+                except KeyError as e:
+                    pass
             for tfg_asig in self.tfgs_asig:
-                if tfg_asig.tfg.tutor.departamento.codigo in DEPARTAMENTOS_PRINCIPALES:
-                    self._introducir_tutor_secundario(tfg_asig.tfg.tutor.departamento.codigo, tfg_asig.tfg.tutor.email)
-                else:
-                    dep_asociado = DEPARTAMENTOS_ASOCIADOS[tfg_asig.tfg.tutor.departamento.codigo]
-                    self._introducir_tutor_secundario(dep_asociado, tfg_asig.tfg.tutor.email)
-                if tfg_asig.tfg.cotutor:
-                    if tfg_asig.tfg.cotutor.departamento.codigo in DEPARTAMENTOS_PRINCIPALES:
-                        self._introducir_tutor_secundario(tfg_asig.tfg.cotutor.departamento.codigo, tfg_asig.tfg.cotutor.email)
+                try:
+                    if tfg_asig.tfg.tutor.departamento.codigo in DEPARTAMENTOS_PRINCIPALES:
+                        self._introducir_tutor_secundario(tfg_asig.tfg.tutor.departamento.codigo, tfg_asig.tfg.tutor.email)
                     else:
-                        dep_asociado = DEPARTAMENTOS_ASOCIADOS[tfg_asig.tfg.cotutor.departamento.codigo]
-                        self._introducir_tutor_secundario(dep_asociado, tfg_asig.tfg.cotutor.email)
+                        dep_asociado = DEPARTAMENTOS_ASOCIADOS[tfg_asig.tfg.tutor.departamento.codigo]
+                        self._introducir_tutor_secundario(dep_asociado, tfg_asig.tfg.tutor.email)
+                    if tfg_asig.tfg.cotutor:
+                        if tfg_asig.tfg.cotutor.departamento.codigo in DEPARTAMENTOS_PRINCIPALES:
+                            self._introducir_tutor_secundario(tfg_asig.tfg.cotutor.departamento.codigo, tfg_asig.tfg.cotutor.email)
+                        else:
+                            dep_asociado = DEPARTAMENTOS_ASOCIADOS[tfg_asig.tfg.cotutor.departamento.codigo]
+                            self._introducir_tutor_secundario(dep_asociado, tfg_asig.tfg.cotutor.email)
+                except KeyError as e:
+                    pass
             self.tutores_libres['DECSAI'] = list(range(0, len(self.tutores_principales['DECSAI'])))
             self.tutores_libres['LSI'] = list(range(0, len(self.tutores_principales['LSI'])))
             self.tutores_libres['ATC'] = list(range(0, len(self.tutores_principales['ATC'])))
             self.tutores_libres_secundarios['DECSAI'] = list(range(0, len(self.tutores_secundarios['DECSAI'])))
             self.tutores_libres_secundarios['LSI'] = list(range(0, len(self.tutores_secundarios['LSI'])))
             self.tutores_libres_secundarios['ATC'] = list(range(0, len(self.tutores_secundarios['ATC'])))
-            self.num_comisiones = int(math.ceil(self.num_tutores * 0.1))
-            if self.num_comisiones == 1:
-                self.num_comisiones = 2
+            self.num_comisiones = int(math.ceil(float(self.num_tfg) / 6.0) if self.num_tfg >= 12 else 2)
             for i in range(self.num_comisiones):
                 tribunal = {'tfgs': []}
                 indice = random.randint(0, 2)
@@ -112,6 +117,8 @@ class Comision(object):
             return dict(status=True, data=dict(num_comisiones=self.num_comisiones, num_tfg=self.num_tfg,
                                                num_tutores=self.num_tutores, tribunales=self.comisiones,
                                                titulacion=self.titulacion.to_dict()))
+
+
         except Exception as e:
                 return dict(status=False, message=e)
 
