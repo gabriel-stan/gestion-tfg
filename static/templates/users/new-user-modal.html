@@ -60,6 +60,20 @@
         </div>
       </div>
 
+      <div id="user-tit" class="form-group" ng-show="user.tipo == 'Alumno'">
+        <label class="col-sm-3 control-label">Titulación</label>
+        <div class="col-sm-9">
+          <select class="form-control" ng-model="user.titulacion" ng-init="user.titulacion='GII'">
+            <option value="GII">TFG Informatica</option>
+            <option value="GITT">TFG Telecomunicaciones</option>
+            <option value="GIM">TFG Doble Grado</option>
+            <option value="MPII">TFM Informatica</option>
+            <option value="MPIT">TFM Telecomunicaciones</option>
+          </select>
+        </div>
+      </div>
+
+
  <!--     <div id="user-dpt" class="form-group" ng-show="user.tipo == 'Profesor'" ng-controller="DashboardController">
  <!--     <div id="user-dpt" class="form-group" ng-show="user.tipo == 'Profesor'" ng-controller="DashboardController">
         <label class="col-sm-3 control-label">Departamento</label>
