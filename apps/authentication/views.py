@@ -49,6 +49,7 @@ class UsuariosViewSet(viewsets.ModelViewSet):
                                                                           if hasattr(request.user, 'is_admin')
                                                                           else False):
                 try:
+                    # request1 = request.query_params.get('dni', None) TODO actualizar como obtiene los parametros
                     if 'email' in params:
                         usuario = Usuario.objects.get(email=params['email'])
                         resul = utils.procesar_datos_usuario(request.user, self.serializer_class(usuario).data,
@@ -917,7 +918,7 @@ class ResetPasswordRequestView(views.APIView):
                         # Email subject *must not* contain newlines
                         subject = ''.join(subject.splitlines())
                         email = loader.render_to_string(email_template_name, c)
-                        self.logger.info('INICIO WS - Enviando email de recuperacion de password al usuario: %s ' % (user.email))
+                        self.logger.info('INICIO WS - Enviando email de recuperacion de password al usuario: %s con url %sreset-password?uidb64=%s&token=%s ' % (user.email, c['domain'], c['uid'], c['token']))
                         send_mail_task.delay(subject, email, DEFAULT_FROM_EMAIL, [user.email], fail_silently=False,
                                              auth_user=EMAIL_HOST_USER, auth_password=EMAIL_HOST_PASSWORD)
                 resul_status = status.HTTP_200_OK
