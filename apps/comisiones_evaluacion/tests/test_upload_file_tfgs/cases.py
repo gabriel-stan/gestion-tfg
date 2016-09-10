@@ -39,4 +39,7 @@ TITULOS = ['Análisis Exploratorio de Datos Mediante Técnicas de Visualización
            'Esteganografía mediante CCE',
            'Automorfismos de anillos de grupo en Sage',
            'Robot de validación automática de páginas web',
-           'Validación de un modelo para evaluar la accesibilidad web de las universidades españolas.']
+           'Validación de un modelo para evaluar la accesibilidad web de las universidades españolas.',
+           'un tfg cualquiera',
+           'un tfg cualquiera 2',
+           'un tfg cualquiera 3']

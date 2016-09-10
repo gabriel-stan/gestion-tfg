@@ -253,8 +253,8 @@ class Tfg_AsigManager(BaseUserManager):
                 tfg_asig.save()
                 tfg.asignado = True
                 tfg.save()
-                email_asig_tfg(tfg.titulo, [alumno_1.email if alumno_1.email else '', alumno_2.email if (alumno_2 and alumno_2.email) else '',
-                                            alumno_3.email if (alumno_3 and alumno_3yes.email) else ''])
+                # email_asig_tfg(tfg.titulo, [alumno_1.email if alumno_1.email else '', alumno_2.email if (alumno_2 and alumno_2.email) else '',
+                #                             alumno_3.email if (alumno_3 and alumno_3.email) else ''])
                 return dict(status=True, data=Tfg_Asig.objects.get(tfg=tfg))
 
         except NameError as e:
