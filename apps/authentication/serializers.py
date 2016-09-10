@@ -144,7 +144,7 @@ class AlumnoSerializer(serializers.ModelSerializer):
         model = Alumno
         fields = ('id', 'email', 'dni', 'created_at', 'updated_at',
                   'first_name', 'last_name', 'password',
-                  'confirm_password',)
+                  'confirm_password', 'titulacion')
         read_only_fields = ('created_at', 'updated_at',)
 
     def create(self, validated_data):

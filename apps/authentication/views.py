@@ -51,10 +51,12 @@ class UsuariosViewSet(viewsets.ModelViewSet):
                 try:
                     if 'email' in params:
                         usuario = Usuario.objects.get(email=params['email'])
-                        resul = utils.procesar_datos_usuario(request.user, self.serializer_class(usuario).data)
+                        resul = utils.procesar_datos_usuario(request.user, self.serializer_class(usuario).data,
+                                                             detalle=True)
                     elif 'dni' in params:
                         usuario = Usuario.objects.get(dni=params['dni'])
-                        resul = utils.procesar_datos_usuario(request.user, self.serializer_class(usuario).data)
+                        resul = utils.procesar_datos_usuario(request.user, self.serializer_class(usuario).data,
+                                                             detalle=True)
                     else:
                         usuarios = Usuario.objects.all()
                         if len(usuarios) == 0:
@@ -64,10 +66,12 @@ class UsuariosViewSet(viewsets.ModelViewSet):
                         try:
                             usuarios = paginador.page(pagina)
                             resul = {
-                            'resul': utils.procesar_datos_usuario(request.user, self.serializer_class(usuarios, many=True).data),
+                            'resul': utils.procesar_datos_usuario(request.user, self.serializer_class(usuarios,
+                                                                                                      many=True).data),
                             'pagina': pagina, 'num_paginas': paginador.num_pages}
                         except PageNotAnInteger:
-                            resul = utils.procesar_datos_usuario(request.user, self.serializer_class(usuarios, many=True).data)
+                            resul = utils.procesar_datos_usuario(request.user, self.serializer_class(usuarios,
+                                                                                                     many=True).data)
                     resul_status = status.HTTP_200_OK
                     resul =dict(data=resul)
 
@@ -592,16 +596,19 @@ class LoginView(views.APIView):
                     login(request, account)
                     if hasattr(account, 'alumno') and isinstance(account.alumno, Alumno):
                         serialized = AlumnoSerializer(account.alumno)
+                        tipo = 'Alumno'
                     elif hasattr(account, 'profesor') and isinstance(account.profesor, Profesor):
                         serialized = ProfesorSerializer(account.profesor)
+                        tipo = 'Profesor'
                     else:
                         serialized = UsuarioSerializer(account)
+                        tipo = 'Usuario'
                     # permissions = Permission.objects.filter(group=serialized.instance.groups.all()).values('codename')
                     # list_permissions = []
                     # for permission in permissions:
                     #     list_permissions.append(permission['codename'])
                     list_permissions = utils.permisos(request.user)
-                    resul = dict(data=serialized.data, permissions=list_permissions)
+                    resul = dict(data=serialized.data, permissions=list_permissions, tipo=tipo)
                     resul_status = status.HTTP_200_OK
                 else:
                     resul = dict(message='La cuenta esta deshabilitada')
@@ -951,6 +958,7 @@ class PasswordResetConfirmView(views.APIView):
         except (TypeError, ValueError, OverflowError, UserModel.DoesNotExist):
             return Response(dict(status=False, message="Error en la llamada"),
                             status=status.HTTP_400_BAD_REQUEST)
+
 
 class TitulacionesViewSet(viewsets.ModelViewSet):
     lookup_field = 'codigo'
