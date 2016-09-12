@@ -5,6 +5,7 @@ from authentication.serializers import AlumnoSerializer, ProfesorSerializer, Usu
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from rest_framework import permissions, viewsets, status, views
 from rest_framework.response import Response
+from rest_framework.decorators import detail_route
 from django.contrib.auth.models import Permission
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
@@ -30,6 +31,11 @@ class UsuariosViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
     logger = logging.getLogger(__name__)
+
+    # TODO URLs por defecto del router
+    # @detail_route()
+    # def get_user(self, request):
+    #     params = utils.get_params(request)
 
     def list(self, request):
         """
