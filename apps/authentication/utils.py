@@ -5,6 +5,7 @@ from django.contrib.auth.models import Permission
 from django import forms
 import collections
 import requests
+from django.db.models import Q
 
 
 class PasswordResetRequestForm(forms.Form):
@@ -191,9 +192,10 @@ def grupos(grupos):
     return list_grupos
 
 
-def procesar_datos_usuario(user, data):
+def procesar_datos_usuario(user, data, detalle=None):
     # Importo aqui para evitar el cruce de imports
-    from models import Alumno, Profesor, Departamento
+    from models import Alumno, Profesor, Departamento, Titulacion
+    from tfgs.models import Tfg, Tfg_Asig
     if isinstance(data, dict):
         data = [data]
 
@@ -229,6 +231,24 @@ def procesar_datos_usuario(user, data):
             data[key]['departamento'] = collections.OrderedDict(Departamento.objects.get(
                 codigo=profesor.departamento.codigo).to_dict())
             data[key]['jefe_departamento'] = profesor.jefe_departamento
+            if detalle:
+                data[key]['tutor'] = []
+                data[key]['cotutor'] = []
+                tfgs = Tfg.objects.filter(tutor=profesor.id)
+                for tfg in tfgs:
+                    data[key]['tutor'].append(tfg.to_dict(user))
+                tfgs = Tfg.objects.filter(cotutor=profesor.id)
+                for tfg in tfgs:
+                    data[key]['cotutor'].append(tfg.to_dict(user))
+
+        if data[key]['clase'] == 'Alumno' and detalle:
+            alumno = Alumno.objects.get(email=s_data['email'])
+            try:
+                data[key]['tfg'] = collections.OrderedDict(Tfg_Asig.objects.get(Q(alumno_1=alumno) | Q(alumno_2=alumno)
+                                                                                | Q(alumno_3=alumno)).to_dict(user))
+            except Tfg_Asig.DoesNotExist:
+                data[key]['tfg'] = None
+            # data[key]['titulacion'] = collections.OrderedDict(Titulacion.objects.get(id=alumno.id).to_dict())
 
         data[key]['grupos'] = obtener_grupos(s_data)
         if not user.is_admin:

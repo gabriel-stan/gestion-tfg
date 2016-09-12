@@ -9,13 +9,13 @@
     .module('gestfg.authentication.services')
     .factory('Authentication', Authentication);
 
-  Authentication.$inject = ['$cookies', '$http', 'Snackbar'];
+  Authentication.$inject = ['$cookies', '$http', 'Snackbar', '$cookieStore'];
 
   /**
   * @namespace Authentication
   * @returns {Factory}
   */
-  function Authentication($cookies, $http, Snackbar) {
+  function Authentication($cookies, $http, Snackbar, $cookieStore) {
     /**
     * @name Authentication
     * @desc The Factory to be returned
@@ -165,7 +165,9 @@
        * @desc Show success message
        */
       function resetPasswordSuccessFn(data, status, headers, config) {
-        Snackbar.success("Se le ha enviado un enlace para reestrablecer la contraseña");
+        Snackbar.success("Su contraseña se ha reestablecido correctamente");
+
+        window.location = '/login';
       }
 
       /**
@@ -188,11 +190,12 @@
      * @memberOf gestfg.authentication.services.Authentication
      */
     function getAuthenticatedAccount() {
-      if (!$cookies.authenticatedAccount) {
+      if (!isAuthenticated()) {
         return;
       }
 
-      return JSON.parse($cookies.authenticatedAccount);
+      // return JSON.parse($cookies.authenticatedAccount);
+      return JSON.parse($cookieStore.get('authenticatedAccount'));
     }
 
     /**
@@ -202,7 +205,10 @@
      * @memberOf gestfg.authentication.services.Authentication
      */
     function isAuthenticated() {
-      return !!$cookies.authenticatedAccount;
+      // return !!$cookies.authenticatedAccount;
+      // return !$cookieStore.get('authenticatedAccount');
+      var user = $cookieStore.get('authenticatedAccount');
+      return user!=undefined;
     }
 
     /**
@@ -224,7 +230,8 @@
      * @memberOf gestfg.authentication.services.Authentication
      */
     function setAuthenticatedAccount(account) {
-      $cookies.authenticatedAccount = JSON.stringify(account);
+      //$cookies.authenticatedAccount = JSON.stringify(account);
+      $cookieStore.put('authenticatedAccount', JSON.stringify(account));
     }
 
     /**
@@ -234,7 +241,8 @@
      * @memberOf gestfg.authentication.services.Authentication
      */
     function unauthenticate() {
-      delete $cookies.authenticatedAccount;
+      //delete $cookies.authenticatedAccount;
+      $cookieStore.remove('authenticatedAccount');
     }
 
     /**
