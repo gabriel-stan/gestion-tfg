@@ -44,55 +44,68 @@
 
 
     <!-- Profile Image -->
-    <div class="box box-primary" ng-controller="UserController as userCtrl" ng-show="userCtrl.isAuthenticated()">
-      <div class="box-body box-profile">
-        <img class="profile-user-img img-responsive img-circle" src="/static/dist/img/avatar_placeholder.png" alt="User profile picture">
-        <h3 class="profile-username text-center">{{userCtrl.user.data.first_name}} {{userCtrl.user.data.last_name}}</h3>
-        <p class="text-muted text-center">{{userCtrl.user.data.email}}</p>
-        <p class="text-muted text-center">{{userCtrl.user.data.groups[0]}} (Grupo)</p>
+    <div ng-controller="UserController as userCtrl" >
+      <div class="box box-primary" ng-show="userCtrl.isAuthenticated()" ng-init="userCtrl.loadUserData()">
+        <div class="box-body box-profile">
+          <img class="profile-user-img img-responsive img-circle" src="/static/dist/img/avatar_placeholder.png" alt="User profile picture">
+          <h3 class="profile-username text-center">{{userCtrl.user.data.first_name}} {{userCtrl.user.data.last_name}}</h3>
+          <p class="text-muted text-center">{{userCtrl.user.data.email}}</p>
+          <p class="text-muted text-center">{{userCtrl.isAdmin() ? 'Administrador' : userCtrl.user.tipo}}</p>
 
-        <div>
-          <ul class="list-group list-group-unbordered">
-            <li class="list-group-item">
-              <b>TFG asignado</b>
-            </li>
-            <li class="list-group-item">
-              <span>un super tfg para la super gestion ...</b> <a class="pull-right">Ver</span>
-            </li>
-          </ul>
+          <div ng-show="userCtrl.user.tipo == 'Alumno'">
+            <ul class="list-group list-group-unbordered">
+              <li class="list-group-item">
+                <b>TFG asignado</b>
+              </li>
+              <li class="list-group-item">
+                <span>{{userCtrl.userData.tfg.tfg.titulo}}</span> <a class="pull-right">Ver</a>
+              </li>
+              <li class="list-group-item" ng-show="!userCtrl.userData.tfg">
+                <span>Ninguno</span>
+              </li>
+              <li class="list-group-item" ng-show="userCtrl.userData.tfg.convocatoria">
+                <b>Convocatoria</b>
+              </li>
+              <li class="list-group-item" ng-show="userCtrl.userData.tfg.convocatoria">
+                <span>{{userCtrl.userData.tfg.convocatoria.tipo.nombre}} de {{userCtrl.userData.tfg.convocatoria.anio}}</span>
+              </li>
+            </ul>
 
-          <a href="#" class="btn btn-primary btn-block"><b>Presentar a Convocatoria</b></a>
-          <a href="#" class="btn btn-primary btn-block"><b>Subir documentación</b></a>
-        </div>
+            <a href="#" class="btn btn-primary btn-block" ng-show="!userCtrl.userData.tfg.convocatoria"><b>Presentar a Convocatoria</b></a>
+            <a href="#" class="btn btn-primary btn-block"><b>Subir documentación</b></a>
 
-        <div>
-          <ul class="list-group list-group-unbordered">
-            <li class="list-group-item">
-              <b>TFGs como tutor</b>
-            </li>
-            <li class="list-group-item">
-              <span>un super tfg para la super gestion ...</span> <a class="pull-right">Ver</a>
-            </li>
-            <li class="list-group-item">
-              <span>otro super tfg para la super gestion ...</span> <a class="pull-right">Ver</a>
-            </li>
+          </div>
 
-            <li class="list-group-item">
-              <b>TFGs como cotutor</b>
-            </li>
-            <li class="list-group-item">
-              <span>otro super tfg mas para la super gestion ...</span> <a class="pull-right">Ver</a>
-            </li>
-            <li class="list-group-item">
-              <span>Ninguno</span>
-            </li>
-          </ul>
+          <div ng-show="userCtrl.user.tipo == 'Profesor'">
+            <ul class="list-group list-group-unbordered">
+              <li class="list-group-item">
+                <b>TFGs como tutor</b>
+              </li>
+              <li class="list-group-item" ng-repeat="tfg in userCtrl.userData.tutor">
+                <span>{{tfg.titulo}}</span> <a class="pull-right">Ver</a>
+              </li>
+              <li class="list-group-item" ng-show="!userCtrl.userData.tutor.length">
+                <span>Ninguno</span>
+              </li>
 
-          <a href="#" class="btn btn-primary btn-block"><b>Gestionar TFGs</b></a>
-        </div>
+              <li class="list-group-item">
+                <b>TFGs como cotutor</b>
+              </li>
+              <li class="list-group-item" ng-repeat="tfg in userCtrl.userData.cotutor">
+                <span>{{tfg.titulo}}</span> <a class="pull-right">Ver</a>
+              </li>
+              <li class="list-group-item" ng-show="!userCtrl.userData.cotutor.length">
+                <span>Ninguno</span>
+              </li>
+            </ul>
 
-      </div><!-- /.box-body -->
-    </div><!-- /.box -->
+            <a href="#" class="btn btn-primary btn-block"><b>Gestionar TFGs</b></a>
+          </div>
+
+        </div><!-- /.box-body -->
+      </div><!-- /.box -->
+
+    </div>
 
     <!-- Calendar -->
     <div class="box box-solid">
@@ -102,7 +115,7 @@
         <!-- tools box -->
         <div class="pull-right box-tools">
           <!-- button with a dropdown -->
-          <div class="btn-group">
+          <!-- <div class="btn-group">
             <button class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
             <ul class="dropdown-menu pull-right" role="menu">
               <li><a href="#">Add new event</a></li>
@@ -112,65 +125,16 @@
             </ul>
           </div>
           <button class="btn btn-primary btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
-          <button class="btn btn-primary btn-sm" data-widget="remove"><i class="fa fa-times"></i></button>
+          <button class="btn btn-primary btn-sm" data-widget="remove"><i class="fa fa-times"></i></button> -->
         </div><!-- /. tools -->
       </div><!-- /.box-header -->
       <div class="box-body no-padding">
         <!--The calendar -->
         <div id="calendar" style="width: 100%"></div>
       </div><!-- /.box-body -->
-      <div class="box-footer text-black">
-        <div class="row">
-          <div class="col-sm-6">
-            <!-- Progress bars -->
-            <div class="clearfix">
-              <span class="pull-left">Task #1</span>
-              <small class="pull-right">90%</small>
-            </div>
-            <div class="progress xs">
-              <div class="progress-bar progress-bar-green" style="width: 90%;"></div>
-            </div>
 
-            <div class="clearfix">
-              <span class="pull-left">Task #2</span>
-              <small class="pull-right">70%</small>
-            </div>
-            <div class="progress xs">
-              <div class="progress-bar progress-bar-green" style="width: 70%;"></div>
-            </div>
-          </div><!-- /.col -->
-          <div class="col-sm-6">
-            <div class="clearfix">
-              <span class="pull-left">Task #3</span>
-              <small class="pull-right">60%</small>
-            </div>
-            <div class="progress xs">
-              <div class="progress-bar progress-bar-green" style="width: 60%;"></div>
-            </div>
-
-            <div class="clearfix">
-              <span class="pull-left">Task #4</span>
-              <small class="pull-right">40%</small>
-            </div>
-            <div class="progress xs">
-              <div class="progress-bar progress-bar-green" style="width: 40%;"></div>
-            </div>
-          </div><!-- /.col -->
-        </div><!-- /.row -->
-      </div>
     </div><!-- /.box -->
 
-    <!-- Block buttons -->
-    <div class="box">
-      <div class="box-header">
-        <h3 class="box-title">Sidebar 1</h3>
-      </div>
-      <div class="box-body">
-        <button class="btn btn-default btn-block">.btn-block</button>
-        <button class="btn btn-default btn-block btn-flat">.btn-block .btn-flat</button>
-        <button class="btn btn-default btn-block btn-sm">.btn-block .btn-sm</button>
-      </div>
-    </div><!-- /.box -->
   </div>
 
 
