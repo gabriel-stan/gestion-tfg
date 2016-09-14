@@ -9,18 +9,21 @@
     .module('gestfg.authentication.controllers')
     .controller('UserController', UserController);
 
-  UserController.$inject = ['$location', '$scope', 'Authentication'];
+  UserController.$inject = ['$location', '$scope', 'Authentication', 'Users'];
 
   /**
   * @namespace UserController
   */
-  function UserController($location, $scope, Authentication) {
+  function UserController($location, $scope, Authentication, Users) {
     var userCtrl = this;
 
     userCtrl.isAuthenticated = isAuthenticated;
     userCtrl.isAdmin = isAdmin;
     userCtrl.user = Authentication.getAuthenticatedAccount();
     userCtrl.getAuthenticatedAccount = getAuthenticatedAccount;
+    userCtrl.loadUserData = loadUserData;
+
+    userCtrl.userData = new Object();
 
     activate();
 
@@ -56,6 +59,22 @@
 
     function getAuthenticatedAccount() {
       return Authentication.getAuthenticatedAccount();
+    }
+
+    function loadUserData() {
+
+      if(isAuthenticated()){
+        Users.get(userCtrl.user.data.email).then(getSuccessFn, getErrorFn);
+
+        function getSuccessFn(data, status, headers, config) {
+          userCtrl.userData = data.data.data[0];
+        }
+
+        function getErrorFn(data, status, headers, config) {
+          console.log("Error al obtener los datos del usuario");
+        }
+
+      }
     }
   }
 })();

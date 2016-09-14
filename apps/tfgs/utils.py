@@ -183,7 +183,7 @@ def is_dni(alumno):
 
 def procesar_datos_tfgs_asig(user, data):
     # Importo aqui para evitar el cruce de imports
-    from models import Tfg, Tfg_Asig
+    from models import Tfg, Tfg_Asig, Convocatoria
     if isinstance(data, dict):
         data = [data]
 
@@ -215,6 +215,12 @@ def procesar_datos_tfgs_asig(user, data):
                 data[key]['tfg'] = collections.OrderedDict(Tfg.objects.get(id=s_data['tfg']).to_dict(user))
             except Tfg.DoesNotExist:
                 data[key]['tfg'] = None
+
+        if s_data['convocatoria'] is not None:
+            try:
+                data[key]['convocatoria'] = collections.OrderedDict(Convocatoria.objects.get(id=s_data['convocatoria']).to_dict())
+            except Convocatoria.DoesNotExist:
+                data[key]['convocatoria'] = None
 
     return data
 

@@ -3,7 +3,6 @@
 <section class="content-header" style="margin-bottom:15px">
   <h1>
     Eventos
-    <small>Control panel</small>
   </h1>
   <ol class="breadcrumb">
     <li><a href="#"><i class="fa fa-dashboard"></i> Inicio</a></li>
@@ -41,37 +40,100 @@
   </div>
 
   <div class="col-md-4">
-    <!-- Block buttons -->
-    <div class="box">
+
+
+    <!-- Profile Image -->
+    <div ng-controller="UserController as userCtrl" >
+      <div class="box box-primary" ng-show="userCtrl.isAuthenticated()" ng-init="userCtrl.loadUserData()">
+        <div class="box-body box-profile">
+          <img class="profile-user-img img-responsive img-circle" src="/static/dist/img/avatar_placeholder.png" alt="User profile picture">
+          <h3 class="profile-username text-center">{{userCtrl.user.data.first_name}} {{userCtrl.user.data.last_name}}</h3>
+          <p class="text-muted text-center">{{userCtrl.user.data.email}}</p>
+          <p class="text-muted text-center">{{userCtrl.isAdmin() ? 'Administrador' : userCtrl.user.tipo}}</p>
+
+          <div ng-show="userCtrl.user.tipo == 'Alumno'">
+            <ul class="list-group list-group-unbordered">
+              <li class="list-group-item">
+                <b>TFG asignado</b>
+              </li>
+              <li class="list-group-item">
+                <span>{{userCtrl.userData.tfg.tfg.titulo}}</span> <a class="pull-right">Ver</a>
+              </li>
+              <li class="list-group-item" ng-show="!userCtrl.userData.tfg">
+                <span>Ninguno</span>
+              </li>
+              <li class="list-group-item" ng-show="userCtrl.userData.tfg.convocatoria">
+                <b>Convocatoria</b>
+              </li>
+              <li class="list-group-item" ng-show="userCtrl.userData.tfg.convocatoria">
+                <span>{{userCtrl.userData.tfg.convocatoria.tipo.nombre}} de {{userCtrl.userData.tfg.convocatoria.anio}}</span>
+              </li>
+            </ul>
+
+            <a href="#" class="btn btn-primary btn-block" ng-show="!userCtrl.userData.tfg.convocatoria"><b>Presentar a Convocatoria</b></a>
+            <a href="#" class="btn btn-primary btn-block"><b>Subir documentación</b></a>
+
+          </div>
+
+          <div ng-show="userCtrl.user.tipo == 'Profesor'">
+            <ul class="list-group list-group-unbordered">
+              <li class="list-group-item">
+                <b>TFGs como tutor</b>
+              </li>
+              <li class="list-group-item" ng-repeat="tfg in userCtrl.userData.tutor">
+                <span>{{tfg.titulo}}</span> <a class="pull-right">Ver</a>
+              </li>
+              <li class="list-group-item" ng-show="!userCtrl.userData.tutor.length">
+                <span>Ninguno</span>
+              </li>
+
+              <li class="list-group-item">
+                <b>TFGs como cotutor</b>
+              </li>
+              <li class="list-group-item" ng-repeat="tfg in userCtrl.userData.cotutor">
+                <span>{{tfg.titulo}}</span> <a class="pull-right">Ver</a>
+              </li>
+              <li class="list-group-item" ng-show="!userCtrl.userData.cotutor.length">
+                <span>Ninguno</span>
+              </li>
+            </ul>
+
+            <a href="#" class="btn btn-primary btn-block"><b>Gestionar TFGs</b></a>
+          </div>
+
+        </div><!-- /.box-body -->
+      </div><!-- /.box -->
+
+    </div>
+
+    <!-- Calendar -->
+    <div class="box box-solid">
       <div class="box-header">
-        <h3 class="box-title">Sidebar 1</h3>
-      </div>
-      <div class="box-body">
-        <button class="btn btn-default btn-block">.btn-block</button>
-        <button class="btn btn-default btn-block btn-flat">.btn-block .btn-flat</button>
-        <button class="btn btn-default btn-block btn-sm">.btn-block .btn-sm</button>
-      </div>
+        <i class="fa fa-calendar"></i>
+        <h3 class="box-title">Calendar</h3>
+        <!-- tools box -->
+        <div class="pull-right box-tools">
+          <!-- button with a dropdown -->
+          <!-- <div class="btn-group">
+            <button class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
+            <ul class="dropdown-menu pull-right" role="menu">
+              <li><a href="#">Add new event</a></li>
+              <li><a href="#">Clear events</a></li>
+              <li class="divider"></li>
+              <li><a href="#">View calendar</a></li>
+            </ul>
+          </div>
+          <button class="btn btn-primary btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+          <button class="btn btn-primary btn-sm" data-widget="remove"><i class="fa fa-times"></i></button> -->
+        </div><!-- /. tools -->
+      </div><!-- /.box-header -->
+      <div class="box-body no-padding">
+        <!--The calendar -->
+        <div id="calendar" style="width: 100%"></div>
+      </div><!-- /.box-body -->
+
     </div><!-- /.box -->
-    <div class="box">
-      <div class="box-header">
-        <h3 class="box-title">Sidebar 2</h3>
-      </div>
-      <div class="box-body">
-        <button class="btn btn-default btn-block">.btn-block</button>
-        <button class="btn btn-default btn-block btn-flat">.btn-block .btn-flat</button>
-        <button class="btn btn-default btn-block btn-sm">.btn-block .btn-sm</button>
-      </div>
-    </div><!-- /.box -->
-    <div class="box">
-      <div class="box-header">
-        <h3 class="box-title">Sidebar 3</h3>
-      </div>
-      <div class="box-body">
-        <button class="btn btn-default btn-block">.btn-block</button>
-        <button class="btn btn-default btn-block btn-flat">.btn-block .btn-flat</button>
-        <button class="btn btn-default btn-block btn-sm">.btn-block .btn-sm</button>
-      </div>
-    </div><!-- /.box -->
+
   </div>
 
 
@@ -79,18 +141,23 @@
 
   <!-- antiguo index -->
 
-  <events events="vm.events" ng-show="vm.events && vm.events.length"></events>
+  <!-- <events events="vm.events" ng-show="vm.events && vm.events.length"></events> -->
 
-  <p ng-hide="vm.events && vm.events.length">
+  <!-- <p ng-hide="vm.events && vm.events.length"> -->
     <!-- aqui no hay na... -->
-  </p>
+  <!-- </p> -->
 
-  <a class="btn btn-primary btn-fab btn-raised mdi-content-add btn-add-new-event"
+  <!-- <a class="btn btn-primary btn-fab btn-raised mdi-content-add btn-add-new-event"
     href="javascript:void(0)"
     ng-show="vm.isAuthenticated"
     ng-dialog="/static/templates/events/new-event.html"
-    ng-dialog-controller="NewEventController as vm"></a>
+    ng-dialog-controller="NewEventController as vm"></a> -->
 
   <!-- end antiguo index -->
+
+  <script>
+    //The Calender
+    $("#calendar").datepicker();
+  </script>
 
 </div><!-- /.container -->

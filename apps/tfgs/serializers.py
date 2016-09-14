@@ -155,7 +155,7 @@ class Tfg_AsigSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tfg_Asig
-        fields = ('id', 'tfg', 'alumno_1', 'alumno_2', 'alumno_3', 'created_at', 'updated_at',)
+        fields = ('id', 'tfg', 'alumno_1', 'alumno_2', 'alumno_3', 'created_at', 'updated_at', 'convocatoria', 'fecha_conv')
         read_only_fields = ('created_at', 'updated_at',)
 
     def create_tfg_asig(self, validated_data):

@@ -14,7 +14,7 @@ PERMISOS_PROFESORES={'tfgs': {'tfg': ['create', 'select', 'change', 'delete'],
                      'eventos': {'evento': ['create', 'select', 'change', 'delete']},
                      'authentication': {'usuario': ['select'], 'alumno': ['create', 'select', 'change', 'delete']}}
 
-PERMISOS_ALUMNOS={'tfgs': {'tfg': ['select']}}
+PERMISOS_ALUMNOS={'tfgs': {'tfg': ['select']}, 'authentication': {'usuario': ['select']}}
 
 PERMISOS_USUARIOS={'tfgs': {'tfg': ['select']}}
 

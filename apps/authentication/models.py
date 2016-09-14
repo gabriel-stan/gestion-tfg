@@ -152,6 +152,7 @@ class AlumnoManager(BaseUserManager):
 
 class Alumno(Usuario):
     objects = AlumnoManager()
+    titulacion = models.ForeignKey(Titulacion, related_name='alumno_titulacion', default=None, null=True)
 
     def to_dict(self, user):
         return dict(email=self.email, dni=self.dni if getattr(user, 'is_admin', False) else None,

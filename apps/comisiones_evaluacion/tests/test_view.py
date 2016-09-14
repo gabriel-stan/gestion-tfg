@@ -113,15 +113,15 @@ class ComisionesEvaluacionServicesTests(TestCase):
         Profesor.objects.create_user(**self.prof14)
 
         self.prof15 = dict(email='qwe23456fg@ugr.es', first_name='qwe23456fg 2', last_name='dfgrasde 12 apelergewqerlido 122',
-                           departamento=dep_DECSAI, password='75121690as52')
+                           departamento=dep_atc, password='75121690as52')
         Profesor.objects.create_user(**self.prof15)
 
         self.prof16 = dict(email='prof16@ugr.es', first_name='prof16 2', last_name='dfgrasde 12 apelergewqerlido 122',
-                           departamento=dep_DECSAI, password='75121690as52')
+                           departamento=dep_atc, password='75121690as52')
         Profesor.objects.create_user(**self.prof16)
 
         self.prof17 = dict(email='prof17@ugr.es', first_name='prof17 2', last_name='dfgrasde 12 apelergewqerlido 122',
-                           departamento=dep_DECSAI, password='75121690as52')
+                           departamento=dep_atc, password='75121690as52')
         Profesor.objects.create_user(**self.prof17)
 
         self.prof18 = dict(email='prof18@ugr.es', first_name='prof18 2', last_name='dfgrasde 12 apelergewqerlido 122',
@@ -133,11 +133,11 @@ class ComisionesEvaluacionServicesTests(TestCase):
         Profesor.objects.create_user(**self.prof19)
 
         self.prof20 = dict(email='prof20@ugr.es', first_name='prof20 2', last_name='dfgrasde 12 apelergewqerlido 122',
-                           departamento=dep_DECSAI, password='75121690as52')
+                           departamento=dep_lsi, password='75121690as52')
         Profesor.objects.create_user(**self.prof20)
 
         self.prof21 = dict(email='prof21@ugr.es', first_name='prof21 2', last_name='dfgrasde 12 apelergewqerlido 122',
-                           departamento=dep_DECSAI, password='75121690as52')
+                           departamento=dep_lsi, password='75121690as52')
         Profesor.objects.create_user(**self.prof21)
 
     def test_formacion_comisiones(self):

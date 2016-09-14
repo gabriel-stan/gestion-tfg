@@ -21,7 +21,8 @@
       create: create,
       get: get,
       update: update,
-      remove: remove
+      remove: remove,
+      remove2: remove2
     };
 
     return Users;
@@ -60,7 +61,7 @@
      * @memberOf gestfg.users.services.Users
      */
     function get(email) {
-      return $http.get('/api/v1/usuarios/' + email);
+      return $http.get('/api/v1/usuarios/?email=' + email);
     }
 
     function update(content) {
@@ -71,6 +72,10 @@
       return $http.delete('/api/v1/' + tipo + '/', {
         email: email
       });
+    }
+
+    function remove2(tipo, email) {
+      return $http.delete('/api/v1/' + tipo + '/' + email + '/');
     }
   }
 })();

@@ -12,11 +12,13 @@ import hashlib as hl
 import random
 import zipfile
 import os
-
+import sys
 
 DEPARTAMENTOS_PRINCIPALES = ['DECSAI', 'LSI', 'ATC']
 DEPARTAMENTOS_ASOCIADOS = {'ESTADISTICA': 'DECSAI', 'AL': 'DECSAI', 'AM': 'DECSAI', 'TSTC': 'ATC', 'ELECTRONICA': 'ATC', 'MATEAPLI': 'LSI', 'EMPRESAS': 'LSI'}
 ORDEN_DEPARTAMENTOS = {0: 'LSI', 1: 'DECSAI', 2: 'ATC'}
+
+TESTING = sys.argv[1:2] == ['test']
 
 
 class Comision(object):
@@ -45,6 +47,10 @@ class Comision(object):
         self.num_comisiones = 0
         self.user = user
         self.reintentar = False
+        if TESTING:
+            self.num_tfg_comision = 6.0
+        else:
+            self.num_tfg_comision = 5.0
         if not comisiones:
             self.num_comisiones = 0
             for comision in Comision_Evaluacion.objects.all():
@@ -101,7 +107,7 @@ class Comision(object):
             self.tutores_libres_secundarios['DECSAI'] = list(range(0, len(self.tutores_secundarios['DECSAI'])))
             self.tutores_libres_secundarios['LSI'] = list(range(0, len(self.tutores_secundarios['LSI'])))
             self.tutores_libres_secundarios['ATC'] = list(range(0, len(self.tutores_secundarios['ATC'])))
-            self.num_comisiones = int(math.ceil(float(self.num_tfg) / 6.0) if self.num_tfg >= 12 else 2)
+            self.num_comisiones = int(math.ceil(float(self.num_tfg) / self.num_tfg_comision) if self.num_tfg >= 12 else 2)
             for i in range(self.num_comisiones):
                 tribunal = {'tfgs': []}
                 indice = random.randint(0, 2)
@@ -162,8 +168,8 @@ class Comision(object):
             email = tfg_asig.tfg.tutor.email
         else:
             email = tfg_asig['tfg']['tutor']['email']
-        if email in [tribunal.get('presidente'), tribunal.get('vocal_1'), tribunal.get('vocal_2'),
-                     tribunal.get('suplente_1'), tribunal.get('suplente_2')] \
+        if email in [tribunal.get('presidente').get('email'), tribunal.get('vocal_1').get('email'), tribunal.get('vocal_2').get('email'),
+                     tribunal.get('suplente_1').get('email'), tribunal.get('suplente_2').get('email')] \
                 or len(tribunal['tfgs']) >= (self.num_tfg / self.num_comisiones):
             return False
         else:
